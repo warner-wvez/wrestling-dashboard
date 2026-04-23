@@ -18,8 +18,16 @@ I became a wrestling fan this past year by watching full shows chronologically s
 
 ## Current coverage
 
-- 2001-2010 complete (1,170 events, 7,465 matches)
-- 2011-2019 in progress
+- 2001-2019 complete (2,266 events, 15,144 matches, 296 PPVs)
+- Includes every Raw and SmackDown episode, 30 NXT TakeOvers (2014-2019), 3 Starrcade revivals (2017-2019), 5 Saudi Arabia specials (Greatest Royal Rumble, Crown Jewel, Super ShowDown), WWE Evolution 2018, and 8 Tribute to the Troops specials
+
+## What's in the corpus
+
+- **Raw**: 983 episodes
+- **SmackDown**: 987 episodes
+- **PPV**: 296 events (includes all NXT TakeOvers, Starrcade 2017-2019, Saudi events, Evolution, Tribute specials)
+- **Years**: 2001 through 2019 (19 full years)
+- Every match has full raw descriptive text from Cagematch. About 21% carry community Match Guide ratings.
 
 ## Quickstart
 
@@ -69,17 +77,24 @@ Not affiliated with WWE. This is a fan-made companion tool.
 
 ## Known issues
 
-- Some tag team participant strings from older scrapes have parsing edge cases (stray parentheses, match-result text bleeding into names). Cleanup in progress.
-- 2011-2019 scraping is ongoing; the bundle updates as more years are scraped.
+- Multi-episode-per-date tournaments are NOT included in the current corpus. Affected shows: Cruiserweight Classic 2016 (10 episodes), Mae Young Classic 2017 (10 episodes), Mae Young Classic 2018 (8 episodes), UK Championship Tournament 2018 (2 episodes), and Worlds Collide 2019 (4 episodes on 2 dates). The SQLite schema enforces UNIQUE (air_date, show_type) which drops subsequent events sharing a date, so bringing these in requires a scraper-side consolidation pass. Queued as a backlog item.
+- NXT weeklies, WWE 205 Live, WWE Main Event, WWE Superstars, and WWE Mixed Match Challenge are intentionally out of corpus. The watch-companion thesis prioritizes canonical narrative broadcasts (Raw, SmackDown, PPV, NXT TakeOver specials), not the full weekly taping slate.
+- Tribute to the Troops specials are covered for 2015-2019 as standalone PPV-style events. Earlier instances (2003-2014) often aired as Raw or SmackDown episodes and may be embedded in those rows rather than standalone entries. A few 2004, 2006, and 2007 Tributes are already in corpus via their Raw/SmackDown episode. Complete historical backfill is queued.
+- Beast in the East 2015 (a one-off Network special from Tokyo) is not in corpus. Queued for a dedicated backfill task.
+- Pre-2016 SmackDown air dates use a tape-plus-2-estimate derivation. The show taped Tuesday night and aired the following Friday, so the estimated air_date is always in the right calendar week but not always the exact air-night. Fandom verification pass for accurate day-level air dates is queued.
+- Some tag team participant strings from older scrapes have parsing edge cases (stray parentheses, match-result text bleeding into names). Low urgency, cleanup queued.
 - Timestamp display uses browser local timezone.
 
 ## Roadmap
 
-- Complete 2011-2019 scraping (target: full 2001-2019 corpus)
-- Fandom enrichment pass for SmackDown air dates
+- Multi-episode-per-date tournament consolidation (unlocks ~34 events across CWC 2016, MYC 2017/2018, UK Championship Tournament 2018, Worlds Collide 2019)
+- Historical Tribute to the Troops backfill (2008-2014)
+- NXT UK TakeOver 2018 backfill
+- Beast in the East 2015 one-off
+- Fandom enrichment pass for SmackDown air date accuracy (2004-2015)
 - Parser cleanup for edge cases in team name fields
-- Optional filters (by brand, by superstar, by title)
-- Watch-tracking (mark events as watched)
+- Optional filters (by brand, superstar, title, year)
+- Watch-tracking feature (local storage, no account)
 
 ---
 
@@ -114,7 +129,7 @@ Trade-offs of this choice:
 
 - **Pro:** Works offline. Hosts anywhere static (GitHub Pages, S3, Vercel, a USB drive). Zero cost at any scale. No rate limits, no downtime, no backend maintenance.
 - **Pro:** The file IS the product. Users can download it, email it, archive it. It will work in 2035 the same way it works today.
-- **Con:** Bundle size grows linearly with dataset. Currently 5.5 MB for 10 years. Projected ~10-11 MB for full 2001-2019 corpus. Still acceptable for single-file delivery, but monitored.
+- **Con:** Bundle size grows linearly with dataset. Currently 10.98 MB for 19 years (2001-2019). Projected 12-13 MB if extended to present day. Still well within single-file delivery comfort zone.
 - **Con:** Can't push updates without re-bundling and redeploying.
 
 For a corpus that's historical (2001-2019 won't change), the upsides dominate.
@@ -154,7 +169,7 @@ Normalized enough to query meaningfully, denormalized enough that a single event
 
 ### The classifier
 
-`src/cagematch_scraper.py` contains `classify_show_type`, which maps Cagematch's event type string and title into the project's internal types: Raw, SmackDown, PPV, Pre-Show, House Show, or SKIP.
+`src/cagematch_scraper.py` contains `classify_show_type`, which maps Cagematch's `(title, cm_type)` tuple into one of the project's three internal show_type values (Raw, SmackDown, PPV), or to a SKIP sentinel that excludes the event from corpus. The final classifier after a full pass on 2001-2019 has 7 PPV-promoting branches (covering Pay Per View, Premium Live Event, TV-Show+Tribute, Event+Tribute, Event+Starrcade, Online Stream+Starrcade, Online Stream+Smackville) and 7 SKIP branches (House Show, Online Stream+Pre-Show, Online Stream+Kickoff, Online Stream+Axxess, Event+Axxess, Event+Fan Fest, Event+On-Sale Party), plus the standard weekly pattern matchers for Raw and SmackDown.
 
 The interesting design choice is the **error-as-canary pattern**. When the classifier encounters an unknown combination, it raises `ValueError` rather than defaulting to a fallback category. This causes the scrape to halt on that event, surfacing it to the operator.
 
@@ -174,7 +189,7 @@ When a scrape run errors, the operator has a choice: patch the classifier and re
 - Re-scraping the same year is idempotent (UPSERT on `cagematch_nr`).
 - Already-successfully-scraped events within a run stay put. Only the errored events get re-attempted on the next pass.
 
-This means adding a classifier branch and re-running is cheap. It's how the Axxess conventions got caught in 2009 and handled correctly from 2010 forward.
+This means adding a classifier branch and re-running is cheap. The 2001-2019 corpus was built through roughly 14 halt-propose-approve cycles across 19 years of content. Each one caught a real Cagematch taxonomy shift: Pre-Show getting rebranded to Kickoff in 2013, the Pay Per View cm_type gaining a Premium Live Event alias in 2014, Axxess conventions splitting across Event and Online Stream types between years, Starrcade's cm_type flipping from Event in 2017 to Online Stream in 2018, Tribute to the Troops drifting from TV-Show to Event in 2019, and so on. Zero silent corpus pollution across the full run.
 
 ### The bundler
 
