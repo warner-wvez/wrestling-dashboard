@@ -165,6 +165,20 @@
     -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><path d='M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24'/><line x1='1' y1='1' x2='23' y2='23'/></svg>");
   }
 
+  .modal-spoiler-btn {
+    position: absolute;
+    top: 14px;
+    right: 56px;
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--ink);
+    background: var(--surface);
+    font-size: 12px;
+    z-index: 2;
+  }
+  .modal-spoiler-btn:hover { background: var(--ink); color: #FFF; }
+  .modal-spoiler-btn:hover .eye { background: #FFF; }
+
   /* =============================================================
      MAIN GRID: content + sidebar
      ============================================================= */
@@ -1139,7 +1153,7 @@
     <select id="month" aria-label="Month"></select>
     <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
       <span class="eye"></span>
-      <span id="sp-label">Spoilers</span>
+      <span class="sp-label">Spoilers</span>
     </button>
   </div>
 </header>
@@ -1173,6 +1187,10 @@
 <!-- MODAL -->
 <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true">
   <div class="modal">
+    <button class="spoiler-btn modal-spoiler-btn" id="modal-spoiler-btn" aria-pressed="false" type="button">
+      <span class="eye"></span>
+      <span class="sp-label">Spoilers</span>
+    </button>
     <button class="modal-close" id="modal-close" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
         <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1194,7 +1212,7 @@
   const el = (id) => document.getElementById(id);
   const yearSel = el('year'), monthSel = el('month'), calEl = el('calendar');
   const mBackdrop = el('modal-backdrop'), mContent = el('modal-content');
-  const spoilerBtn = el('spoiler-btn'), spLabel = el('sp-label');
+  const spoilerButtons = [el('spoiler-btn'), el('modal-spoiler-btn')].filter(Boolean);
   const monthNameEl = el('month-name'), monthYearEl = el('month-year'), monthCountEl = el('month-count');
   const heroEl = el('hero');
   const rosterEl = el('roster'), rosterMonthEl = el('roster-month');
@@ -1261,15 +1279,18 @@
   let spoilers = sessionStorage.getItem(SPOILER_KEY) === '1';
   function applySpoilerClass() {
     document.body.classList.toggle('spoilers-on', spoilers);
-    spoilerBtn.setAttribute('aria-pressed', spoilers ? 'true' : 'false');
-    spLabel.textContent = spoilers ? 'Hide spoilers' : 'Spoilers';
+    for (const btn of spoilerButtons) {
+      btn.setAttribute('aria-pressed', spoilers ? 'true' : 'false');
+      const label = btn.querySelector('.sp-label');
+      if (label) label.textContent = spoilers ? 'Hide spoilers' : 'Spoilers';
+    }
   }
   function toggleSpoilers() {
     spoilers = !spoilers;
     sessionStorage.setItem(SPOILER_KEY, spoilers ? '1' : '0');
     applySpoilerClass();
   }
-  spoilerBtn.addEventListener('click', toggleSpoilers);
+  for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
 
   // ------------------ Dropdowns -------------------------------------------
