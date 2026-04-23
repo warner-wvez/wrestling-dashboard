@@ -181,7 +181,11 @@ def classify_show_type(title, cm_type):
         return "SKIP"
     if cm_type == "Online Stream" and "Kickoff" in (title or ""):
         return "SKIP"
+    if cm_type == "Online Stream" and "Axxess" in (title or ""):
+        return "SKIP"
     if cm_type == "Online Stream" and "Starrcade" in (title or ""):
+        return "PPV"
+    if cm_type == "Online Stream" and "Smackville" in (title or ""):
         return "PPV"
     if cm_type == "Event" and "Axxess" in (title or ""):
         return "SKIP"
@@ -190,6 +194,8 @@ def classify_show_type(title, cm_type):
     if cm_type == "Event" and "On-Sale Party" in (title or ""):
         return "SKIP"
     if cm_type == "Event" and "Starrcade" in (title or ""):
+        return "PPV"
+    if cm_type == "Event" and "Tribute To The Troops" in (title or ""):
         return "PPV"
     if cm_type in ("Pay Per View", "Premium Live Event"):
         return "PPV"

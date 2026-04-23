@@ -105,6 +105,8 @@ PPV_STEMS = (
     "WWE Starrcade",
     "WWE Greatest Royal Rumble",
     "WWE Evolution",
+    "WWE NXT UK TakeOver",
+    "WWE Smackville",
 )
 
 
