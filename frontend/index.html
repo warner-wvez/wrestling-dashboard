@@ -1641,12 +1641,16 @@
     return `<div class="team ${side} ${cls}"><span class="team-names">${names}${champ}</span>${metaRow}</div>`;
   }
 
+  function shouldSwapTeams(m) {
+    return ((m.id || m.match_order || 0) % 2) === 1;
+  }
+
   function renderMatchBody(m) {
     const teams = m.teams || [];
     if (!teams.length) return `<div class="match-body"><em style="color:var(--ink-faint);">No details</em></div>`;
 
     if (teams.length === 2) {
-      const [a, b] = teams;
+      const [a, b] = shouldSwapTeams(m) ? [teams[1], teams[0]] : teams;
       const anyOutcome = (o) => teams.some(t => t.match_outcome === o);
       const noResult = anyOutcome('no-contest') || anyOutcome('draw') || (a.was_winner !== true && b.was_winner !== true);
       const winnerSide = noResult ? null : (a.was_winner === true ? 'left' : 'right');
