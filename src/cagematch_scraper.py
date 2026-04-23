@@ -179,9 +179,13 @@ def classify_show_type(title, cm_type):
         return "SKIP"
     if cm_type == "Online Stream" and "Pre-Show" in (title or ""):
         return "SKIP"
+    if cm_type == "Online Stream" and "Kickoff" in (title or ""):
+        return "SKIP"
     if cm_type == "Event" and "Axxess" in (title or ""):
         return "SKIP"
-    if cm_type == "Pay Per View":
+    if cm_type == "Event" and "Fan Fest" in (title or ""):
+        return "SKIP"
+    if cm_type in ("Pay Per View", "Premium Live Event"):
         return "PPV"
     t = (title or "").upper()
     if "SMACKDOWN" in t:
