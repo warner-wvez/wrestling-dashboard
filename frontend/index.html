@@ -134,6 +134,23 @@
   .controls select:hover { background-color: var(--surface-soft); }
   .controls select:focus { outline: 2px solid var(--red); outline-offset: -2px; }
 
+  .month-nav {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--ink);
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    line-height: 1;
+    transition: background 140ms, opacity 140ms;
+  }
+  .month-nav:hover:not(:disabled) { background-color: var(--surface-soft); }
+  .month-nav:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+  .month-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
   .spoiler-btn {
     display: flex;
     align-items: center;
@@ -1149,8 +1166,10 @@
     <div class="wordmark">WVEZ<span class="light">Wrestling</span></div>
   </div>
   <div class="controls">
+    <button class="month-nav" id="month-prev" aria-label="Previous month" type="button">◀</button>
     <select id="year" aria-label="Year"></select>
     <select id="month" aria-label="Month"></select>
+    <button class="month-nav" id="month-next" aria-label="Next month" type="button">▶</button>
     <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
       <span class="eye"></span>
       <span class="sp-label">Spoilers</span>
@@ -1301,11 +1320,41 @@
   MONTHS.forEach((m, i) => {
     const o = document.createElement('option'); o.value = i + 1; o.textContent = m; monthSel.appendChild(o);
   });
-  yearSel.value = yr[1];
-  monthSel.value = 3;
+  yearSel.value = yr[0];
+  monthSel.value = 1;
 
   yearSel.addEventListener('change', loadCalendar);
   monthSel.addEventListener('change', loadCalendar);
+
+  const prevBtn = el('month-prev');
+  const nextBtn = el('month-next');
+
+  function stepMonth(delta) {
+    let y = parseInt(yearSel.value, 10);
+    let m = parseInt(monthSel.value, 10) + delta;
+    if (m > 12) { m = 1; y += 1; }
+    if (m < 1)  { m = 12; y -= 1; }
+    if (y < yr[0] || y > yr[1]) return;
+    yearSel.value = y;
+    monthSel.value = m;
+    loadCalendar();
+    updateNavButtons();
+  }
+
+  function updateNavButtons() {
+    const y = parseInt(yearSel.value, 10);
+    const m = parseInt(monthSel.value, 10);
+    prevBtn.disabled = (y === yr[0] && m === 1);
+    nextBtn.disabled = (y === yr[1] && m === 12);
+  }
+
+  prevBtn.addEventListener('click', () => stepMonth(-1));
+  nextBtn.addEventListener('click', () => stepMonth(1));
+
+  yearSel.addEventListener('change', updateNavButtons);
+  monthSel.addEventListener('change', updateNavButtons);
+
+  updateNavButtons();
 
   // ------------------ Main loader -----------------------------------------
   async function loadCalendar() {
