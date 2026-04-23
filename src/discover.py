@@ -97,6 +97,10 @@ PPV_STEMS = (
     "WWE December To Dismember",
     "ECW One Night Stand",
     "ECW December To Dismember",
+    "WWE NXT Arrival",
+    "WWE NXT ArRIVAL",
+    "WWE NXT TakeOver",
+    "WWE NXT Takeover",
 )
 
 
@@ -308,6 +312,7 @@ def main():
                 page_too_old += 1
             else:
                 page_skipped += 1
+                rejected.append({"nr": row.get("nr"), "title": row.get("title"), "date": row.get("date").isoformat() if row.get("date") else None})
 
         print(
             f"  page s={offset:>5}: rows={len(rows):>3}, "
