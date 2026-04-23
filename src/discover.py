@@ -101,6 +101,7 @@ PPV_STEMS = (
     "WWE NXT ArRIVAL",
     "WWE NXT TakeOver",
     "WWE NXT Takeover",
+    "WWE Tribute To The Troops",
 )
 
 
