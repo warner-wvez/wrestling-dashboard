@@ -1155,6 +1155,257 @@
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
+
+  /* ===========================================================
+     TABS
+     =========================================================== */
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    padding: 10px 22px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: color 140ms, border-color 140ms;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--red); }
+  .tab:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+
+  /* ===========================================================
+     VIEWS
+     =========================================================== */
+  section.view[hidden] { display: none !important; }
+
+  /* ===========================================================
+     WRESTLER LINK
+     =========================================================== */
+  button.wrestler-link {
+    border: 0; background: 0; padding: 0;
+    font: inherit; font-weight: inherit;
+    color: inherit; cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 2px;
+    transition: text-decoration-color 120ms, color 120ms;
+  }
+  button.wrestler-link:hover,
+  button.wrestler-link:focus-visible {
+    text-decoration-color: var(--red);
+    color: var(--red);
+    outline: none;
+  }
+
+  /* ===========================================================
+     HOVER TOOLTIP
+     =========================================================== */
+  #wrestler-tooltip {
+    position: fixed;
+    z-index: 200;
+    background: var(--bg);
+    border: 1px solid var(--ink);
+    box-shadow: var(--shadow-lg);
+    padding: 14px 16px;
+    max-width: 240px;
+    pointer-events: none;
+    display: none;
+  }
+  #wrestler-tooltip.visible { display: block; }
+  .tt-name {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .tt-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    padding: 4px 0;
+    border-top: 1px solid var(--border);
+  }
+  .tt-val { font-weight: 700; color: var(--ink); text-align: right; }
+
+  /* ===========================================================
+     ROSTER VIEW
+     =========================================================== */
+  .roster-view-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .roster-view-header h2 {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -0.025em;
+    flex: 1;
+    min-width: 120px;
+  }
+  .roster-controls {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--ink);
+    flex-wrap: wrap;
+  }
+  .roster-search {
+    background: transparent;
+    border: none;
+    border-right: 1px solid var(--ink);
+    padding: 9px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    min-width: 180px;
+  }
+  .roster-search:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+  .roster-search::placeholder { color: var(--ink-faint); font-weight: 500; }
+  .roster-sort {
+    background: transparent;
+    border: none;
+    padding: 9px 32px 9px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 3L5 7L9 3' stroke='%230A0A0A' stroke-width='1.5' fill='none' stroke-linecap='square'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  .roster-sort:hover { background-color: var(--surface-soft); }
+  .roster-sort:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+  .roster-table { width: 100%; border-collapse: collapse; }
+  .roster-table th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--ink);
+    white-space: nowrap;
+  }
+  .roster-table th:not(:first-child) { text-align: right; }
+  .roster-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    font-size: 13px;
+  }
+  .roster-table td:not(:first-child) { text-align: right; }
+  .roster-table tr:hover td { background: var(--surface-soft); }
+  .roster-table .rt-rank { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); width: 48px; }
+  .roster-table .rt-name button {
+    border: 0; background: 0; padding: 0;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+    color: var(--ink); cursor: pointer; letter-spacing: -0.01em; text-align: left;
+    text-decoration: underline; text-decoration-color: transparent;
+    text-underline-offset: 2px; transition: text-decoration-color 120ms, color 120ms;
+  }
+  .roster-table .rt-name button:hover { text-decoration-color: var(--red); color: var(--red); }
+  .roster-table .rt-name button:focus-visible { outline: 2px solid var(--red); }
+  .roster-table .rt-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+  .roster-table .rt-years { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .roster-no-results {
+    padding: 40px; text-align: center; color: var(--ink-faint);
+    font-family: var(--font-mono); font-size: 12px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  /* ===========================================================
+     WRESTLER PROFILE VIEW
+     =========================================================== */
+  .profile-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: none; background: transparent; padding: 0;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    color: var(--ink-dim); cursor: pointer; letter-spacing: 0.02em;
+    margin-bottom: 24px; transition: color 120ms;
+  }
+  .profile-back:hover { color: var(--red); }
+  .profile-back:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .profile-header { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+  .profile-name {
+    font-family: var(--font-sans); font-weight: 900; font-size: 42px;
+    letter-spacing: -0.025em; line-height: 1.02; margin-bottom: 8px;
+  }
+  .profile-years {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+    color: var(--ink-dim); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .profile-section { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
+  .profile-section:last-child { border-bottom: none; margin-bottom: 0; }
+  .profile-section-title {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 16px;
+  }
+  .record-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+  .record-stat { background: var(--surface-soft); border: 1px solid var(--border); padding: 14px 16px; }
+  .record-stat .rs-label {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px;
+  }
+  .record-stat .rs-value { font-family: var(--font-sans); font-weight: 900; font-size: 22px; letter-spacing: -0.02em; }
+  .record-stat.wins .rs-value { color: var(--red); }
+  .title-list, .rivalry-list, .partner-list, .recent-events-list { display: flex; flex-direction: column; }
+  .title-row, .rivalry-row, .partner-row, .recent-event-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .title-row:last-child, .rivalry-row:last-child, .partner-row:last-child, .recent-event-row:last-child { border-bottom: none; }
+  .title-row .title-name { font-family: var(--font-sans); font-weight: 700; font-size: 13px; }
+  .title-row.sig .title-name { color: var(--red); font-weight: 900; }
+  .title-row .title-count, .rivalry-row .rv-count, .partner-row .pn-count {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0;
+  }
+  .recent-event-row .re-date {
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0;
+  }
+  .signature-match { background: var(--surface-soft); border: 1px solid var(--border); padding: 18px 20px; }
+  .signature-match .sm-duration { font-family: var(--font-mono); font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+  .sm-event-link {
+    border: none; background: transparent; padding: 0;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700; color: var(--ink);
+    cursor: pointer; text-decoration: underline; text-decoration-color: transparent;
+    text-underline-offset: 2px; transition: color 120ms, text-decoration-color 120ms;
+  }
+  .sm-event-link:hover { color: var(--red); text-decoration-color: var(--red); }
+  .sm-event-link:focus-visible { outline: 2px solid var(--red); }
+  .signature-match .sm-desc {
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 10px; line-height: 1.65;
+  }
+
+  @media (max-width: 720px) {
+    .profile-name { font-size: 28px; }
+    .record-grid { grid-template-columns: repeat(2, 1fr); }
+    .tabs .tab { padding: 8px 14px; font-size: 12px; }
+    #wrestler-tooltip { display: none !important; }
+    .roster-controls { width: 100%; }
+    .roster-search { flex: 1; min-width: 0; }
+  }
 </style>
 </head>
 <body>
@@ -1176,6 +1427,13 @@
     </button>
   </div>
 </header>
+
+<nav class="tabs" id="main-tabs">
+  <button class="tab active" data-view="calendar" type="button">Calendar</button>
+  <button class="tab" data-view="roster" type="button">Roster</button>
+</nav>
+
+<section id="view-calendar" class="view">
 
 <!-- HERO -->
 <div class="hero" id="hero" role="button" tabindex="0"></div>
@@ -1218,6 +1476,29 @@
     <div id="modal-content"></div>
   </div>
 </div>
+</section><!-- end view-calendar -->
+
+<section id="view-roster" class="view" hidden>
+  <div class="roster-view-header">
+    <h2>Roster</h2>
+    <div class="roster-controls">
+      <input class="roster-search" id="roster-search" type="search" placeholder="Filter by name..." autocomplete="off">
+      <select class="roster-sort" id="roster-sort" aria-label="Sort by">
+        <option value="name">Name</option>
+        <option value="matches">Total Matches</option>
+        <option value="ppv">PPV Appearances</option>
+        <option value="shows">Shows Worked</option>
+      </select>
+    </div>
+  </div>
+  <div id="roster-view-content"></div>
+</section>
+
+<section id="view-wrestler" class="view" hidden>
+  <div id="wrestler-profile-content"></div>
+</section>
+
+<div id="wrestler-tooltip" aria-hidden="true"></div>
 
 <script>
 (() => {
@@ -1678,16 +1959,20 @@
   }
 
   function renderTeam(t, side, cls = '') {
-    const names = (t.participants && t.participants.length ? t.participants : [t.team_name])
-      .filter(Boolean).map(esc).join(' & ');
+    const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
+    const plainNames = rawNames.map(String).join(' & ');
+    const linkedNames = rawNames.map(n => {
+      const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
+      return `<button class="wrestler-link" data-slug="${esc(slug)}">${esc(n)}</button>`;
+    }).join(' &amp; ');
     const champ = t.was_champion_entering ? '<span class="champ-badge">Champ</span>' : '';
     const metaBits = [];
     if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
-    if (t.team_name && t.participants && t.participants.length > 1 && t.team_name !== names) {
+    if (t.team_name && t.participants && t.participants.length > 1 && t.team_name !== plainNames) {
       metaBits.push(`as ${esc(t.team_name)}`);
     }
     const metaRow = metaBits.length ? `<span class="team-meta">${metaBits.join(' · ')}</span>` : '';
-    return `<div class="team ${side} ${cls}"><span class="team-names">${names}${champ}</span>${metaRow}</div>`;
+    return `<div class="team ${side} ${cls}"><span class="team-names">${linkedNames}${champ}</span>${metaRow}</div>`;
   }
 
   function shouldSwapTeams(m) {
@@ -1743,7 +2028,326 @@
     return `<div class="match-footer">${bits.join('')}</div>`;
   }
 
+  // ------------------------------------------------------------------
+  // Slug helper (mirrors Python slugify for fallback name lookups)
+  // ------------------------------------------------------------------
+  function jsSlugify(name) {
+    return String(name).toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-|-$/g, '') || 'unknown';
+  }
+
+  // ------------------------------------------------------------------
+  // Tooltip (hover devices only)
+  // ------------------------------------------------------------------
+  const tooltipEl = document.getElementById('wrestler-tooltip');
+  const hasHover = window.matchMedia('(hover: hover)').matches;
+  let tooltipTimer = null;
+
+  function positionTooltip(anchor) {
+    if (!anchor || !tooltipEl) return;
+    const rect = anchor.getBoundingClientRect();
+    const tw = tooltipEl.offsetWidth || 240;
+    const th = tooltipEl.offsetHeight || 160;
+    let left = rect.left;
+    let top = rect.bottom + 8;
+    if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+    if (left < 8) left = 8;
+    if (top + th > window.innerHeight - 8) top = rect.top - th - 8;
+    tooltipEl.style.left = left + 'px';
+    tooltipEl.style.top = top + 'px';
+  }
+
+  function showTooltip(slug, anchor) {
+    if (!hasHover || !tooltipEl) return;
+    clearTimeout(tooltipTimer);
+    tooltipTimer = setTimeout(() => {
+      const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
+      if (!w) return;
+      const yr = w.active_years[0] === w.active_years[1]
+        ? String(w.active_years[0])
+        : `${w.active_years[0]}-${w.active_years[1]}`;
+      tooltipEl.innerHTML = `
+        <div class="tt-name">${esc(w.name)}</div>
+        <div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>
+        <div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>
+        <div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>
+        ${w.win_pct != null ? `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>` : ''}
+        ${w.signature_title ? `<div class="tt-row"><span>Title</span><span class="tt-val" style="max-width:130px;font-size:10px;">${esc(w.signature_title)}</span></div>` : ''}
+      `;
+      positionTooltip(anchor);
+      tooltipEl.classList.add('visible');
+      tooltipEl.setAttribute('aria-hidden', 'false');
+    }, 150);
+  }
+
+  function hideTooltip() {
+    clearTimeout(tooltipTimer);
+    if (tooltipEl) {
+      tooltipEl.classList.remove('visible');
+      tooltipEl.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Wrestler-link: document-level click + hover delegation
+  // ------------------------------------------------------------------
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.wrestler-link');
+    if (!btn || !btn.dataset.slug) return;
+    closeModal();
+    window.location.hash = '#wrestler/' + btn.dataset.slug;
+  });
+
+  document.addEventListener('mouseover', (e) => {
+    const btn = e.target.closest('button.wrestler-link');
+    if (btn && btn.dataset.slug) showTooltip(btn.dataset.slug, btn);
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    if (e.target.closest('button.wrestler-link')) hideTooltip();
+  });
+
+  // ------------------------------------------------------------------
+  // Roster render
+  // ------------------------------------------------------------------
+  let rosterBuilt = false;
+
+  function renderRoster() {
+    if (!BUNDLE || !BUNDLE.wrestlers) return;
+    const container = document.getElementById('roster-view-content');
+    if (!container || rosterBuilt) return;
+    rosterBuilt = true;
+
+    const all = Object.values(BUNDLE.wrestlers);
+    all.sort((a, b) => a.name.localeCompare(b.name));
+
+    container.innerHTML = `
+      <table class="roster-table">
+        <thead>
+          <tr>
+            <th class="rt-rank">#</th>
+            <th>Name</th>
+            <th>Matches</th>
+            <th>PPV</th>
+            <th>Shows</th>
+            <th>Active</th>
+          </tr>
+        </thead>
+        <tbody id="roster-tbody">${buildRosterRows(all)}</tbody>
+      </table>`;
+
+    const searchEl = document.getElementById('roster-search');
+    const sortEl = document.getElementById('roster-sort');
+
+    function applyFilterSort() {
+      const q = searchEl.value.toLowerCase().trim();
+      const key = sortEl.value;
+      let rows = q ? all.filter(w => w.name.toLowerCase().includes(q)) : all.slice();
+      if (key === 'matches') rows.sort((a, b) => b.total_matches - a.total_matches);
+      else if (key === 'ppv')  rows.sort((a, b) => b.ppv_appearances - a.ppv_appearances);
+      else if (key === 'shows') rows.sort((a, b) => b.unique_event_count - a.unique_event_count);
+      else rows.sort((a, b) => a.name.localeCompare(b.name));
+      const tbody = document.getElementById('roster-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = rows.length
+        ? buildRosterRows(rows)
+        : `<tr><td colspan="6" class="roster-no-results">No results for "${esc(q)}"</td></tr>`;
+    }
+
+    searchEl.addEventListener('input', applyFilterSort);
+    sortEl.addEventListener('change', applyFilterSort);
+    container.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-slug]');
+      if (btn) window.location.hash = '#wrestler/' + btn.dataset.slug;
+    });
+  }
+
+  function buildRosterRows(wrestlers) {
+    return wrestlers.map((w, i) => {
+      const yr = w.active_years[0] === w.active_years[1]
+        ? w.active_years[0]
+        : `${w.active_years[0]}-${w.active_years[1]}`;
+      return `<tr>
+        <td class="rt-rank">${i + 1}</td>
+        <td class="rt-name"><button data-slug="${esc(w.slug)}">${esc(w.name)}</button></td>
+        <td class="rt-num">${w.total_matches}</td>
+        <td class="rt-num">${w.ppv_appearances}</td>
+        <td class="rt-num">${w.unique_event_count}</td>
+        <td class="rt-years">${yr}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ------------------------------------------------------------------
+  // Wrestler profile render
+  // ------------------------------------------------------------------
+  function renderWrestler(slug) {
+    const container = document.getElementById('wrestler-profile-content');
+    if (!container) return;
+    const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
+    if (!w) {
+      container.innerHTML = `<div class="status">Wrestler not found: ${esc(slug)}</div>`;
+      return;
+    }
+
+    const yr = w.active_years[0] === w.active_years[1]
+      ? String(w.active_years[0])
+      : `${w.active_years[0]} - ${w.active_years[1]}`;
+
+    const titleHtml = w.title_wins && w.title_wins.length
+      ? `<div class="title-list">${w.title_wins.map(([t, cnt], i) =>
+          `<div class="title-row${i === 0 ? ' sig' : ''}">
+            <span class="title-name">${esc(t)}</span>
+            <span class="title-count">x${cnt}</span>
+          </div>`).join('')}</div>`
+      : '<div class="roster-no-results">No title wins recorded.</div>';
+
+    const rivalHtml = w.top_rivalries && w.top_rivalries.length
+      ? `<div class="rivalry-list">${w.top_rivalries.map(([oSlug, oName, cnt]) =>
+          `<div class="rivalry-row">
+            <button class="wrestler-link" data-slug="${esc(oSlug)}">${esc(oName)}</button>
+            <span class="rv-count">${cnt} matches</span>
+          </div>`).join('')}</div>`
+      : '<div class="roster-no-results">No rivalry data.</div>';
+
+    const partnerHtml = w.top_tag_partners && w.top_tag_partners.length
+      ? `<div class="partner-list">${w.top_tag_partners.map(([pSlug, pName, cnt]) =>
+          `<div class="partner-row">
+            <button class="wrestler-link" data-slug="${esc(pSlug)}">${esc(pName)}</button>
+            <span class="pn-count">${cnt} matches</span>
+          </div>`).join('')}</div>`
+      : '<div class="roster-no-results">No tag partner data.</div>';
+
+    let longestHtml = '<div class="roster-no-results">No duration data.</div>';
+    if (w.longest_match) {
+      const lm = w.longest_match;
+      longestHtml = `
+        <div class="signature-match">
+          <div class="sm-duration">● ${fmtDuration(lm.duration_seconds)}</div>
+          <div>
+            <button class="sm-event-link" data-event-id="${lm.event_id}">${esc(lm.event_name || lm.event_date)}</button>
+            <span style="color:var(--ink-faint);font-family:var(--font-mono);font-size:11px;margin-left:8px;">${esc(lm.event_date)}</span>
+          </div>
+          ${lm.description ? `<div class="sm-desc">${esc(lm.description.slice(0, 220))}${lm.description.length > 220 ? '…' : ''}</div>` : ''}
+        </div>`;
+    }
+
+    let recentHtml = '<div class="roster-no-results">No events.</div>';
+    if (w.recent_event_ids && w.recent_event_ids.length) {
+      const rows = w.recent_event_ids.map(eid => {
+        const ev = BUNDLE.events[String(eid)];
+        if (!ev) return '';
+        const evTitle = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
+        return `<div class="recent-event-row">
+          <button class="sm-event-link" data-event-id="${eid}">${esc(evTitle)}</button>
+          <span class="re-date">${esc(ev.air_date)}</span>
+        </div>`;
+      }).filter(Boolean).join('');
+      if (rows) recentHtml = `<div class="recent-events-list">${rows}</div>`;
+    }
+
+    container.innerHTML = `
+      <button class="profile-back" id="profile-back-btn">&#8592; Roster</button>
+
+      <div class="profile-header">
+        <div class="profile-name">${esc(w.name)}</div>
+        <div class="profile-years">${esc(yr)}</div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Career Record</div>
+        <div class="record-grid">
+          <div class="record-stat"><div class="rs-label">Matches</div><div class="rs-value">${w.total_matches}</div></div>
+          <div class="record-stat"><div class="rs-label">Shows</div><div class="rs-value">${w.unique_event_count}</div></div>
+          <div class="record-stat wins"><div class="rs-label">Wins</div><div class="rs-value">${w.wins}</div></div>
+          <div class="record-stat"><div class="rs-label">Losses</div><div class="rs-value">${w.losses}</div></div>
+          <div class="record-stat"><div class="rs-label">Win %</div><div class="rs-value">${w.win_pct != null ? w.win_pct + '%' : '-'}</div></div>
+          <div class="record-stat"><div class="rs-label">PPV</div><div class="rs-value">${w.ppv_appearances}</div></div>
+          <div class="record-stat"><div class="rs-label">Main Events</div><div class="rs-value">${w.main_events}</div></div>
+          ${w.draws ? `<div class="record-stat"><div class="rs-label">Draws</div><div class="rs-value">${w.draws}</div></div>` : ''}
+          ${w.no_contests ? `<div class="record-stat"><div class="rs-label">NC</div><div class="rs-value">${w.no_contests}</div></div>` : ''}
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Title History</div>
+        ${titleHtml}
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Biggest Rivalries</div>
+        ${rivalHtml}
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Top Tag Partners</div>
+        ${partnerHtml}
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Signature Match</div>
+        ${longestHtml}
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Recent Events</div>
+        ${recentHtml}
+      </div>
+    `;
+
+    document.getElementById('profile-back-btn').addEventListener('click', () => {
+      window.location.hash = '#roster';
+    });
+
+    container.querySelectorAll('.sm-event-link[data-event-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ev = BUNDLE.events[String(btn.dataset.eventId)];
+        if (ev) openModal([ev], ev.air_date);
+      });
+    });
+
+    window.scrollTo(0, 0);
+  }
+
+  // ------------------------------------------------------------------
+  // Hash routing
+  // ------------------------------------------------------------------
+  function route() {
+    const hash = window.location.hash;
+    document.querySelectorAll('section.view').forEach(v => { v.hidden = true; });
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+    if (hash.startsWith('#wrestler/')) {
+      const slug = hash.slice('#wrestler/'.length);
+      const v = document.getElementById('view-wrestler');
+      if (v) v.hidden = false;
+      renderWrestler(slug);
+    } else if (hash === '#roster') {
+      const v = document.getElementById('view-roster');
+      if (v) v.hidden = false;
+      const tab = document.querySelector('.tab[data-view="roster"]');
+      if (tab) tab.classList.add('active');
+      renderRoster();
+    } else {
+      const v = document.getElementById('view-calendar');
+      if (v) v.hidden = false;
+      const tab = document.querySelector('.tab[data-view="calendar"]');
+      if (tab) tab.classList.add('active');
+    }
+  }
+
+  document.querySelectorAll('.tab[data-view]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const view = tab.dataset.view;
+      window.location.hash = view === 'calendar' ? '#calendar' : '#' + view;
+    });
+  });
+
+  window.addEventListener('hashchange', route);
   loadCalendar();
+  route();
 })();
 </script>
 </body>
