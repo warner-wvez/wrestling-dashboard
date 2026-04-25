@@ -1879,7 +1879,7 @@
     const subtitle = isPPV && d.title && d.title !== (d.ppv_name || '') ? d.title : '';
 
     return `
-      <div class="event-block">
+      <div class="event-block" data-event-date="${esc(d.air_date || '')}">
         <div class="event-hero ${cls}">
           <span class="brand-chip ${cls}">${esc(chipLabel)}</span>
           <h3 class="event-title-modal">${esc(title)}</h3>
@@ -1887,13 +1887,13 @@
           ${meta ? `<div class="event-meta-modal">${meta}</div>` : ''}
         </div>
         <div class="matches-list">
-          ${(d.matches || []).map(renderMatch).join('') || '<div class="status">No match list recorded.</div>'}
+          ${(d.matches || []).map(m => renderMatch(m, d.air_date)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
       </div>
     `;
   }
 
-  function renderMatch(m) {
+  function renderMatch(m, airDate) {
     const order = String(m.match_order).padStart(2, '0');
     const type = m.match_type || 'Match';
     const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
@@ -1910,7 +1910,7 @@
           ${titleTag}${stipTag}
           ${detailsToggle}
         </div>
-        ${renderMatchBody(m)}
+        ${renderMatchBody(m, airDate)}
         ${renderMatchFooter(m)}
         ${renderMatchDetails(m)}
       </div>
@@ -1958,14 +1958,26 @@
       </div>`;
   }
 
-  function renderTeam(t, side, cls = '') {
+  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null) {
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
     const linkedNames = rawNames.map(n => {
       const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
       return `<button class="wrestler-link" data-slug="${esc(slug)}">${esc(n)}</button>`;
     }).join(' &amp; ');
-    const champ = t.was_champion_entering ? '<span class="champ-badge">Champ</span>' : '';
+    let champ = '';
+    if (t.was_champion_entering) {
+      const tip = titleAtStake ? ` title="${esc(titleAtStake)}"` : '';
+      champ = `<span class="champ-badge"${tip}>Champ</span>`;
+    } else if (airDate) {
+      const heldTitles = new Set();
+      for (const n of rawNames) {
+        for (const tt of titlesHeldOn(n, airDate)) heldTitles.add(tt);
+      }
+      if (heldTitles.size > 0) {
+        champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
+      }
+    }
     const metaBits = [];
     if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
     if (t.team_name && t.participants && t.participants.length > 1 && t.team_name !== plainNames) {
@@ -1979,9 +1991,10 @@
     return ((m.id || m.match_order || 0) % 2) === 1;
   }
 
-  function renderMatchBody(m) {
+  function renderMatchBody(m, airDate) {
     const teams = m.teams || [];
     if (!teams.length) return `<div class="match-body"><em style="color:var(--ink-faint);">No details</em></div>`;
+    const titleAtStake = m.title_at_stake || null;
 
     if (teams.length === 2) {
       const [a, b] = shouldSwapTeams(m) ? [teams[1], teams[0]] : teams;
@@ -1995,12 +2008,12 @@
         : 'DEF';
       return `
         <div class="match-body">
-          ${renderTeam(a, 'left', leftCls)}
+          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake)}
           <div class="vs-cell">
             <span class="vs-text">VS</span>
             <span class="def-text">${arrow}</span>
           </div>
-          ${renderTeam(b, 'right', rightCls)}
+          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake)}
         </div>`;
     }
 
@@ -2008,7 +2021,7 @@
     teams.forEach((t, i) => {
       const win = t.was_winner === true;
       const cls = win ? 'winner' : (teams.some(x => x.was_winner === true) ? 'loser' : '');
-      parts.push(renderTeam(t, 'left', cls));
+      parts.push(renderTeam(t, 'left', cls, airDate, titleAtStake));
       if (i < teams.length - 1) parts.push('<div class="multi-divider">vs</div>');
     });
     return `<div class="match-body multi">${parts.join('')}</div>`;
@@ -2026,6 +2039,17 @@
     else if (anyOutcome('countout-win')) bits.push(`<span class="outcome-flag co">By Count-out</span>`);
     if (!bits.length) return '';
     return `<div class="match-footer">${bits.join('')}</div>`;
+  }
+
+  // ------------------------------------------------------------------
+  // Title-reign lookup (Phase 1b)
+  // ------------------------------------------------------------------
+  function titlesHeldOn(name, date) {
+    if (!name || !date || !BUNDLE || !BUNDLE.wrestler_reigns_by_date) return [];
+    const intervals = BUNDLE.wrestler_reigns_by_date[name] || [];
+    return intervals
+      .filter(iv => iv.start <= date && (iv.end === null || iv.end > date))
+      .map(iv => iv.title);
   }
 
   // ------------------------------------------------------------------
@@ -2065,6 +2089,9 @@
     tooltipTimer = setTimeout(() => {
       const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
       if (!w) return;
+      const dateEl = anchor.closest('[data-event-date]');
+      const eventDate = dateEl ? dateEl.dataset.eventDate : null;
+      const heldTitles = eventDate ? titlesHeldOn(w.name, eventDate) : [];
       const yr = w.active_years[0] === w.active_years[1]
         ? String(w.active_years[0])
         : `${w.active_years[0]}-${w.active_years[1]}`;
@@ -2074,7 +2101,7 @@
         <div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>
         <div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>
         ${w.win_pct != null ? `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>` : ''}
-        ${w.signature_title ? `<div class="tt-row"><span>Title</span><span class="tt-val" style="max-width:130px;font-size:10px;">${esc(w.signature_title)}</span></div>` : ''}
+        ${heldTitles.length ? `<div class="tt-row"><span>Holding</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>` : ''}
       `;
       positionTooltip(anchor);
       tooltipEl.classList.add('visible');

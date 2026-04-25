@@ -240,6 +240,211 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
     return wrestlers, wrestlers_by_name
 
 
+# ============================================================================
+# Title reign tracking (Phase 1b)
+# ============================================================================
+
+_TITLE_FILTER_PATTERNS = (
+    re.compile(r'Contendership', re.I),
+    re.compile(r'Tournament', re.I),
+    re.compile(r'Battle Royal', re.I),
+)
+
+_TITLE_SUFFIXES_TO_STRIP = (
+    'Tables, Ladders and Chairs match',
+    'No Disqualification Match',
+    'No DQ Match',
+    'Elimination Match',
+    'Matches',
+    'Match',
+)
+
+TITLE_ALIASES = {
+    "WWF Championship Title": "WWF World Heavyweight Title",
+    "ECW Heavyweight Title":  "ECW World Heavyweight Title",
+}
+
+
+def _normalize_title_part(part: str) -> str | None:
+    s = re.sub(r'\s+', ' ', part).strip()
+    for suf in _TITLE_SUFFIXES_TO_STRIP:
+        if s.endswith(' ' + suf):
+            s = s[: -(len(suf) + 1)].rstrip()
+            break
+    s = re.sub(r'\bChampionship$', 'Title', s).strip()
+    s = TITLE_ALIASES.get(s, s)
+    return s or None
+
+
+def _get_component_titles(raw: str | None) -> list[str]:
+    if not raw:
+        return []
+    for p in _TITLE_FILTER_PATTERNS:
+        if p.search(raw):
+            return []
+    out: list[str] = []
+    for part in raw.split(' / '):
+        s = _normalize_title_part(part)
+        if s:
+            out.append(s)
+    return out
+
+
+def _same_champions(a: list[str], b: list[str]) -> bool:
+    return set(a) == set(b)
+
+
+def build_title_reigns(events: dict) -> dict[str, list[dict]]:
+    """Walk all title matches in chronological order and build per-title reign timelines.
+
+    Reign shape:
+        champion_names: list[str] (singles = 1 entry, tag = 2+)
+        start: ISO date. For pre_corpus=True reigns this is the first observed
+               event date (a practical floor, not a true start; the actual reign
+               began before our corpus and we don't know when).
+        end: ISO date or None (None = current as of corpus end).
+        start_event_id: int
+        end_event_id: int | None
+        pre_corpus: bool
+
+    Limitations:
+      * No vacancy detection: belts are assumed continuously held until the next
+        title change. Real-world vacancies (forfeits, retirements, suspensions)
+        are not modeled.
+      * Same-day title changes resolve to end-of-day state in champions_by_date.
+      * Champion-vs-champion unification: when a composite match has both teams
+        marked was_champion_entering=True, attribution falls out of "winner takes
+        all listed belts" via per-component reign-chain comparison.
+    """
+    timelines: dict[str, list[dict]] = defaultdict(list)
+    for eid_str, ev in events.items():
+        air_date = ev.get('air_date')
+        if not air_date:
+            continue
+        eid = int(eid_str)
+        for match in ev.get('matches', []):
+            for title in _get_component_titles(match.get('title_at_stake')):
+                timelines[title].append({
+                    'air_date': air_date,
+                    'event_id': eid,
+                    'match_order': match.get('match_order') or 0,
+                    'teams': match.get('teams', []),
+                })
+
+    for title in timelines:
+        timelines[title].sort(key=lambda m: (m['air_date'], m['event_id'], m['match_order']))
+
+    reigns_by_title: dict[str, list[dict]] = {}
+    for title, matches in timelines.items():
+        reigns: list[dict] = []
+        current: dict | None = None
+        first = True
+        for m in matches:
+            teams = m['teams']
+            champ_team = next((t for t in teams if t.get('was_champion_entering')), None)
+            winner = next((t for t in teams if t.get('was_winner')), None)
+
+            if first:
+                if champ_team and champ_team.get('participants'):
+                    current = {
+                        'champion_names': list(champ_team['participants']),
+                        'start': m['air_date'],
+                        'end': None,
+                        'start_event_id': m['event_id'],
+                        'end_event_id': None,
+                        'pre_corpus': True,
+                    }
+                first = False
+
+            if winner is None or not winner.get('participants'):
+                continue
+
+            new_champs = list(winner['participants'])
+            if current is None or not _same_champions(current['champion_names'], new_champs):
+                if current is not None:
+                    current['end'] = m['air_date']
+                    current['end_event_id'] = m['event_id']
+                    reigns.append(current)
+                current = {
+                    'champion_names': new_champs,
+                    'start': m['air_date'],
+                    'end': None,
+                    'start_event_id': m['event_id'],
+                    'end_event_id': None,
+                    'pre_corpus': False,
+                }
+
+        if current is not None:
+            reigns.append(current)
+        reigns_by_title[title] = reigns
+
+    for title, reigns in reigns_by_title.items():
+        for i in range(len(reigns) - 1):
+            r, n = reigns[i], reigns[i + 1]
+            if r['end'] is None:
+                raise AssertionError(
+                    f"title_reigns: non-final reign has end=None for {title!r} at index {i}: {r}"
+                )
+            if r['start'] > n['start']:
+                raise AssertionError(
+                    f"title_reigns: reigns out of order for {title!r} at indices {i},{i+1}: {r} then {n}"
+                )
+            if r['end'] != n['start']:
+                raise AssertionError(
+                    f"title_reigns: reign chain broken for {title!r} at indices {i},{i+1}: "
+                    f"end={r['end']} != next.start={n['start']}"
+                )
+
+    return reigns_by_title
+
+
+def build_wrestler_reigns_by_date(title_reigns: dict) -> dict[str, list[dict]]:
+    """Per-wrestler interval list of title reigns.
+
+    Shape: { name: [{title, start, end, pre_corpus}, ...] } sorted by start asc.
+    end is ISO date or None (None = current as of corpus end). Frontend uses a
+    small helper to filter intervals by date.
+
+    Asserts that no wrestler has two overlapping intervals on the SAME title.
+    Different titles may overlap (a wrestler can hold a singles + tag belt
+    concurrently); the same title cannot be held twice at once.
+    """
+    out: dict[str, list[dict]] = {}
+    for title, reigns in title_reigns.items():
+        for r in reigns:
+            entry = {
+                'title': title,
+                'start': r['start'],
+                'end': r['end'],
+                'pre_corpus': r['pre_corpus'],
+            }
+            for name in r['champion_names']:
+                out.setdefault(name, []).append(entry)
+
+    for name in out:
+        out[name].sort(key=lambda iv: (iv['start'], iv['title']))
+
+    for name, intervals in out.items():
+        by_title: dict[str, list[dict]] = defaultdict(list)
+        for iv in intervals:
+            by_title[iv['title']].append(iv)
+        for title, ivs in by_title.items():
+            for i in range(len(ivs) - 1):
+                a, b = ivs[i], ivs[i + 1]
+                if a['end'] is None:
+                    raise AssertionError(
+                        f"wrestler_reigns_by_date: open-ended reign for {name!r} on "
+                        f"{title!r} precedes another: {a} then {b}"
+                    )
+                if a['end'] > b['start']:
+                    raise AssertionError(
+                        f"wrestler_reigns_by_date: overlapping reigns for {name!r} on "
+                        f"{title!r}: {a} and {b}"
+                    )
+
+    return out
+
+
 def build_bundle(db_path: Path = DB_PATH) -> dict:
     conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     conn.row_factory = sqlite3.Row
@@ -316,6 +521,9 @@ def build_bundle(db_path: Path = DB_PATH) -> dict:
 
     wrestlers, wrestlers_by_name = build_wrestlers_index(events)
 
+    title_reigns = build_title_reigns(events)
+    wrestler_reigns_by_date = build_wrestler_reigns_by_date(title_reigns)
+
     return {
         "meta": {
             "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -327,6 +535,8 @@ def build_bundle(db_path: Path = DB_PATH) -> dict:
         "events": events,
         "wrestlers": wrestlers,
         "wrestlers_by_name": wrestlers_by_name,
+        "title_reigns": title_reigns,
+        "wrestler_reigns_by_date": wrestler_reigns_by_date,
     }
 
 
@@ -353,6 +563,7 @@ def main() -> None:
     print(
         f"  events={meta['event_count']}  matches={meta['match_count']}"
         f"  wrestlers={len(bundle['wrestlers'])}"
+        f"  titles={len(bundle['title_reigns'])}"
         f"  generated_at={meta['generated_at']}"
     )
 
