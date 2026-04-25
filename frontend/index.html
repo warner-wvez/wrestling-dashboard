@@ -596,6 +596,14 @@
     font-weight: 700;
   }
   .roster-row.top .count strong { color: var(--red); }
+  .roster-row .name button.wrestler-link {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
 
   .roster-empty {
     padding: 20px 0;
@@ -1098,6 +1106,81 @@
   }
 
   /* Multi-team */
+  /* =============================================================
+     STACKED BODY (battle royals + large-team matches)
+     ============================================================= */
+  .match-body.stacked {
+    display: block;
+    text-align: left;
+  }
+  .team-block {
+    padding: 14px 6px;
+  }
+  .team-block.winner {
+    text-align: center;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .team-block-header {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .team-block.winner .team-block-header {
+    color: var(--red);
+  }
+  .team-block-banner {
+    font-family: var(--font-sans);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .team-block-banner .wrestler-link {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  .team-block-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px 16px;
+  }
+  .team-block-grid .wrestler-link {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .team-block-badges {
+    margin-top: 10px;
+  }
+  .team-block-meta {
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .team-block.winner .team-block-meta {
+    text-align: center;
+  }
+  .stacked-divider {
+    border-top: 1px solid var(--border);
+    margin: 0 12px;
+  }
+
   .match-body.multi {
     display: flex;
     flex-direction: column;
@@ -1206,6 +1289,11 @@
     text-decoration-color: var(--red);
     color: var(--red);
     outline: none;
+  }
+  button.wrestler-link.source {
+    color: var(--red);
+    text-decoration-color: var(--red);
+    font-weight: 900;
   }
 
   /* ===========================================================
@@ -1698,7 +1786,9 @@
               : (team.team_name ? [team.team_name] : []);
             for (const raw of names) {
               const name = String(raw || '').trim();
-              if (!name) continue;
+              // Skip empty + Cagematch placeholder. Keep this in sync with
+              // PLACEHOLDER_NAMES in src/export_to_html.py.
+              if (!name || name === '???') continue;
               counts.set(name, (counts.get(name) || 0) + 1);
             }
           }
@@ -1716,10 +1806,11 @@
 
       rosterEl.innerHTML = ranked.map(([name, count], i) => {
         const rank = String(i + 1).padStart(2, '0');
+        const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[name]) || jsSlugify(name);
         return `
           <div class="roster-row${i === 0 ? ' top' : ''}">
             <div class="rank">${rank}</div>
-            <div class="name" title="${esc(name)}">${esc(name)}</div>
+            <div class="name"><button class="wrestler-link" data-slug="${esc(slug)}" title="${esc(name)}">${esc(name)}</button></div>
             <div class="count"><strong>${count}</strong></div>
           </div>`;
       }).join('');
@@ -1839,16 +1930,29 @@
   }
 
   // ------------------ Modal -----------------------------------------------
-  async function openModal(events, iso) {
+  async function openModal(events, iso, sourceSlug = null) {
     mContent.innerHTML = '<div class="status">Loading…</div>';
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
+    mBackdrop.scrollTop = 0;
     try {
       const details = await Promise.all(events.map(e => getEventDetail(e.id)));
-      mContent.innerHTML = details.map(renderEvent).join('');
+      mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
       // Defer stagger index assignment so first paint isn't blocked.
       requestAnimationFrame(() => {
         mContent.querySelectorAll('.match-card').forEach((m, i) => m.style.setProperty('--match-index', i));
+        if (sourceSlug) {
+          // mBackdrop is the scrolling element (overflow-y:auto); .modal/#modal-content do not scroll.
+          // Compute the target's offset relative to the backdrop, then center it in the viewport.
+          const target = mContent.querySelector('.wrestler-link.source');
+          if (target) {
+            const rect = target.getBoundingClientRect();
+            const backdropRect = mBackdrop.getBoundingClientRect();
+            const targetTop = rect.top - backdropRect.top + mBackdrop.scrollTop;
+            const desired = targetTop - mBackdrop.clientHeight / 2 + rect.height / 2;
+            mBackdrop.scrollTo({ top: Math.max(0, desired), behavior: 'smooth' });
+          }
+        }
       });
       // Wire up details toggles via delegation on mContent would be simpler,
       // but direct binding is fine for the ~12 matches on a typical PPV card.
@@ -1885,7 +1989,7 @@
     return bits.map(b => `<span class="piece">${b}</span>`).join('');
   }
 
-  function renderEvent(d) {
+  function renderEvent(d, sourceSlug = null) {
     const showType = d.show_type;
     const cls = SHOW_CLASS[showType] || '';
     const isPPV = showType === 'PPV';
@@ -1903,13 +2007,13 @@
           ${meta ? `<div class="event-meta-modal">${meta}</div>` : ''}
         </div>
         <div class="matches-list">
-          ${(d.matches || []).map(m => renderMatch(m, d.air_date)).join('') || '<div class="status">No match list recorded.</div>'}
+          ${(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
       </div>
     `;
   }
 
-  function renderMatch(m, airDate) {
+  function renderMatch(m, airDate, sourceSlug = null) {
     const order = String(m.match_order).padStart(2, '0');
     const type = m.match_type || 'Match';
     const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
@@ -1926,7 +2030,7 @@
           ${titleTag}${stipTag}
           ${detailsToggle}
         </div>
-        ${renderMatchBody(m, airDate)}
+        ${renderMatchBody(m, airDate, sourceSlug)}
         ${renderMatchFooter(m)}
         ${renderMatchDetails(m)}
       </div>
@@ -1974,14 +2078,15 @@
       </div>`;
   }
 
-  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null) {
+  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null, sourceSlug = null) {
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
     const linkedNames = rawNames.map(n => {
       // Keep this list in sync with PLACEHOLDER_NAMES in src/export_to_html.py.
       if (n === '???') return esc(n);
       const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
-      return `<button class="wrestler-link" data-slug="${esc(slug)}">${esc(n)}</button>`;
+      const linkClass = sourceSlug && slug === sourceSlug ? 'wrestler-link source' : 'wrestler-link';
+      return `<button class="${linkClass}" data-slug="${esc(slug)}">${esc(n)}</button>`;
     }).join(' &amp; ');
     let champ = '';
     if (t.was_champion_entering) {
@@ -2009,10 +2114,18 @@
     return ((m.id || m.match_order || 0) % 2) === 1;
   }
 
-  function renderMatchBody(m, airDate) {
+  function renderMatchBody(m, airDate, sourceSlug = null) {
     const teams = m.teams || [];
     if (!teams.length) return `<div class="match-body"><em style="color:var(--ink-faint);">No details</em></div>`;
     const titleAtStake = m.title_at_stake || null;
+
+    // Battle royals / Royal Rumbles cram dozens of names into a single team and
+    // collapse the inline two-column rendering into an unreadable wall. Switch
+    // the whole match to a winner-prominent stacked layout when any team grows
+    // past 8 participants.
+    if (teams.some(t => (t.participants || []).length >= 8)) {
+      return renderStackedBody(teams, airDate, titleAtStake, sourceSlug);
+    }
 
     if (teams.length === 2) {
       const [a, b] = shouldSwapTeams(m) ? [teams[1], teams[0]] : teams;
@@ -2026,12 +2139,12 @@
         : 'DEF';
       return `
         <div class="match-body">
-          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake)}
+          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake, sourceSlug)}
           <div class="vs-cell">
             <span class="vs-text">VS</span>
             <span class="def-text">${arrow}</span>
           </div>
-          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake)}
+          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake, sourceSlug)}
         </div>`;
     }
 
@@ -2039,10 +2152,83 @@
     teams.forEach((t, i) => {
       const win = t.was_winner === true;
       const cls = win ? 'winner' : (teams.some(x => x.was_winner === true) ? 'loser' : '');
-      parts.push(renderTeam(t, 'left', cls, airDate, titleAtStake));
+      parts.push(renderTeam(t, 'left', cls, airDate, titleAtStake, sourceSlug));
       if (i < teams.length - 1) parts.push('<div class="multi-divider">vs</div>');
     });
     return `<div class="match-body multi">${parts.join('')}</div>`;
+  }
+
+  function renderStackedBody(teams, airDate, titleAtStake, sourceSlug) {
+    const winners = teams.filter(t => t.was_winner === true);
+    const others = teams.filter(t => t.was_winner !== true);
+    const anyOutcome = (o) => teams.some(t => t.match_outcome === o);
+    const noResult = anyOutcome('no-contest') || anyOutcome('draw') || winners.length === 0;
+
+    const blocks = [];
+    if (noResult) {
+      const combined = teams.flatMap(t => (t.participants || []).filter(Boolean));
+      const pseudoTeam = { participants: combined };
+      blocks.push(renderTeamBlock(pseudoTeam, 'field', 'FIELD', airDate, titleAtStake, sourceSlug));
+    } else {
+      const winnerSolo = winners.length === 1 && (winners[0].participants || []).length === 1;
+      for (const w of winners) {
+        const wSize = (w.participants || []).length;
+        blocks.push(renderTeamBlock(w, 'winner', wSize === 1 ? 'WINNER' : 'WINNERS', airDate, titleAtStake, sourceSlug));
+      }
+      for (const l of others) {
+        const role = winnerSolo ? 'field' : 'defeated';
+        const label = winnerSolo ? 'FIELD' : 'DEFEATED';
+        blocks.push(renderTeamBlock(l, role, label, airDate, titleAtStake, sourceSlug));
+      }
+    }
+    return `<div class="match-body stacked">${blocks.join('<div class="stacked-divider"></div>')}</div>`;
+  }
+
+  function renderTeamBlock(t, role, label, airDate, titleAtStake, sourceSlug) {
+    const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
+    const plainNames = rawNames.map(String).join(' & ');
+    const linkFor = (n) => {
+      if (n === '???') return esc(n);
+      const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
+      const linkClass = sourceSlug && slug === sourceSlug ? 'wrestler-link source' : 'wrestler-link';
+      return `<button class="${linkClass}" data-slug="${esc(slug)}">${esc(n)}</button>`;
+    };
+
+    let champ = '';
+    if (t.was_champion_entering) {
+      const tip = titleAtStake ? ` title="${esc(titleAtStake)}"` : '';
+      champ = `<span class="champ-badge"${tip}>Champ</span>`;
+    } else if (airDate) {
+      const heldTitles = new Set();
+      for (const n of rawNames) {
+        for (const tt of titlesHeldOn(n, airDate)) heldTitles.add(tt);
+      }
+      if (heldTitles.size > 0) {
+        champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
+      }
+    }
+
+    let namesHtml;
+    if (rawNames.length === 1) {
+      namesHtml = `<div class="team-block-banner">${linkFor(rawNames[0])}${champ}</div>`;
+    } else {
+      const grid = `<div class="team-block-grid">${rawNames.map(linkFor).join('')}</div>`;
+      namesHtml = champ ? `${grid}<div class="team-block-badges">${champ}</div>` : grid;
+    }
+
+    const metaBits = [];
+    if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
+    if (t.team_name && t.participants && t.participants.length > 1 && t.team_name !== plainNames) {
+      metaBits.push(`as ${esc(t.team_name)}`);
+    }
+    const metaRow = metaBits.length ? `<div class="team-block-meta">${metaBits.join(' · ')}</div>` : '';
+
+    return `
+      <div class="team-block ${role}">
+        <div class="team-block-header">${esc(label)}</div>
+        ${namesHtml}
+        ${metaRow}
+      </div>`;
   }
 
   function renderMatchFooter(m) {
@@ -2119,7 +2305,7 @@
         <div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>
         <div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>
         ${w.win_pct != null ? `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>` : ''}
-        ${heldTitles.length ? `<div class="tt-row"><span>Holding</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>` : ''}
+        ${heldTitles.length ? `<div class="tt-row"><span>Held at this time</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>` : ''}
       `;
       positionTooltip(anchor);
       tooltipEl.classList.add('visible');
@@ -2357,7 +2543,7 @@
     container.querySelectorAll('button[data-event-id]').forEach(btn => {
       btn.addEventListener('click', () => {
         const ev = BUNDLE.events[String(btn.dataset.eventId)];
-        if (ev) openModal([ev], ev.air_date);
+        if (ev) openModal([ev], ev.air_date, slug);
       });
     });
 
