@@ -38,6 +38,13 @@ def slugify(name: str) -> str:
     return s or "unknown"
 
 
+# Cagematch placeholder for unidentified wrestlers. Excluded from the wrestlers
+# index so "???" doesn't surface as a real wrestler in the roster, rivalries,
+# or tag partners. Match cards still render "???" but as plain text (see the
+# matching n === '???' branch in renderTeam in frontend/index.html).
+PLACEHOLDER_NAMES: frozenset[str] = frozenset({"???"})
+
+
 def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
     """Pre-compute wrestler profiles from the assembled events dict.
 
@@ -90,7 +97,7 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
 
             # Per-wrestler stats
             for team in teams:
-                parts = [p for p in team.get("participants", []) if p]
+                parts = [p for p in team.get("participants", []) if p and p not in PLACEHOLDER_NAMES]
                 was_winner = team.get("was_winner")
                 was_champ = bool(team.get("was_champion_entering"))
 
@@ -132,8 +139,8 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
 
             # Rivalries: two-team singles only
             if is_singles:
-                a_parts = [p for p in teams[0].get("participants", []) if p]
-                b_parts = [p for p in teams[1].get("participants", []) if p]
+                a_parts = [p for p in teams[0].get("participants", []) if p and p not in PLACEHOLDER_NAMES]
+                b_parts = [p for p in teams[1].get("participants", []) if p and p not in PLACEHOLDER_NAMES]
                 for a in a_parts:
                     for b in b_parts:
                         w_rivals[a][b] += 1
@@ -141,7 +148,7 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
 
             # Tag partners: pairs within any team that has 2+ participants
             for team in teams:
-                team_parts = [p for p in team.get("participants", []) if p]
+                team_parts = [p for p in team.get("participants", []) if p and p not in PLACEHOLDER_NAMES]
                 if len(team_parts) < 2:
                     continue
                 for i, p1 in enumerate(team_parts):
