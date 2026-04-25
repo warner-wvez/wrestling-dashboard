@@ -1397,6 +1397,21 @@
   .signature-match .sm-desc {
     font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 10px; line-height: 1.65;
   }
+  button.recent-event-link {
+    border: 0; background: 0; padding: 0;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    color: var(--ink); cursor: pointer; text-align: left;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 2px;
+    transition: text-decoration-color 120ms, color 120ms;
+  }
+  button.recent-event-link:hover,
+  button.recent-event-link:focus-visible {
+    text-decoration-color: var(--red);
+    color: var(--red);
+    outline: none;
+  }
 
   @media (max-width: 720px) {
     .profile-name { font-size: 28px; }
@@ -2136,6 +2151,14 @@
     if (e.target.closest('button.wrestler-link')) hideTooltip();
   });
 
+  // Defensive cleanup: hide tooltip on any state change that could orphan it.
+  // Scroll, navigation, tab blur, and clicks elsewhere all dismiss the anchor
+  // without firing mouseout on the original button.
+  window.addEventListener('scroll', hideTooltip, { passive: true, capture: true });
+  window.addEventListener('hashchange', hideTooltip);
+  window.addEventListener('blur', hideTooltip);
+  document.addEventListener('click', hideTooltip);
+
   // ------------------------------------------------------------------
   // Roster render
   // ------------------------------------------------------------------
@@ -2268,7 +2291,7 @@
         if (!ev) return '';
         const evTitle = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
         return `<div class="recent-event-row">
-          <button class="sm-event-link" data-event-id="${eid}">${esc(evTitle)}</button>
+          <button class="recent-event-link" data-event-id="${eid}">${esc(evTitle)}</button>
           <span class="re-date">${esc(ev.air_date)}</span>
         </div>`;
       }).filter(Boolean).join('');
@@ -2328,7 +2351,7 @@
       window.location.hash = '#roster';
     });
 
-    container.querySelectorAll('.sm-event-link[data-event-id]').forEach(btn => {
+    container.querySelectorAll('button[data-event-id]').forEach(btn => {
       btn.addEventListener('click', () => {
         const ev = BUNDLE.events[String(btn.dataset.eventId)];
         if (ev) openModal([ev], ev.air_date);
