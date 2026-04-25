@@ -1397,6 +1397,21 @@
   .signature-match .sm-desc {
     font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-top: 10px; line-height: 1.65;
   }
+  button.recent-event-link {
+    border: 0; background: 0; padding: 0;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    color: var(--ink); cursor: pointer; text-align: left;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 2px;
+    transition: text-decoration-color 120ms, color 120ms;
+  }
+  button.recent-event-link:hover,
+  button.recent-event-link:focus-visible {
+    text-decoration-color: var(--red);
+    color: var(--red);
+    outline: none;
+  }
 
   @media (max-width: 720px) {
     .profile-name { font-size: 28px; }
@@ -1461,21 +1476,6 @@
   </aside>
 </div>
 
-<!-- MODAL -->
-<div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true">
-  <div class="modal">
-    <button class="spoiler-btn modal-spoiler-btn" id="modal-spoiler-btn" aria-pressed="false" type="button">
-      <span class="eye"></span>
-      <span class="sp-label">Spoilers</span>
-    </button>
-    <button class="modal-close" id="modal-close" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
-        <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
-      </svg>
-    </button>
-    <div id="modal-content"></div>
-  </div>
-</div>
 </section><!-- end view-calendar -->
 
 <section id="view-roster" class="view" hidden>
@@ -1497,6 +1497,22 @@
 <section id="view-wrestler" class="view" hidden>
   <div id="wrestler-profile-content"></div>
 </section>
+
+<!-- MODAL (sibling of all .view sections so it can render over any active view) -->
+<div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button class="spoiler-btn modal-spoiler-btn" id="modal-spoiler-btn" aria-pressed="false" type="button">
+      <span class="eye"></span>
+      <span class="sp-label">Spoilers</span>
+    </button>
+    <button class="modal-close" id="modal-close" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+        <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
+      </svg>
+    </button>
+    <div id="modal-content"></div>
+  </div>
+</div>
 
 <div id="wrestler-tooltip" aria-hidden="true"></div>
 
@@ -1962,6 +1978,8 @@
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
     const linkedNames = rawNames.map(n => {
+      // Keep this list in sync with PLACEHOLDER_NAMES in src/export_to_html.py.
+      if (n === '???') return esc(n);
       const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
       return `<button class="wrestler-link" data-slug="${esc(slug)}">${esc(n)}</button>`;
     }).join(' &amp; ');
@@ -2136,6 +2154,14 @@
     if (e.target.closest('button.wrestler-link')) hideTooltip();
   });
 
+  // Defensive cleanup: hide tooltip on any state change that could orphan it.
+  // Scroll, navigation, tab blur, and clicks elsewhere all dismiss the anchor
+  // without firing mouseout on the original button.
+  window.addEventListener('scroll', hideTooltip, { passive: true, capture: true });
+  window.addEventListener('hashchange', hideTooltip);
+  window.addEventListener('blur', hideTooltip);
+  document.addEventListener('click', hideTooltip);
+
   // ------------------------------------------------------------------
   // Roster render
   // ------------------------------------------------------------------
@@ -2198,7 +2224,7 @@
         : `${w.active_years[0]}-${w.active_years[1]}`;
       return `<tr>
         <td class="rt-rank">${i + 1}</td>
-        <td class="rt-name"><button data-slug="${esc(w.slug)}">${esc(w.name)}</button></td>
+        <td class="rt-name"><button class="wrestler-link" data-slug="${esc(w.slug)}">${esc(w.name)}</button></td>
         <td class="rt-num">${w.total_matches}</td>
         <td class="rt-num">${w.ppv_appearances}</td>
         <td class="rt-num">${w.unique_event_count}</td>
@@ -2268,7 +2294,7 @@
         if (!ev) return '';
         const evTitle = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
         return `<div class="recent-event-row">
-          <button class="sm-event-link" data-event-id="${eid}">${esc(evTitle)}</button>
+          <button class="recent-event-link" data-event-id="${eid}">${esc(evTitle)}</button>
           <span class="re-date">${esc(ev.air_date)}</span>
         </div>`;
       }).filter(Boolean).join('');
@@ -2328,7 +2354,7 @@
       window.location.hash = '#roster';
     });
 
-    container.querySelectorAll('.sm-event-link[data-event-id]').forEach(btn => {
+    container.querySelectorAll('button[data-event-id]').forEach(btn => {
       btn.addEventListener('click', () => {
         const ev = BUNDLE.events[String(btn.dataset.eventId)];
         if (ev) openModal([ev], ev.air_date);
