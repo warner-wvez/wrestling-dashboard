@@ -16,9 +16,18 @@ from __future__ import annotations
 import json
 import re
 import sqlite3
+import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+
+# Allow direct-script execution (`python src/export_to_html.py`) to resolve
+# the sibling fandom_scraper module under the `src` package.
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from src.fandom_scraper import _canonicalize_name  # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -476,14 +485,28 @@ def build_bundle(db_path: Path = DB_PATH) -> dict:
             "FROM match_teams ORDER BY match_id ASC, team_number ASC"
         ).fetchall()
         parts_rows = conn.execute(
-            "SELECT team_id, wrestler_name_used FROM match_participants ORDER BY team_id ASC, id ASC"
+            "SELECT mp.team_id, mp.wrestler_id, mp.wrestler_name_used, "
+            "w.canonical_name "
+            "FROM match_participants mp "
+            "LEFT JOIN wrestlers w ON mp.wrestler_id = w.id "
+            "ORDER BY mp.team_id ASC, mp.id ASC"
         ).fetchall()
     finally:
         conn.close()
 
+    # Hybrid Option B: prefer the migrated canonical_name from wrestlers when
+    # joinable; fall back to canonicalizing the raw wrestler_name_used at
+    # export time when wrestler_id is NULL (Type-3 dropped or future garbage
+    # the migration didn't catch). Names that collapse to empty are skipped.
     parts_by_team: dict[int, list[str]] = {}
     for r in parts_rows:
-        parts_by_team.setdefault(r["team_id"], []).append(r["wrestler_name_used"])
+        if r["wrestler_id"] is not None and r["canonical_name"]:
+            name = r["canonical_name"]
+        else:
+            name = _canonicalize_name(r["wrestler_name_used"])
+        if not name:
+            continue
+        parts_by_team.setdefault(r["team_id"], []).append(name)
 
     teams_by_match: dict[int, list[dict]] = {}
     for r in teams_rows:
