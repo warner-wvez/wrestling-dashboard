@@ -182,6 +182,113 @@ _SEGMENT_TYPES = {"segment", "promo", "angle", "interview"}
 _TRAILING_MATCH_NARRATIVE_RE = re.compile(
     r"\s+in\s+an?\s+.+$", re.IGNORECASE | re.DOTALL
 )
+# Cagematch outcome modifiers, case-insensitive, allowing spaces in "Count Out".
+# The previous strip in cagematch_scraper.py only matched lowercase patterns
+# without spaces and missed "by Count Out", "by referee's decision", etc.
+_TRAILING_OUTCOME_MOD_RE = re.compile(
+    r"\s+by\s+("
+    r"disqualification|dq|count[\s-]?out|"
+    r"referee'?s?\s+decision|submission|matchabbruch|knockout|ko"
+    r")\b.*$",
+    re.IGNORECASE,
+)
+# Cagematch outcome-prose tails like "X to retain the WWE Title" or
+# "X to win the WWF European Championship". Captures the entire suffix.
+_TRAILING_RETAIN_WIN_RE = re.compile(
+    r"\s+to\s+(retain|win|capture|regain)\s+(?:the\s+)?.*$",
+    re.IGNORECASE,
+)
+# Title-holder PREFIX pulled into the wrestler name, e.g.
+# "WWE IC Champion Chris Benoit", "WCW World Champion The Rock".
+_LEADING_TITLE_PREFIX_RE = re.compile(
+    r"^\s*(WWE|WWF|WCW|ECW|TNA)\s+("
+    r"Cruiserweight|IC|Intercontinental|US|United\s+States|Hardcore|"
+    r"European|Tag\s+Team|World|Heavyweight|Light\s+Heavyweight|Women'?s"
+    r")?\s*Champion\s+",
+    re.IGNORECASE,
+)
+# Pre-name match-context like "(Special Referee: Jacqueline ): Chris Jericho"
+# or "Steel Cage Match (Special Referee: Kurt Angle ): Brock Lesnar".
+_LEADING_PAREN_CONTEXT_RE = re.compile(
+    r"^[^:]*\([^)]*\)[^:]*:\s*",
+)
+# Leading role-prefix WITHOUT parens: "Special Guest Referee: Triple H",
+# "Guest Referee: X", "Special Enforcer: Y", "Commentator: Joe Smith", etc.
+_LEADING_ROLE_PREFIX_RE = re.compile(
+    r"^\s*(special\s+)?(guest\s+)?(referee|enforcer|host|commentator):\s*",
+    re.IGNORECASE,
+)
+# Match-description sentinel. Any name containing literal " vs. " is a match
+# narrative that swallowed multiple wrestlers, e.g. "The Undertaker vs. Triple
+# H vs. Vladimir Kozlov". Drop the entire entry — not a strip, a filter.
+_MATCH_DESCRIPTION_VS_RE = re.compile(r"\svs\.\s")
+# Trailing Cagematch annotations.
+_TRAILING_TITLE_CHANGE_RE = re.compile(
+    r"\s*-\s*title\s+change\s*!*\s*$", re.IGNORECASE
+)
+_TRAILING_ENDED_RE = re.compile(
+    r"\s+ended(\s+.*)?$", re.IGNORECASE
+)
+_TRAILING_DRAFT_RE = re.compile(
+    r"\s*[-(]\s*draft(ed[^)]*)?\)?\s*$", re.IGNORECASE
+)
+# Narrative result-prose tails. Cagematch occasionally inlines "X via Y",
+# "X when Y did Z", "X defeated Y", etc. into the participant name when the
+# match-result HTML has unusual structure. These strip everything from the
+# trigger onward.
+_TRAILING_VIA_RE = re.compile(r"\s+via\s+.*$", re.IGNORECASE | re.DOTALL)
+_TRAILING_NARRATIVE_VERBS_RE = re.compile(
+    r"\s+(defeated|applied|hit|pinned|submitted|eliminated|disqualified|counted\s+out)\s+.*$",
+    re.IGNORECASE | re.DOTALL,
+)
+# Trailing " when " is applied LAST (after other strips), and the strip is
+# rejected if the surviving prefix is shorter than 2 chars (defensive — the
+# remaining length filter would also catch it, but the rejection lets a real
+# 2-char name like "AJ when ..." survive intact for manual review).
+_TRAILING_WHEN_RE = re.compile(r"\s+when\s+.*$", re.IGNORECASE | re.DOTALL)
+# Leading narrative verb: the parser lost the wrestler's name entirely and
+# kept only the verb-prefixed prose. Drop the row.
+_LEADING_NARRATIVE_VERB_RE = re.compile(
+    r"^(applied|defeated|pinned|submitted|hit|eliminated)\s+",
+    re.IGNORECASE,
+)
+# Leading lowercase English pronoun: pure narrative orphan with no recoverable
+# wrestler name (e.g., "she would have flashed the crowd"). Drop the row.
+_LEADING_PRONOUN_RE = re.compile(
+    r"^(she|he|they|it|we|you)\s+",
+)
+# Round D narrative-tail strips. " with the " is unconditional (real ring
+# names don't contain that phrase). " with a " and " after " are conditional
+# on a >=3-char surviving prefix to preserve the rare edge case of a 2-char
+# real name with appended narrative.
+_TRAILING_WITH_THE_RE = re.compile(r"\s+with\s+the\s+.*$", re.IGNORECASE | re.DOTALL)
+_TRAILING_WITH_A_RE = re.compile(r"\s+with\s+a\s+.*$", re.IGNORECASE | re.DOTALL)
+_TRAILING_AFTER_RE = re.compile(r"\s+after\s+.*$", re.IGNORECASE | re.DOTALL)
+# Trailing numeric/version brackets like "[5]", "[2:1]".
+_TRAILING_BRACKET_NUM_RE = re.compile(r"\s*\[\d[^\]]*\]\s*$")
+# Trailing accompaniment "(w/ X)" with or without closing paren.
+# The cagematch _ACCOMP_RE only handles the closed form. This catches the
+# split-leak case where a participant ends "Triple H (w/ Stephanie McMahon"
+# (no close).
+_TRAILING_ACCOMP_RE = re.compile(r"\s*\(\s*w/[^)]*\)?\s*$", re.IGNORECASE)
+# Trailing close paren with no open paren ahead: drop the paren and any
+# trailing junk. Catches "D-Von Dudley )", "Curtis Axel )", "The Good Father )".
+_TRAILING_CLOSE_PAREN_RE = re.compile(r"\s*\).*$")
+# Leading "stable_name ( " artifact when split swallowed the open paren of an
+# outer stable wrap. Catches "The Dudley Boyz ( Bubba Ray Dudley" → keep the
+# wrestler after the paren. Requires an ALPHA character after the paren so we
+# don't misread a digit-leak case like "Charlotte Flair (10:324" (handled by
+# _TRAILING_PAREN_DIGIT_RE below).
+_LEADING_STABLE_PAREN_RE = re.compile(r"^.+?\s*\(\s*(?=[A-Za-z])")
+# Trailing "( <digit>..." with no closing paren. Cagematch sometimes leaks
+# annotation/duration brackets like "Charlotte Flair (10:324" or
+# "Brock Lesnar (5:30)". Strip from the open paren to end of string.
+_TRAILING_PAREN_DIGIT_RE = re.compile(r"\s*\(\s*\d.*$")
+# Last-ditch: replace any stray paren left after directional strips with a
+# space (not empty), so "Foo(Bar" becomes "Foo Bar" and the next whitespace
+# pass collapses it cleanly.
+_STRAY_PAREN_RE = re.compile(r"\s*[()]\s*")
+
 # One combined separator for participants. Matches &, comma, or ' and ' in a
 # single pass so mixed-separator lists like
 #   "Bubba Ray Dudley , D-Von Dudley & Spike Dudley"
@@ -193,22 +300,89 @@ _PARTICIPANT_SPLIT_RE = re.compile(r"\s*(?:&|,|\s+and\s+)\s*", re.IGNORECASE)
 def _canonicalize_name(name):
     """Normalize a single wrestler name.
 
-    - Strips surrounding double quotes on nicknames: '"Stone Cold" Steve Austin'
-      -> 'Stone Cold Steve Austin'. This consolidates Fandom's quoted-nickname
-      form with itself; it does NOT collapse nicknames into plain ring names
-      (that's a Task for the v2 All-Time Roster canonicalization pass).
-    - Strips trailing 'in a <X> Match' narrative that sometimes bleeds into
-      the last participant's name on narrative-format Fandom pages.
-    - Collapses whitespace.
+    Strips, in order:
+      1. Pre-name match-context that contains parens, e.g.
+         "(Special Referee: Jacqueline ): Chris Jericho" -> "Chris Jericho".
+      2. Title-holder prefix ("WWE IC Champion Chris Benoit" -> "Chris Benoit").
+      3. Trailing Cagematch outcome modifiers ("X by Count Out" -> "X").
+      4. Trailing outcome-prose tails ("X to retain the WWE Title" -> "X").
+      5. Trailing numeric brackets ("Brock Lesnar [5]" -> "Brock Lesnar").
+      6. Trailing 'in a <X> Match' narrative leaks (Fandom).
+      7. Surrounding double quotes on nicknames ('"Stone Cold" Steve Austin'
+         -> 'Stone Cold Steve Austin').
+      8. Stray opening/closing parens left over from _STABLE_RE failures
+         ("The Usos ( Jey Uso" -> "The Usos Jey Uso", further cleaned below).
+      9. Whitespace collapse and end-punctuation trim.
+
+    Returns "" for inputs that collapse to <= 1 char (Type 3 junk filter).
+    Real 2-char ring names like "AJ" (AJ Lee) and "B²" (B-2) are preserved.
     """
     if not name:
         return ""
     n = name.strip()
+    # Fast-path: any " vs. " survivor is a match-description swallow → drop.
+    if _MATCH_DESCRIPTION_VS_RE.search(n):
+        return ""
+    # Pre-name strips (parens-context first because it can expose a role-prefix).
+    n = _LEADING_PAREN_CONTEXT_RE.sub("", n)
+    n = _LEADING_ROLE_PREFIX_RE.sub("", n)
+    n = _LEADING_TITLE_PREFIX_RE.sub("", n)
+    # Drop entirely if the line starts with a narrative verb (Cagematch lost
+    # the wrestler name and kept only the action prose).
+    if _LEADING_NARRATIVE_VERB_RE.match(n):
+        return ""
+    # Drop entirely if the line starts with a lowercase English pronoun
+    # (pure narrative orphan, no recoverable wrestler name).
+    if _LEADING_PRONOUN_RE.match(n):
+        return ""
+    # Trailing strips. Order: explicit accompaniment / outcome prose / brackets
+    # before directional paren strips so "Triple H (w/ Stephanie McMahon" loses
+    # its accompaniment cleanly and isn't misread as a leading-stable-paren.
+    n = _TRAILING_ACCOMP_RE.sub("", n)
+    n = _TRAILING_OUTCOME_MOD_RE.sub("", n)
+    n = _TRAILING_RETAIN_WIN_RE.sub("", n)
+    n = _TRAILING_BRACKET_NUM_RE.sub("", n)
+    n = _TRAILING_TITLE_CHANGE_RE.sub("", n)
+    n = _TRAILING_ENDED_RE.sub("", n)
+    n = _TRAILING_DRAFT_RE.sub("", n)
     n = _TRAILING_MATCH_NARRATIVE_RE.sub("", n)
+    n = _TRAILING_PAREN_DIGIT_RE.sub("", n)
+    # Round C: narrative result-prose strips.
+    n = _TRAILING_VIA_RE.sub("", n)
+    n = _TRAILING_NARRATIVE_VERBS_RE.sub("", n)
+    # Round D: finishing-move + connector strips. " with the " unconditional;
+    # " with a " and " after " require a >=3-char surviving prefix.
+    n = _TRAILING_WITH_THE_RE.sub("", n)
+    for trailing_re, min_len in (
+        (_TRAILING_WITH_A_RE, 3),
+        (_TRAILING_AFTER_RE, 3),
+        (_TRAILING_WHEN_RE, 2),
+    ):
+        match = trailing_re.search(n)
+        if match:
+            candidate = n[: match.start()].rstrip()
+            if len(candidate) >= min_len:
+                n = candidate
     n = re.sub(r'"([^"]+)"', r"\1", n)
     n = re.sub(r"\s+", " ", n).strip()
-    # Strip stray punctuation at the ends.
     n = n.strip(" ,.:;")
+    # Directional paren strips for split-leak cases.
+    n = _TRAILING_CLOSE_PAREN_RE.sub("", n)
+    n = _LEADING_STABLE_PAREN_RE.sub("", n)
+    # Final safety: any remaining strays become a space (preserves word boundary).
+    n = _STRAY_PAREN_RE.sub(" ", n)
+    n = re.sub(r"\s+", " ", n).strip()
+    n = n.strip(" ,.:;")
+    # Re-check the match-description filter in case a strip exposed " vs. ".
+    if _MATCH_DESCRIPTION_VS_RE.search(n):
+        return ""
+    # Type-3 junk: drop names with no alpha characters (pure digits, pure
+    # punctuation, "10:324", "2:1", "5/", etc.) and 1-char names. Preserves
+    # real ring names like "AJ", "B²", and "2 Cold Scorpio".
+    if not any(c.isalpha() for c in n):
+        return ""
+    if len(n) <= 1:
+        return ""
     return n
 
 
