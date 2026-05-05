@@ -1484,6 +1484,53 @@
   }
   .profile-back:hover { color: var(--red); }
   .profile-back:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  .profile-back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--ink); background: var(--surface);
+    padding: 9px 16px;
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700;
+    color: var(--ink); cursor: pointer; letter-spacing: 0.04em;
+    margin-bottom: 24px;
+    transition: background 140ms, color 140ms;
+    max-width: 100%;
+  }
+  .profile-back-btn:hover { background: var(--ink); color: #FFF; }
+  .profile-back-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .profile-back-btn .pb-arrow { color: var(--red); font-weight: 900; }
+  .profile-back-btn:hover .pb-arrow { color: #FFF; }
+  .profile-back-btn .pb-label {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 360px;
+  }
+
+  .breadcrumbs {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 6px 8px;
+    margin-bottom: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .breadcrumbs .crumb {
+    background: transparent; border: none; padding: 0;
+    font: inherit; color: var(--ink-faint);
+    cursor: pointer; letter-spacing: inherit; text-transform: inherit;
+    transition: color 120ms;
+    max-width: 320px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .breadcrumbs .crumb:hover,
+  .breadcrumbs .crumb:focus-visible {
+    color: var(--red); outline: none;
+  }
+  .breadcrumbs .crumb.current {
+    color: var(--ink); font-weight: 700; cursor: default;
+  }
+  .breadcrumbs .crumb-sep {
+    color: var(--border-strong); font-weight: 700;
+  }
   .profile-header { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
   .profile-name {
     font-family: var(--font-sans); font-weight: 900; font-size: 42px;
@@ -2091,7 +2138,7 @@
     const subtitle = isPPV && d.title && d.title !== (d.ppv_name || '') ? d.title : '';
 
     return `
-      <div class="event-block" data-event-date="${esc(d.air_date || '')}">
+      <div class="event-block" data-event-id="${esc(String(d.id || ''))}" data-event-date="${esc(d.air_date || '')}" data-event-name="${esc(title || '')}">
         <div class="event-hero ${cls}">
           <span class="brand-chip ${cls}">${esc(chipLabel)}</span>
           <h3 class="event-title-modal">${esc(title)}</h3>
@@ -2426,9 +2473,56 @@
   // ------------------------------------------------------------------
   // Wrestler-link: document-level click + hover delegation
   // ------------------------------------------------------------------
+  // wrestlerSource tracks where the user came from when navigating into
+  // a wrestler profile. Set on wrestler-link clicks from inside the event
+  // modal; chained when clicking from one profile to another. Cleared on
+  // tab navigation or when clicking from outside the modal/profile.
+  let wrestlerSource = null;
+
+  function getCurrentWrestlerSlug() {
+    const h = window.location.hash;
+    return h.startsWith('#wrestler/') ? decodeURIComponent(h.slice('#wrestler/'.length)) : null;
+  }
+
+  function captureWrestlerSource(btn) {
+    if (btn.closest('#modal-content')) {
+      const eventBlock = btn.closest('.event-block');
+      if (eventBlock && eventBlock.dataset.eventId) {
+        wrestlerSource = {
+          event_id: eventBlock.dataset.eventId,
+          event_date: eventBlock.dataset.eventDate || '',
+          event_name: eventBlock.dataset.eventName || '',
+          chain: [],
+        };
+        return;
+      }
+    }
+    if (btn.closest('#wrestler-profile-content') && wrestlerSource) {
+      const cur = getCurrentWrestlerSlug();
+      if (cur) {
+        const w = (BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[cur]) || null;
+        const name = (w && w.name) || cur;
+        const chain = (wrestlerSource.chain || []).slice();
+        if (chain.length === 0 || chain[chain.length - 1].slug !== cur) {
+          chain.push({ slug: cur, name });
+        }
+        wrestlerSource = Object.assign({}, wrestlerSource, { chain });
+      }
+      return;
+    }
+    // From sidebar roster, roster table, breadcrumb back-references, or anywhere
+    // else. The rendered wrestler-link breadcrumb crumbs land here too, which is
+    // fine: they navigate via the same hash change and renderWrestler then
+    // truncates the chain at the matching slug.
+    if (!btn.closest('#wrestler-profile-content')) {
+      wrestlerSource = null;
+    }
+  }
+
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button.wrestler-link');
     if (!btn || !btn.dataset.slug) return;
+    captureWrestlerSource(btn);
     closeModal();
     window.location.hash = '#wrestler/' + btn.dataset.slug;
   });
@@ -2524,6 +2618,88 @@
   // ------------------------------------------------------------------
   // Wrestler profile render
   // ------------------------------------------------------------------
+  function buildWrestlerNav(slug, w) {
+    // Returns { breadcrumbHtml, backBtnHtml, backEvent }. Uses wrestlerSource
+    // (set by wrestler-link click delegation) to know whether the user arrived
+    // from an event modal or from the roster.
+    if (
+      wrestlerSource &&
+      wrestlerSource.event_id &&
+      BUNDLE && BUNDLE.events && BUNDLE.events[wrestlerSource.event_id]
+    ) {
+      // Truncate chain at the slug being rendered so back-navigation through
+      // breadcrumbs leaves the chain consistent (predecessors only).
+      const chain = (wrestlerSource.chain || []).slice();
+      const idx = chain.findIndex(c => c.slug === slug);
+      if (idx >= 0) chain.length = idx;
+      wrestlerSource = Object.assign({}, wrestlerSource, { chain });
+
+      const ev = BUNDLE.events[wrestlerSource.event_id];
+      const date = ev.air_date || wrestlerSource.event_date || '';
+      const yPart = date.slice(0, 4);
+      const mPart = parseInt(date.slice(5, 7), 10);
+      const monthYear = (mPart >= 1 && mPart <= 12 && yPart)
+        ? `${MONTHS[mPart - 1]} ${yPart}`
+        : '';
+      const eventName = wrestlerSource.event_name || ev.ppv_name || ev.title || 'Event';
+
+      const crumbs = [];
+      crumbs.push(`<button type="button" class="crumb" data-bc="calendar">Calendar</button>`);
+      if (monthYear) {
+        crumbs.push(`<button type="button" class="crumb" data-bc="month" data-y="${esc(yPart)}" data-m="${mPart}">${esc(monthYear)}</button>`);
+      }
+      crumbs.push(`<button type="button" class="crumb" data-bc="event" data-event-id="${esc(String(wrestlerSource.event_id))}" title="${esc(eventName)}">${esc(eventName)}</button>`);
+      for (const c of chain) {
+        crumbs.push(`<button type="button" class="crumb wrestler-link" data-slug="${esc(c.slug)}">${esc(c.name)}</button>`);
+      }
+      crumbs.push(`<span class="crumb current">${esc(w.name)}</span>`);
+
+      const breadcrumbHtml = `<nav class="breadcrumbs" aria-label="Breadcrumb">${crumbs.join('<span class="crumb-sep" aria-hidden="true">›</span>')}</nav>`;
+      const backBtnHtml = `<button type="button" class="profile-back-btn" id="profile-back-btn" data-back-event="${esc(String(wrestlerSource.event_id))}"><span class="pb-arrow">&#8592;</span><span class="pb-label">Back to ${esc(eventName)}</span></button>`;
+      return { breadcrumbHtml, backBtnHtml, backEvent: wrestlerSource.event_id };
+    }
+    return {
+      breadcrumbHtml: '',
+      backBtnHtml: `<button type="button" class="profile-back" id="profile-back-btn">&#8592; Roster</button>`,
+      backEvent: null,
+    };
+  }
+
+  function navigateToEvent(eventId) {
+    const ev = BUNDLE && BUNDLE.events && BUNDLE.events[String(eventId)];
+    if (!ev) {
+      window.location.hash = '#calendar';
+      return;
+    }
+    const [y, m] = (ev.air_date || '').split('-');
+    if (y && m) {
+      yearSel.value = y;
+      monthSel.value = parseInt(m, 10);
+    }
+    const onCalendar = window.location.hash === '' || window.location.hash === '#calendar';
+    window.location.hash = '#calendar';
+    // route() rerenders the calendar view; wait one frame so the view is mounted.
+    requestAnimationFrame(() => {
+      loadCalendar();
+      requestAnimationFrame(() => openModal([ev], ev.air_date));
+    });
+    if (onCalendar) {
+      // hashchange won't fire if hash is unchanged, force route + load + open.
+      route();
+    }
+  }
+
+  function navigateToMonth(year, month) {
+    yearSel.value = String(year);
+    monthSel.value = String(month);
+    const onCalendar = window.location.hash === '' || window.location.hash === '#calendar';
+    window.location.hash = '#calendar';
+    if (onCalendar) {
+      route();
+      loadCalendar();
+    }
+  }
+
   function renderWrestler(slug) {
     const container = document.getElementById('wrestler-profile-content');
     if (!container) return;
@@ -2532,6 +2708,7 @@
       container.innerHTML = `<div class="status">Wrestler not found: ${esc(slug)}</div>`;
       return;
     }
+    const nav = buildWrestlerNav(slug, w);
 
     const yr = w.active_years[0] === w.active_years[1]
       ? String(w.active_years[0])
@@ -2590,7 +2767,8 @@
     }
 
     container.innerHTML = `
-      <button class="profile-back" id="profile-back-btn">&#8592; Roster</button>
+      ${nav.breadcrumbHtml}
+      ${nav.backBtnHtml}
 
       <div class="profile-header">
         <div class="profile-name">${esc(w.name)}</div>
@@ -2639,10 +2817,27 @@
     `;
 
     document.getElementById('profile-back-btn').addEventListener('click', () => {
-      window.location.hash = '#roster';
+      if (nav.backEvent) {
+        navigateToEvent(nav.backEvent);
+      } else {
+        window.location.hash = '#roster';
+      }
     });
 
-    container.querySelectorAll('button[data-event-id]').forEach(btn => {
+    container.querySelectorAll('.crumb[data-bc]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.bc;
+        if (type === 'calendar') {
+          window.location.hash = '#calendar';
+        } else if (type === 'month') {
+          navigateToMonth(btn.dataset.y, parseInt(btn.dataset.m, 10));
+        } else if (type === 'event') {
+          navigateToEvent(btn.dataset.eventId);
+        }
+      });
+    });
+
+    container.querySelectorAll('button[data-event-id]:not(.crumb)').forEach(btn => {
       btn.addEventListener('click', () => {
         const ev = BUNDLE.events[String(btn.dataset.eventId)];
         if (ev) openModal([ev], ev.air_date, slug);
@@ -2681,6 +2876,7 @@
 
   document.querySelectorAll('.tab[data-view]').forEach(tab => {
     tab.addEventListener('click', () => {
+      wrestlerSource = null;
       const view = tab.dataset.view;
       window.location.hash = view === 'calendar' ? '#calendar' : '#' + view;
     });
