@@ -2,7 +2,7 @@
 
 Spoiler-safe chronological watch companion for WWE 2001-2019. Single-file HTML bundle, no backend, no account, no streaming. Built for new wrestling fans who want to watch the Attitude Era and Ruthless Aggression Era in order without spoilers.
 
-**[Live demo](https://warner-wvez.github.io/wrestling-dashboard/)**
+[![Open the live demo](https://img.shields.io/badge/Live_Demo-Open-C8102E?style=for-the-badge&labelColor=0A0A0A)](https://warner-wvez.github.io/wrestling-dashboard/)
 
 ## What it does
 
@@ -29,7 +29,7 @@ I became a wrestling fan this past year by watching full shows chronologically s
 - **Years**: 2001 through 2019 (19 full years)
 - Every match has full raw descriptive text from Cagematch. About 21% carry community Match Guide ratings.
 
-## Quickstart
+## Run it yourself
 
 Requires Python 3.11+.
 
