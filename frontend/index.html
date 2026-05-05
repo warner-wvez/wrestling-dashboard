@@ -2896,6 +2896,10 @@
       const tab = document.querySelector('.tab[data-view="roster"]');
       if (tab) tab.classList.add('active');
       renderRoster();
+      // Browser scroll restoration may otherwise leave the user mid-roster
+      // when arriving from a wrestler profile (different content height,
+      // stale scroll offset). Always land at the top of the roster.
+      window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
       if (v) v.hidden = false;
