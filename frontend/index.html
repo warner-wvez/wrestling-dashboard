@@ -1509,6 +1509,33 @@
     .roster-controls { width: 100%; }
     .roster-search { flex: 1; min-width: 0; }
   }
+
+  /* =============================================================
+     PAGE FOOTER
+     ============================================================= */
+  .page-footer {
+    margin-top: 60px;
+    padding: 18px 0 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+  }
+  .page-footer__link {
+    color: var(--ink-faint);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 140ms, border-color 140ms;
+  }
+  .page-footer__link:hover,
+  .page-footer__link:focus-visible {
+    color: var(--ink);
+    border-bottom-color: var(--ink);
+    outline: none;
+  }
 </style>
 </head>
 <body>
@@ -1603,6 +1630,10 @@
 </div>
 
 <div id="wrestler-tooltip" aria-hidden="true"></div>
+
+<footer class="page-footer">
+  <span id="page-footer-line"></span>
+</footer>
 
 <script>
 (() => {
@@ -2585,6 +2616,22 @@
   });
 
   window.addEventListener('hashchange', route);
+
+  // ------------------ Footer ----------------------------------------------
+  function renderFooter() {
+    const line = el('page-footer-line');
+    if (!line) return;
+    const meta = BUNDLE && BUNDLE.meta;
+    if (!meta) return;
+    const fmt = (n) => Number(n).toLocaleString('en-US');
+    const yr = meta.year_range || [0, 0];
+    const stats = `${fmt(meta.event_count)} events · ${fmt(meta.match_count)} matches · ${yr[0]}-${yr[1]}`;
+    const attr = 'Data: Cagematch + Fandom';
+    const repo = '<a class="page-footer__link" href="https://github.com/warner-wvez/wrestling-dashboard" target="_blank" rel="noopener">GitHub</a>';
+    line.innerHTML = `${esc(stats)} · ${esc(attr)} · ${repo}`;
+  }
+  renderFooter();
+
   loadCalendar();
   route();
 })();
