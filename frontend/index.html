@@ -250,6 +250,18 @@
     height: 3px;
     background: var(--red);
   }
+  .hero.smackdown {
+    background:
+      linear-gradient(135deg, rgba(0,61,165,0.06) 0%, transparent 40%),
+      var(--surface);
+  }
+  .hero.smackdown::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue);
+  }
 
   .hero-info { min-width: 0; }
   .hero-kicker {
@@ -2010,7 +2022,7 @@
     const chipCls = SHOW_CLASS[pick.show_type];
     const chipLabel = pick.show_type === 'PPV' ? 'Pay-Per-View' : pick.show_type;
 
-    heroEl.className = 'hero' + (isPPV ? ' ppv' : '');
+    heroEl.className = 'hero' + (isPPV ? ' ppv' : (pick.show_type === 'SmackDown' ? ' smackdown' : ''));
     heroEl.innerHTML = `
       <div class="hero-info">
         <div class="hero-kicker"><span class="pulse"></span>${kicker}</div>
