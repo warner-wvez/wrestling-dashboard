@@ -153,11 +153,11 @@
   .month-nav:disabled { opacity: 0.3; cursor: not-allowed; }
 
   .spoiler-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 10px;
     background: transparent;
-    border: none;
+    border: 1px solid var(--ink);
     padding: 12px 20px;
     font-family: inherit;
     font-size: 16px;
@@ -165,6 +165,7 @@
     color: var(--ink);
     cursor: pointer;
     transition: background 140ms, color 140ms;
+    justify-self: end;
   }
   .spoiler-btn:hover { background: var(--surface-soft); }
   .spoiler-btn .eye {
@@ -1604,9 +1605,10 @@
       row-gap: 16px;
     }
     .brand { justify-self: center; }
+    .controls { justify-self: center; }
     .controls select { padding: 10px 28px 10px 14px; font-size: 14px; }
     .month-nav { padding: 10px 12px; font-size: 14px; }
-    .spoiler-btn { padding: 10px 14px; font-size: 14px; gap: 8px; }
+    .spoiler-btn { padding: 10px 14px; font-size: 14px; gap: 8px; justify-self: center; }
     .spoiler-btn .eye { width: 16px; height: 16px; }
   }
   @media (max-width: 720px) {
@@ -1659,11 +1661,11 @@
     <select id="year" aria-label="Year"></select>
     <select id="month" aria-label="Month"></select>
     <button class="month-nav" id="month-next" aria-label="Next month" type="button">▶</button>
-    <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
-      <span class="eye"></span>
-      <span class="sp-label">Spoilers</span>
-    </button>
   </div>
+  <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
+    <span class="eye"></span>
+    <span class="sp-label">Spoilers</span>
+  </button>
 </header>
 
 <nav class="tabs" id="main-tabs">
