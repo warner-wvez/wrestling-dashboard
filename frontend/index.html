@@ -661,19 +661,26 @@
     justify-content: center;
     z-index: 100;
     padding: 40px 16px;
-    overflow-y: auto;
+    overflow: hidden;
   }
   .modal-backdrop.open {
     display: flex;
     animation: fade-in 160ms ease-out;
   }
   @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  /* The scroll lives on .modal (not .modal-backdrop) so the sticky toolbar
+     inside has a scrolling ancestor whose viewport is shorter than the
+     content. With scroll on the backdrop and .modal sized to content, the
+     whole .modal would translate upward as one block and sticky would
+     never detach. */
   .modal {
     background: var(--bg);
     border: 1px solid var(--ink);
     width: min(96vw, 820px);
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
-    overflow: hidden;
     animation: sheet-in 220ms cubic-bezier(0.2,0.8,0.2,1);
     box-shadow: 0 24px 60px rgba(10,10,10,0.25);
   }
@@ -1785,6 +1792,9 @@
   const el = (id) => document.getElementById(id);
   const yearSel = el('year'), monthSel = el('month'), calEl = el('calendar');
   const mBackdrop = el('modal-backdrop'), mContent = el('modal-content');
+  // .modal is the scroll container (see CSS comment on .modal). The backdrop
+  // is just the dimmed overlay; it does not scroll.
+  const mEl = mBackdrop.querySelector('.modal');
   const spoilerButtons = [el('spoiler-btn'), el('modal-spoiler-btn')].filter(Boolean);
   const monthNameEl = el('month-name'), monthYearEl = el('month-year'), monthCountEl = el('month-count');
   const heroEl = el('hero');
@@ -2113,23 +2123,23 @@
     mContent.innerHTML = '<div class="status">Loading…</div>';
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
-    mBackdrop.scrollTop = 0;
+    if (mEl) mEl.scrollTop = 0;
     try {
       const details = await Promise.all(events.map(e => getEventDetail(e.id)));
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
       // Defer stagger index assignment so first paint isn't blocked.
       requestAnimationFrame(() => {
         mContent.querySelectorAll('.match-card').forEach((m, i) => m.style.setProperty('--match-index', i));
-        if (sourceSlug) {
-          // mBackdrop is the scrolling element (overflow-y:auto); .modal/#modal-content do not scroll.
-          // Compute the target's offset relative to the backdrop, then center it in the viewport.
+        if (sourceSlug && mEl) {
+          // .modal is the scrolling element. Center the source wrestler-link
+          // inside its viewport so the user lands on the relevant match.
           const target = mContent.querySelector('.wrestler-link.source');
           if (target) {
             const rect = target.getBoundingClientRect();
-            const backdropRect = mBackdrop.getBoundingClientRect();
-            const targetTop = rect.top - backdropRect.top + mBackdrop.scrollTop;
-            const desired = targetTop - mBackdrop.clientHeight / 2 + rect.height / 2;
-            mBackdrop.scrollTo({ top: Math.max(0, desired), behavior: 'smooth' });
+            const modalRect = mEl.getBoundingClientRect();
+            const targetTop = rect.top - modalRect.top + mEl.scrollTop;
+            const desired = targetTop - mEl.clientHeight / 2 + rect.height / 2;
+            mEl.scrollTo({ top: Math.max(0, desired), behavior: 'smooth' });
           }
         }
       });
