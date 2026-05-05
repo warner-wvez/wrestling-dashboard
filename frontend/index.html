@@ -788,6 +788,29 @@
   .m-tag.title { background: var(--red-soft); color: var(--red-dark); }
   .m-tag.stip { background: var(--blue-soft); color: var(--blue-dark); }
 
+  /* Match Guide rating badge: visible in both spoiler modes (rating is not a spoiler). */
+  .m-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    border: 1px solid var(--border);
+  }
+  .m-rating .star {
+    color: var(--red);
+    font-size: 11px;
+    line-height: 1;
+  }
+  .m-rating .num {
+    color: var(--ink);
+    font-weight: 700;
+  }
+
   /* Tale of the tape */
   .match-body {
     display: grid;
@@ -2049,6 +2072,11 @@
     const type = m.match_type || 'Match';
     const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
     const stipTag = m.stipulation ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
+    // Rating is NOT a spoiler: surfaced unconditionally so spoiler-hidden users
+    // can still triage which matches are worth watching.
+    const ratingTag = m.match_guide_rating != null
+      ? `<span class="m-rating" title="Cagematch Match Guide rating"><span class="star" aria-hidden="true">★</span><span class="num">${m.match_guide_rating.toFixed(1)}</span></span>`
+      : '';
     const hasDetails = Boolean(m.raw_description) || m.match_guide_rating != null;
     const detailsToggle = hasDetails
       ? `<button class="details-toggle" data-toggle-details type="button" aria-expanded="false">Details<span class="chev"></span></button>`
@@ -2058,7 +2086,7 @@
         <div class="match-header-row">
           <span class="m-number">M${order}</span>
           <span class="m-type">${esc(type)}</span>
-          ${titleTag}${stipTag}
+          ${titleTag}${stipTag}${ratingTag}
           ${detailsToggle}
         </div>
         ${renderMatchBody(m, airDate, sourceSlug)}
