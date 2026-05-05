@@ -1204,6 +1204,29 @@
     margin: 0 12px;
   }
 
+  /* Battle royal / Royal Rumble winner reveal: hide WINNER label and name
+     when spoilers are off so the stacked layout doesn't leak the result. */
+  .team-block-mask {
+    display: none;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    letter-spacing: 0.4em;
+    padding: 6px 0;
+  }
+  body:not(.spoilers-on) .team-block.winner > .team-block-header,
+  body:not(.spoilers-on) .team-block.winner > .team-block-banner,
+  body:not(.spoilers-on) .team-block.winner > .team-block-grid,
+  body:not(.spoilers-on) .team-block.winner > .team-block-badges,
+  body:not(.spoilers-on) .team-block.winner > .team-block-meta {
+    display: none;
+  }
+  body:not(.spoilers-on) .team-block.winner > .team-block-mask {
+    display: block;
+  }
+
   .match-body.multi {
     display: flex;
     flex-direction: column;
@@ -2282,8 +2305,13 @@
     }
     const metaRow = metaBits.length ? `<div class="team-block-meta">${metaBits.join(' · ')}</div>` : '';
 
+    const mask = role === 'winner'
+      ? `<div class="team-block-mask" aria-hidden="true">—</div>`
+      : '';
+
     return `
       <div class="team-block ${role}">
+        ${mask}
         <div class="team-block-header">${esc(label)}</div>
         ${namesHtml}
         ${metaRow}
