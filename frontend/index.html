@@ -1776,6 +1776,16 @@
     return `${m}:${String(s).padStart(2,'0')}`;
   };
 
+  // Cagematch records team_name in mixed forms ("Raven and The Big Show",
+  // "Raven & The Big Show"); we always join participants with ' & '. Compare
+  // both sides on a normalized form so trivial separator differences don't
+  // produce a redundant "as X & Y" meta line under the participant list.
+  const canonTeamLabel = (s) => String(s ?? '')
+    .toLowerCase()
+    .replace(/\s*&\s*/g, ' and ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
   const dataEl = document.getElementById('wrestling-data');
   const BUNDLE = dataEl ? JSON.parse(dataEl.textContent) : null;
   const SUMMARY_KEYS = ['id','air_date','show_type','title','venue','city','episode_number','ppv_name','match_count'];
@@ -2256,7 +2266,8 @@
     }
     const metaBits = [];
     if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
-    if (t.team_name && t.participants && t.participants.length > 1 && t.team_name !== plainNames) {
+    if (t.team_name && t.participants && t.participants.length > 1 &&
+        canonTeamLabel(t.team_name) !== canonTeamLabel(plainNames)) {
       metaBits.push(`as ${esc(t.team_name)}`);
     }
     const metaRow = metaBits.length ? `<span class="team-meta">${metaBits.join(' · ')}</span>` : '';
@@ -2371,7 +2382,8 @@
 
     const metaBits = [];
     if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
-    if (t.team_name && t.participants && t.participants.length > 1 && t.team_name !== plainNames) {
+    if (t.team_name && t.participants && t.participants.length > 1 &&
+        canonTeamLabel(t.team_name) !== canonTeamLabel(plainNames)) {
       metaBits.push(`as ${esc(t.team_name)}`);
     }
     const metaRow = metaBits.length ? `<div class="team-block-meta">${metaBits.join(' · ')}</div>` : '';
