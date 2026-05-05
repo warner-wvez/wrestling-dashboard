@@ -192,16 +192,13 @@
   .controls > *:last-child { border-right: none; }
 
   .modal-spoiler-btn {
-    position: absolute;
-    top: 14px;
-    right: 56px;
     height: 32px;
     padding: 0 12px;
     border: 1px solid var(--ink);
     background: var(--surface);
     font-size: 12px;
     gap: 6px;
-    z-index: 2;
+    flex: 0 0 auto;
   }
   .modal-spoiler-btn .eye { width: 14px; height: 14px; }
   .modal-spoiler-btn:hover { background: var(--ink); color: #FFF; }
@@ -672,10 +669,20 @@
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+  .modal-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--surface);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
   .modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
     width: 32px;
     height: 32px;
     border: 1px solid var(--ink);
@@ -685,8 +692,8 @@
     align-items: center;
     justify-content: center;
     color: var(--ink);
-    z-index: 2;
     transition: background 140ms, color 140ms;
+    flex: 0 0 auto;
   }
   .modal-close:hover { background: var(--ink); color: #FFF; }
   .modal-close svg { width: 14px; height: 14px; }
@@ -1733,15 +1740,17 @@
 <!-- MODAL (sibling of all .view sections so it can render over any active view) -->
 <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true">
   <div class="modal">
-    <button class="spoiler-btn modal-spoiler-btn" id="modal-spoiler-btn" aria-pressed="false" type="button">
-      <span class="eye"></span>
-      <span class="sp-label">Spoilers</span>
-    </button>
-    <button class="modal-close" id="modal-close" aria-label="Close">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
-        <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
-      </svg>
-    </button>
+    <div class="modal-toolbar">
+      <button class="spoiler-btn modal-spoiler-btn" id="modal-spoiler-btn" aria-pressed="false" type="button">
+        <span class="eye"></span>
+        <span class="sp-label">Spoilers</span>
+      </button>
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+          <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
+        </svg>
+      </button>
+    </div>
     <div id="modal-content"></div>
   </div>
 </div>
