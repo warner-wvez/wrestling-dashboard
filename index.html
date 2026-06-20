@@ -215,8 +215,8 @@
     width: 13px; height: 13px;
     background: var(--red);
     flex-shrink: 0;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
   }
   .resume-btn:hover .rs-pin { background: #FFF; }
   .resume-btn .rs-date {
@@ -257,11 +257,11 @@
   .bookmark-btn:hover { background: var(--surface-soft); }
   .bookmark-btn.active { background: var(--red); border-color: var(--red); color: #FFF; }
   .bookmark-btn .bm-pin {
-    width: 12px; height: 12px;
+    width: 12px; height: 13px;
     background: currentColor;
     flex-shrink: 0;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
   }
 
   /* Calendar day that holds the current bookmark */
@@ -335,6 +335,136 @@
   .mini-chip.watched { opacity: 0.4; }
   @media (max-width: 600px) {
     .wp-bar { display: none; }
+  }
+
+  /* ---- Save match + Saved view --------------------------------------- */
+  .save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 4px 9px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .save-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .save-btn.active { background: var(--red); border-color: var(--red); color: #FFF; }
+  .save-btn .sv-ribbon {
+    width: 11px; height: 11px;
+    background: currentColor;
+    flex-shrink: 0;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+  }
+  .match-card.flash { animation: match-flash 1.6s ease; }
+  @keyframes match-flash {
+    0%, 100% { background: var(--surface); }
+    15% { background: var(--red-soft); border-color: var(--red); }
+  }
+
+  .tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    margin-left: 6px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--red);
+    color: #FFF;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+  .tab-count[hidden] { display: none; }
+
+  .saved-view-header { margin-bottom: 20px; }
+  .saved-view-header h2 {
+    font-family: var(--font-sans);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .saved-sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+  }
+  .saved-empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--ink-dim);
+    border: 1px dashed var(--border-strong);
+    background: var(--surface-soft);
+  }
+  #saved-view-content { display: flex; flex-direction: column; gap: 8px; }
+  .saved-row {
+    display: grid;
+    grid-template-columns: 110px 1fr auto;
+    grid-template-areas:
+      "date show remove"
+      "date match remove"
+      "date people remove";
+    align-items: center;
+    gap: 2px 14px;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 140ms, box-shadow 140ms, transform 140ms;
+  }
+  .saved-row:hover { border-color: var(--ink); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+  .sr-date {
+    grid-area: date;
+    align-self: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.02em;
+  }
+  .sr-show {
+    grid-area: show;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .sr-show .brand-chip { margin-bottom: 0; padding: 2px 7px; font-size: 9px; }
+  .sr-match { grid-area: match; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .sr-type { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+  .sr-people { grid-area: people; font-family: var(--font-sans); font-size: 12px; color: var(--ink-dim); }
+  .sr-remove {
+    grid-area: remove;
+    align-self: center;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-faint);
+    padding: 4px 8px;
+    border: 1px solid transparent;
+  }
+  .sr-remove:hover { color: var(--red); border-color: var(--red); }
+  @media (max-width: 600px) {
+    .saved-row {
+      grid-template-columns: 1fr auto;
+      grid-template-areas: "date remove" "show show" "match match" "people people";
+    }
   }
 
   /* Strip the trailing internal divider from whichever button is last in
@@ -1862,6 +1992,7 @@
 <nav class="tabs" id="main-tabs">
   <button class="tab active" data-view="calendar" type="button">Calendar</button>
   <button class="tab" data-view="roster" type="button">Roster</button>
+  <button class="tab" data-view="saved" type="button">Saved<span class="tab-count" id="saved-tab-count" hidden></span></button>
   <div class="watch-progress" id="watch-progress" title="Shows you have marked watched">
     <div class="wp-bar"><div class="wp-fill" id="wp-fill"></div></div>
     <span class="wp-text"><strong id="watched-count">0</strong> / <span id="watched-total">0</span> watched</span>
@@ -1912,6 +2043,14 @@
     </div>
   </div>
   <div id="roster-view-content"></div>
+</section>
+
+<section id="view-saved" class="view" hidden>
+  <div class="saved-view-header">
+    <h2>Saved matches</h2>
+    <div class="saved-sub" id="saved-sub"></div>
+  </div>
+  <div id="saved-view-content"></div>
 </section>
 
 <section id="view-wrestler" class="view" hidden>
@@ -2124,8 +2263,8 @@
       btn.classList.toggle('active', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       const lbl = btn.querySelector('.bm-label');
-      if (lbl) lbl.textContent = on ? 'Bookmarked' : 'Bookmark';
-      btn.title = on ? 'Remove bookmark' : 'Bookmark where you are';
+      if (lbl) lbl.textContent = on ? 'Resume point' : 'Resume here';
+      btn.title = on ? 'This is your resume point. Click to clear.' : 'Set this show as your resume point';
     });
     markBookmarkedDay();
   }
@@ -2193,6 +2332,115 @@
       btn.title = on ? 'Mark as not watched' : 'Mark this show watched';
     });
     markWatchedChips();
+  }
+
+  // ------------------ Saved matches ---------------------------------------
+  // Curated collection of individual matches, in localStorage per browser/
+  // device. Distinct from Resume (one show, "where I am") and Watched (shows
+  // completed). Each entry is the string "eventId:matchId".
+  const SAVED_KEY = 'wvez_wrestling_saved';
+  const savedKey = (e, m) => `${e}:${m}`;
+  let saved = (() => {
+    let arr = [];
+    try { arr = JSON.parse(localStorage.getItem(SAVED_KEY) || '[]'); } catch (_) {}
+    return new Set(Array.isArray(arr) ? arr.map(String) : []);
+  })();
+
+  function persistSaved() {
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify([...saved])); } catch (_) {}
+  }
+
+  function toggleSaved(eventId, matchId) {
+    if (eventId == null || matchId == null) return;
+    const key = savedKey(eventId, matchId);
+    if (saved.has(key)) saved.delete(key);
+    else saved.add(key);
+    persistSaved();
+    refreshSavedUI();
+    const sv = document.getElementById('view-saved');
+    if (sv && !sv.hidden) renderSaved();
+  }
+
+  function updateSavedTabCount() {
+    const badge = el('saved-tab-count');
+    if (!badge) return;
+    badge.textContent = saved.size ? String(saved.size) : '';
+    badge.hidden = saved.size === 0;
+  }
+
+  function refreshSavedUI() {
+    mContent.querySelectorAll('[data-save-match]').forEach(btn => {
+      const on = saved.has(savedKey(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match')));
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      const lbl = btn.querySelector('.sv-label');
+      if (lbl) lbl.textContent = on ? 'Saved' : 'Save';
+      btn.title = on ? 'Saved. Click to remove.' : 'Save this match';
+    });
+    updateSavedTabCount();
+  }
+
+  // Spoiler-safe matchup label: who is in the match, never the winner.
+  function matchupLabel(m) {
+    return (m.teams || [])
+      .map(t => (t.participants && t.participants.length ? t.participants.join(' & ') : (t.team_name || '')).trim())
+      .filter(Boolean)
+      .join(' vs ');
+  }
+
+  function renderSaved() {
+    const container = el('saved-view-content');
+    const sub = el('saved-sub');
+    if (!container) return;
+    const items = [];
+    for (const key of saved) {
+      const [eid, mid] = key.split(':');
+      const ev = BUNDLE && BUNDLE.events && BUNDLE.events[eid];
+      if (!ev) continue;
+      const match = (ev.matches || []).find(x => String(x.id) === String(mid));
+      if (match) items.push({ ev, match });
+    }
+    if (sub) sub.textContent = items.length ? `${items.length} match${items.length === 1 ? '' : 'es'} saved` : '';
+    if (!items.length) {
+      container.innerHTML = `<div class="saved-empty">No saved matches yet. Open any show and hit <strong>Save</strong> on a match to keep it here.</div>`;
+      return;
+    }
+    items.sort((a, b) =>
+      (a.ev.air_date || '').localeCompare(b.ev.air_date || '') ||
+      (a.match.match_order || 0) - (b.match.match_order || 0)
+    );
+    container.innerHTML = items.map(({ ev, match }) => {
+      const showName = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
+      const cls = SHOW_CLASS[ev.show_type] || '';
+      const rating = match.match_guide_rating != null
+        ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${match.match_guide_rating.toFixed(1)}</span></span>` : '';
+      const tags = (match.title_at_stake ? `<span class="m-tag title">${esc(match.title_at_stake)}</span>` : '')
+        + (match.stipulation ? `<span class="m-tag stip">${esc(match.stipulation)}</span>` : '');
+      const matchup = matchupLabel(match);
+      return `
+        <button class="saved-row" type="button" data-go-event="${esc(String(ev.id))}" data-go-match="${esc(String(match.id))}">
+          <span class="sr-date">${esc(fmtDateLong(ev.air_date))}</span>
+          <span class="sr-show"><span class="brand-chip ${cls}">${esc(ev.show_type === 'PPV' ? 'PPV' : ev.show_type)}</span>${esc(showName)}</span>
+          <span class="sr-match"><span class="sr-type">${esc(match.match_type || 'Match')}</span>${tags}${rating}</span>
+          ${matchup ? `<span class="sr-people">${esc(matchup)}</span>` : ''}
+          <span class="sr-remove" data-remove="${esc(savedKey(ev.id, match.id))}" title="Remove from saved" role="button" tabindex="0">Remove</span>
+        </button>`;
+    }).join('');
+    container.querySelectorAll('.saved-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        if (e.target.closest('[data-remove]')) return;
+        navigateToEvent(row.getAttribute('data-go-event'), row.getAttribute('data-go-match'));
+      });
+    });
+    container.querySelectorAll('[data-remove]').forEach(rm => {
+      const handler = (e) => {
+        e.stopPropagation(); e.preventDefault();
+        saved.delete(rm.getAttribute('data-remove'));
+        persistSaved(); refreshSavedUI(); renderSaved();
+      };
+      rm.addEventListener('click', handler);
+      rm.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') handler(e); });
+    });
   }
 
   // ------------------ Dropdowns -------------------------------------------
@@ -2432,7 +2680,7 @@
   }
 
   // ------------------ Modal -----------------------------------------------
-  async function openModal(events, iso, sourceSlug = null) {
+  async function openModal(events, iso, sourceSlug = null, scrollMatchId = null) {
     mContent.innerHTML = '<div class="status">Loading…</div>';
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -2453,6 +2701,17 @@
             const targetTop = rect.top - modalRect.top + mEl.scrollTop;
             const desired = targetTop - mEl.clientHeight / 2 + rect.height / 2;
             mEl.scrollTo({ top: Math.max(0, desired), behavior: 'smooth' });
+          }
+        }
+        if (scrollMatchId && mEl) {
+          const card = mContent.querySelector(`.match-card[data-match-id="${scrollMatchId}"]`);
+          if (card) {
+            const rect = card.getBoundingClientRect();
+            const modalRect = mEl.getBoundingClientRect();
+            const desired = rect.top - modalRect.top + mEl.scrollTop - 16;
+            mEl.scrollTo({ top: Math.max(0, desired), behavior: 'smooth' });
+            card.classList.add('flash');
+            setTimeout(() => card.classList.remove('flash'), 1600);
           }
         }
       });
@@ -2481,8 +2740,16 @@
           toggleWatched(btn.getAttribute('data-watched-id'));
         });
       });
+      // Save toggles, one per match.
+      mContent.querySelectorAll('[data-save-match]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleSaved(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match'));
+        });
+      });
       refreshBookmarkUI();
       refreshWatchedUI();
+      refreshSavedUI();
     } catch (err) {
       mContent.innerHTML = '<div class="status">Couldn\'t load that event.</div>';
     }
@@ -2529,9 +2796,9 @@
                 <span class="wb-check" aria-hidden="true"></span>
                 <span class="wb-label">${isW ? 'Watched' : 'Mark watched'}</span>
               </button>
-              <button class="bookmark-btn${isBm ? ' active' : ''}" data-bookmark-id="${bmId}" type="button" aria-pressed="${isBm ? 'true' : 'false'}" title="${isBm ? 'Remove bookmark' : 'Bookmark where you are'}">
+              <button class="bookmark-btn${isBm ? ' active' : ''}" data-bookmark-id="${bmId}" type="button" aria-pressed="${isBm ? 'true' : 'false'}" title="${isBm ? 'This is your resume point. Click to clear.' : 'Set this show as your resume point'}">
                 <span class="bm-pin" aria-hidden="true"></span>
-                <span class="bm-label">${isBm ? 'Bookmarked' : 'Bookmark'}</span>
+                <span class="bm-label">${isBm ? 'Resume point' : 'Resume here'}</span>
               </button>
             </div>
           </div>
@@ -2540,13 +2807,13 @@
           ${meta ? `<div class="event-meta-modal">${meta}</div>` : ''}
         </div>
         <div class="matches-list">
-          ${(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug)).join('') || '<div class="status">No match list recorded.</div>'}
+          ${(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
       </div>
     `;
   }
 
-  function renderMatch(m, airDate, sourceSlug = null) {
+  function renderMatch(m, airDate, sourceSlug = null, eventId = null) {
     const order = String(m.match_order).padStart(2, '0');
     const type = m.match_type || 'Match';
     const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
@@ -2560,13 +2827,19 @@
     const detailsToggle = hasDetails
       ? `<button class="details-toggle" data-toggle-details type="button" aria-expanded="false">Details<span class="chev"></span></button>`
       : '';
+    const canSave = eventId != null && m.id != null;
+    const isS = canSave && saved.has(savedKey(eventId, m.id));
+    const saveBtn = canSave
+      ? `<button class="save-btn${isS ? ' active' : ''}" data-save-event="${esc(String(eventId))}" data-save-match="${esc(String(m.id))}" type="button" aria-pressed="${isS ? 'true' : 'false'}" title="${isS ? 'Saved. Click to remove.' : 'Save this match'}"><span class="sv-ribbon" aria-hidden="true"></span><span class="sv-label">${isS ? 'Saved' : 'Save'}</span></button>`
+      : '';
     return `
-      <div class="match-card">
+      <div class="match-card"${canSave ? ` data-match-id="${esc(String(m.id))}"` : ''}>
         <div class="match-header-row">
           <span class="m-number">M${order}</span>
           <span class="m-type">${esc(type)}</span>
           ${titleTag}${stipTag}${ratingTag}
           ${detailsToggle}
+          ${saveBtn}
         </div>
         ${renderMatchBody(m, airDate, sourceSlug)}
         ${renderMatchFooter(m)}
@@ -3061,7 +3334,7 @@
     };
   }
 
-  function navigateToEvent(eventId) {
+  function navigateToEvent(eventId, matchId = null) {
     const ev = BUNDLE && BUNDLE.events && BUNDLE.events[String(eventId)];
     if (!ev) {
       window.location.hash = '#calendar';
@@ -3077,7 +3350,7 @@
     // route() rerenders the calendar view; wait one frame so the view is mounted.
     requestAnimationFrame(() => {
       loadCalendar();
-      requestAnimationFrame(() => openModal([ev], ev.air_date));
+      requestAnimationFrame(() => openModal([ev], ev.air_date, null, matchId));
     });
     if (onCalendar) {
       // hashchange won't fire if hash is unchanged, force route + load + open.
@@ -3266,6 +3539,13 @@
       // when arriving from a wrestler profile (different content height,
       // stale scroll offset). Always land at the top of the roster.
       window.scrollTo({ top: 0, behavior: 'auto' });
+    } else if (hash === '#saved') {
+      const v = document.getElementById('view-saved');
+      if (v) v.hidden = false;
+      const tab = document.querySelector('.tab[data-view="saved"]');
+      if (tab) tab.classList.add('active');
+      renderSaved();
+      window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
       if (v) v.hidden = false;
@@ -3303,6 +3583,7 @@
   route();
   refreshBookmarkUI();
   refreshWatchedUI();
+  updateSavedTabCount();
 })();
 </script>
 </body>
