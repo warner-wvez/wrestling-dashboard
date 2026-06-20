@@ -187,6 +187,92 @@
     -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><path d='M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24'/><line x1='1' y1='1' x2='23' y2='23'/></svg>");
   }
 
+  /* ---- Bookmark + Resume (persistent watch position) ----------------- */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-self: end;
+  }
+  .resume-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .resume-btn:hover { background: var(--red); border-color: var(--red); color: #FFF; }
+  .resume-btn[hidden] { display: none; }
+  .resume-btn .rs-pin {
+    width: 13px; height: 13px;
+    background: var(--red);
+    flex-shrink: 0;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+  }
+  .resume-btn:hover .rs-pin { background: #FFF; }
+  .resume-btn .rs-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+  }
+  .resume-btn:hover .rs-date { color: rgba(255,255,255,0.85); }
+
+  /* Per-event bookmark toggle, sits beside the brand chip in the modal hero */
+  .event-hero-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .event-hero-top .brand-chip { margin-bottom: 0; }
+  .bookmark-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    padding: 6px 12px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .bookmark-btn:hover { background: var(--surface-soft); }
+  .bookmark-btn.active { background: var(--red); border-color: var(--red); color: #FFF; }
+  .bookmark-btn .bm-pin {
+    width: 12px; height: 12px;
+    background: currentColor;
+    flex-shrink: 0;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 2h12a1 1 0 011 1v19l-7-4.2L5 22V3a1 1 0 011-1z'/></svg>") no-repeat center / contain;
+  }
+
+  /* Calendar day that holds the current bookmark */
+  .day.has-bookmark { border-color: var(--red); }
+  .day.has-bookmark::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+  }
+
   /* Strip the trailing internal divider from whichever button is last in
      .controls; otherwise it doubles up against the .controls outer border. */
   .controls > *:last-child { border-right: none; }
@@ -427,6 +513,7 @@
     border: 1px solid var(--border);
     border-radius: var(--card-radius);
     min-height: 96px;
+    position: relative;
     padding: 10px 10px 8px;
     display: flex;
     flex-direction: column;
@@ -1695,10 +1782,17 @@
     <select id="year" aria-label="Year"></select>
     <button class="month-nav" id="month-next" aria-label="Next month" type="button">▶</button>
   </div>
-  <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
-    <span class="eye"></span>
-    <span class="sp-label">Spoilers</span>
-  </button>
+  <div class="header-actions">
+    <button class="resume-btn" id="resume-btn" type="button" hidden aria-label="Resume where you left off">
+      <span class="rs-pin" aria-hidden="true"></span>
+      <span class="rs-label">Resume</span>
+      <span class="rs-date"></span>
+    </button>
+    <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
+      <span class="eye"></span>
+      <span class="sp-label">Spoilers</span>
+    </button>
+  </div>
 </header>
 
 <nav class="tabs" id="main-tabs">
@@ -1886,6 +1980,94 @@
   }
   for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
+
+  // ------------------ Bookmark + Resume -----------------------------------
+  // A single "where am I" marker for the watch order, kept in localStorage so
+  // it survives across sessions (unlike the per-session spoiler pref). It lives
+  // in each visitor's own browser, scoped to this origin: every person keeps
+  // their own position, no account and no backend. The key is namespaced
+  // because GitHub Pages project sites share one origin.
+  const BOOKMARK_KEY = 'wvez_wrestling_bookmark';
+  let bookmarkId = (() => {
+    try { return localStorage.getItem(BOOKMARK_KEY) || null; } catch (_) { return null; }
+  })();
+
+  function saveBookmark(id) {
+    try {
+      if (id == null) localStorage.removeItem(BOOKMARK_KEY);
+      else localStorage.setItem(BOOKMARK_KEY, String(id));
+    } catch (_) { /* storage blocked (private mode): keep it in memory only */ }
+  }
+
+  function fmtDateLong(iso) {
+    const p = String(iso || '').split('-');
+    const y = +p[0], m = +p[1], d = +p[2];
+    if (!y || !m || !d) return '';
+    return `${MONTHS_SHORT[m - 1]} ${d}, ${y}`;
+  }
+
+  // Bundle-only: the shipped product always has BUNDLE. In dev API mode we
+  // can't validate ids, so the feature stays dormant rather than guessing.
+  function eventExists(id) {
+    return Boolean(id != null && BUNDLE && BUNDLE.events && BUNDLE.events[String(id)]);
+  }
+
+  function toggleBookmark(id) {
+    if (id == null || id === '') return;
+    id = String(id);
+    bookmarkId = (bookmarkId === id) ? null : id;
+    saveBookmark(bookmarkId);
+    refreshBookmarkUI();
+  }
+
+  // Mark the calendar day holding the bookmarked event, if it is in the month
+  // currently rendered. Day cells carry data-iso (set in renderCalendar).
+  function markBookmarkedDay() {
+    if (!calEl) return;
+    calEl.querySelectorAll('.day.has-bookmark').forEach(d => d.classList.remove('has-bookmark'));
+    if (!eventExists(bookmarkId)) return;
+    const iso = BUNDLE.events[String(bookmarkId)].air_date;
+    if (!iso) return;
+    const cell = calEl.querySelector(`.day[data-iso="${iso}"]`);
+    if (cell) cell.classList.add('has-bookmark');
+  }
+
+  // Sync every bookmark-aware control to current state: the header Resume
+  // button, any bookmark toggles in an open modal, and the calendar marker.
+  function refreshBookmarkUI() {
+    if (bookmarkId != null && !eventExists(bookmarkId)) {
+      bookmarkId = null;            // drop a stale id (e.g. removed from bundle)
+      saveBookmark(null);
+    }
+    const resumeBtn = el('resume-btn');
+    if (resumeBtn) {
+      if (eventExists(bookmarkId)) {
+        const ev = BUNDLE.events[String(bookmarkId)];
+        const dateEl = resumeBtn.querySelector('.rs-date');
+        if (dateEl) dateEl.textContent = fmtDateLong(ev.air_date);
+        resumeBtn.title = `Resume at ${ev.ppv_name || ev.title || ev.air_date}`;
+        resumeBtn.hidden = false;
+      } else {
+        resumeBtn.hidden = true;
+      }
+    }
+    mContent.querySelectorAll('[data-bookmark-id]').forEach(btn => {
+      const on = btn.getAttribute('data-bookmark-id') === String(bookmarkId);
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      const lbl = btn.querySelector('.bm-label');
+      if (lbl) lbl.textContent = on ? 'Bookmarked' : 'Bookmark';
+      btn.title = on ? 'Remove bookmark' : 'Bookmark where you are';
+    });
+    markBookmarkedDay();
+  }
+
+  const resumeBtnEl = el('resume-btn');
+  if (resumeBtnEl) {
+    resumeBtnEl.addEventListener('click', () => {
+      if (eventExists(bookmarkId)) navigateToEvent(bookmarkId);
+    });
+  }
 
   // ------------------ Dropdowns -------------------------------------------
   const yr = BUNDLE?.meta?.year_range || [2001, 2004];
@@ -2089,6 +2271,7 @@
         + (hasEvents ? ' has-events' : '')
         + (hasPPV ? ' has-ppv' : '');
       div.style.setProperty('--i', idx);
+      if (!c.other) div.dataset.iso = c.iso;
 
       const wdLabel = !c.other ? WEEKDAYS[idx % 7].slice(0, 2) : '';
       div.innerHTML = `
@@ -2117,6 +2300,7 @@
       }
       calEl.appendChild(div);
     });
+    markBookmarkedDay();
   }
 
   // ------------------ Modal -----------------------------------------------
@@ -2155,6 +2339,14 @@
           btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
       });
+      // Bookmark toggles, one per event hero in this modal.
+      mContent.querySelectorAll('[data-bookmark-id]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleBookmark(btn.getAttribute('data-bookmark-id'));
+        });
+      });
+      refreshBookmarkUI();
     } catch (err) {
       mContent.innerHTML = '<div class="status">Couldn\'t load that event.</div>';
     }
@@ -2187,11 +2379,19 @@
     const chipLabel = isPPV ? 'Pay-Per-View' : showType;
     const meta = buildMeta(d);
     const subtitle = isPPV && d.title && d.title !== (d.ppv_name || '') ? d.title : '';
+    const bmId = esc(String(d.id || ''));
+    const isBm = d.id != null && String(d.id) === String(bookmarkId || '');
 
     return `
-      <div class="event-block" data-event-id="${esc(String(d.id || ''))}" data-event-date="${esc(d.air_date || '')}" data-event-name="${esc(title || '')}">
+      <div class="event-block" data-event-id="${bmId}" data-event-date="${esc(d.air_date || '')}" data-event-name="${esc(title || '')}">
         <div class="event-hero ${cls}">
-          <span class="brand-chip ${cls}">${esc(chipLabel)}</span>
+          <div class="event-hero-top">
+            <span class="brand-chip ${cls}">${esc(chipLabel)}</span>
+            <button class="bookmark-btn${isBm ? ' active' : ''}" data-bookmark-id="${bmId}" type="button" aria-pressed="${isBm ? 'true' : 'false'}" title="${isBm ? 'Remove bookmark' : 'Bookmark where you are'}">
+              <span class="bm-pin" aria-hidden="true"></span>
+              <span class="bm-label">${isBm ? 'Bookmarked' : 'Bookmark'}</span>
+            </button>
+          </div>
           <h3 class="event-title-modal">${esc(title)}</h3>
           ${subtitle ? `<div class="event-meta-modal"><span class="piece">${esc(subtitle)}</span></div>` : ''}
           ${meta ? `<div class="event-meta-modal">${meta}</div>` : ''}
@@ -2958,6 +3158,7 @@
 
   loadCalendar();
   route();
+  refreshBookmarkUI();
 })();
 </script>
 </body>
