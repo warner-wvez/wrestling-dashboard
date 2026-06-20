@@ -233,6 +233,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 12px;
   }
@@ -271,6 +272,69 @@
     top: 0; left: 0; right: 0;
     height: 3px;
     background: var(--red);
+  }
+
+  /* ---- Watched toggle + progress meter ------------------------------- */
+  .event-hero-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .watched-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    padding: 6px 12px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .watched-btn:hover { background: var(--surface-soft); }
+  .watched-btn.active { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  .watched-btn .wb-check {
+    width: 13px; height: 13px;
+    background: currentColor;
+    flex-shrink: 0;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12.5l5 5L20 6.5'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12.5l5 5L20 6.5'/></svg>") no-repeat center / contain;
+  }
+
+  .watch-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    align-self: center;
+    padding-bottom: 2px;
+  }
+  .wp-bar {
+    width: 120px;
+    height: 6px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .wp-fill {
+    height: 100%;
+    width: 0;
+    background: var(--red);
+    transition: width 200ms ease;
+  }
+  .wp-text {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+  .wp-text strong { color: var(--ink); font-weight: 700; }
+  .mini-chip.watched { opacity: 0.4; }
+  @media (max-width: 600px) {
+    .wp-bar { display: none; }
   }
 
   /* Strip the trailing internal divider from whichever button is last in
@@ -1798,6 +1862,10 @@
 <nav class="tabs" id="main-tabs">
   <button class="tab active" data-view="calendar" type="button">Calendar</button>
   <button class="tab" data-view="roster" type="button">Roster</button>
+  <div class="watch-progress" id="watch-progress" title="Shows you have marked watched">
+    <div class="wp-bar"><div class="wp-fill" id="wp-fill"></div></div>
+    <span class="wp-text"><strong id="watched-count">0</strong> / <span id="watched-total">0</span> watched</span>
+  </div>
 </nav>
 
 <section id="view-calendar" class="view">
@@ -2069,6 +2137,64 @@
     });
   }
 
+  // ------------------ Watched tracking ------------------------------------
+  // Set of event ids the viewer has marked watched, in localStorage so it
+  // persists per browser/device. Drives the per-show toggle and the global
+  // "N / total watched" meter in the tabs row.
+  const WATCHED_KEY = 'wvez_wrestling_watched';
+  let watched = (() => {
+    let arr = [];
+    try { arr = JSON.parse(localStorage.getItem(WATCHED_KEY) || '[]'); } catch (_) {}
+    const set = new Set(Array.isArray(arr) ? arr.map(String) : []);
+    if (BUNDLE && BUNDLE.events) {
+      for (const id of [...set]) if (!BUNDLE.events[id]) set.delete(id); // drop stale ids
+    }
+    return set;
+  })();
+
+  function saveWatched() {
+    try { localStorage.setItem(WATCHED_KEY, JSON.stringify([...watched])); } catch (_) {}
+  }
+
+  function toggleWatched(id) {
+    if (id == null || id === '') return;
+    id = String(id);
+    if (watched.has(id)) watched.delete(id);
+    else watched.add(id);
+    saveWatched();
+    refreshWatchedUI();
+  }
+
+  // Dim the chips of watched events in the month currently rendered. Chips
+  // carry data-event-id (set in renderCalendar).
+  function markWatchedChips() {
+    if (!calEl) return;
+    calEl.querySelectorAll('.mini-chip[data-event-id]').forEach(chip => {
+      chip.classList.toggle('watched', watched.has(chip.dataset.eventId));
+    });
+  }
+
+  function refreshWatchedUI() {
+    const total = (BUNDLE && BUNDLE.meta && BUNDLE.meta.event_count) || watched.size;
+    const countEl = el('watched-count'), totalEl = el('watched-total'), fill = el('wp-fill');
+    if (countEl) countEl.textContent = watched.size.toLocaleString('en-US');
+    if (totalEl) totalEl.textContent = Number(total).toLocaleString('en-US');
+    if (fill) {
+      const pct = total ? Math.min(100, (watched.size / total) * 100) : 0;
+      fill.style.width = pct + '%';
+      fill.style.minWidth = watched.size > 0 ? '3px' : '0';
+    }
+    mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
+      const on = watched.has(btn.getAttribute('data-watched-id'));
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      const lbl = btn.querySelector('.wb-label');
+      if (lbl) lbl.textContent = on ? 'Watched' : 'Mark watched';
+      btn.title = on ? 'Mark as not watched' : 'Mark this show watched';
+    });
+    markWatchedChips();
+  }
+
   // ------------------ Dropdowns -------------------------------------------
   const yr = BUNDLE?.meta?.year_range || [2001, 2004];
   for (let y = yr[0]; y <= yr[1]; y++) {
@@ -2288,6 +2414,7 @@
           const m = document.createElement('div');
           const cls = SHOW_CLASS[ev.show_type] || '';
           m.className = `mini-chip ${cls}`;
+          m.dataset.eventId = ev.id;
           let label;
           if (ev.show_type === 'PPV') label = (ev.ppv_name || 'PPV').replace(/^WW[EF]\s+/, '');
           else if (ev.show_type === 'Raw') label = 'Raw';
@@ -2301,6 +2428,7 @@
       calEl.appendChild(div);
     });
     markBookmarkedDay();
+    markWatchedChips();
   }
 
   // ------------------ Modal -----------------------------------------------
@@ -2346,7 +2474,15 @@
           toggleBookmark(btn.getAttribute('data-bookmark-id'));
         });
       });
+      // Watched toggles, one per event hero.
+      mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleWatched(btn.getAttribute('data-watched-id'));
+        });
+      });
       refreshBookmarkUI();
+      refreshWatchedUI();
     } catch (err) {
       mContent.innerHTML = '<div class="status">Couldn\'t load that event.</div>';
     }
@@ -2381,16 +2517,23 @@
     const subtitle = isPPV && d.title && d.title !== (d.ppv_name || '') ? d.title : '';
     const bmId = esc(String(d.id || ''));
     const isBm = d.id != null && String(d.id) === String(bookmarkId || '');
+    const isW = d.id != null && watched.has(String(d.id));
 
     return `
       <div class="event-block" data-event-id="${bmId}" data-event-date="${esc(d.air_date || '')}" data-event-name="${esc(title || '')}">
         <div class="event-hero ${cls}">
           <div class="event-hero-top">
             <span class="brand-chip ${cls}">${esc(chipLabel)}</span>
-            <button class="bookmark-btn${isBm ? ' active' : ''}" data-bookmark-id="${bmId}" type="button" aria-pressed="${isBm ? 'true' : 'false'}" title="${isBm ? 'Remove bookmark' : 'Bookmark where you are'}">
-              <span class="bm-pin" aria-hidden="true"></span>
-              <span class="bm-label">${isBm ? 'Bookmarked' : 'Bookmark'}</span>
-            </button>
+            <div class="event-hero-actions">
+              <button class="watched-btn${isW ? ' active' : ''}" data-watched-id="${bmId}" type="button" aria-pressed="${isW ? 'true' : 'false'}" title="${isW ? 'Mark as not watched' : 'Mark this show watched'}">
+                <span class="wb-check" aria-hidden="true"></span>
+                <span class="wb-label">${isW ? 'Watched' : 'Mark watched'}</span>
+              </button>
+              <button class="bookmark-btn${isBm ? ' active' : ''}" data-bookmark-id="${bmId}" type="button" aria-pressed="${isBm ? 'true' : 'false'}" title="${isBm ? 'Remove bookmark' : 'Bookmark where you are'}">
+                <span class="bm-pin" aria-hidden="true"></span>
+                <span class="bm-label">${isBm ? 'Bookmarked' : 'Bookmark'}</span>
+              </button>
+            </div>
           </div>
           <h3 class="event-title-modal">${esc(title)}</h3>
           ${subtitle ? `<div class="event-meta-modal"><span class="piece">${esc(subtitle)}</span></div>` : ''}
@@ -3159,6 +3302,7 @@
   loadCalendar();
   route();
   refreshBookmarkUI();
+  refreshWatchedUI();
 })();
 </script>
 </body>
