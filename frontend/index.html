@@ -431,6 +431,61 @@
     .wr-meta, .wr-go { display: none; }
     .wr-date { width: auto; }
   }
+
+  /* Catch-up picker (bulk mark watched through a date) */
+  .catch-up {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+  }
+  .cu-label { font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--ink); }
+  .catch-up select {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .cu-apply {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 7px 14px;
+    background: var(--ink);
+    color: #FFF;
+    border: 1px solid var(--ink);
+    cursor: pointer;
+    transition: background 140ms, border-color 140ms;
+  }
+  .cu-apply:hover { background: var(--red); border-color: var(--red); }
+  .cu-preview { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+
+  /* Mark-month button (calendar header) */
+  .msh-right { display: flex; align-items: center; gap: 14px; }
+  .mark-month {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--ink-dim);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .mark-month:hover { border-color: var(--ink); color: var(--ink); }
+  .mark-month.active { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  .mark-month[hidden] { display: none; }
   .mini-chip.watched { opacity: 0.4; }
   @media (max-width: 600px) {
     .wp-bar { display: none; }
@@ -2109,7 +2164,10 @@
   <section class="content">
     <div class="month-section-head">
       <h2><span id="month-name">January</span><span class="year" id="month-year">2001</span></h2>
-      <div class="count"><strong id="month-count">0</strong> events this month</div>
+      <div class="msh-right">
+        <div class="count"><strong id="month-count">0</strong> events this month</div>
+        <button class="mark-month" id="mark-month-btn" type="button" hidden>Mark month watched</button>
+      </div>
     </div>
     <div class="weekdays">
       <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
@@ -2158,6 +2216,13 @@
     <h2>Watched</h2>
     <div class="saved-sub" id="watched-sub"></div>
     <div class="watched-progress-lg"><div class="wp-fill" id="watched-view-fill"></div></div>
+  </div>
+  <div class="catch-up">
+    <span class="cu-label">Seen a lot already? I have watched through</span>
+    <select id="cu-month" aria-label="Catch-up month"></select>
+    <select id="cu-year" aria-label="Catch-up year"></select>
+    <button class="cu-apply" id="cu-apply" type="button">Mark watched</button>
+    <span class="cu-preview" id="cu-preview"></span>
   </div>
   <div class="watched-controls">
     <div class="watched-filters" id="watched-filters">
@@ -2465,6 +2530,64 @@
       btn.title = on ? 'Mark as not watched' : 'Mark this show watched';
     });
     markWatchedChips();
+    updateMarkMonthBtn();
+  }
+
+  // ------------------ Bulk watched (catch-up + month) ---------------------
+  let currentMonthEvents = [];
+
+  function markWatchedBulk(ids, on) {
+    const now = Date.now();
+    let changed = 0;
+    for (const raw of ids) {
+      const id = String(raw);
+      if (on) { if (!watched.has(id)) { watched.set(id, now); changed++; } }
+      else if (watched.has(id)) { watched.delete(id); changed++; }
+    }
+    if (changed) { saveWatched(); refreshWatchedUI(); }
+    return changed;
+  }
+
+  // All event ids airing on or before cutoffIso (YYYY-MM-DD); air_date is
+  // zero-padded, so a plain string compare is chronological.
+  function eventIdsThrough(cutoffIso) {
+    const ids = [];
+    if (BUNDLE && BUNDLE.events_by_date) {
+      for (const iso in BUNDLE.events_by_date) {
+        if (iso <= cutoffIso) for (const id of BUNDLE.events_by_date[iso]) ids.push(String(id));
+      }
+    }
+    return ids;
+  }
+
+  function updateMarkMonthBtn() {
+    const btn = el('mark-month-btn');
+    if (!btn) return;
+    const ids = currentMonthEvents.map(e => String(e.id));
+    if (!ids.length) { btn.hidden = true; return; }
+    btn.hidden = false;
+    const allWatched = ids.every(id => watched.has(id));
+    btn.textContent = allWatched ? 'Unwatch this month' : 'Mark month watched';
+    btn.classList.toggle('active', allWatched);
+  }
+
+  function catchUpCutoff() {
+    const m = el('cu-month'), y = el('cu-year');
+    if (!m || !y || !m.value || !y.value) return null;
+    return `${y.value}-${String(m.value).padStart(2, '0')}-31`;
+  }
+
+  function updateCatchUpPreview() {
+    const prev = el('cu-preview'), m = el('cu-month'), y = el('cu-year');
+    if (!prev || !m || !y) return;
+    const cutoff = catchUpCutoff();
+    if (!cutoff) { prev.textContent = ''; return; }
+    const ids = eventIdsThrough(cutoff);
+    const fresh = ids.filter(id => !watched.has(id)).length;
+    const label = `${MONTHS[parseInt(m.value, 10) - 1]} ${y.value}`;
+    prev.textContent = fresh
+      ? `marks ${fresh.toLocaleString('en-US')} new show${fresh === 1 ? '' : 's'} (${ids.length.toLocaleString('en-US')} total through ${label})`
+      : `already caught up through ${label}`;
   }
 
   // ------------------ Watched history (Netflix-style) ---------------------
@@ -2485,6 +2608,37 @@
     });
     const sortSel = el('watched-sort');
     if (sortSel) sortSel.addEventListener('change', () => { watchedSort = sortSel.value; renderWatched(); });
+
+    const markMonthBtn = el('mark-month-btn');
+    if (markMonthBtn) markMonthBtn.addEventListener('click', () => {
+      const ids = currentMonthEvents.map(e => String(e.id));
+      if (!ids.length) return;
+      const allWatched = ids.every(id => watched.has(id));
+      markWatchedBulk(ids, !allWatched);
+    });
+
+    const cuMonth = el('cu-month'), cuYear = el('cu-year'), cuApply = el('cu-apply');
+    if (cuMonth && cuYear) {
+      MONTHS.forEach((m, i) => { const o = document.createElement('option'); o.value = i + 1; o.textContent = m; cuMonth.appendChild(o); });
+      const yr = (BUNDLE && BUNDLE.meta && BUNDLE.meta.year_range) || [2001, 2001];
+      for (let y = yr[0]; y <= yr[1]; y++) { const o = document.createElement('option'); o.value = y; o.textContent = y; cuYear.appendChild(o); }
+      let dM = 1, dY = yr[0];
+      if (watched.size && BUNDLE && BUNDLE.events) {
+        let maxIso = '';
+        for (const id of watched.keys()) { const ev = BUNDLE.events[id]; if (ev && ev.air_date > maxIso) maxIso = ev.air_date; }
+        if (maxIso) { dY = parseInt(maxIso.slice(0, 4), 10); dM = parseInt(maxIso.slice(5, 7), 10); }
+      }
+      cuMonth.value = dM; cuYear.value = dY;
+      cuMonth.addEventListener('change', updateCatchUpPreview);
+      cuYear.addEventListener('change', updateCatchUpPreview);
+      if (cuApply) cuApply.addEventListener('click', () => {
+        const cutoff = catchUpCutoff();
+        if (!cutoff) return;
+        markWatchedBulk(eventIdsThrough(cutoff), true);
+        renderWatched();
+      });
+      updateCatchUpPreview();
+    }
   }
 
   function renderWatched() {
@@ -2500,6 +2654,7 @@
     if (sub) sub.textContent = `${watched.size.toLocaleString('en-US')} of ${Number(total).toLocaleString('en-US')} shows watched`;
     const fill = el('watched-view-fill');
     if (fill) fill.style.width = (total ? Math.min(100, watched.size / total * 100) : 0) + '%';
+    updateCatchUpPreview();
 
     const counts = { all: items.length, Raw: 0, SmackDown: 0, PPV: 0 };
     for (const it of items) if (counts[it.ev.show_type] != null) counts[it.ev.show_type]++;
@@ -2716,11 +2871,13 @@
 
     try {
       const events = await getMonthEvents(year, month);
+      currentMonthEvents = events;
       monthCountEl.textContent = events.length;
 
       // Render calendar + hero immediately from summary data (fast path).
       renderCalendar(year, month, events);
       renderHero(events, year, month);
+      updateMarkMonthBtn();
 
       // Then, in the background, compute the roster from detailed data.
       // This runs after the calendar is already visible, so the user isn't blocked.
@@ -3806,12 +3963,12 @@
   }
   renderFooter();
 
+  setupWatchedNav();
   loadCalendar();
   route();
   refreshBookmarkUI();
   refreshWatchedUI();
   updateSavedTabCount();
-  setupWatchedNav();
 })();
 </script>
 </body>
