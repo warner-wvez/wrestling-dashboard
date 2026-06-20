@@ -164,27 +164,42 @@
     font-family: inherit;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--ink);
     cursor: pointer;
-    transition: background 140ms, color 140ms;
+    transition: background 140ms, color 140ms, box-shadow 140ms, border-color 140ms;
     justify-self: end;
   }
   .spoiler-btn:hover { background: var(--surface-soft); }
   .spoiler-btn .eye {
     width: 14px; height: 14px;
     background: var(--ink-dim);
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>") no-repeat center / contain;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><path d='M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24'/><line x1='1' y1='1' x2='23' y2='23'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><path d='M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24'/><line x1='1' y1='1' x2='23' y2='23'/></svg>") no-repeat center / contain;
   }
   .spoiler-btn[aria-pressed="true"] {
-    background: var(--ink);
+    background: var(--red);
+    border-color: var(--red);
     color: #FFF;
+    box-shadow: 0 0 0 3px var(--red-soft);
+    animation: spoiler-live 2.4s ease-in-out infinite;
+  }
+  .spoiler-btn[aria-pressed="true"]:hover {
+    background: var(--red-dark);
+    border-color: var(--red-dark);
+  }
+  @keyframes spoiler-live {
+    0%, 100% { box-shadow: 0 0 0 3px var(--red-soft); }
+    50% { box-shadow: 0 0 0 6px rgba(200,16,46,0.12); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spoiler-btn[aria-pressed="true"] { animation: none; }
   }
   .spoiler-btn[aria-pressed="true"] .eye {
     background: #FFF;
-    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><path d='M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24'/><line x1='1' y1='1' x2='23' y2='23'/></svg>");
-    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><path d='M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24'/><line x1='1' y1='1' x2='23' y2='23'/></svg>");
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>");
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>");
   }
 
   /* ---- Bookmark + Resume (persistent watch position) ----------------- */
@@ -1984,7 +1999,7 @@
     </button>
     <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
       <span class="eye"></span>
-      <span class="sp-label">Spoilers</span>
+      <span class="sp-label">Spoilers Off</span>
     </button>
   </div>
 </header>
@@ -2063,7 +2078,7 @@
     <div class="modal-toolbar">
       <button class="spoiler-btn modal-spoiler-btn" id="modal-spoiler-btn" aria-pressed="false" type="button">
         <span class="eye"></span>
-        <span class="sp-label">Spoilers</span>
+        <span class="sp-label">Spoilers Off</span>
       </button>
       <button class="modal-close" id="modal-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
@@ -2177,7 +2192,10 @@
     for (const btn of spoilerButtons) {
       btn.setAttribute('aria-pressed', spoilers ? 'true' : 'false');
       const label = btn.querySelector('.sp-label');
-      if (label) label.textContent = spoilers ? 'Hide spoilers' : 'Spoilers';
+      if (label) label.textContent = spoilers ? 'Spoilers On' : 'Spoilers Off';
+      btn.title = spoilers
+        ? 'Spoilers are ON: winners and finishes are visible. Click to hide them.'
+        : 'Spoilers are OFF: winners and finishes stay hidden. Click to reveal them.';
     }
   }
   function toggleSpoilers() {
