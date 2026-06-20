@@ -1083,6 +1083,238 @@
   }
 
   /* =============================================================
+     GLOBAL SEARCH
+     ============================================================= */
+  .search-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    padding: 9px 16px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .search-btn:hover { background: var(--surface-soft); }
+  .search-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .search-btn .search-ico {
+    width: 15px; height: 15px;
+    background: var(--ink-dim);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat center / contain;
+  }
+  .search-btn .search-kbd {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border-strong);
+    padding: 1px 6px;
+    color: var(--ink-dim);
+    background: var(--surface-soft);
+    letter-spacing: 0;
+  }
+
+  .search-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 200;
+    padding: 72px 16px 16px;
+  }
+  .search-backdrop.open { display: flex; animation: fade-in 140ms ease-out; }
+  .search-panel {
+    background: var(--bg);
+    border: 1px solid var(--ink);
+    width: min(96vw, 640px);
+    max-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 60px rgba(10,10,10,0.25);
+    animation: sheet-in 200ms cubic-bezier(0.2,0.8,0.2,1);
+  }
+  .search-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--ink);
+    flex: 0 0 auto;
+  }
+  .search-head-ico {
+    width: 18px; height: 18px; flex: 0 0 auto;
+    background: var(--ink);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat center / contain;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    padding: 0;
+  }
+  .search-input::placeholder { color: var(--ink-faint); }
+  .search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+  .search-clear {
+    flex: 0 0 auto;
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--ink-dim);
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .search-clear:hover { color: var(--red); }
+  .search-esc {
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-soft);
+    padding: 4px 8px;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: border-color 140ms, color 140ms;
+  }
+  .search-esc:hover { border-color: var(--ink); color: var(--ink); }
+
+  .search-results { overflow-y: auto; padding: 6px 0; flex: 1 1 auto; }
+  .search-hint {
+    padding: 30px 20px;
+    color: var(--ink-dim);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .search-hint em { font-style: normal; color: var(--red); font-weight: 700; }
+  .search-noresults {
+    padding: 30px 20px;
+    color: var(--ink-dim);
+    font-size: 14px;
+  }
+  .search-noresults strong { color: var(--ink); }
+
+  .sgroup-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 14px 18px 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .sgroup-n { color: var(--ink-dim); }
+  .sgroup-more {
+    padding: 4px 18px 10px;
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+  }
+
+  .sresult {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 9px 18px;
+    font-family: inherit;
+    color: var(--ink);
+    border-left: 2px solid transparent;
+  }
+  .sresult:hover, .sresult.active { background: var(--surface-soft); border-left-color: var(--red); }
+  .sresult .brand-chip { flex: 0 0 auto; margin-bottom: 0; padding: 3px 8px; font-size: 9px; }
+  .ss-ico {
+    width: 30px; height: 30px; flex: 0 0 auto;
+    border: 1px solid var(--border);
+    background-color: var(--surface-soft);
+    position: relative;
+  }
+  .ss-ico::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--ink-dim);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='8' r='4'/><path d='M5 21v-1a7 7 0 0 1 14 0v1'/></svg>") no-repeat center / 16px 16px;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='8' r='4'/><path d='M5 21v-1a7 7 0 0 1 14 0v1'/></svg>") no-repeat center / 16px 16px;
+  }
+  .ss-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 auto; }
+  .ss-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ss-title mark { background: var(--red-soft); color: var(--red-dark); font-weight: 800; padding: 0 1px; }
+  .ss-sub {
+    font-size: 12px;
+    color: var(--ink-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ss-sub mark { background: transparent; color: var(--red); font-weight: 700; }
+  .ss-go { flex: 0 0 auto; color: var(--ink-faint); font-size: 16px; transition: color 140ms, transform 140ms; }
+  .sresult:hover .ss-go, .sresult.active .ss-go { color: var(--red); transform: translateX(2px); }
+
+  .search-foot {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--ink-faint);
+    flex: 0 0 auto;
+  }
+  .search-foot kbd {
+    font-family: var(--font-mono);
+    border: 1px solid var(--border-strong);
+    padding: 1px 5px;
+    color: var(--ink-dim);
+    background: var(--surface-soft);
+    margin-right: 5px;
+  }
+  .search-foot kbd + kbd { margin-left: -2px; }
+  .search-foot-spacer { flex: 1 1 auto; }
+  .search-scope { color: var(--ink-dim); font-weight: 600; }
+
+  @media (max-width: 720px) {
+    .search-btn .search-btn-label, .search-btn .search-kbd { display: none; }
+    .search-btn { padding: 9px 12px; }
+  }
+  @media (max-width: 560px) {
+    .search-backdrop { padding: 16px 10px 10px; }
+    .search-foot { display: none; }
+    .search-input { font-size: 16px; }
+  }
+
+  /* =============================================================
      MODAL
      ============================================================= */
   .modal-backdrop {
@@ -2131,6 +2363,11 @@
     <button class="month-nav" id="month-next" aria-label="Next month" type="button">▶</button>
   </div>
   <div class="header-actions">
+    <button class="search-btn" id="search-btn" type="button" aria-label="Search events, wrestlers, and matches" title="Search events, wrestlers, and matches (press /)">
+      <span class="search-ico" aria-hidden="true"></span>
+      <span class="search-btn-label">Search</span>
+      <kbd class="search-kbd" aria-hidden="true">/</kbd>
+    </button>
     <button class="resume-btn" id="resume-btn" type="button" hidden aria-label="Resume where you left off">
       <span class="rs-pin" aria-hidden="true"></span>
       <span class="rs-label">Resume</span>
@@ -2242,6 +2479,28 @@
 <section id="view-wrestler" class="view" hidden>
   <div id="wrestler-profile-content"></div>
 </section>
+
+<!-- SEARCH OVERLAY (command palette; sibling of all views so it floats over any of them) -->
+<div id="search-backdrop" class="search-backdrop" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-panel">
+    <div class="search-head">
+      <span class="search-head-ico" aria-hidden="true"></span>
+      <input id="search-input" class="search-input" type="search" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="Search events, wrestlers, stipulations..."
+             aria-label="Search" aria-controls="search-results">
+      <button class="search-clear" id="search-clear" type="button" aria-label="Clear search" hidden>&times;</button>
+      <button class="search-esc" id="search-esc" type="button" aria-label="Close search">Esc</button>
+    </div>
+    <div id="search-results" class="search-results" role="listbox" aria-label="Search results"></div>
+    <div class="search-foot">
+      <span><kbd>&#8593;</kbd><kbd>&#8595;</kbd>navigate</span>
+      <span><kbd>&#8629;</kbd>open</span>
+      <span><kbd>esc</kbd>close</span>
+      <span class="search-foot-spacer"></span>
+      <span class="search-scope">Spoiler-safe: winners stay hidden</span>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL (sibling of all .view sections so it can render over any active view) -->
 <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true">
@@ -3948,6 +4207,333 @@
 
   window.addEventListener('hashchange', route);
 
+  // ------------------ Global search --------------------------------------
+  // A command-palette overlay that searches the whole corpus in one place:
+  // wrestlers (from the prebuilt roster index), events (title/venue/city), and
+  // individual matches (matchup/stipulation/title/type). Everything is built
+  // from BUNDLE in memory, so there are no fetches. Match results are
+  // spoiler-safe: they show who is in the match and where to find it, never
+  // who won, consistent with the rest of the app.
+  const searchBackdrop = el('search-backdrop');
+  const searchInput = el('search-input');
+  const searchResults = el('search-results');
+  const searchClearBtn = el('search-clear');
+  const searchBtn = el('search-btn');
+
+  const WR_CAP = 6, EV_CAP = 8, MA_CAP = 12;
+  let searchWrestlers = null;   // [{slug,name,total,ppv,years,hay}]
+  let searchEvents = null;      // [{id,date,show,name,hay}]
+  let searchMatches = null;     // [{eventId,matchId,date,show,matchup,sub,hay}]
+  let searchFlat = [];          // flat list of result DOM rows for keyboard nav
+  let searchActive = -1;        // index into searchFlat of the highlighted row
+  let searchDebounce = null;
+
+  const fmtN = (n) => Number(n || 0).toLocaleString('en-US');
+
+  // Build the in-memory indexes once, lazily, on first use.
+  function buildSearchIndexes() {
+    if (searchMatches) return;
+    searchWrestlers = [];
+    searchEvents = [];
+    searchMatches = [];
+    if (!BUNDLE) return;
+
+    if (BUNDLE.wrestlers) {
+      for (const w of Object.values(BUNDLE.wrestlers)) {
+        searchWrestlers.push({
+          slug: w.slug,
+          name: w.name,
+          total: w.total_matches || 0,
+          ppv: w.ppv_appearances || 0,
+          years: w.active_years || null,
+          hay: String(w.name || '').toLowerCase(),
+        });
+      }
+    }
+
+    for (const ev of Object.values(BUNDLE.events)) {
+      const showName = ev.show_type === 'PPV'
+        ? (ev.ppv_name || ev.title || 'Pay-Per-View')
+        : (ev.title || ev.show_type || 'Event');
+      const year = String(ev.air_date || '').slice(0, 4);
+      searchEvents.push({
+        id: ev.id,
+        date: ev.air_date,
+        show: ev.show_type,
+        name: showName,
+        hay: [showName, ev.venue, ev.city, ev.state_province, ev.show_type, year,
+              (ev.show_type === 'PPV' ? 'ppv pay per view premium live event' : '')]
+              .filter(Boolean).join(' ').toLowerCase(),
+      });
+      for (const m of (ev.matches || [])) {
+        const matchup = matchupLabel(m);
+        const subBits = [m.match_type, m.stipulation, m.title_at_stake].filter(Boolean);
+        searchMatches.push({
+          eventId: ev.id,
+          matchId: m.id,
+          date: ev.air_date,
+          show: ev.show_type,
+          matchup: matchup || (m.match_type || 'Match'),
+          sub: subBits.join(' · '),
+          showName,
+          hay: [matchup, m.stipulation, m.title_at_stake, m.match_type, showName]
+                .filter(Boolean).join(' ').toLowerCase(),
+        });
+      }
+    }
+  }
+
+  const searchTokens = (q) => q.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  const allTokensIn = (hay, toks) => {
+    for (const t of toks) if (hay.indexOf(t) === -1) return false;
+    return true;
+  };
+
+  // Highlight matched tokens in display text. Escape first, then wrap hits in
+  // <mark> with a SINGLE combined-regex pass. A per-token loop would re-scan the
+  // <mark> markup inserted by earlier tokens (e.g. the token "a" matching the
+  // "a" inside "<mark>"), shredding the tags; one pass over the tag-free escaped
+  // string avoids that entirely. 1-char tokens are skipped to cut noise.
+  function hlSearch(text, toks) {
+    const out = esc(text);
+    const useful = toks
+      .filter(t => t && t.length >= 2)
+      .map(t => esc(t).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length); // longer tokens win when they overlap
+    if (!useful.length) return out;
+    try {
+      return out.replace(new RegExp('(' + useful.join('|') + ')', 'ig'), '<mark>$1</mark>');
+    } catch (_) { return out; }
+  }
+
+  function scoreWrestler(w, toks, joined) {
+    const n = w.hay;
+    if (n === joined) return 0;                 // exact name
+    if (n.startsWith(joined)) return 1;         // name starts with the query
+    if ((' ' + n).indexOf(' ' + toks[0]) !== -1) return 2; // a word starts with first token
+    return 3;
+  }
+
+  function runSearch(raw) {
+    const q = (raw || '').trim();
+    searchClearBtn.hidden = !q;
+    if (!q) { renderSearchEmpty(); return; }
+    buildSearchIndexes();
+    const toks = searchTokens(q);
+    const joined = toks.join(' ');
+
+    let wr = searchWrestlers.filter(w => allTokensIn(w.hay, toks))
+      .map(w => { w._s = scoreWrestler(w, toks, joined); return w; })
+      .sort((a, b) => a._s - b._s || b.total - a.total || a.name.localeCompare(b.name));
+    const wrTotal = wr.length; wr = wr.slice(0, WR_CAP);
+
+    let ev = searchEvents.filter(e => allTokensIn(e.hay, toks))
+      .sort((a, b) =>
+        ((a.show === 'PPV' ? 0 : 1) - (b.show === 'PPV' ? 0 : 1)) ||
+        (a.date || '').localeCompare(b.date || ''));
+    const evTotal = ev.length; ev = ev.slice(0, EV_CAP);
+
+    let ma = searchMatches.filter(m => allTokensIn(m.hay, toks))
+      .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    const maTotal = ma.length; ma = ma.slice(0, MA_CAP);
+
+    renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal });
+  }
+
+  function renderSearchEmpty() {
+    searchFlat = []; searchActive = -1;
+    const meta = BUNDLE && BUNDLE.meta;
+    const counts = meta
+      ? `${fmtN(meta.event_count)} events, ${fmtN(meta.match_count)} matches,`
+      : 'every event, match,';
+    searchResults.innerHTML =
+      `<div class="search-hint">Search ${counts} and the full roster. Try a wrestler, a PPV, a venue, or a stipulation like <em>Hell in a Cell</em> or <em>Ladder Match</em>.</div>`;
+  }
+
+  function brandChip(show) {
+    const cls = SHOW_CLASS[show] || '';
+    const label = show === 'PPV' ? 'PPV' : show;
+    return `<span class="brand-chip ${cls}">${esc(label)}</span>`;
+  }
+
+  function renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal }) {
+    if (!wr.length && !ev.length && !ma.length) {
+      searchFlat = []; searchActive = -1;
+      searchResults.innerHTML =
+        `<div class="search-noresults">No results for <strong>${esc(q)}</strong>. Try a different spelling, a single name, or a stipulation.</div>`;
+      return;
+    }
+    const html = [];
+
+    if (wr.length) {
+      html.push(`<div class="sgroup-head">Wrestlers <span class="sgroup-n">${wrTotal}</span></div>`);
+      for (const w of wr) {
+        const yr = w.years
+          ? (w.years[0] === w.years[1] ? String(w.years[0]) : `${w.years[0]}–${w.years[1]}`)
+          : '';
+        const sub = [`${fmtN(w.total)} match${w.total === 1 ? '' : 'es'}`,
+                     w.ppv ? `${fmtN(w.ppv)} PPV` : null, yr].filter(Boolean).join(' · ');
+        html.push(
+          `<button class="sresult" role="option" type="button" data-kind="wrestler" data-slug="${esc(w.slug)}">
+             <span class="ss-ico" aria-hidden="true"></span>
+             <span class="ss-main">
+               <span class="ss-title">${hlSearch(w.name, toks)}</span>
+               <span class="ss-sub">${esc(sub)}</span>
+             </span>
+             <span class="ss-go" aria-hidden="true">&#8594;</span>
+           </button>`);
+      }
+      if (wrTotal > wr.length) html.push(`<div class="sgroup-more">+${wrTotal - wr.length} more wrestlers</div>`);
+    }
+
+    if (ev.length) {
+      html.push(`<div class="sgroup-head">Events <span class="sgroup-n">${evTotal}</span></div>`);
+      for (const e of ev) {
+        html.push(
+          `<button class="sresult" role="option" type="button" data-kind="event" data-event="${esc(String(e.id))}">
+             ${brandChip(e.show)}
+             <span class="ss-main">
+               <span class="ss-title">${hlSearch(e.name, toks)}</span>
+               <span class="ss-sub">${esc(fmtDateLong(e.date))}</span>
+             </span>
+             <span class="ss-go" aria-hidden="true">&#8594;</span>
+           </button>`);
+      }
+      if (evTotal > ev.length) html.push(`<div class="sgroup-more">+${evTotal - ev.length} more events</div>`);
+    }
+
+    if (ma.length) {
+      html.push(`<div class="sgroup-head">Matches <span class="sgroup-n">${maTotal}</span></div>`);
+      for (const m of ma) {
+        const sub = [m.sub, m.showName, fmtDateLong(m.date)].filter(Boolean).join(' · ');
+        html.push(
+          `<button class="sresult" role="option" type="button" data-kind="match" data-event="${esc(String(m.eventId))}" data-match="${esc(String(m.matchId))}">
+             ${brandChip(m.show)}
+             <span class="ss-main">
+               <span class="ss-title">${hlSearch(m.matchup, toks)}</span>
+               <span class="ss-sub">${hlSearch(sub, toks)}</span>
+             </span>
+             <span class="ss-go" aria-hidden="true">&#8594;</span>
+           </button>`);
+      }
+      if (maTotal > ma.length) html.push(`<div class="sgroup-more">+${maTotal - ma.length} more matches</div>`);
+    }
+
+    searchResults.innerHTML = html.join('');
+    searchFlat = Array.from(searchResults.querySelectorAll('.sresult'));
+    searchActive = -1;
+    searchResults.scrollTop = 0;
+  }
+
+  function setSearchActive(idx) {
+    if (!searchFlat.length) return;
+    if (idx < 0) idx = searchFlat.length - 1;
+    if (idx >= searchFlat.length) idx = 0;
+    if (searchActive >= 0 && searchFlat[searchActive]) searchFlat[searchActive].classList.remove('active');
+    searchActive = idx;
+    const row = searchFlat[searchActive];
+    row.classList.add('active');
+    row.scrollIntoView({ block: 'nearest' });
+  }
+
+  function activateSearchRow(row) {
+    if (!row) return;
+    const kind = row.getAttribute('data-kind');
+    closeSearch();
+    if (kind === 'wrestler') {
+      wrestlerSource = null;
+      window.location.hash = '#wrestler/' + row.getAttribute('data-slug');
+    } else if (kind === 'event') {
+      navigateToEvent(row.getAttribute('data-event'));
+    } else if (kind === 'match') {
+      navigateToEvent(row.getAttribute('data-event'), row.getAttribute('data-match'));
+    }
+  }
+
+  function openSearch() {
+    if (searchBackdrop.classList.contains('open')) { searchInput.focus(); return; }
+    buildSearchIndexes();
+    searchInput.value = '';
+    renderSearchEmpty();
+    searchClearBtn.hidden = true;
+    searchBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => searchInput.focus());
+  }
+
+  function closeSearch() {
+    if (!searchBackdrop.classList.contains('open')) return;
+    searchBackdrop.classList.remove('open');
+    searchActive = -1;
+    // Only release the scroll lock if the event modal isn't also open.
+    if (!mBackdrop.classList.contains('open')) document.body.style.overflow = '';
+  }
+
+  function setupSearch() {
+    if (!searchBackdrop || !searchInput) return;
+
+    searchBtn.addEventListener('click', openSearch);
+    el('search-esc').addEventListener('click', closeSearch);
+    searchClearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      runSearch('');
+      searchInput.focus();
+    });
+
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      const v = searchInput.value;
+      searchDebounce = setTimeout(() => runSearch(v), 110);
+    });
+
+    // Close when clicking the dimmed backdrop, but not the panel itself.
+    searchBackdrop.addEventListener('click', (e) => { if (e.target === searchBackdrop) closeSearch(); });
+
+    // Click delegation for result rows.
+    searchResults.addEventListener('click', (e) => {
+      const row = e.target.closest('.sresult');
+      if (row) activateSearchRow(row);
+    });
+    // Keep the keyboard cursor in sync with the mouse.
+    searchResults.addEventListener('mousemove', (e) => {
+      const row = e.target.closest('.sresult');
+      if (row) { const i = searchFlat.indexOf(row); if (i !== -1 && i !== searchActive) setSearchActive(i); }
+    });
+
+    // In-overlay keyboard handling.
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setSearchActive(searchActive + 1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setSearchActive(searchActive - 1); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        activateSearchRow(searchActive >= 0 ? searchFlat[searchActive] : searchFlat[0]);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeSearch();
+      }
+    });
+
+    // Global shortcuts: "/" or Cmd/Ctrl+K to open, when not typing elsewhere.
+    document.addEventListener('keydown', (e) => {
+      const open = searchBackdrop.classList.contains('open');
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        open ? closeSearch() : openSearch();
+        return;
+      }
+      if (e.key === '/' && !open && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        const t = e.target;
+        const tag = t && t.tagName;
+        const typing = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable);
+        if (typing) return;
+        if (mBackdrop.classList.contains('open')) return; // don't hijack while reading a card
+        e.preventDefault();
+        openSearch();
+      }
+    });
+  }
+
   // ------------------ Footer ----------------------------------------------
   function renderFooter() {
     const line = el('page-footer-line');
@@ -3964,6 +4550,7 @@
   renderFooter();
 
   setupWatchedNav();
+  setupSearch();
   loadCalendar();
   route();
   refreshBookmarkUI();
