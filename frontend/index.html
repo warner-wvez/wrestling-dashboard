@@ -323,8 +323,17 @@
     gap: 10px;
     margin-left: auto;
     align-self: center;
-    padding-bottom: 2px;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 5px 8px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 140ms, border-color 140ms;
   }
+  .watch-progress:hover { background: var(--surface-soft); border-color: var(--border-strong); }
+  .watch-progress.active { background: var(--surface-soft); border-color: var(--ink); }
+  .watch-progress::after { content: '\203A'; color: var(--ink-faint); font-weight: 700; font-size: 14px; line-height: 1; }
   .wp-bar {
     width: 120px;
     height: 6px;
@@ -347,6 +356,81 @@
     white-space: nowrap;
   }
   .wp-text strong { color: var(--ink); font-weight: 700; }
+
+  /* Watched history view */
+  .watched-progress-lg {
+    height: 8px;
+    max-width: 360px;
+    margin-top: 12px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .watched-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .watched-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .wf-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 6px 12px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .wf-chip:hover { border-color: var(--ink); color: var(--ink); }
+  .wf-chip.active { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  .wf-chip .wf-n { font-family: var(--font-mono); font-size: 10px; opacity: 0.7; }
+  #watched-view-content { display: flex; flex-direction: column; gap: 8px; }
+  .watched-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    padding: 11px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 140ms, box-shadow 140ms, transform 140ms;
+  }
+  .watched-row:hover { border-color: var(--ink); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+  .wr-check {
+    width: 16px; height: 16px; flex-shrink: 0;
+    background: var(--red);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12.5l5 5L20 6.5'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12.5l5 5L20 6.5'/></svg>") no-repeat center / contain;
+  }
+  .wr-date { flex-shrink: 0; width: 96px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.02em; }
+  .wr-show { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; }
+  .wr-show .brand-chip { flex-shrink: 0; margin-bottom: 0; padding: 2px 7px; font-size: 9px; }
+  .wr-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--ink); }
+  .wr-meta { flex-shrink: 0; font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+  .wr-go { flex-shrink: 0; font-family: var(--font-sans); font-size: 11px; font-weight: 700; color: var(--red); white-space: nowrap; }
+  .wr-remove {
+    flex-shrink: 0;
+    font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+    color: var(--ink-faint); padding: 4px 8px; border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .wr-remove:hover { color: var(--red); border-color: var(--red); }
+  @media (max-width: 700px) {
+    .wr-meta, .wr-go { display: none; }
+    .wr-date { width: auto; }
+  }
   .mini-chip.watched { opacity: 0.4; }
   @media (max-width: 600px) {
     .wp-bar { display: none; }
@@ -2008,10 +2092,11 @@
   <button class="tab active" data-view="calendar" type="button">Calendar</button>
   <button class="tab" data-view="roster" type="button">Roster</button>
   <button class="tab" data-view="saved" type="button">Saved<span class="tab-count" id="saved-tab-count" hidden></span></button>
-  <div class="watch-progress" id="watch-progress" title="Shows you have marked watched">
+  <button class="tab" data-view="watched" type="button">Watched</button>
+  <button class="watch-progress" id="watch-progress" type="button" title="See everything you have watched">
     <div class="wp-bar"><div class="wp-fill" id="wp-fill"></div></div>
     <span class="wp-text"><strong id="watched-count">0</strong> / <span id="watched-total">0</span> watched</span>
-  </div>
+  </button>
 </nav>
 
 <section id="view-calendar" class="view">
@@ -2066,6 +2151,27 @@
     <div class="saved-sub" id="saved-sub"></div>
   </div>
   <div id="saved-view-content"></div>
+</section>
+
+<section id="view-watched" class="view" hidden>
+  <div class="saved-view-header">
+    <h2>Watched</h2>
+    <div class="saved-sub" id="watched-sub"></div>
+    <div class="watched-progress-lg"><div class="wp-fill" id="watched-view-fill"></div></div>
+  </div>
+  <div class="watched-controls">
+    <div class="watched-filters" id="watched-filters">
+      <button class="wf-chip active" type="button" data-wfilter="all">All <span class="wf-n" data-wcount="all">0</span></button>
+      <button class="wf-chip" type="button" data-wfilter="Raw">Raw <span class="wf-n" data-wcount="Raw">0</span></button>
+      <button class="wf-chip" type="button" data-wfilter="SmackDown">SmackDown <span class="wf-n" data-wcount="SmackDown">0</span></button>
+      <button class="wf-chip" type="button" data-wfilter="PPV">PPV <span class="wf-n" data-wcount="PPV">0</span></button>
+    </div>
+    <select class="roster-sort" id="watched-sort" aria-label="Sort watched shows">
+      <option value="recent">Recently watched</option>
+      <option value="airdate">Air date</option>
+    </select>
+  </div>
+  <div id="watched-view-content"></div>
 </section>
 
 <section id="view-wrestler" class="view" hidden>
@@ -2298,14 +2404,22 @@
   // persists per browser/device. Drives the per-show toggle and the global
   // "N / total watched" meter in the tabs row.
   const WATCHED_KEY = 'wvez_wrestling_watched';
+  // Map of eventId -> timestamp watched (ms). Timestamps drive the Watched
+  // history's "recently watched" order. Migrates the old array-of-ids format.
   let watched = (() => {
-    let arr = [];
-    try { arr = JSON.parse(localStorage.getItem(WATCHED_KEY) || '[]'); } catch (_) {}
-    const set = new Set(Array.isArray(arr) ? arr.map(String) : []);
-    if (BUNDLE && BUNDLE.events) {
-      for (const id of [...set]) if (!BUNDLE.events[id]) set.delete(id); // drop stale ids
+    let raw = [];
+    try { raw = JSON.parse(localStorage.getItem(WATCHED_KEY) || '[]'); } catch (_) {}
+    const m = new Map();
+    if (Array.isArray(raw)) {
+      for (const item of raw) {
+        if (Array.isArray(item)) m.set(String(item[0]), Number(item[1]) || 0); // [id, ts]
+        else if (item != null) m.set(String(item), 0);                          // legacy: id only
+      }
     }
-    return set;
+    if (BUNDLE && BUNDLE.events) {
+      for (const id of [...m.keys()]) if (!BUNDLE.events[id]) m.delete(id); // drop stale ids
+    }
+    return m;
   })();
 
   function saveWatched() {
@@ -2316,9 +2430,11 @@
     if (id == null || id === '') return;
     id = String(id);
     if (watched.has(id)) watched.delete(id);
-    else watched.add(id);
+    else watched.set(id, Date.now());
     saveWatched();
     refreshWatchedUI();
+    const wv = document.getElementById('view-watched');
+    if (wv && !wv.hidden) renderWatched();
   }
 
   // Dim the chips of watched events in the month currently rendered. Chips
@@ -2349,6 +2465,90 @@
       btn.title = on ? 'Mark as not watched' : 'Mark this show watched';
     });
     markWatchedChips();
+  }
+
+  // ------------------ Watched history (Netflix-style) ---------------------
+  // A browsable log of every show marked watched, reached via the progress
+  // meter or the Watched tab. Each row reopens its card so you can revisit it.
+  let watchedFilter = 'all';
+  let watchedSort = 'recent';
+
+  function setupWatchedNav() {
+    const meter = el('watch-progress');
+    if (meter) meter.addEventListener('click', () => { window.location.hash = '#watched'; });
+    const filters = el('watched-filters');
+    if (filters) filters.addEventListener('click', (e) => {
+      const chip = e.target.closest('[data-wfilter]');
+      if (!chip) return;
+      watchedFilter = chip.getAttribute('data-wfilter');
+      renderWatched();
+    });
+    const sortSel = el('watched-sort');
+    if (sortSel) sortSel.addEventListener('change', () => { watchedSort = sortSel.value; renderWatched(); });
+  }
+
+  function renderWatched() {
+    const container = el('watched-view-content');
+    if (!container) return;
+    const total = (BUNDLE && BUNDLE.meta && BUNDLE.meta.event_count) || watched.size;
+    const items = [];
+    for (const [id, ts] of watched) {
+      const ev = BUNDLE && BUNDLE.events && BUNDLE.events[id];
+      if (ev) items.push({ ev, ts });
+    }
+    const sub = el('watched-sub');
+    if (sub) sub.textContent = `${watched.size.toLocaleString('en-US')} of ${Number(total).toLocaleString('en-US')} shows watched`;
+    const fill = el('watched-view-fill');
+    if (fill) fill.style.width = (total ? Math.min(100, watched.size / total * 100) : 0) + '%';
+
+    const counts = { all: items.length, Raw: 0, SmackDown: 0, PPV: 0 };
+    for (const it of items) if (counts[it.ev.show_type] != null) counts[it.ev.show_type]++;
+    document.querySelectorAll('#watched-filters [data-wcount]').forEach(n => {
+      n.textContent = (counts[n.getAttribute('data-wcount')] || 0).toLocaleString('en-US');
+    });
+    document.querySelectorAll('#watched-filters [data-wfilter]').forEach(c => {
+      c.classList.toggle('active', c.getAttribute('data-wfilter') === watchedFilter);
+    });
+
+    if (!items.length) {
+      container.innerHTML = `<div class="saved-empty">Nothing watched yet. Open a show and hit <strong>Mark watched</strong> to build your history here.</div>`;
+      return;
+    }
+    let list = watchedFilter === 'all' ? items.slice() : items.filter(it => it.ev.show_type === watchedFilter);
+    if (watchedSort === 'recent') list.sort((a, b) => (b.ts || 0) - (a.ts || 0) || (b.ev.air_date || '').localeCompare(a.ev.air_date || ''));
+    else list.sort((a, b) => (a.ev.air_date || '').localeCompare(b.ev.air_date || ''));
+    if (!list.length) {
+      container.innerHTML = `<div class="saved-empty">No watched shows in this filter.</div>`;
+      return;
+    }
+    container.innerHTML = list.map(({ ev }) => {
+      const showName = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
+      const cls = SHOW_CLASS[ev.show_type] || '';
+      return `
+        <button class="watched-row" type="button" data-go-event="${esc(String(ev.id))}">
+          <span class="wr-check" aria-hidden="true"></span>
+          <span class="wr-date">${esc(fmtDateLong(ev.air_date))}</span>
+          <span class="wr-show"><span class="brand-chip ${cls}">${esc(ev.show_type === 'PPV' ? 'PPV' : ev.show_type)}</span><span class="wr-name">${esc(showName)}</span></span>
+          <span class="wr-meta">${ev.match_count != null ? esc(ev.match_count + ' matches') : ''}</span>
+          <span class="wr-go">Rewatch</span>
+          <span class="wr-remove" data-unwatch="${esc(String(ev.id))}" role="button" tabindex="0" title="Remove from watched">Remove</span>
+        </button>`;
+    }).join('');
+    container.querySelectorAll('.watched-row').forEach(row => {
+      row.addEventListener('click', (e) => {
+        if (e.target.closest('[data-unwatch]')) return;
+        navigateToEvent(row.getAttribute('data-go-event'));
+      });
+    });
+    container.querySelectorAll('[data-unwatch]').forEach(rm => {
+      const h = (e) => {
+        e.stopPropagation(); e.preventDefault();
+        watched.delete(rm.getAttribute('data-unwatch'));
+        saveWatched(); refreshWatchedUI(); renderWatched();
+      };
+      rm.addEventListener('click', h);
+      rm.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') h(e); });
+    });
   }
 
   // ------------------ Saved matches ---------------------------------------
@@ -3540,6 +3740,8 @@
     const hash = window.location.hash;
     document.querySelectorAll('section.view').forEach(v => { v.hidden = true; });
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const meterEl = document.getElementById('watch-progress');
+    if (meterEl) meterEl.classList.remove('active');
 
     if (hash.startsWith('#wrestler/')) {
       const slug = hash.slice('#wrestler/'.length);
@@ -3555,6 +3757,14 @@
       // Browser scroll restoration may otherwise leave the user mid-roster
       // when arriving from a wrestler profile (different content height,
       // stale scroll offset). Always land at the top of the roster.
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } else if (hash === '#watched') {
+      const v = document.getElementById('view-watched');
+      if (v) v.hidden = false;
+      const tab = document.querySelector('.tab[data-view="watched"]');
+      if (tab) tab.classList.add('active');
+      if (meterEl) meterEl.classList.add('active');
+      renderWatched();
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else if (hash === '#saved') {
       const v = document.getElementById('view-saved');
@@ -3601,6 +3811,7 @@
   refreshBookmarkUI();
   refreshWatchedUI();
   updateSavedTabCount();
+  setupWatchedNav();
 })();
 </script>
 </body>
