@@ -585,15 +585,20 @@
     border: 1px solid var(--border);
   }
   .cu-label { font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--ink); }
-  .catch-up select {
+  .catch-up select,
+  .cu-date {
     font-family: var(--font-mono);
     font-size: 12px;
-    padding: 6px 8px;
+    padding: 6px 10px;
     border: 1px solid var(--border-strong);
     background: var(--surface);
     color: var(--ink);
     cursor: pointer;
   }
+  .cu-date:hover { border-color: var(--ink); }
+  .cu-date:focus { outline: 2px solid var(--red); outline-offset: -2px; }
+  .cu-date::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.6; }
+  .cu-date::-webkit-calendar-picker-indicator:hover { opacity: 1; }
   .cu-apply {
     font-family: var(--font-sans);
     font-size: 12px;
@@ -696,6 +701,40 @@
     color: var(--ink-dim);
     margin-top: 4px;
   }
+
+  /* My List: one tab combining Watched history + Saved matches */
+  .mylist-header { margin-bottom: 8px; }
+  .mylist-header h2 {
+    font-family: var(--font-sans);
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .mylist-sub {
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-top: 4px;
+  }
+  .ml-section {
+    margin-top: 30px;
+    padding-top: 26px;
+    border-top: 1px solid var(--ink);
+  }
+  .ml-section:first-of-type { border-top: none; padding-top: 10px; }
+  .ml-section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .ml-section-head h3 {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.005em;
+  }
+  .ml-section-head .saved-sub { margin-top: 0; }
+
   .saved-empty {
     padding: 48px 24px;
     text-align: center;
@@ -2518,12 +2557,7 @@
 <nav class="tabs" id="main-tabs">
   <button class="tab active" data-view="calendar" type="button">Calendar</button>
   <button class="tab" data-view="roster" type="button">Roster</button>
-  <button class="tab" data-view="saved" type="button">Saved<span class="tab-count" id="saved-tab-count" hidden></span></button>
-  <button class="tab" data-view="watched" type="button">Watched</button>
-  <button class="watch-progress" id="watch-progress" type="button" title="See everything you have watched">
-    <div class="wp-bar"><div class="wp-fill" id="wp-fill"></div></div>
-    <span class="wp-text"><strong id="watched-count">0</strong> / <span id="watched-total">0</span> watched</span>
-  </button>
+  <button class="tab" data-view="mylist" type="button">My List</button>
 </nav>
 
 <section id="view-calendar" class="view">
@@ -2575,40 +2609,48 @@
   <div id="roster-view-content"></div>
 </section>
 
-<section id="view-saved" class="view" hidden>
-  <div class="saved-view-header">
-    <h2>Saved matches</h2>
-    <div class="saved-sub" id="saved-sub"></div>
+<section id="view-mylist" class="view" hidden>
+  <div class="mylist-header">
+    <h2>My List</h2>
+    <div class="mylist-sub">Your watch history and saved matches. Kept on this device, no account needed.</div>
   </div>
-  <div id="saved-view-content"></div>
-</section>
 
-<section id="view-watched" class="view" hidden>
-  <div class="saved-view-header">
-    <h2>Watched</h2>
-    <div class="saved-sub" id="watched-sub"></div>
-    <div class="watched-progress-lg"><div class="wp-fill" id="watched-view-fill"></div></div>
-  </div>
-  <div class="catch-up">
-    <span class="cu-label">Seen a lot already? I have watched through</span>
-    <select id="cu-month" aria-label="Catch-up month"></select>
-    <select id="cu-year" aria-label="Catch-up year"></select>
-    <button class="cu-apply" id="cu-apply" type="button">Mark watched</button>
-    <span class="cu-preview" id="cu-preview"></span>
-  </div>
-  <div class="watched-controls">
-    <div class="watched-filters" id="watched-filters">
-      <button class="wf-chip active" type="button" data-wfilter="all">All <span class="wf-n" data-wcount="all">0</span></button>
-      <button class="wf-chip" type="button" data-wfilter="Raw">Raw <span class="wf-n" data-wcount="Raw">0</span></button>
-      <button class="wf-chip" type="button" data-wfilter="SmackDown">SmackDown <span class="wf-n" data-wcount="SmackDown">0</span></button>
-      <button class="wf-chip" type="button" data-wfilter="PPV">PPV <span class="wf-n" data-wcount="PPV">0</span></button>
+  <!-- Watched shows: the history behind your Continue position -->
+  <div class="ml-section">
+    <div class="ml-section-head">
+      <h3>Watched shows</h3>
+      <span class="saved-sub" id="watched-sub"></span>
     </div>
-    <select class="roster-sort" id="watched-sort" aria-label="Sort watched shows">
-      <option value="recent">Recently watched</option>
-      <option value="airdate">Air date</option>
-    </select>
+    <div class="watched-progress-lg"><div class="wp-fill" id="watched-view-fill"></div></div>
+    <div class="catch-up">
+      <span class="cu-label">Seen a lot already? I have watched through</span>
+      <input type="date" id="cu-date" class="cu-date" aria-label="Catch-up date">
+      <button class="cu-apply" id="cu-apply" type="button">Mark watched</button>
+      <span class="cu-preview" id="cu-preview"></span>
+    </div>
+    <div class="watched-controls">
+      <div class="watched-filters" id="watched-filters">
+        <button class="wf-chip active" type="button" data-wfilter="all">All <span class="wf-n" data-wcount="all">0</span></button>
+        <button class="wf-chip" type="button" data-wfilter="Raw">Raw <span class="wf-n" data-wcount="Raw">0</span></button>
+        <button class="wf-chip" type="button" data-wfilter="SmackDown">SmackDown <span class="wf-n" data-wcount="SmackDown">0</span></button>
+        <button class="wf-chip" type="button" data-wfilter="PPV">PPV <span class="wf-n" data-wcount="PPV">0</span></button>
+      </div>
+      <select class="roster-sort" id="watched-sort" aria-label="Sort watched shows">
+        <option value="recent">Recently watched</option>
+        <option value="airdate">Air date</option>
+      </select>
+    </div>
+    <div id="watched-view-content"></div>
   </div>
-  <div id="watched-view-content"></div>
+
+  <!-- Saved matches: individual matches the viewer bookmarked -->
+  <div class="ml-section">
+    <div class="ml-section-head">
+      <h3>Saved matches</h3>
+      <span class="saved-sub" id="saved-sub"></span>
+    </div>
+    <div id="saved-view-content"></div>
+  </div>
 </section>
 
 <section id="view-wrestler" class="view" hidden>
@@ -2988,7 +3030,7 @@
     else watched.set(id, Date.now());
     saveWatched();
     refreshWatchedUI();
-    const wv = document.getElementById('view-watched');
+    const wv = document.getElementById('view-mylist');
     if (wv && !wv.hidden) renderWatched();
   }
 
@@ -3062,20 +3104,22 @@
     btn.classList.toggle('active', allWatched);
   }
 
+  // The catch-up cutoff is now a specific day (YYYY-MM-DD). eventIdsThrough
+  // does a string compare, so picking April 15 marks everything on or before
+  // April 15, not the whole month.
   function catchUpCutoff() {
-    const m = el('cu-month'), y = el('cu-year');
-    if (!m || !y || !m.value || !y.value) return null;
-    return `${y.value}-${String(m.value).padStart(2, '0')}-31`;
+    const d = el('cu-date');
+    return (d && d.value) ? d.value : null;
   }
 
   function updateCatchUpPreview() {
-    const prev = el('cu-preview'), m = el('cu-month'), y = el('cu-year');
-    if (!prev || !m || !y) return;
+    const prev = el('cu-preview');
+    if (!prev) return;
     const cutoff = catchUpCutoff();
     if (!cutoff) { prev.textContent = ''; return; }
     const ids = eventIdsThrough(cutoff);
     const fresh = ids.filter(id => !watched.has(id)).length;
-    const label = `${MONTHS[parseInt(m.value, 10) - 1]} ${y.value}`;
+    const label = fmtDateLong(cutoff);
     prev.textContent = fresh
       ? `marks ${fresh.toLocaleString('en-US')} new show${fresh === 1 ? '' : 's'} (${ids.length.toLocaleString('en-US')} total through ${label})`
       : `already caught up through ${label}`;
@@ -3088,8 +3132,6 @@
   let watchedSort = 'recent';
 
   function setupWatchedNav() {
-    const meter = el('watch-progress');
-    if (meter) meter.addEventListener('click', () => { window.location.hash = '#watched'; });
     const filters = el('watched-filters');
     if (filters) filters.addEventListener('click', (e) => {
       const chip = e.target.closest('[data-wfilter]');
@@ -3108,20 +3150,22 @@
       markWatchedBulk(ids, !allWatched);
     });
 
-    const cuMonth = el('cu-month'), cuYear = el('cu-year'), cuApply = el('cu-apply');
-    if (cuMonth && cuYear) {
-      MONTHS.forEach((m, i) => { const o = document.createElement('option'); o.value = i + 1; o.textContent = m; cuMonth.appendChild(o); });
+    const cuDate = el('cu-date'), cuApply = el('cu-apply');
+    if (cuDate) {
       const yr = (BUNDLE && BUNDLE.meta && BUNDLE.meta.year_range) || [2001, 2001];
-      for (let y = yr[0]; y <= yr[1]; y++) { const o = document.createElement('option'); o.value = y; o.textContent = y; cuYear.appendChild(o); }
-      let dM = 1, dY = yr[0];
+      cuDate.min = `${yr[0]}-01-01`;
+      cuDate.max = `${yr[1]}-12-31`;
+      // Default to the latest day already watched, else the corpus start, so the
+      // picker opens right where the viewer left off.
+      let def = `${yr[0]}-01-01`;
       if (watched.size && BUNDLE && BUNDLE.events) {
         let maxIso = '';
         for (const id of watched.keys()) { const ev = BUNDLE.events[id]; if (ev && ev.air_date > maxIso) maxIso = ev.air_date; }
-        if (maxIso) { dY = parseInt(maxIso.slice(0, 4), 10); dM = parseInt(maxIso.slice(5, 7), 10); }
+        if (maxIso) def = maxIso;
       }
-      cuMonth.value = dM; cuYear.value = dY;
-      cuMonth.addEventListener('change', updateCatchUpPreview);
-      cuYear.addEventListener('change', updateCatchUpPreview);
+      cuDate.value = def;
+      cuDate.addEventListener('change', updateCatchUpPreview);
+      cuDate.addEventListener('input', updateCatchUpPreview);
       if (cuApply) cuApply.addEventListener('click', () => {
         const cutoff = catchUpCutoff();
         if (!cutoff) return;
@@ -3220,12 +3264,12 @@
     else saved.add(key);
     persistSaved();
     refreshSavedUI();
-    const sv = document.getElementById('view-saved');
+    const sv = document.getElementById('view-mylist');
     if (sv && !sv.hidden) renderSaved();
   }
 
   function updateSavedTabCount() {
-    const badge = el('saved-tab-count');
+    const badge = el('mylist-tab-count');
     if (!badge) return;
     badge.textContent = saved.size ? String(saved.size) : '';
     badge.hidden = saved.size === 0;
@@ -4373,11 +4417,11 @@
   // Hash routing
   // ------------------------------------------------------------------
   function route() {
-    const hash = window.location.hash;
+    let hash = window.location.hash;
+    // Old per-feature hashes now live together under My List.
+    if (hash === '#watched' || hash === '#saved') hash = '#mylist';
     document.querySelectorAll('section.view').forEach(v => { v.hidden = true; });
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    const meterEl = document.getElementById('watch-progress');
-    if (meterEl) meterEl.classList.remove('active');
 
     if (hash.startsWith('#wrestler/')) {
       const slug = hash.slice('#wrestler/'.length);
@@ -4394,20 +4438,13 @@
       // when arriving from a wrestler profile (different content height,
       // stale scroll offset). Always land at the top of the roster.
       window.scrollTo({ top: 0, behavior: 'auto' });
-    } else if (hash === '#watched') {
-      const v = document.getElementById('view-watched');
+    } else if (hash === '#mylist') {
+      const v = document.getElementById('view-mylist');
       if (v) v.hidden = false;
-      const tab = document.querySelector('.tab[data-view="watched"]');
+      const tab = document.querySelector('.tab[data-view="mylist"]');
       if (tab) tab.classList.add('active');
-      if (meterEl) meterEl.classList.add('active');
-      renderWatched();
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    } else if (hash === '#saved') {
-      const v = document.getElementById('view-saved');
-      if (v) v.hidden = false;
-      const tab = document.querySelector('.tab[data-view="saved"]');
-      if (tab) tab.classList.add('active');
-      renderSaved();
+      renderWatched();   // Watched history + progress
+      renderSaved();     // Saved matches
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
