@@ -2929,6 +2929,9 @@
   function markResumeDay(resumeId) {
     if (!calEl) return;
     calEl.querySelectorAll('.day.is-resume').forEach(d => d.classList.remove('is-resume'));
+    // Only mark "you are here" once the viewer has started their journey (made a
+    // bookmark). A fresh visitor sees no resume highlight.
+    if (watched.size === 0) return;
     if (!eventExists(resumeId)) return;
     const iso = BUNDLE.events[String(resumeId)].air_date;
     if (!iso) return;
@@ -3410,8 +3413,27 @@
   MONTHS.forEach((m, i) => {
     const o = document.createElement('option'); o.value = i + 1; o.textContent = m; monthSel.appendChild(o);
   });
-  yearSel.value = yr[0];
-  monthSel.value = 1;
+  // Open the calendar where the viewer is in their watch journey, but only once
+  // they've started (marked at least one show watched, i.e. they have a
+  // bookmark). A fresh visitor with no progress lands on the very beginning,
+  // January 2001.
+  (function setInitialMonth() {
+    let y = yr[0], m = 1;
+    if (watched.size > 0) {
+      const resumeId = computeResumeId();
+      // Next unwatched show; if everything is watched, land on the final month
+      // so they sit at the end of their journey rather than back at the start.
+      const landId = resumeId != null ? resumeId : ORDERED_IDS[ORDERED_IDS.length - 1];
+      if (eventExists(landId)) {
+        const iso = BUNDLE.events[String(landId)].air_date || '';
+        const ly = parseInt(iso.slice(0, 4), 10);
+        const lm = parseInt(iso.slice(5, 7), 10);
+        if (ly >= yr[0] && ly <= yr[1] && lm >= 1 && lm <= 12) { y = ly; m = lm; }
+      }
+    }
+    yearSel.value = y;
+    monthSel.value = m;
+  })();
 
   yearSel.addEventListener('change', loadCalendar);
   monthSel.addEventListener('change', loadCalendar);
