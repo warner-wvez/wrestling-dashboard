@@ -422,7 +422,8 @@
   }
   .event-hero-top .brand-chip { margin-bottom: 0; }
 
-  /* Calendar day holding the current resume show (your place in the journey) */
+  /* Calendar day holding the current resume show (your place in the journey).
+     A pulsing ring draws the eye to the next show on the agenda. */
   .day.is-resume { border-color: var(--red); }
   .day.is-resume::before {
     content: '';
@@ -430,6 +431,22 @@
     top: 0; left: 0; right: 0;
     height: 3px;
     background: var(--red);
+  }
+  .day.is-resume::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--card-radius);
+    pointer-events: none;
+    animation: resume-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes resume-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(200,16,46,0.45); }
+    70%  { box-shadow: 0 0 0 6px rgba(200,16,46,0); }
+    100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .day.is-resume::after { animation: none; box-shadow: 0 0 0 2px rgba(200,16,46,0.30); }
   }
 
   /* ---- Watched toggle + progress meter ------------------------------- */
