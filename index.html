@@ -2129,6 +2129,8 @@
 
   @media (max-width: 720px) {
     body { padding: 16px 14px 60px; }
+    .modal-backdrop { padding: 18px 8px; }
+    .modal { width: min(98vw, 820px); }
     .hero { grid-template-columns: 1fr; padding: 22px; gap: 18px; }
     .hero-title { font-size: 26px; }
     .hero-cta { justify-self: start; }
@@ -2461,7 +2463,10 @@
     outline: none;
   }
 
-  @media (max-width: 760px) {
+  /* The one-line header needs ~1220px; below that the three fixed zones
+     (brand + month/year nav + actions) overflow, so stack it well before the
+     phone breakpoint. This covers tablets and resized desktop windows. */
+  @media (max-width: 1240px) {
     header {
       grid-template-columns: 1fr;
       justify-items: center;
@@ -2486,6 +2491,19 @@
     #wrestler-tooltip { display: none !important; }
     .roster-controls { width: 100%; }
     .roster-search { flex: 1; min-width: 0; }
+  }
+
+  /* Roster table: 6 columns overflow narrow screens. Drop the least-critical
+     ones progressively so Name + Matches always fit. */
+  @media (max-width: 620px) {
+    .roster-table th:nth-child(5), .roster-table td:nth-child(5),   /* Shows  */
+    .roster-table th:nth-child(6), .roster-table td:nth-child(6) {  /* Active */
+      display: none;
+    }
+    .roster-table th, .roster-table td { padding: 9px 8px; }
+  }
+  @media (max-width: 440px) {
+    .roster-table th:nth-child(4), .roster-table td:nth-child(4) { display: none; } /* PPV */
   }
 
   /* =============================================================
