@@ -203,20 +203,15 @@ This means adding a classifier branch and re-running is cheap. The 2001-2019 cor
 
 The `meta` block includes `year_range: [min_year, max_year]` computed from the dataset. The frontend reads this at load time to build the year selector dynamically. This means adding more years never requires a frontend code change, just a re-scrape and re-bundle.
 
-### Spoiler UI (CSS-only, no per-element state)
+### Spoiler UI (gated at render time, not just hidden with CSS)
 
-Default behavior hides match winners, durations, and outcomes. A toggle reveals them.
+Default behavior hides match winners, finishes, and outcomes. A toggle reveals them.
 
-Implementation is a single CSS class toggle on `<body>`. Every match card renders with full data in the DOM at page load. Spoiler-sensitive elements (winner highlight, duration display, "DEF." text instead of "VS") have their visibility controlled by CSS selectors gated on `body.spoilers-on`.
+The result is only ever placed in the DOM when spoilers are on. With spoilers off, match cards render with no winner/loser classes, no "DEF." text, no finish report (a "Result hidden" placeholder instead), and battle royals show a nameless "Winner hidden" slot. The wrestler profile likewise omits win/loss, win %, title history, and the signature-match finish, and the hover tooltip omits career record. Toggling re-renders the open event modal and the wrestler profile so the outcome is added to (or removed from) the DOM, rather than merely shown or hidden in place. The reveal animations still play, because the winner markup is rendered fresh under `body.spoilers-on`.
 
-```css
-.match-extras { opacity: 0; pointer-events: none; }
-body.spoilers-on .match-extras { opacity: 1; pointer-events: auto; }
-```
+This is deliberate: an earlier version hid outcomes with `filter: blur()` and CSS visibility while leaving the real text in the DOM, which leaked the finish to the accessibility tree, text selection, reader mode, and disabled CSS. Rendering the outcome only on reveal closes all four.
 
-Pros of this approach: no JS re-renders on toggle, no per-card state to track, stagger animations come for free via CSS transition delays, and the HTML is cacheable as a single rendered pass. The data is always there in the DOM, just not always visible.
-
-Cons: technically, a user could `View Source` and read spoilers. For a spoiler-safe watch companion, the user isn't an adversary. Threat model is "don't accidentally see the winner while scrolling," not "prevent any possible leak."
+Residual: the injected `<script id="wrestling-data" type="application/json">` data blob still contains plaintext results, so `View Source` / devtools can surface them. For a spoiler-safe watch companion the user isn't an adversary, and that inert script is not exposed to the a11y tree, selection, reader mode, or disabled CSS. The threat model is "don't accidentally see the winner," not "prevent any possible leak." Encoding the spoiler fields in the bundle at export time would close that too.
 
 ### Scrape ethics
 
