@@ -2009,6 +2009,12 @@
                 max-height 280ms ease-out calc(130ms + var(--match-index, 0) * 30ms);
   }
 
+  /* Toggling spoilers while a card is open re-renders it in place. Suppress the
+     staggered reveal animation in that case so the toggle is instant (the
+     animation is for the first open, not for flipping a card you're reading). */
+  body.spoilers-on .instant-reveal .team.winner::before { animation: none; }
+  body.spoilers-on .instant-reveal .match-footer { transition: none; }
+
   /* Multi-team */
   /* =============================================================
      STACKED BODY (battle royals + large-team matches)
@@ -2845,10 +2851,9 @@
     sessionStorage.setItem(SPOILER_KEY, spoilers ? '1' : '0');
     applySpoilerClass();
     // Re-render any view that renders outcomes so the result is added to (or
-    // removed from) the DOM, rather than merely shown/hidden with CSS.
-    if (mBackdrop.classList.contains('open') && lastModalCtx) {
-      openModal(lastModalCtx.events, lastModalCtx.iso, lastModalCtx.sourceSlug);
-    }
+    // removed from) the DOM, rather than merely shown/hidden with CSS. These are
+    // lightweight in-place updates, not the full open/route paths.
+    rerenderOpenModal();
     const h = window.location.hash;
     if (h.startsWith('#wrestler/')) renderWrestler(h.slice('#wrestler/'.length));
   }
@@ -3639,6 +3644,7 @@
     if (mEl) mEl.scrollTop = 0;
     try {
       const details = await Promise.all(events.map(e => getEventDetail(e.id)));
+      mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
       // Defer stagger index assignment so first paint isn't blocked.
       requestAnimationFrame(() => {
@@ -3667,37 +3673,73 @@
           }
         }
       });
-      // Wire up details toggles via delegation on mContent would be simpler,
-      // but direct binding is fine for the ~12 matches on a typical PPV card.
-      mContent.querySelectorAll('[data-toggle-details]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const card = btn.closest('.match-card');
-          if (!card) return;
-          const open = card.classList.toggle('open');
-          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-      });
-      // Watched toggles, one per event hero.
-      mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleWatched(btn.getAttribute('data-watched-id'));
-        });
-      });
-      // Save toggles, one per match.
-      mContent.querySelectorAll('[data-save-match]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleSaved(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match'));
-        });
-      });
+      wireModalContent();
       refreshResumeUI();
       refreshWatchedUI();
       refreshSavedUI();
     } catch (err) {
       mContent.innerHTML = '<div class="status">Couldn\'t load that event.</div>';
     }
+  }
+
+  // Bind the per-match controls after the modal content is (re)rendered. Direct
+  // binding is fine for the ~12 matches on a typical PPV card.
+  function wireModalContent() {
+    mContent.querySelectorAll('[data-toggle-details]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const card = btn.closest('.match-card');
+        if (!card) return;
+        const open = card.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+    mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleWatched(btn.getAttribute('data-watched-id'));
+      });
+    });
+    mContent.querySelectorAll('[data-save-match]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSaved(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match'));
+      });
+    });
+  }
+
+  // Re-render the open modal in place when the spoiler toggle flips. Synchronous
+  // (details are already cached), so no "Loading" flash and no async reflow; it
+  // preserves scroll position and which match cards are expanded, and suppresses
+  // the reveal animation via .instant-reveal. Avoids the heavy full openModal
+  // path (which resets scroll, collapses cards, and forces a layout).
+  function rerenderOpenModal() {
+    if (!mBackdrop.classList.contains('open') || !lastModalCtx) return;
+    const { events, iso, sourceSlug } = lastModalCtx;
+    const details = events.map(e => detailCache.get(e.id));
+    if (details.some(d => !d)) { openModal(events, iso, sourceSlug); return; }
+
+    const scroll = mEl ? mEl.scrollTop : 0;
+    const openIds = new Set(
+      [...mContent.querySelectorAll('.match-card.open')].map(c => c.getAttribute('data-match-id')).filter(Boolean)
+    );
+
+    mContent.classList.add('instant-reveal');
+    mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
+    mContent.querySelectorAll('.match-card').forEach((m, i) => {
+      m.style.setProperty('--match-index', i);
+      const id = m.getAttribute('data-match-id');
+      if (id && openIds.has(id)) {
+        m.classList.add('open');
+        const t = m.querySelector('[data-toggle-details]');
+        if (t) t.setAttribute('aria-expanded', 'true');
+      }
+    });
+    wireModalContent();
+    refreshResumeUI();
+    refreshWatchedUI();
+    refreshSavedUI();
+    if (mEl) mEl.scrollTop = scroll;
   }
 
   function closeModal() {
