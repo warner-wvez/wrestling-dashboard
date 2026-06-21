@@ -278,6 +278,8 @@
     flex-shrink: 0;
   }
   .continue-btn:hover .cn-date { color: rgba(255,255,255,0.85); }
+  .cn-sep { color: var(--ink-faint); font-size: 11px; flex-shrink: 0; }
+  .continue-btn:hover .cn-sep { color: rgba(255,255,255,0.7); }
   .continue-caret {
     display: inline-flex;
     align-items: center;
@@ -2986,10 +2988,13 @@
       wrap.querySelector('.continue-btn').title = 'You have watched every show. Open the journey panel to revisit from the start.';
     } else {
       const ev = BUNDLE.events[String(resumeId)];
-      if (kicker) kicker.textContent = nothing ? 'Start watching' : 'Next show for me';
-      // Show name only on the pill face; the date lives in the dropdown so the
-      // pill stays compact and the month/year nav owns the header.
-      if (showEl) showEl.innerHTML = `<span class="cn-name">${esc(shortShowName(ev))}</span>`;
+      if (kicker) kicker.textContent = nothing ? 'Start here' : 'Resume';
+      // Name the exact next event on the pill face (show + date), so it's a
+      // concrete one-click jump to where you left off, not a vague "next show".
+      if (showEl) showEl.innerHTML =
+        `<span class="cn-name">${esc(shortShowName(ev))}</span>`
+        + `<span class="cn-sep" aria-hidden="true">·</span>`
+        + `<span class="cn-date">${esc(fmtDateLong(ev.air_date))}</span>`;
       wrap.querySelector('.continue-btn').title = (nothing ? 'Start with ' : 'Resume at ') + fullShowName(ev) + ' · ' + fmtDateLong(ev.air_date);
     }
     wrap.hidden = false;
