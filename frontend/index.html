@@ -1926,15 +1926,28 @@
     letter-spacing: 0.04em;
   }
 
-  /* Spoilers off: mask the spoilery fields inside details */
-  body:not(.spoilers-on) .details-panel .spoilery {
-    filter: blur(5px);
-    user-select: none;
-    pointer-events: none;
-    transition: filter 180ms;
+  /* Spoiler-safe placeholders. The result text/markup is never rendered into
+     the DOM while spoilers are off (see render functions), so these are the
+     only thing present in the hidden state: no finish leaks via the a11y tree,
+     text selection, reader mode, or disabled CSS. */
+  .report-hidden { color: var(--ink-faint); font-style: italic; }
+  .team-block.winner-concealed {
+    text-align: center;
+    padding-top: 18px;
+    padding-bottom: 18px;
   }
-  body:not(.spoilers-on) .details-panel .spoilery:hover {
-    filter: blur(5px);
+  .winner-concealed-msg {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+  }
+  .profile-hint {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    letter-spacing: 0.01em;
+    padding: 4px 0 2px;
   }
 
   /* Spoilers off: baseline */
@@ -2811,6 +2824,10 @@
 
   // ------------------ Spoilers --------------------------------------------
   let spoilers = sessionStorage.getItem(SPOILER_KEY) === '1';
+  // Context of the currently open event modal, so it can be re-rendered when
+  // the spoiler toggle flips (results are only ever put in the DOM at render
+  // time, never hidden in place).
+  let lastModalCtx = null;
   function applySpoilerClass() {
     document.body.classList.toggle('spoilers-on', spoilers);
     for (const btn of spoilerButtons) {
@@ -2826,6 +2843,13 @@
     spoilers = !spoilers;
     sessionStorage.setItem(SPOILER_KEY, spoilers ? '1' : '0');
     applySpoilerClass();
+    // Re-render any view that renders outcomes so the result is added to (or
+    // removed from) the DOM, rather than merely shown/hidden with CSS.
+    if (mBackdrop.classList.contains('open') && lastModalCtx) {
+      openModal(lastModalCtx.events, lastModalCtx.iso, lastModalCtx.sourceSlug);
+    }
+    const h = window.location.hash;
+    if (h.startsWith('#wrestler/')) renderWrestler(h.slice('#wrestler/'.length));
   }
   for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
@@ -3607,6 +3631,7 @@
 
   // ------------------ Modal -----------------------------------------------
   async function openModal(events, iso, sourceSlug = null, scrollMatchId = null) {
+    lastModalCtx = { events, iso, sourceSlug };
     mContent.innerHTML = '<div class="status">Loading…</div>';
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -3782,17 +3807,25 @@
 
     const rows = [];
     if (hasRating) {
+      // Rating is not a spoiler: shown in both modes, matching the header badge.
       rows.push(`
         <div class="details-row">
           <span class="label">Rating</span>
-          <span class="value spoilery">${renderRating(m.match_guide_rating)}</span>
+          <span class="value">${renderRating(m.match_guide_rating)}</span>
         </div>`);
     }
     if (hasRaw) {
+      // The result prose is a spoiler: the real text is only ever placed in the
+      // DOM when spoilers are on. While hidden, no finish exists in the markup,
+      // so it cannot leak via the a11y tree, selection, reader mode, or disabled
+      // CSS. The modal re-renders on toggle (see toggleSpoilers).
+      const report = spoilers
+        ? `<span class="value mono">${esc(m.raw_description)}</span>`
+        : `<span class="value mono report-hidden">Result hidden. Turn spoilers on to read the finish.</span>`;
       rows.push(`
         <div class="details-row">
           <span class="label">Report</span>
-          <span class="value mono spoilery">${esc(m.raw_description)}</span>
+          ${report}
         </div>`);
     }
     return `
@@ -3857,27 +3890,32 @@
       const [a, b] = shouldSwapTeams(m) ? [teams[1], teams[0]] : teams;
       const anyOutcome = (o) => teams.some(t => t.match_outcome === o);
       const noResult = anyOutcome('no-contest') || anyOutcome('draw') || (a.was_winner !== true && b.was_winner !== true);
-      const winnerSide = noResult ? null : (a.was_winner === true ? 'left' : 'right');
+      // The winner side is only ever expressed in the DOM when spoilers are on,
+      // so it can't leak (e.g. disabled CSS would otherwise un-hide a
+      // display:none "DEF" label).
+      const winnerSide = (!spoilers || noResult) ? null : (a.was_winner === true ? 'left' : 'right');
       const leftCls = winnerSide === 'left' ? 'winner' : winnerSide === 'right' ? 'loser' : '';
       const rightCls = winnerSide === 'right' ? 'winner' : winnerSide === 'left' ? 'loser' : '';
-      const arrow = winnerSide === 'left' ? '<span class="def-arrow">←</span> DEF'
-        : winnerSide === 'right' ? 'DEF <span class="def-arrow">→</span>'
-        : 'DEF';
+      const defText = winnerSide
+        ? `<span class="def-text">${winnerSide === 'left' ? '<span class="def-arrow">←</span> DEF' : 'DEF <span class="def-arrow">→</span>'}</span>`
+        : '';
       return `
         <div class="match-body">
           ${renderTeam(a, 'left', leftCls, airDate, titleAtStake, sourceSlug)}
           <div class="vs-cell">
             <span class="vs-text">VS</span>
-            <span class="def-text">${arrow}</span>
+            ${defText}
           </div>
           ${renderTeam(b, 'right', rightCls, airDate, titleAtStake, sourceSlug)}
         </div>`;
     }
 
     const parts = [];
+    const anyWinner = teams.some(x => x.was_winner === true);
     teams.forEach((t, i) => {
-      const win = t.was_winner === true;
-      const cls = win ? 'winner' : (teams.some(x => x.was_winner === true) ? 'loser' : '');
+      // Winner/loser styling only when spoilers are on, so the result is absent
+      // from the DOM otherwise.
+      const cls = !spoilers ? '' : (t.was_winner === true ? 'winner' : (anyWinner ? 'loser' : ''));
       parts.push(renderTeam(t, 'left', cls, airDate, titleAtStake, sourceSlug));
       if (i < teams.length - 1) parts.push('<div class="multi-divider">vs</div>');
     });
@@ -3891,6 +3929,23 @@
     const noResult = anyOutcome('no-contest') || anyOutcome('draw') || winners.length === 0;
 
     const blocks = [];
+
+    // Spoilers off: never place the winner's name in the DOM. Show the field of
+    // everyone who did not win, plus a nameless "winner hidden" slot. Nothing
+    // here reveals the result, even with CSS disabled or via the a11y tree.
+    if (!spoilers && !noResult) {
+      const fieldNames = others.flatMap(t => (t.participants || []).filter(Boolean));
+      if (fieldNames.length) {
+        blocks.push(renderTeamBlock({ participants: fieldNames }, 'field', 'FIELD', airDate, titleAtStake, sourceSlug));
+      }
+      blocks.push(`
+        <div class="team-block winner-concealed">
+          <div class="team-block-header">Winner</div>
+          <div class="winner-concealed-msg">Hidden. Turn spoilers on to reveal.</div>
+        </div>`);
+      return `<div class="match-body stacked">${blocks.join('<div class="stacked-divider"></div>')}</div>`;
+    }
+
     if (noResult) {
       const combined = teams.flatMap(t => (t.participants || []).filter(Boolean));
       const pseudoTeam = { participants: combined };
@@ -3964,6 +4019,10 @@
   }
 
   function renderMatchFooter(m) {
+    // The footer carries the finish type (No Contest, Draw, by DQ, by count-out),
+    // which is a spoiler, so it is only rendered when spoilers are on. Nothing
+    // is hidden with CSS, so nothing can leak when CSS is disabled.
+    if (!spoilers) return '';
     const bits = [];
     const dur = fmtDuration(m.duration_seconds);
     if (dur) bits.push(`<span class="duration">${dur}</span>`);
@@ -4035,8 +4094,8 @@
         <div class="tt-name">${esc(w.name)}</div>
         <div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>
         <div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>
-        <div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>
-        ${w.win_pct != null ? `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>` : ''}
+        ${spoilers ? `<div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>` : ''}
+        ${spoilers && w.win_pct != null ? `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>` : ''}
         ${heldTitles.length ? `<div class="tt-row"><span>Held at this time</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>` : ''}
       `;
       positionTooltip(anchor);
@@ -4297,6 +4356,26 @@
       ? String(w.active_years[0])
       : `${w.active_years[0]} - ${w.active_years[1]}`;
 
+    // Win/loss, win %, draws and no-contests are aggregate outcomes: for a
+    // chronological viewer they spoil the future, so they are only rendered when
+    // spoilers are on. Participation counts (matches, shows, PPV, main events)
+    // are never spoilers and always show.
+    const winLossTiles = spoilers
+      ? `<div class="record-stat wins"><div class="rs-label">Wins</div><div class="rs-value">${w.wins}</div></div>`
+        + `<div class="record-stat"><div class="rs-label">Losses</div><div class="rs-value">${w.losses}</div></div>`
+        + `<div class="record-stat"><div class="rs-label">Win %</div><div class="rs-value">${w.win_pct != null ? w.win_pct + '%' : '-'}</div></div>`
+      : '';
+    const drawNcTiles = spoilers
+      ? (w.draws ? `<div class="record-stat"><div class="rs-label">Draws</div><div class="rs-value">${w.draws}</div></div>` : '')
+        + (w.no_contests ? `<div class="record-stat"><div class="rs-label">NC</div><div class="rs-value">${w.no_contests}</div></div>` : '')
+      : '';
+    const recordHint = spoilers
+      ? ''
+      : `<div class="profile-hint">Win/loss record stays hidden while spoilers are off. Turn spoilers on to see it.</div>`;
+    const titleHistoryHtmlGated = spoilers
+      ? null
+      : `<div class="profile-hint">Title history stays hidden while spoilers are off. Turn spoilers on to see it.</div>`;
+
     const titleHtml = w.title_wins && w.title_wins.length
       ? `<div class="title-list">${w.title_wins.map(([t, cnt], i) =>
           `<div class="title-row${i === 0 ? ' sig' : ''}">
@@ -4331,7 +4410,7 @@
             <button class="sm-event-link" data-event-id="${lm.event_id}">${esc(lm.event_name || lm.event_date)}</button>
             <span style="color:var(--ink-faint);font-family:var(--font-mono);font-size:11px;margin-left:8px;">${esc(lm.event_date)}</span>
           </div>
-          ${lm.description ? `<div class="sm-desc">${esc(lm.description.slice(0, 220))}${lm.description.length > 220 ? '…' : ''}</div>` : ''}
+          ${spoilers && lm.description ? `<div class="sm-desc">${esc(lm.description.slice(0, 220))}${lm.description.length > 220 ? '…' : ''}</div>` : ''}
         </div>`;
     }
 
@@ -4363,19 +4442,17 @@
         <div class="record-grid">
           <div class="record-stat"><div class="rs-label">Matches</div><div class="rs-value">${w.total_matches}</div></div>
           <div class="record-stat"><div class="rs-label">Shows</div><div class="rs-value">${w.unique_event_count}</div></div>
-          <div class="record-stat wins"><div class="rs-label">Wins</div><div class="rs-value">${w.wins}</div></div>
-          <div class="record-stat"><div class="rs-label">Losses</div><div class="rs-value">${w.losses}</div></div>
-          <div class="record-stat"><div class="rs-label">Win %</div><div class="rs-value">${w.win_pct != null ? w.win_pct + '%' : '-'}</div></div>
+          ${winLossTiles}
           <div class="record-stat"><div class="rs-label">PPV</div><div class="rs-value">${w.ppv_appearances}</div></div>
           <div class="record-stat"><div class="rs-label">Main Events</div><div class="rs-value">${w.main_events}</div></div>
-          ${w.draws ? `<div class="record-stat"><div class="rs-label">Draws</div><div class="rs-value">${w.draws}</div></div>` : ''}
-          ${w.no_contests ? `<div class="record-stat"><div class="rs-label">NC</div><div class="rs-value">${w.no_contests}</div></div>` : ''}
+          ${drawNcTiles}
         </div>
+        ${recordHint}
       </div>
 
       <div class="profile-section">
         <div class="profile-section-title">Title History</div>
-        ${titleHtml}
+        ${titleHistoryHtmlGated || titleHtml}
       </div>
 
       <div class="profile-section">
