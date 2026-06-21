@@ -71,17 +71,18 @@
      ============================================================= */
   header {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 20px;
-    padding-bottom: 28px;
-    margin-bottom: 28px;
+    gap: 16px;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
     border-bottom: 1px solid var(--ink);
   }
   .brand {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-shrink: 0;
     justify-self: start;
   }
   .brand .logo {
@@ -113,16 +114,16 @@
     display: flex;
     align-items: stretch;
     gap: 0;
-    flex-wrap: wrap;
-    border: 1px solid var(--ink);
+    flex-wrap: nowrap;
     justify-self: center;
+    border: 1px solid var(--ink);
   }
   .controls select {
     background: transparent;
     border: none;
     border-right: 1px solid var(--ink);
-    padding: 9px 44px 9px 28px;
-    min-width: 180px;
+    padding: 10px 42px 10px 24px;
+    min-width: 182px;
     font-family: inherit;
     font-size: 13px;
     font-weight: 700;
@@ -132,7 +133,7 @@
     appearance: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M1 3L5 7L9 3' stroke='%230A0A0A' stroke-width='1.5' fill='none' stroke-linecap='square'/></svg>");
     background-repeat: no-repeat;
-    background-position: right 16px center;
+    background-position: right 18px center;
   }
   .controls select:hover { background-color: var(--surface-soft); }
   .controls select:focus { outline: 2px solid var(--red); outline-offset: -2px; }
@@ -141,7 +142,7 @@
     background: transparent;
     border: none;
     border-right: 1px solid var(--ink);
-    padding: 9px 28px;
+    padding: 10px 22px;
     font-family: inherit;
     font-size: 14px;
     font-weight: 700;
@@ -160,16 +161,15 @@
     gap: 8px;
     background: transparent;
     border: 1px solid var(--ink);
-    padding: 9px 24px;
+    padding: 9px 16px;
     font-family: inherit;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ink);
     cursor: pointer;
     transition: background 140ms, color 140ms, box-shadow 140ms, border-color 140ms;
-    justify-self: end;
   }
   .spoiler-btn:hover { background: var(--surface-soft); }
   .spoiler-btn .eye {
@@ -206,44 +206,210 @@
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
     justify-self: end;
+    gap: 8px;
   }
-  .resume-btn {
+  /* Continue control: a split pill (one-click resume + caret) that auto-tracks
+     the next unwatched show. The caret opens the journey panel below it. */
+  .continue-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+  }
+  .continue-wrap[hidden] { display: none; }
+  .continue-btn, .continue-caret {
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 140ms, color 140ms, border-color 140ms;
+  }
+  .continue-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: transparent;
-    border: 1px solid var(--ink);
-    padding: 9px 18px;
-    font-family: inherit;
+    padding: 8px 12px;
+    border-right: none;
+    max-width: 300px;
+  }
+  .continue-btn:hover { background: var(--red); border-color: var(--red); color: #FFF; }
+  .continue-btn:focus-visible, .continue-caret:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .cn-play {
+    width: 13px; height: 13px; flex-shrink: 0;
+    background: var(--red);
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 4l14 8-14 8z'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 4l14 8-14 8z'/></svg>") no-repeat center / contain;
+  }
+  .continue-btn:hover .cn-play { background: #FFF; }
+  .continue-wrap.done .cn-play {
+    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12l5 5L20 6'/></svg>");
+    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12l5 5L20 6'/></svg>");
+  }
+  .cn-text { display: inline-flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .cn-kicker {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .continue-btn:hover .cn-kicker { color: rgba(255,255,255,0.85); }
+  .cn-show { display: inline-flex; align-items: baseline; gap: 7px; min-width: 0; }
+  .cn-name {
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--ink);
-    cursor: pointer;
-    transition: background 140ms, color 140ms, border-color 140ms;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 124px;
   }
-  .resume-btn:hover { background: var(--red); border-color: var(--red); color: #FFF; }
-  .resume-btn[hidden] { display: none; }
-  .resume-btn .rs-pin {
-    width: 13px; height: 13px;
-    background: var(--red);
-    flex-shrink: 0;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
-  }
-  .resume-btn:hover .rs-pin { background: #FFF; }
-  .resume-btn .rs-date {
+  .cn-date {
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .continue-btn:hover .cn-date { color: rgba(255,255,255,0.85); }
+  .continue-caret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 9px;
+  }
+  .continue-caret:hover { background: var(--surface-soft); }
+  .continue-wrap.open-panel .continue-caret { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  .cn-caret-ico {
+    width: 10px; height: 10px;
+    background: currentColor;
+    transition: transform 160ms;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M1 3L5 7L9 3' stroke='black' stroke-width='1.6' fill='none' stroke-linecap='square'/></svg>") no-repeat center / contain;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M1 3L5 7L9 3' stroke='black' stroke-width='1.6' fill='none' stroke-linecap='square'/></svg>") no-repeat center / contain;
+  }
+  .continue-wrap.open-panel .cn-caret-ico { transform: rotate(180deg); }
+
+  /* Journey panel: drops below the control, right-aligned to its edge. */
+  .continue-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: min(92vw, 340px);
+    background: var(--bg);
+    border: 1px solid var(--ink);
+    box-shadow: var(--shadow-lg);
+    z-index: 90;
+    padding: 16px 18px 14px;
+    text-align: left;
+    animation: cp-in 160ms cubic-bezier(0.2,0.8,0.2,1);
+  }
+  .continue-panel[hidden] { display: none; }
+  @keyframes cp-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .cp-head {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+  .cp-bar {
+    height: 6px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .cp-fill { height: 100%; background: var(--red); transition: width 220ms; }
+  .cp-stat {
+    margin-top: 7px;
+    font-size: 12px;
     color: var(--ink-dim);
   }
-  .resume-btn:hover .rs-date { color: rgba(255,255,255,0.85); }
+  .cp-stat strong { color: var(--ink); font-weight: 800; }
+  .cp-upto {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .cp-upto strong { color: var(--ink); font-weight: 800; }
+  .cp-done {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .cp-upnext-head {
+    margin: 14px 0 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .cp-list { display: flex; flex-direction: column; }
+  .cp-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-left: 2px solid transparent;
+    padding: 8px 8px 8px 6px;
+    margin: 0 -8px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+  }
+  .cp-row:hover { background: var(--surface-soft); border-left-color: var(--red); }
+  .cp-row.resume { background: var(--surface-soft); border-left-color: var(--red); }
+  .cp-row .brand-chip { flex: 0 0 auto; margin-bottom: 0; padding: 3px 8px; font-size: 9px; }
+  .cp-row-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
+  .cp-row-name {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cp-row-date { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .cp-row-cta {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #FFF;
+    background: var(--red);
+    padding: 4px 9px;
+  }
+  .cp-restart {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 9px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: border-color 140ms, color 140ms, background 140ms;
+  }
+  .cp-restart:hover { border-color: var(--ink); color: var(--ink); background: var(--surface-soft); }
 
-  /* Per-event bookmark toggle, sits beside the brand chip in the modal hero */
+  /* Event hero top row (brand chip + watched toggle) */
   .event-hero-top {
     display: flex;
     align-items: center;
@@ -253,35 +419,10 @@
     margin-bottom: 12px;
   }
   .event-hero-top .brand-chip { margin-bottom: 0; }
-  .bookmark-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--surface);
-    border: 1px solid var(--ink);
-    padding: 6px 12px;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: var(--ink);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 140ms, color 140ms, border-color 140ms;
-  }
-  .bookmark-btn:hover { background: var(--surface-soft); }
-  .bookmark-btn.active { background: var(--red); border-color: var(--red); color: #FFF; }
-  .bookmark-btn .bm-pin {
-    width: 12px; height: 13px;
-    background: currentColor;
-    flex-shrink: 0;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 2h2v20H5z'/><path d='M7 3h12l-3 4 3 4H7z'/></svg>") no-repeat center / contain;
-  }
 
-  /* Calendar day that holds the current bookmark */
-  .day.has-bookmark { border-color: var(--red); }
-  .day.has-bookmark::before {
+  /* Calendar day holding the current resume show (your place in the journey) */
+  .day.is-resume { border-color: var(--red); }
+  .day.is-resume::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -1088,15 +1229,13 @@
   .search-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
     background: transparent;
     border: 1px solid var(--ink);
-    padding: 9px 16px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    padding: 0;
     color: var(--ink);
     cursor: pointer;
     transition: background 140ms, color 140ms, border-color 140ms;
@@ -1104,20 +1243,10 @@
   .search-btn:hover { background: var(--surface-soft); }
   .search-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
   .search-btn .search-ico {
-    width: 15px; height: 15px;
-    background: var(--ink-dim);
+    width: 17px; height: 17px;
+    background: var(--ink);
     mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat center / contain;
     -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square'><circle cx='11' cy='11' r='7'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>") no-repeat center / contain;
-  }
-  .search-btn .search-kbd {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    border: 1px solid var(--border-strong);
-    padding: 1px 6px;
-    color: var(--ink-dim);
-    background: var(--surface-soft);
-    letter-spacing: 0;
   }
 
   .search-backdrop {
@@ -1304,10 +1433,6 @@
   .search-foot-spacer { flex: 1 1 auto; }
   .search-scope { color: var(--ink-dim); font-weight: 600; }
 
-  @media (max-width: 720px) {
-    .search-btn .search-btn-label, .search-btn .search-kbd { display: none; }
-    .search-btn { padding: 9px 12px; }
-  }
   @media (max-width: 560px) {
     .search-backdrop { padding: 16px 10px 10px; }
     .search-foot { display: none; }
@@ -1965,7 +2090,6 @@
 
   @media (max-width: 720px) {
     body { padding: 16px 14px 60px; }
-    header { flex-direction: column; align-items: stretch; gap: 14px; }
     .hero { grid-template-columns: 1fr; padding: 22px; gap: 18px; }
     .hero-title { font-size: 26px; }
     .hero-cta { justify-self: start; }
@@ -2302,14 +2426,19 @@
     header {
       grid-template-columns: 1fr;
       justify-items: center;
-      row-gap: 16px;
+      row-gap: 14px;
     }
     .brand { justify-self: center; }
     .controls { justify-self: center; }
-    .controls select { padding: 10px 32px 10px 16px; font-size: 13px; min-width: 0; }
-    .month-nav { padding: 10px 16px; font-size: 14px; }
-    .spoiler-btn { padding: 10px 16px; font-size: 13px; gap: 7px; justify-self: center; }
+    .controls select { padding: 10px 34px 10px 18px; min-width: 0; font-size: 13px; }
+    .month-nav { padding: 10px 18px; font-size: 14px; }
+    .spoiler-btn { padding: 10px 16px; font-size: 13px; gap: 7px; }
     .spoiler-btn .eye { width: 14px; height: 14px; }
+    .header-actions { justify-self: center; justify-content: center; flex-wrap: wrap; }
+    .continue-panel {
+      left: 50%; right: auto; transform: translateX(-50%);
+      width: min(94vw, 360px); animation: none;
+    }
   }
   @media (max-width: 720px) {
     .profile-name { font-size: 28px; }
@@ -2363,19 +2492,25 @@
     <button class="month-nav" id="month-next" aria-label="Next month" type="button">▶</button>
   </div>
   <div class="header-actions">
-    <button class="search-btn" id="search-btn" type="button" aria-label="Search events, wrestlers, and matches" title="Search events, wrestlers, and matches (press /)">
-      <span class="search-ico" aria-hidden="true"></span>
-      <span class="search-btn-label">Search</span>
-      <kbd class="search-kbd" aria-hidden="true">/</kbd>
-    </button>
-    <button class="resume-btn" id="resume-btn" type="button" hidden aria-label="Resume where you left off">
-      <span class="rs-pin" aria-hidden="true"></span>
-      <span class="rs-label">Resume</span>
-      <span class="rs-date"></span>
-    </button>
+    <div class="continue-wrap" id="continue-wrap" hidden>
+      <button class="continue-btn" id="continue-btn" type="button" aria-label="Resume your next show">
+        <span class="cn-play" aria-hidden="true"></span>
+        <span class="cn-text">
+          <span class="cn-kicker" id="cn-kicker">Continue</span>
+          <span class="cn-show" id="cn-show"></span>
+        </span>
+      </button>
+      <button class="continue-caret" id="continue-caret" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="continue-panel" aria-label="Show your watch journey">
+        <span class="cn-caret-ico" aria-hidden="true"></span>
+      </button>
+      <div class="continue-panel" id="continue-panel" role="region" aria-label="Your watch journey" hidden></div>
+    </div>
     <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
       <span class="eye"></span>
       <span class="sp-label">Spoilers Off</span>
+    </button>
+    <button class="search-btn" id="search-btn" type="button" aria-label="Search events, wrestlers, and matches" title="Search events, wrestlers, and matches (press /)">
+      <span class="search-ico" aria-hidden="true"></span>
     </button>
   </div>
 </header>
@@ -2635,23 +2770,12 @@
   for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
 
-  // ------------------ Bookmark + Resume -----------------------------------
-  // A single "where am I" marker for the watch order, kept in localStorage so
-  // it survives across sessions (unlike the per-session spoiler pref). It lives
-  // in each visitor's own browser, scoped to this origin: every person keeps
-  // their own position, no account and no backend. The key is namespaced
-  // because GitHub Pages project sites share one origin.
-  const BOOKMARK_KEY = 'wvez_wrestling_bookmark';
-  let bookmarkId = (() => {
-    try { return localStorage.getItem(BOOKMARK_KEY) || null; } catch (_) { return null; }
-  })();
-
-  function saveBookmark(id) {
-    try {
-      if (id == null) localStorage.removeItem(BOOKMARK_KEY);
-      else localStorage.setItem(BOOKMARK_KEY, String(id));
-    } catch (_) { /* storage blocked (private mode): keep it in memory only */ }
-  }
+  // ------------------ Resume (automatic, Netflix-style) -------------------
+  // "Where am I" is derived, not pinned: it's the earliest show in the
+  // chronological watch order that hasn't been marked watched yet. As shows
+  // get marked watched it advances on its own, so the header Continue control
+  // always points at the next thing to watch. The only input is the Watched
+  // set (see below); there is nothing to set by hand.
 
   function fmtDateLong(iso) {
     const p = String(iso || '').split('-');
@@ -2666,60 +2790,166 @@
     return Boolean(id != null && BUNDLE && BUNDLE.events && BUNDLE.events[String(id)]);
   }
 
-  function toggleBookmark(id) {
-    if (id == null || id === '') return;
-    id = String(id);
-    bookmarkId = (bookmarkId === id) ? null : id;
-    saveBookmark(bookmarkId);
-    refreshBookmarkUI();
-  }
-
-  // Mark the calendar day holding the bookmarked event, if it is in the month
-  // currently rendered. Day cells carry data-iso (set in renderCalendar).
-  function markBookmarkedDay() {
-    if (!calEl) return;
-    calEl.querySelectorAll('.day.has-bookmark').forEach(d => d.classList.remove('has-bookmark'));
-    if (!eventExists(bookmarkId)) return;
-    const iso = BUNDLE.events[String(bookmarkId)].air_date;
-    if (!iso) return;
-    const cell = calEl.querySelector(`.day[data-iso="${iso}"]`);
-    if (cell) cell.classList.add('has-bookmark');
-  }
-
-  // Sync every bookmark-aware control to current state: the header Resume
-  // button, any bookmark toggles in an open modal, and the calendar marker.
-  function refreshBookmarkUI() {
-    if (bookmarkId != null && !eventExists(bookmarkId)) {
-      bookmarkId = null;            // drop a stale id (e.g. removed from bundle)
-      saveBookmark(null);
-    }
-    const resumeBtn = el('resume-btn');
-    if (resumeBtn) {
-      if (eventExists(bookmarkId)) {
-        const ev = BUNDLE.events[String(bookmarkId)];
-        const dateEl = resumeBtn.querySelector('.rs-date');
-        if (dateEl) dateEl.textContent = fmtDateLong(ev.air_date);
-        resumeBtn.title = `Resume at ${ev.ppv_name || ev.title || ev.air_date}`;
-        resumeBtn.hidden = false;
-      } else {
-        resumeBtn.hidden = true;
+  // Every event id in chronological order. air_date is zero-padded so dates
+  // sort as strings; within a day, sort by show_type to match the calendar.
+  const ORDERED_IDS = (() => {
+    const out = [];
+    if (BUNDLE && BUNDLE.events_by_date) {
+      for (const iso of Object.keys(BUNDLE.events_by_date).sort()) {
+        const ids = BUNDLE.events_by_date[iso].slice().sort((a, b) => {
+          const sa = (BUNDLE.events[String(a)] || {}).show_type || '';
+          const sb = (BUNDLE.events[String(b)] || {}).show_type || '';
+          return sa.localeCompare(sb);
+        });
+        for (const id of ids) out.push(String(id));
       }
     }
-    mContent.querySelectorAll('[data-bookmark-id]').forEach(btn => {
-      const on = btn.getAttribute('data-bookmark-id') === String(bookmarkId);
-      btn.classList.toggle('active', on);
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      const lbl = btn.querySelector('.bm-label');
-      if (lbl) lbl.textContent = on ? 'Resume point' : 'Resume here';
-      btn.title = on ? 'This is your resume point. Click to clear.' : 'Set this show as your resume point';
-    });
-    markBookmarkedDay();
+    return out;
+  })();
+
+  let resumeTargetId = null; // last computed resume id, used by the pill click
+
+  // The earliest unwatched show in order, or null if every show is watched.
+  function computeResumeId() {
+    for (const id of ORDERED_IDS) if (!watched.has(id)) return id;
+    return null;
   }
 
-  const resumeBtnEl = el('resume-btn');
-  if (resumeBtnEl) {
-    resumeBtnEl.addEventListener('click', () => {
-      if (eventExists(bookmarkId)) navigateToEvent(bookmarkId);
+  // resumeId plus the next few shows after it, for the "Up next" list.
+  function upcomingFrom(resumeId, n) {
+    const start = resumeId ? ORDERED_IDS.indexOf(resumeId) : ORDERED_IDS.length;
+    return start < 0 ? [] : ORDERED_IDS.slice(start, start + n);
+  }
+
+  // Compact name for the pill: brand word for weeklies, event name for PPVs.
+  function shortShowName(ev) {
+    if (!ev) return '';
+    return ev.show_type === 'PPV' ? (ev.ppv_name || ev.title || 'Pay-Per-View') : ev.show_type;
+  }
+  // Fuller name for panel rows.
+  function fullShowName(ev) {
+    if (!ev) return '';
+    return ev.show_type === 'PPV' ? (ev.ppv_name || ev.title || 'Pay-Per-View') : (ev.title || ev.show_type);
+  }
+
+  // Mark the calendar day holding the resume show, if it's in the rendered
+  // month. Day cells carry data-iso (set in renderCalendar).
+  function markResumeDay(resumeId) {
+    if (!calEl) return;
+    calEl.querySelectorAll('.day.is-resume').forEach(d => d.classList.remove('is-resume'));
+    if (!eventExists(resumeId)) return;
+    const iso = BUNDLE.events[String(resumeId)].air_date;
+    if (!iso) return;
+    const cell = calEl.querySelector(`.day[data-iso="${iso}"]`);
+    if (cell) cell.classList.add('is-resume');
+  }
+
+  function renderContinuePanel(resumeId, total, done) {
+    const panel = el('continue-panel');
+    if (!panel) return;
+    const pct = total ? Math.min(100, watched.size / total * 100) : 0;
+    const pctLabel = total ? Math.round(watched.size / total * 100) : 0;
+    const parts = [`<div class="cp-head">Your journey</div>`];
+    parts.push(
+      `<div class="cp-bar"><div class="cp-fill" style="width:${pct}%"></div></div>
+       <div class="cp-stat"><strong>${watched.size.toLocaleString('en-US')}</strong> / ${Number(total).toLocaleString('en-US')} watched · ${pctLabel}%</div>`);
+
+    if (done) {
+      parts.push(`<div class="cp-done">You've watched every show in the corpus. That's the whole journey, 2001 to 2019.</div>`);
+    } else {
+      const ev = BUNDLE.events[String(resumeId)];
+      const mo = ev ? `${MONTHS[parseInt(ev.air_date.slice(5, 7), 10) - 1]} ${ev.air_date.slice(0, 4)}` : '';
+      parts.push(`<div class="cp-upto">You're up to <strong>${esc(mo)}</strong></div>`);
+      parts.push(`<div class="cp-upnext-head">Up next</div>`);
+      const rows = upcomingFrom(resumeId, 4).map((id, i) => {
+        const e = BUNDLE.events[String(id)];
+        if (!e) return '';
+        const cls = SHOW_CLASS[e.show_type] || '';
+        return `<button class="cp-row${i === 0 ? ' resume' : ''}" type="button" data-go="${esc(id)}">
+            <span class="brand-chip ${cls}">${esc(e.show_type === 'PPV' ? 'PPV' : e.show_type)}</span>
+            <span class="cp-row-main"><span class="cp-row-name">${esc(fullShowName(e))}</span><span class="cp-row-date">${esc(fmtDateLong(e.air_date))}</span></span>
+            ${i === 0 ? '<span class="cp-row-cta">Resume</span>' : ''}
+          </button>`;
+      }).join('');
+      parts.push(`<div class="cp-list">${rows}</div>`);
+    }
+    parts.push(`<button class="cp-restart" type="button" data-restart title="Open the very first show. Your watched progress is kept.">&#8634; Start from the beginning</button>`);
+    panel.innerHTML = parts.join('');
+  }
+
+  // Sync the Continue control (pill + panel) and the calendar marker to the
+  // current Watched state. Safe to call any time; recomputes from scratch.
+  function refreshResumeUI() {
+    const wrap = el('continue-wrap');
+    if (!wrap || !BUNDLE) return;
+    const resumeId = computeResumeId();
+    resumeTargetId = resumeId;
+    const total = (BUNDLE.meta && BUNDLE.meta.event_count) || ORDERED_IDS.length || watched.size;
+    const done = resumeId == null;
+    const nothing = watched.size === 0;
+
+    const kicker = el('cn-kicker'), showEl = el('cn-show');
+    wrap.classList.toggle('done', done);
+    if (done) {
+      if (kicker) kicker.textContent = 'All caught up';
+      if (showEl) showEl.innerHTML = `<span class="cn-name">${watched.size.toLocaleString('en-US')} shows watched</span>`;
+      wrap.querySelector('.continue-btn').title = 'You have watched every show. Open the journey panel to revisit from the start.';
+    } else {
+      const ev = BUNDLE.events[String(resumeId)];
+      if (kicker) kicker.textContent = nothing ? 'Start watching' : 'Next show for me';
+      // Show name only on the pill face; the date lives in the dropdown so the
+      // pill stays compact and the month/year nav owns the header.
+      if (showEl) showEl.innerHTML = `<span class="cn-name">${esc(shortShowName(ev))}</span>`;
+      wrap.querySelector('.continue-btn').title = (nothing ? 'Start with ' : 'Resume at ') + fullShowName(ev) + ' · ' + fmtDateLong(ev.air_date);
+    }
+    wrap.hidden = false;
+
+    renderContinuePanel(resumeId, total, done);
+    markResumeDay(resumeId);
+  }
+
+  function toggleContinuePanel() {
+    const wrap = el('continue-wrap'), panel = el('continue-panel'), caret = el('continue-caret');
+    const open = wrap.classList.toggle('open-panel');
+    panel.hidden = !open;
+    caret.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeContinuePanel() {
+    const wrap = el('continue-wrap'), panel = el('continue-panel'), caret = el('continue-caret');
+    if (!wrap.classList.contains('open-panel')) return;
+    wrap.classList.remove('open-panel');
+    panel.hidden = true;
+    caret.setAttribute('aria-expanded', 'false');
+  }
+
+  function setupResume() {
+    const wrap = el('continue-wrap');
+    if (!wrap) return;
+    const btn = el('continue-btn'), caret = el('continue-caret'), panel = el('continue-panel');
+
+    // Primary action: one click resumes the next show. In the done state the
+    // pill opens the panel instead (no next show to jump to).
+    btn.addEventListener('click', () => {
+      if (resumeTargetId) { closeContinuePanel(); navigateToEvent(resumeTargetId); }
+      else toggleContinuePanel();
+    });
+    caret.addEventListener('click', (e) => { e.stopPropagation(); toggleContinuePanel(); });
+
+    panel.addEventListener('click', (e) => {
+      const row = e.target.closest('[data-go]');
+      if (row) { closeContinuePanel(); navigateToEvent(row.getAttribute('data-go')); return; }
+      if (e.target.closest('[data-restart]')) {
+        closeContinuePanel();
+        if (ORDERED_IDS[0]) navigateToEvent(ORDERED_IDS[0]);
+      }
+    });
+
+    // Dismiss the panel on outside click or Escape.
+    document.addEventListener('click', (e) => {
+      if (wrap.classList.contains('open-panel') && !wrap.contains(e.target)) closeContinuePanel();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wrap.classList.contains('open-panel')) closeContinuePanel();
     });
   }
 
@@ -2790,6 +3020,7 @@
     });
     markWatchedChips();
     updateMarkMonthBtn();
+    refreshResumeUI();   // Watched is the only input to resume; keep them in lockstep.
   }
 
   // ------------------ Bulk watched (catch-up + month) ---------------------
@@ -3308,7 +3539,7 @@
       }
       calEl.appendChild(div);
     });
-    markBookmarkedDay();
+    markResumeDay(computeResumeId());
     markWatchedChips();
   }
 
@@ -3359,13 +3590,6 @@
           btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
       });
-      // Bookmark toggles, one per event hero in this modal.
-      mContent.querySelectorAll('[data-bookmark-id]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          toggleBookmark(btn.getAttribute('data-bookmark-id'));
-        });
-      });
       // Watched toggles, one per event hero.
       mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -3380,7 +3604,7 @@
           toggleSaved(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match'));
         });
       });
-      refreshBookmarkUI();
+      refreshResumeUI();
       refreshWatchedUI();
       refreshSavedUI();
     } catch (err) {
@@ -3416,7 +3640,6 @@
     const meta = buildMeta(d);
     const subtitle = isPPV && d.title && d.title !== (d.ppv_name || '') ? d.title : '';
     const bmId = esc(String(d.id || ''));
-    const isBm = d.id != null && String(d.id) === String(bookmarkId || '');
     const isW = d.id != null && watched.has(String(d.id));
 
     return `
@@ -3428,10 +3651,6 @@
               <button class="watched-btn${isW ? ' active' : ''}" data-watched-id="${bmId}" type="button" aria-pressed="${isW ? 'true' : 'false'}" title="${isW ? 'Mark as not watched' : 'Mark this show watched'}">
                 <span class="wb-check" aria-hidden="true"></span>
                 <span class="wb-label">${isW ? 'Watched' : 'Mark watched'}</span>
-              </button>
-              <button class="bookmark-btn${isBm ? ' active' : ''}" data-bookmark-id="${bmId}" type="button" aria-pressed="${isBm ? 'true' : 'false'}" title="${isBm ? 'This is your resume point. Click to clear.' : 'Set this show as your resume point'}">
-                <span class="bm-pin" aria-hidden="true"></span>
-                <span class="bm-label">${isBm ? 'Resume point' : 'Resume here'}</span>
               </button>
             </div>
           </div>
@@ -4551,9 +4770,10 @@
 
   setupWatchedNav();
   setupSearch();
+  setupResume();
   loadCalendar();
   route();
-  refreshBookmarkUI();
+  refreshResumeUI();
   refreshWatchedUI();
   updateSavedTabCount();
 })();
