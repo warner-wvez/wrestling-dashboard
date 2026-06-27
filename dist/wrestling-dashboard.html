@@ -70,9 +70,9 @@
      HEADER
      ============================================================= */
   header {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     padding-bottom: 24px;
     margin-bottom: 24px;
@@ -84,7 +84,10 @@
     gap: 12px;
     flex-shrink: 0;
     justify-self: start;
+    text-decoration: none;
+    color: inherit;
   }
+  .brand:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
   .brand .logo {
     width: 34px;
     height: 34px;
@@ -202,7 +205,7 @@
     -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='square' stroke-linejoin='miter'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z'/><circle cx='12' cy='12' r='3'/></svg>");
   }
 
-  /* ---- Bookmark + Resume (persistent watch position) ----------------- */
+  /* ---- Header actions (spoilers + search) --------------------------- */
   .header-actions {
     display: flex;
     align-items: center;
@@ -211,205 +214,6 @@
     justify-self: end;
     gap: 8px;
   }
-  /* Continue control: a split pill (one-click resume + caret) that auto-tracks
-     the next unwatched show. The caret opens the journey panel below it. */
-  .continue-wrap {
-    position: relative;
-    display: inline-flex;
-    align-items: stretch;
-  }
-  .continue-wrap[hidden] { display: none; }
-  .continue-btn, .continue-caret {
-    background: transparent;
-    border: 1px solid var(--ink);
-    color: var(--ink);
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 140ms, color 140ms, border-color 140ms;
-  }
-  .continue-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-right: none;
-    max-width: 300px;
-  }
-  .continue-btn:hover { background: var(--red); border-color: var(--red); color: #FFF; }
-  .continue-btn:focus-visible, .continue-caret:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
-  .cn-play {
-    width: 13px; height: 13px; flex-shrink: 0;
-    background: var(--red);
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 4l14 8-14 8z'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M6 4l14 8-14 8z'/></svg>") no-repeat center / contain;
-  }
-  .continue-btn:hover .cn-play { background: #FFF; }
-  .continue-wrap.done .cn-play {
-    mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12l5 5L20 6'/></svg>");
-    -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12l5 5L20 6'/></svg>");
-  }
-  .cn-text { display: inline-flex; align-items: baseline; gap: 8px; min-width: 0; }
-  .cn-kicker {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-  .continue-btn:hover .cn-kicker { color: rgba(255,255,255,0.85); }
-  .cn-show { display: inline-flex; align-items: baseline; gap: 7px; min-width: 0; }
-  .cn-name {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 124px;
-  }
-  .cn-date {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ink-dim);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .continue-btn:hover .cn-date { color: rgba(255,255,255,0.85); }
-  .cn-sep { color: var(--ink-faint); font-size: 11px; flex-shrink: 0; }
-  .continue-btn:hover .cn-sep { color: rgba(255,255,255,0.7); }
-  .continue-caret {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 9px;
-  }
-  .continue-caret:hover { background: var(--surface-soft); }
-  .continue-wrap.open-panel .continue-caret { background: var(--ink); border-color: var(--ink); color: #FFF; }
-  .cn-caret-ico {
-    width: 10px; height: 10px;
-    background: currentColor;
-    transition: transform 160ms;
-    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M1 3L5 7L9 3' stroke='black' stroke-width='1.6' fill='none' stroke-linecap='square'/></svg>") no-repeat center / contain;
-    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><path d='M1 3L5 7L9 3' stroke='black' stroke-width='1.6' fill='none' stroke-linecap='square'/></svg>") no-repeat center / contain;
-  }
-  .continue-wrap.open-panel .cn-caret-ico { transform: rotate(180deg); }
-
-  /* Journey panel: drops below the control, right-aligned to its edge. */
-  .continue-panel {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
-    width: min(92vw, 340px);
-    background: var(--bg);
-    border: 1px solid var(--ink);
-    box-shadow: var(--shadow-lg);
-    z-index: 90;
-    padding: 16px 18px 14px;
-    text-align: left;
-    animation: cp-in 160ms cubic-bezier(0.2,0.8,0.2,1);
-  }
-  .continue-panel[hidden] { display: none; }
-  @keyframes cp-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-  .cp-head {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 10px;
-  }
-  .cp-bar {
-    height: 6px;
-    background: var(--surface-soft);
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-  .cp-fill { height: 100%; background: var(--red); transition: width 220ms; }
-  .cp-stat {
-    margin-top: 7px;
-    font-size: 12px;
-    color: var(--ink-dim);
-  }
-  .cp-stat strong { color: var(--ink); font-weight: 800; }
-  .cp-upto {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .cp-upto strong { color: var(--ink); font-weight: 800; }
-  .cp-done {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--ink-soft);
-    line-height: 1.5;
-  }
-  .cp-upnext-head {
-    margin: 14px 0 6px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
-  .cp-list { display: flex; flex-direction: column; }
-  .cp-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    text-align: left;
-    background: transparent;
-    border: none;
-    border-left: 2px solid transparent;
-    padding: 8px 8px 8px 6px;
-    margin: 0 -8px;
-    cursor: pointer;
-    font-family: inherit;
-    color: var(--ink);
-  }
-  .cp-row:hover { background: var(--surface-soft); border-left-color: var(--red); }
-  .cp-row.resume { background: var(--surface-soft); border-left-color: var(--red); }
-  .cp-row .brand-chip { flex: 0 0 auto; margin-bottom: 0; padding: 3px 8px; font-size: 9px; }
-  .cp-row-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 1 auto; }
-  .cp-row-name {
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .cp-row-date { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
-  .cp-row-cta {
-    flex: 0 0 auto;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #FFF;
-    background: var(--red);
-    padding: 4px 9px;
-  }
-  .cp-restart {
-    display: block;
-    width: 100%;
-    margin-top: 14px;
-    padding: 9px;
-    background: transparent;
-    border: 1px solid var(--border-strong);
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: var(--ink-dim);
-    cursor: pointer;
-    transition: border-color 140ms, color 140ms, background 140ms;
-  }
-  .cp-restart:hover { border-color: var(--ink); color: var(--ink); background: var(--surface-soft); }
 
   /* Event hero top row (brand chip + watched toggle) */
   .event-hero-top {
@@ -838,113 +642,70 @@
   .modal-spoiler-btn:hover .eye { background: #FFF; }
 
   /* =============================================================
-     MAIN GRID: content + sidebar
+     BROWSE: full-width chronological calendar (secondary to Continue)
      ============================================================= */
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
-    gap: 32px;
-  }
-
-  .content { min-width: 0; }
-  .sidebar { min-width: 0; }
+  .browse { min-width: 0; }
 
   /* =============================================================
-     HERO
+     CONTINUE WATCHING HERO
+     The resume position, rendered as a Netflix-style billboard. The whole
+     hero takes on the brand color of the show you are about to watch.
      ============================================================= */
   .hero {
+    --accent: var(--red);
+    --accent-soft: var(--red-soft);
     position: relative;
-    background: var(--surface);
+    background:
+      linear-gradient(135deg, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 42%),
+      var(--surface);
     border: 1px solid var(--ink);
     border-radius: var(--card-radius);
-    padding: 28px 32px;
-    margin-bottom: 32px;
+    padding: 27px 32px;
+    margin-bottom: 36px;
     overflow: hidden;
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 28px;
-    align-items: end;
-    cursor: pointer;
-    transition: transform 180ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 180ms;
+    grid-template-columns: minmax(0, 1fr) 304px;
+    gap: 36px;
+    align-items: stretch;
   }
-  .hero:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-  .hero.ppv {
-    background:
-      linear-gradient(135deg, rgba(200,16,46,0.06) 0%, transparent 40%),
-      var(--surface);
-  }
-  .hero.ppv::before {
+  .hero::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 3px;
-    background: var(--red);
+    background: var(--accent);
   }
-  .hero.smackdown {
-    background:
-      linear-gradient(135deg, rgba(0,61,165,0.06) 0%, transparent 40%),
-      var(--surface);
-  }
-  .hero.smackdown::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--blue);
-  }
+  .hero.smackdown { --accent: var(--blue); --accent-soft: var(--blue-soft); }
+  .hero.done { --accent: var(--ink); --accent-soft: var(--surface-soft); }
 
-  .hero-info { min-width: 0; }
+  .hero-main { display: flex; flex-direction: column; min-width: 0; }
   .hero-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 12px;
+    color: var(--accent);
+    margin-bottom: 14px;
   }
-  .hero-kicker .pulse {
-    width: 7px; height: 7px;
-    background: var(--blue);
-    position: relative;
-    box-shadow: 0 0 0 0 rgba(0,61,165,0.5);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(0,61,165,0.5); }
-    70%  { box-shadow: 0 0 0 6px rgba(0,61,165,0); }
-    100% { box-shadow: 0 0 0 0 rgba(0,61,165,0); }
-  }
-  .hero.ppv .hero-kicker { color: var(--red); }
-  .hero.ppv .hero-kicker .pulse {
-    background: var(--red);
-    animation-name: pulse-red;
-  }
-  @keyframes pulse-red {
-    0%   { box-shadow: 0 0 0 0 rgba(200,16,46,0.5); }
-    70%  { box-shadow: 0 0 0 6px rgba(200,16,46,0); }
-    100% { box-shadow: 0 0 0 0 rgba(200,16,46,0); }
-  }
+  .hero-kicker .pulse { width: 7px; height: 7px; background: var(--accent); flex: 0 0 auto; }
 
   .hero-title {
     font-family: var(--font-sans);
     font-weight: 900;
     font-size: 40px;
     letter-spacing: -0.025em;
-    line-height: 1.02;
+    line-height: 1.04;
     color: var(--ink);
     margin-bottom: 14px;
   }
   .hero-meta {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
     flex-wrap: wrap;
     font-family: var(--font-mono);
     font-size: 12px;
@@ -964,42 +725,190 @@
   .chip.raw { background: var(--red-soft); color: var(--red); }
   .chip.smackdown { background: var(--blue-soft); color: var(--blue); }
   .chip.ppv { background: var(--ink); color: #FFF; }
-  .hero-meta .dot {
-    width: 3px; height: 3px; background: var(--ink-faint); display: inline-block;
-  }
+  .hero-meta .dot { width: 3px; height: 3px; background: var(--ink-faint); display: inline-block; }
 
-  .hero-cta {
+  /* Journey progress: how far through 2001-2019 the viewer is. */
+  .hero-progress { margin-top: auto; padding-top: 24px; }
+  .hero-bar {
+    height: 6px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero-bar-fill { height: 100%; background: var(--accent); min-width: 0; transition: width 260ms cubic-bezier(0.2,0.8,0.2,1); }
+  .hero-bar-label {
+    margin-top: 9px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-dim);
+    letter-spacing: 0.02em;
+  }
+  .hero-bar-label strong { color: var(--ink); font-weight: 800; }
+  .hero-altlink {
+    margin-top: 12px;
+    align-self: flex-start;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-dim);
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-strong);
+    transition: color 140ms, border-color 140ms;
+  }
+  .hero-altlink:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* Action rail: the Resume button plus a peek at what is queued next. */
+  .hero-side {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-left: 1px solid var(--border);
+    padding-left: 30px;
+  }
+  .hero-resume {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 11px;
+    width: 100%;
     background: var(--ink);
     color: #FFF;
-    padding: 14px 24px;
+    padding: 15px 22px;
     border: none;
     font-family: var(--font-sans);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.01em;
     cursor: pointer;
     transition: background 140ms, transform 140ms;
+  }
+  .hero-resume:hover { background: var(--accent); transform: translateY(-1px); }
+  .hero.done .hero-resume:hover { background: var(--red); }
+  .hero-resume .play {
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 10px;
+    border-color: transparent transparent transparent #FFF;
+    flex: 0 0 auto;
+  }
+  .hero-resume .restart { font-size: 16px; line-height: 1; }
+
+  .hero-up { display: flex; flex-direction: column; }
+  .hero-up-head {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .hero-up-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-top: 1px solid var(--border);
+    background: none;
+    text-align: left;
+    cursor: pointer;
+  }
+  .hero-up-row:hover .hu-name { color: var(--accent); }
+  .hero-up-row .chip {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    padding: 3px 7px;
+    text-transform: uppercase;
+  }
+  .hu-main { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .hu-name {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 140ms;
+  }
+  .hu-date { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+
+  /* =============================================================
+     BROWSE HEADER: month title + relocated month nav
+     ============================================================= */
+  .browse-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 0 2px;
+  }
+  .browse-kicker {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .browse-title {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -0.025em;
+  }
+  .browse-title .year { color: var(--ink-faint); font-weight: 500; margin-left: 10px; }
+  .browse-head-r { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  /* Show count sits with the period title it describes (proximity), not in the
+     control cluster, so the right side stays a clean set of ranked controls. */
+  .browse-count {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     white-space: nowrap;
   }
-  .hero-cta:hover {
-    background: var(--red);
-    transform: translateY(-1px);
-  }
-  .hero.ppv .hero-cta { background: var(--red); }
-  .hero.ppv .hero-cta:hover { background: var(--ink); }
-  .hero-cta .arrow { transition: transform 140ms; }
-  .hero:hover .hero-cta .arrow { transform: translateX(3px); }
+  .browse-count strong { color: var(--ink); font-weight: 700; }
 
-  .hero-empty {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 20px 0;
+  /* Week / Month segmented toggle. Default is Week (less on screen at once). */
+  .calview-toggle { display: inline-flex; border: 1px solid var(--ink); flex: 0 0 auto; }
+  .cv-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    cursor: pointer;
+    transition: background 140ms, color 140ms;
   }
-  .hero-empty .hero-title { font-size: 24px; color: var(--ink-dim); }
-  .hero-empty .hero-cta { display: none; }
+  .cv-btn + .cv-btn { border-left: 1px solid var(--ink); }
+  .cv-btn:hover { color: var(--ink); background: var(--surface-soft); }
+  .cv-btn[aria-pressed="true"] { background: var(--ink); color: #FFF; }
+  .cv-btn[aria-pressed="true"]:hover { background: var(--ink); color: #FFF; }
+  .cv-btn:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
 
   /* =============================================================
      MONTH SECTION
@@ -2160,9 +2069,17 @@
      RESPONSIVE
      ============================================================= */
   @media (max-width: 1040px) {
-    .layout { grid-template-columns: 1fr; }
-    .sidebar { order: -1; }
-    .side-panel { position: static; }
+    .hero { grid-template-columns: 1fr; gap: 24px; }
+    .hero-side {
+      border-left: none;
+      border-top: 1px solid var(--border);
+      padding-left: 0;
+      padding-top: 22px;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
   }
 
   @media (max-width: 720px) {
@@ -2171,7 +2088,8 @@
     .modal { width: min(98vw, 820px); }
     .hero { grid-template-columns: 1fr; padding: 22px; gap: 18px; }
     .hero-title { font-size: 26px; }
-    .hero-cta { justify-self: start; }
+    .hero-side { grid-template-columns: 1fr; gap: 18px; padding-top: 18px; }
+    .browse-head-r { width: 100%; justify-content: space-between; }
     .calendar { gap: 4px; }
     .weekdays { font-size: 9px; }
     .day { min-height: 66px; padding: 8px; }
@@ -2188,36 +2106,146 @@
     .vs-cell { margin: 0 auto; }
   }
 
+  /* Phones: drop the wordmark and Menu label to icons so the brand mark plus
+     the three header controls fit without crowding. */
+  @media (max-width: 560px) {
+    .brand .wordmark { display: none; }
+    .menu-label { display: none; }
+    .menu-btn { padding: 9px 12px; }
+    .header-actions { gap: 8px; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
   }
 
   /* ===========================================================
-     TABS
+     MENU BUTTON + NAV DRAWER ("the sandwich")
+     Secondary navigation (Roster, My List) is tucked behind a clearly
+     labeled Menu so the landing shows only chronological watching + search.
      =========================================================== */
-  .tabs {
-    display: flex;
-    border-bottom: 2px solid var(--border);
-    margin-bottom: 28px;
-  }
-  .tab {
+  .menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
     background: transparent;
-    border: none;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -2px;
-    padding: 10px 22px;
+    border: 1px solid var(--ink);
+    padding: 9px 16px;
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--ink-dim);
+    color: var(--ink);
     cursor: pointer;
-    transition: color 140ms, border-color 140ms;
+    transition: background 140ms, color 140ms, border-color 140ms;
   }
-  .tab:hover { color: var(--ink); }
-  .tab.active { color: var(--ink); border-bottom-color: var(--red); }
-  .tab:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .menu-btn:hover { background: var(--ink); color: #FFF; }
+  .menu-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .menu-ico { position: relative; display: block; width: 16px; height: 2px; background: currentColor; flex: 0 0 auto; }
+  .menu-ico::before, .menu-ico::after { content: ''; position: absolute; left: 0; width: 16px; height: 2px; background: currentColor; }
+  .menu-ico::before { top: -5px; }
+  .menu-ico::after { top: 5px; }
+
+  .nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms, visibility 200ms;
+    z-index: 200;
+  }
+  .nav-backdrop.open { opacity: 1; visibility: visible; }
+  .nav-drawer {
+    position: absolute;
+    top: 0; right: 0;
+    height: 100%;
+    width: min(360px, 86vw);
+    background: var(--surface);
+    border-left: 1px solid var(--ink);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 240ms cubic-bezier(0.2,0.8,0.2,1);
+  }
+  .nav-backdrop.open .nav-drawer { transform: translateX(0); }
+  .nav-drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 22px;
+    border-bottom: 1px solid var(--ink);
+  }
+  .nav-drawer-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .nav-close {
+    width: 32px; height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 140ms, border-color 140ms;
+  }
+  .nav-close:hover { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  .nav-close:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .nav-close svg { width: 16px; height: 16px; }
+
+  .nav-links { display: flex; flex-direction: column; padding: 8px 0; flex: 1 1 auto; }
+  .nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: left;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    padding: 16px 22px;
+    cursor: pointer;
+    transition: background 140ms, border-color 140ms;
+  }
+  .nav-link:hover { background: var(--surface-soft); }
+  .nav-link.active { border-left-color: var(--red); background: var(--surface-soft); }
+  .nav-link:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .nav-link-name {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .nav-link.active .nav-link-name { color: var(--red); }
+  .nav-link-sub { font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--ink-dim); }
+
+  .nav-drawer-foot {
+    padding: 18px 22px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .nav-foot-line { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); letter-spacing: 0.02em; }
+  .nav-foot-link {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-strong);
+    transition: border-color 140ms;
+  }
+  .nav-foot-link:hover { border-color: var(--ink); }
 
   /* ===========================================================
      VIEWS
@@ -2517,10 +2545,6 @@
     .spoiler-btn { padding: 10px 16px; font-size: 13px; gap: 7px; }
     .spoiler-btn .eye { width: 14px; height: 14px; }
     .header-actions { justify-self: center; justify-content: center; flex-wrap: wrap; }
-    .continue-panel {
-      left: 50%; right: auto; transform: translateX(-50%);
-      width: min(94vw, 360px); animation: none;
-    }
   }
   @media (max-width: 720px) {
     .profile-name { font-size: 28px; }
@@ -2574,32 +2598,15 @@
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- HEADER. Landing chrome is deliberately spare: the brand (home), the
+     spoiler-safety toggle, search, and the menu. Everything that is not
+     chronological watching lives behind the menu drawer. -->
 <header>
-  <div class="brand">
-    <div class="logo">W</div>
-    <div class="wordmark">WVEZ<span class="light">Wrestling</span></div>
-  </div>
-  <div class="controls">
-    <button class="month-nav" id="month-prev" aria-label="Previous month" type="button">◀</button>
-    <select id="month" aria-label="Month"></select>
-    <select id="year" aria-label="Year"></select>
-    <button class="month-nav" id="month-next" aria-label="Next month" type="button">▶</button>
-  </div>
+  <a class="brand" href="#calendar" aria-label="WVEZ Wrestling home">
+    <span class="logo">W</span>
+    <span class="wordmark">WVEZ<span class="light">Wrestling</span></span>
+  </a>
   <div class="header-actions">
-    <div class="continue-wrap" id="continue-wrap" hidden>
-      <button class="continue-btn" id="continue-btn" type="button" aria-label="Resume your next show">
-        <span class="cn-play" aria-hidden="true"></span>
-        <span class="cn-text">
-          <span class="cn-kicker" id="cn-kicker">Continue</span>
-          <span class="cn-show" id="cn-show"></span>
-        </span>
-      </button>
-      <button class="continue-caret" id="continue-caret" type="button" aria-expanded="false" aria-haspopup="true" aria-controls="continue-panel" aria-label="Show your watch journey">
-        <span class="cn-caret-ico" aria-hidden="true"></span>
-      </button>
-      <div class="continue-panel" id="continue-panel" role="region" aria-label="Your watch journey" hidden></div>
-    </div>
     <button class="spoiler-btn" id="spoiler-btn" aria-pressed="false" type="button">
       <span class="eye"></span>
       <span class="sp-label">Spoilers Off</span>
@@ -2607,45 +2614,47 @@
     <button class="search-btn" id="search-btn" type="button" aria-label="Search events, wrestlers, and matches" title="Search events, wrestlers, and matches (press /)">
       <span class="search-ico" aria-hidden="true"></span>
     </button>
+    <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="nav-drawer" title="Menu">
+      <span class="menu-ico" aria-hidden="true"></span>
+      <span class="menu-label">Menu</span>
+    </button>
   </div>
 </header>
 
-<nav class="tabs" id="main-tabs">
-  <button class="tab active" data-view="calendar" type="button">Calendar</button>
-  <button class="tab" data-view="roster" type="button">Roster</button>
-  <button class="tab" data-view="mylist" type="button">My List</button>
-</nav>
-
 <section id="view-calendar" class="view">
 
-<!-- HERO -->
-<div class="hero" id="hero" role="button" tabindex="0"></div>
+<!-- CONTINUE WATCHING: the resume position is the first thing you see. Built
+     from watched history (renderResumeHero), independent of the browsed month. -->
+<div class="hero" id="hero"></div>
 
-<!-- LAYOUT -->
-<div class="layout">
-  <section class="content">
-    <div class="month-section-head">
-      <h2><span id="month-name">January</span><span class="year" id="month-year">2001</span></h2>
-      <div class="msh-right">
-        <div class="count"><strong id="month-count">0</strong> events this month</div>
-        <button class="mark-month" id="mark-month-btn" type="button" hidden>Mark month watched</button>
+<!-- BROWSE (secondary): the full chronological calendar. Month nav lives here,
+     next to what it controls, not in the global header. -->
+<section class="browse" id="browse">
+  <div class="browse-head">
+    <div class="browse-head-l">
+      <div class="browse-kicker">Browse the calendar</div>
+      <h2 class="browse-title"><span id="month-name">January</span><span class="year" id="month-year">2001</span></h2>
+      <span class="browse-count"><strong id="month-count">0</strong> <span id="count-label">shows</span></span>
+    </div>
+    <div class="browse-head-r">
+      <div class="calview-toggle" id="calview-toggle" role="group" aria-label="Calendar view">
+        <button class="cv-btn" id="cv-week" type="button" data-cv="week" aria-pressed="true">Week</button>
+        <button class="cv-btn" id="cv-month" type="button" data-cv="month" aria-pressed="false">Month</button>
       </div>
+      <div class="controls">
+        <button class="month-nav" id="month-prev" aria-label="Previous" type="button">◀</button>
+        <select id="month" aria-label="Month"></select>
+        <select id="year" aria-label="Year"></select>
+        <button class="month-nav" id="month-next" aria-label="Next" type="button">▶</button>
+      </div>
+      <button class="mark-month" id="mark-month-btn" type="button" hidden>Mark week watched</button>
     </div>
-    <div class="weekdays">
-      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-    </div>
-    <div class="calendar" id="calendar"></div>
-  </section>
-
-  <aside class="sidebar">
-    <div class="side-panel">
-      <div class="side-panel-title">Most Featured</div>
-      <div class="side-panel-sub">By matches worked in <strong id="roster-month">March 2004</strong></div>
-      <div class="roster" id="roster"></div>
-      <div class="roster-note" id="roster-note">Ranked by number of matches on televised cards this month.</div>
-    </div>
-  </aside>
-</div>
+  </div>
+  <div class="weekdays">
+    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+  <div class="calendar" id="calendar"></div>
+</section>
 
 </section><!-- end view-calendar -->
 
@@ -2713,6 +2722,39 @@
   <div id="wrestler-profile-content"></div>
 </section>
 
+<!-- NAV DRAWER (the "menu"): everything that is not chronological watching lives
+     here, so a first-time visitor's landing shows only how to start watching. -->
+<div id="nav-backdrop" class="nav-backdrop">
+  <aside class="nav-drawer" id="nav-drawer" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="nav-drawer-head">
+      <span class="nav-drawer-title">Menu</span>
+      <button class="nav-close" id="nav-close" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+          <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <nav class="nav-links" aria-label="Primary">
+      <button class="nav-link" data-nav="calendar" type="button">
+        <span class="nav-link-name">Calendar</span>
+        <span class="nav-link-sub">Watch every WWE show in order, from 2001</span>
+      </button>
+      <button class="nav-link" data-nav="mylist" type="button">
+        <span class="nav-link-name">My List</span>
+        <span class="nav-link-sub">Your progress and saved matches</span>
+      </button>
+      <button class="nav-link" data-nav="roster" type="button">
+        <span class="nav-link-name">Roster</span>
+        <span class="nav-link-sub">Look up any wrestler's career</span>
+      </button>
+    </nav>
+    <div class="nav-drawer-foot">
+      <div class="nav-foot-line">Spoiler-safe. No account. Works in your browser.</div>
+      <a class="nav-foot-link" href="https://github.com/warner-wvez/wrestling-dashboard" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </aside>
+</div>
+
 <!-- SEARCH OVERLAY (command palette; sibling of all views so it floats over any of them) -->
 <div id="search-backdrop" class="search-backdrop" role="dialog" aria-modal="true" aria-label="Search">
   <div class="search-panel">
@@ -2778,7 +2820,6 @@
   const spoilerButtons = [el('spoiler-btn'), el('modal-spoiler-btn')].filter(Boolean);
   const monthNameEl = el('month-name'), monthYearEl = el('month-year'), monthCountEl = el('month-count');
   const heroEl = el('hero');
-  const rosterEl = el('roster'), rosterMonthEl = el('roster-month');
 
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fmtDuration = (sec) => {
@@ -2824,6 +2865,52 @@
     const res = await fetch(`${API}/api/events?year=${year}&month=${month}`);
     if (!res.ok) throw new Error(`API ${res.status}`);
     return res.json();
+  }
+
+  // ------------------ Calendar view state (week | month) ------------------
+  // Default to Week so a first or returning viewer sees only the few shows
+  // around their spot, not a 35-cell month grid of mostly-empty days. The
+  // choice persists. anchorISO is a day inside the displayed period and is the
+  // single source of truth for both views; the dropdowns mirror it.
+  const CALVIEW_KEY = 'wvez_wrestling_calview';
+  let calView = localStorage.getItem(CALVIEW_KEY) === 'month' ? 'month' : 'week';
+  let anchorISO = null;
+
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const ymd = (y, m, d) => `${y}-${pad2(m)}-${pad2(d)}`;
+  function addDaysISO(iso, n) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dt = new Date(Date.UTC(y, m - 1, d + n));
+    return ymd(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+  }
+  function weekStartISO(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay(); // 0 = Sunday
+    return addDaysISO(iso, -dow);
+  }
+  function clampISO(iso) {
+    const lo = `${yr[0]}-01-01`, hi = `${yr[1]}-12-31`;
+    return iso < lo ? lo : (iso > hi ? hi : iso);
+  }
+
+  // Summary rows for every event in [startISO, endISO]. Bundle-only (the week
+  // view is a shipped-product feature; BUNDLE is always present there).
+  function getEventsInRange(startISO, endISO) {
+    const out = [];
+    if (BUNDLE && BUNDLE.events_by_date) {
+      for (const [iso, ids] of Object.entries(BUNDLE.events_by_date)) {
+        if (iso < startISO || iso > endISO) continue;
+        for (const id of ids) {
+          const full = BUNDLE.events[String(id)];
+          if (!full) continue;
+          const row = {};
+          for (const k of SUMMARY_KEYS) row[k] = full[k] ?? null;
+          out.push(row);
+        }
+      }
+      out.sort((a, b) => a.air_date.localeCompare(b.air_date) || a.show_type.localeCompare(b.show_type));
+    }
+    return out;
   }
 
   async function getEventDetail(id) {
@@ -2930,11 +3017,6 @@
     return start < 0 ? [] : ORDERED_IDS.slice(start, start + n);
   }
 
-  // Compact name for the pill: brand word for weeklies, event name for PPVs.
-  function shortShowName(ev) {
-    if (!ev) return '';
-    return ev.show_type === 'PPV' ? (ev.ppv_name || ev.title || 'Pay-Per-View') : ev.show_type;
-  }
   // Fuller name for panel rows.
   function fullShowName(ev) {
     if (!ev) return '';
@@ -2956,115 +3038,140 @@
     if (cell) cell.classList.add('is-resume');
   }
 
-  function renderContinuePanel(resumeId, total, done) {
-    const panel = el('continue-panel');
-    if (!panel) return;
-    const pct = total ? Math.min(100, watched.size / total * 100) : 0;
-    const pctLabel = total ? Math.round(watched.size / total * 100) : 0;
-    const parts = [`<div class="cp-head">Your journey</div>`];
-    parts.push(
-      `<div class="cp-bar"><div class="cp-fill" style="width:${pct}%"></div></div>
-       <div class="cp-stat"><strong>${watched.size.toLocaleString('en-US')}</strong> / ${Number(total).toLocaleString('en-US')} watched · ${pctLabel}%</div>`);
-
-    if (done) {
-      parts.push(`<div class="cp-done">You've watched every show in the corpus. That's the whole journey, 2001 to 2019.</div>`);
-    } else {
-      const ev = BUNDLE.events[String(resumeId)];
-      const mo = ev ? `${MONTHS[parseInt(ev.air_date.slice(5, 7), 10) - 1]} ${ev.air_date.slice(0, 4)}` : '';
-      parts.push(`<div class="cp-upto">You're up to <strong>${esc(mo)}</strong></div>`);
-      parts.push(`<div class="cp-upnext-head">Up next</div>`);
-      const rows = upcomingFrom(resumeId, 4).map((id, i) => {
-        const e = BUNDLE.events[String(id)];
-        if (!e) return '';
-        const cls = SHOW_CLASS[e.show_type] || '';
-        return `<button class="cp-row${i === 0 ? ' resume' : ''}" type="button" data-go="${esc(id)}">
-            <span class="brand-chip ${cls}">${esc(e.show_type === 'PPV' ? 'PPV' : e.show_type)}</span>
-            <span class="cp-row-main"><span class="cp-row-name">${esc(fullShowName(e))}</span><span class="cp-row-date">${esc(fmtDateLong(e.air_date))}</span></span>
-            ${i === 0 ? '<span class="cp-row-cta">Resume</span>' : ''}
-          </button>`;
-      }).join('');
-      parts.push(`<div class="cp-list">${rows}</div>`);
-    }
-    parts.push(`<button class="cp-restart" type="button" data-restart title="Open the very first show. Your watched progress is kept.">&#8634; Start from the beginning</button>`);
-    panel.innerHTML = parts.join('');
-  }
-
-  // Sync the Continue control (pill + panel) and the calendar marker to the
-  // current Watched state. Safe to call any time; recomputes from scratch.
-  function refreshResumeUI() {
-    const wrap = el('continue-wrap');
-    if (!wrap || !BUNDLE) return;
+  // ------------------ Continue Watching hero ------------------------------
+  // The resume billboard: the single most important thing on the page. It
+  // answers "where am I and what do I press" the moment you open the app.
+  // Rendered from watched state (not the browsed month) so it stays put as you
+  // flip through the calendar below.
+  function renderResumeHero() {
+    if (!heroEl || !BUNDLE) return;
     const resumeId = computeResumeId();
     resumeTargetId = resumeId;
     const total = (BUNDLE.meta && BUNDLE.meta.event_count) || ORDERED_IDS.length || watched.size;
+    const yr = (BUNDLE.meta && BUNDLE.meta.year_range) || [2001, 2019];
     const done = resumeId == null;
     const nothing = watched.size === 0;
+    const pct = total ? Math.min(100, watched.size / total * 100) : 0;
+    const pctLabel = total ? Math.round(watched.size / total * 100) : 0;
+    const nf = (n) => Number(n).toLocaleString('en-US');
+    // Drop the redundant promotion prefix on the billboard; the brand chip
+    // already says RAW/SmackDown/PPV. Keeps the era flavor ("RAW is WAR #398").
+    const cleanName = (e) => fullShowName(e).replace(/^WW[EF]\s+/, '');
 
-    const kicker = el('cn-kicker'), showEl = el('cn-show');
-    wrap.classList.toggle('done', done);
+    // ---- All caught up -------------------------------------------------
     if (done) {
-      if (kicker) kicker.textContent = 'All caught up';
-      if (showEl) showEl.innerHTML = `<span class="cn-name">${watched.size.toLocaleString('en-US')} shows watched</span>`;
-      wrap.querySelector('.continue-btn').title = 'You have watched every show. Open the journey panel to revisit from the start.';
-    } else {
-      const ev = BUNDLE.events[String(resumeId)];
-      if (kicker) kicker.textContent = nothing ? 'Start here' : 'Resume';
-      // Name the exact next event on the pill face (show + date), so it's a
-      // concrete one-click jump to where you left off, not a vague "next show".
-      if (showEl) showEl.innerHTML =
-        `<span class="cn-name">${esc(shortShowName(ev))}</span>`
-        + `<span class="cn-sep" aria-hidden="true">·</span>`
-        + `<span class="cn-date">${esc(fmtDateLong(ev.air_date))}</span>`;
-      wrap.querySelector('.continue-btn').title = (nothing ? 'Start with ' : 'Resume at ') + fullShowName(ev) + ' · ' + fmtDateLong(ev.air_date);
+      heroEl.className = 'hero done';
+      heroEl.innerHTML = `
+        <div class="hero-main">
+          <div class="hero-kicker"><span class="pulse"></span>All caught up</div>
+          <div class="hero-title">You've watched the whole journey</div>
+          <div class="hero-meta"><span>Every show from ${yr[0]} to ${yr[1]}, watched in order.</span></div>
+          <div class="hero-progress">
+            <div class="hero-bar"><div class="hero-bar-fill" style="width:100%"></div></div>
+            <div class="hero-bar-label"><strong>${nf(watched.size)}</strong> of ${nf(total)} shows watched · 100%</div>
+          </div>
+        </div>
+        <div class="hero-side">
+          <button class="hero-resume" type="button" data-restart title="Open the very first show. Your watched progress is kept.">
+            <span class="restart" aria-hidden="true">&#8634;</span><span>Start over</span>
+          </button>
+          <div class="hero-up">
+            <div class="hero-up-head">The journey</div>
+            <div class="hu-date" style="padding:9px 0 0;border-top:1px solid var(--border)">${nf(total)} shows, ${yr[0]} to ${yr[1]}, start to finish.</div>
+          </div>
+        </div>`;
+      markResumeDay(resumeId);
+      return;
     }
-    wrap.hidden = false;
 
-    renderContinuePanel(resumeId, total, done);
+    // ---- Resume show + the shared "Up next" queue ----------------------
+    const ev = BUNDLE.events[String(resumeId)];
+    const cls = SHOW_CLASS[ev.show_type] || '';
+    const brandCls = ev.show_type === 'SmackDown' ? 'smackdown' : (ev.show_type === 'PPV' ? 'ppv' : 'raw');
+    const chipLabel = ev.show_type === 'PPV' ? 'Pay-Per-View' : ev.show_type;
+
+    const upRows = upcomingFrom(resumeId, 4).slice(1).map(id => {
+      const e = BUNDLE.events[String(id)];
+      if (!e) return '';
+      const c = SHOW_CLASS[e.show_type] || '';
+      const chip = e.show_type === 'PPV' ? 'PPV' : (e.show_type === 'SmackDown' ? 'SD' : 'Raw');
+      return `<button class="hero-up-row" type="button" data-go="${esc(id)}">
+          <span class="chip ${c}">${esc(chip)}</span>
+          <span class="hu-main"><span class="hu-name">${esc(cleanName(e))}</span><span class="hu-date">${esc(fmtDateLong(e.air_date))}</span></span>
+        </button>`;
+    }).join('');
+    const upBlock = upRows
+      ? `<div class="hero-up"><div class="hero-up-head">Up next</div>${upRows}</div>`
+      : '';
+
+    // ---- One billboard for both fresh and experienced viewers ----------
+    // No marketing copy. The layout itself carries the value: a play button to
+    // start, the show you are on, a progress bar that shows the scale of the
+    // journey, and the queue of what is next. A first-timer infers "watch in
+    // order from the start"; a returning viewer sees "pick up where I left off".
+    heroEl.className = 'hero ' + brandCls;
+    const upTo = `${MONTHS[parseInt(ev.air_date.slice(5, 7), 10) - 1]} ${ev.air_date.slice(0, 4)}`;
+    // Just brand, date, and match count. The venue/city is trivia that competes
+    // with the few things that actually drive the decision to press play.
+    const metaBits = [
+      `<span class="chip ${cls}">${esc(chipLabel)}</span>`,
+      `<span>${esc(fmtDateLong(ev.air_date))}</span>`,
+      `<span class="dot"></span>`,
+      `<span>${ev.match_count} ${ev.match_count === 1 ? 'match' : 'matches'}</span>`,
+    ];
+
+    const progressLabel = nothing
+      ? `The very beginning · <strong>0</strong> of ${nf(total)} shows`
+      : `You're up to <strong>${esc(upTo)}</strong> · <strong>${nf(watched.size)}</strong> of ${nf(total)} shows · ${pctLabel}%`;
+    const altLink = nothing
+      ? `<button class="hero-altlink" type="button" data-catchup>Already watched some? Pick up where you are</button>`
+      : '';
+
+    heroEl.innerHTML = `
+      <div class="hero-main">
+        <div class="hero-kicker"><span class="pulse"></span>${nothing ? 'Start from the beginning' : 'Continue watching'}</div>
+        <div class="hero-title">${esc(cleanName(ev))}</div>
+        <div class="hero-meta">${metaBits.join('')}</div>
+        <div class="hero-progress">
+          <div class="hero-bar"><div class="hero-bar-fill" style="width:${pct}%"></div></div>
+          <div class="hero-bar-label">${progressLabel}</div>
+          ${altLink}
+        </div>
+      </div>
+      <div class="hero-side">
+        <button class="hero-resume" type="button" data-resume title="${esc((nothing ? 'Start with ' : 'Resume at ') + fullShowName(ev) + ' · ' + fmtDateLong(ev.air_date))}">
+          <span class="play" aria-hidden="true"></span><span>${nothing ? 'Start watching' : 'Resume'}</span>
+        </button>
+        ${upBlock}
+      </div>`;
     markResumeDay(resumeId);
   }
 
-  function toggleContinuePanel() {
-    const wrap = el('continue-wrap'), panel = el('continue-panel'), caret = el('continue-caret');
-    const open = wrap.classList.toggle('open-panel');
-    panel.hidden = !open;
-    caret.setAttribute('aria-expanded', open ? 'true' : 'false');
-  }
-  function closeContinuePanel() {
-    const wrap = el('continue-wrap'), panel = el('continue-panel'), caret = el('continue-caret');
-    if (!wrap.classList.contains('open-panel')) return;
-    wrap.classList.remove('open-panel');
-    panel.hidden = true;
-    caret.setAttribute('aria-expanded', 'false');
+  // Watched state is the only input to the resume position. Re-render the hero
+  // (and, through it, the calendar "you are here" marker) whenever it changes.
+  function refreshResumeUI() {
+    renderResumeHero();
   }
 
+  // One delegated handler for every action inside the hero: Resume, Start over,
+  // the catch-up shortcut, and the Up-next rows.
   function setupResume() {
-    const wrap = el('continue-wrap');
-    if (!wrap) return;
-    const btn = el('continue-btn'), caret = el('continue-caret'), panel = el('continue-panel');
-
-    // Primary action: one click resumes the next show. In the done state the
-    // pill opens the panel instead (no next show to jump to).
-    btn.addEventListener('click', () => {
-      if (resumeTargetId) { closeContinuePanel(); navigateToEvent(resumeTargetId); }
-      else toggleContinuePanel();
-    });
-    caret.addEventListener('click', (e) => { e.stopPropagation(); toggleContinuePanel(); });
-
-    panel.addEventListener('click', (e) => {
-      const row = e.target.closest('[data-go]');
-      if (row) { closeContinuePanel(); navigateToEvent(row.getAttribute('data-go')); return; }
-      if (e.target.closest('[data-restart]')) {
-        closeContinuePanel();
-        if (ORDERED_IDS[0]) navigateToEvent(ORDERED_IDS[0]);
+    if (!heroEl) return;
+    heroEl.addEventListener('click', (e) => {
+      if (e.target.closest('[data-resume]')) {
+        if (resumeTargetId) navigateToEvent(resumeTargetId);
+        return;
       }
-    });
-
-    // Dismiss the panel on outside click or Escape.
-    document.addEventListener('click', (e) => {
-      if (wrap.classList.contains('open-panel') && !wrap.contains(e.target)) closeContinuePanel();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && wrap.classList.contains('open-panel')) closeContinuePanel();
+      if (e.target.closest('[data-restart]')) {
+        if (ORDERED_IDS[0]) navigateToEvent(ORDERED_IDS[0]);
+        return;
+      }
+      if (e.target.closest('[data-catchup]')) {
+        window.location.hash = '#mylist';
+        return;
+      }
+      const row = e.target.closest('[data-go]');
+      if (row) navigateToEvent(row.getAttribute('data-go'));
     });
   }
 
@@ -3139,7 +3246,7 @@
   }
 
   // ------------------ Bulk watched (catch-up + month) ---------------------
-  let currentMonthEvents = [];
+  let currentPeriodEvents = [];
 
   function markWatchedBulk(ids, on) {
     const now = Date.now();
@@ -3168,11 +3275,12 @@
   function updateMarkMonthBtn() {
     const btn = el('mark-month-btn');
     if (!btn) return;
-    const ids = currentMonthEvents.map(e => String(e.id));
+    const ids = currentPeriodEvents.map(e => String(e.id));
     if (!ids.length) { btn.hidden = true; return; }
     btn.hidden = false;
     const allWatched = ids.every(id => watched.has(id));
-    btn.textContent = allWatched ? 'Unwatch this month' : 'Mark month watched';
+    const noun = calView === 'week' ? 'week' : 'month';
+    btn.textContent = allWatched ? `Unwatch this ${noun}` : `Mark ${noun} watched`;
     btn.classList.toggle('active', allWatched);
   }
 
@@ -3216,7 +3324,7 @@
 
     const markMonthBtn = el('mark-month-btn');
     if (markMonthBtn) markMonthBtn.addEventListener('click', () => {
-      const ids = currentMonthEvents.map(e => String(e.id));
+      const ids = currentPeriodEvents.map(e => String(e.id));
       if (!ids.length) return;
       const allWatched = ids.every(id => watched.has(id));
       markWatchedBulk(ids, !allWatched);
@@ -3434,205 +3542,153 @@
   // they've started (marked at least one show watched, i.e. they have a
   // bookmark). A fresh visitor with no progress lands on the very beginning,
   // January 2001.
-  (function setInitialMonth() {
-    let y = yr[0], m = 1;
-    if (watched.size > 0) {
+  (function setInitialAnchor() {
+    // Land where the viewer is in their journey once they've started; a fresh
+    // visitor lands on the very first show.
+    let iso = `${yr[0]}-01-01`;
+    if (BUNDLE && ORDERED_IDS.length) {
       const resumeId = computeResumeId();
-      // Next unwatched show; if everything is watched, land on the final month
-      // so they sit at the end of their journey rather than back at the start.
-      const landId = resumeId != null ? resumeId : ORDERED_IDS[ORDERED_IDS.length - 1];
+      const landId = watched.size > 0
+        ? (resumeId != null ? resumeId : ORDERED_IDS[ORDERED_IDS.length - 1])
+        : ORDERED_IDS[0];
       if (eventExists(landId)) {
-        const iso = BUNDLE.events[String(landId)].air_date || '';
-        const ly = parseInt(iso.slice(0, 4), 10);
-        const lm = parseInt(iso.slice(5, 7), 10);
-        if (ly >= yr[0] && ly <= yr[1] && lm >= 1 && lm <= 12) { y = ly; m = lm; }
+        const a = BUNDLE.events[String(landId)].air_date;
+        if (a) iso = a;
       }
     }
-    yearSel.value = y;
-    monthSel.value = m;
+    anchorISO = clampISO(iso);
   })();
-
-  yearSel.addEventListener('change', loadCalendar);
-  monthSel.addEventListener('change', loadCalendar);
 
   const prevBtn = el('month-prev');
   const nextBtn = el('month-next');
 
-  function stepMonth(delta) {
-    let y = parseInt(yearSel.value, 10);
-    let m = parseInt(monthSel.value, 10) + delta;
-    if (m > 12) { m = 1; y += 1; }
-    if (m < 1)  { m = 12; y -= 1; }
-    if (y < yr[0] || y > yr[1]) return;
-    yearSel.value = y;
-    monthSel.value = m;
+  // The month/year dropdowns mirror the anchor (they are a jump-to control).
+  function syncSelectsToAnchor() {
+    yearSel.value = String(parseInt(anchorISO.slice(0, 4), 10));
+    monthSel.value = String(parseInt(anchorISO.slice(5, 7), 10));
+  }
+  function onSelectChange() {
+    // Jump to that month. In Week view, show the week containing the 1st.
+    anchorISO = clampISO(ymd(parseInt(yearSel.value, 10), parseInt(monthSel.value, 10), 1));
     loadCalendar();
-    updateNavButtons();
   }
+  yearSel.addEventListener('change', onSelectChange);
+  monthSel.addEventListener('change', onSelectChange);
 
+  // Prev/Next steps by the active period: one week in Week view, one month in Month view.
+  function stepPeriod(delta) {
+    if (calView === 'week') {
+      anchorISO = clampISO(addDaysISO(weekStartISO(anchorISO), delta * 7));
+    } else {
+      let y = parseInt(anchorISO.slice(0, 4), 10);
+      let m = parseInt(anchorISO.slice(5, 7), 10) + delta;
+      if (m > 12) { m = 1; y += 1; }
+      if (m < 1)  { m = 12; y -= 1; }
+      if (y < yr[0] || y > yr[1]) return;
+      anchorISO = ymd(y, m, 1);
+    }
+    loadCalendar();
+  }
   function updateNavButtons() {
-    const y = parseInt(yearSel.value, 10);
-    const m = parseInt(monthSel.value, 10);
-    prevBtn.disabled = (y === yr[0] && m === 1);
-    nextBtn.disabled = (y === yr[1] && m === 12);
+    if (calView === 'week') {
+      const ws = weekStartISO(anchorISO);
+      prevBtn.disabled = addDaysISO(ws, -7) < `${yr[0]}-01-01`;
+      nextBtn.disabled = addDaysISO(ws, 7) > `${yr[1]}-12-31`;
+    } else {
+      const y = parseInt(anchorISO.slice(0, 4), 10), m = parseInt(anchorISO.slice(5, 7), 10);
+      prevBtn.disabled = (y === yr[0] && m === 1);
+      nextBtn.disabled = (y === yr[1] && m === 12);
+    }
   }
+  prevBtn.addEventListener('click', () => stepPeriod(-1));
+  nextBtn.addEventListener('click', () => stepPeriod(1));
 
-  prevBtn.addEventListener('click', () => stepMonth(-1));
-  nextBtn.addEventListener('click', () => stepMonth(1));
-
-  yearSel.addEventListener('change', updateNavButtons);
-  monthSel.addEventListener('change', updateNavButtons);
-
-  updateNavButtons();
+  // ------------------ Week / Month toggle ---------------------------------
+  function setCalView(view) {
+    if (view !== 'week' && view !== 'month') return;
+    calView = view;
+    try { localStorage.setItem(CALVIEW_KEY, view); } catch (_) {}
+    document.querySelectorAll('.cv-btn').forEach(b =>
+      b.setAttribute('aria-pressed', b.dataset.cv === view ? 'true' : 'false'));
+    loadCalendar();
+  }
+  document.querySelectorAll('.cv-btn[data-cv]').forEach(btn =>
+    btn.addEventListener('click', () => setCalView(btn.dataset.cv)));
+  document.querySelectorAll('.cv-btn').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.cv === calView ? 'true' : 'false'));
 
   // ------------------ Main loader -----------------------------------------
-  async function loadCalendar() {
-    const year = parseInt(yearSel.value, 10);
-    const month = parseInt(monthSel.value, 10);
-    monthNameEl.textContent = MONTHS[month - 1];
+  function setBrowseTitle(name, year) {
+    monthNameEl.textContent = name;
     monthYearEl.textContent = year;
-    rosterMonthEl.textContent = `${MONTHS[month - 1]} ${year}`;
+  }
+  function weekRange(ws, we) {
+    const fmt = (iso) => { const [, m, d] = iso.split('-').map(Number); return `${MONTHS_SHORT[m - 1]} ${d}`; };
+    return `${fmt(ws)} to ${fmt(we)}`;
+  }
+
+  async function loadCalendar() {
+    if (!anchorISO) anchorISO = `${yr[0]}-01-01`;
+    syncSelectsToAnchor();
     calEl.innerHTML = '<div class="status">Loading…</div>';
-    rosterEl.innerHTML = '<div class="roster-empty">Loading…</div>';
-
     try {
-      const events = await getMonthEvents(year, month);
-      currentMonthEvents = events;
+      let events, cells;
+      if (calView === 'week') {
+        const ws = weekStartISO(anchorISO), we = addDaysISO(ws, 6);
+        events = getEventsInRange(ws, we);
+        cells = buildWeekCells(ws, events);
+        setBrowseTitle(weekRange(ws, we), String(parseInt(anchorISO.slice(0, 4), 10)));
+        el('count-label').textContent = events.length === 1 ? 'show' : 'shows';
+      } else {
+        const y = parseInt(anchorISO.slice(0, 4), 10), m = parseInt(anchorISO.slice(5, 7), 10);
+        events = await getMonthEvents(y, m);
+        cells = buildMonthCells(y, m, events);
+        setBrowseTitle(MONTHS[m - 1], String(y));
+        el('count-label').textContent = events.length === 1 ? 'show' : 'shows';
+      }
+      currentPeriodEvents = events;
       monthCountEl.textContent = events.length;
-
-      // Render calendar + hero immediately from summary data (fast path).
-      renderCalendar(year, month, events);
-      renderHero(events, year, month);
+      renderCalendarCells(cells);
       updateMarkMonthBtn();
-
-      // Then, in the background, compute the roster from detailed data.
-      // This runs after the calendar is already visible, so the user isn't blocked.
-      computeAndRenderRoster(year, month, events);
+      updateNavButtons();
     } catch (err) {
       calEl.innerHTML = `<div class="status">Backend isn't running. Start it with <code>.venv/bin/python -m uvicorn src.api:app --reload</code></div>`;
-      rosterEl.innerHTML = '<div class="roster-empty">—</div>';
-      heroEl.innerHTML = '';
     }
-  }
-
-  // ------------------ Wrestler roster -------------------------------------
-  async function computeAndRenderRoster(year, month, summaries) {
-    try {
-      // Prefer BUNDLE for speed; falls through to per-event fetches otherwise.
-      const details = await Promise.all(summaries.map(s => getEventDetail(s.id)));
-
-      // Count matches per wrestler. Each participant in each team in each
-      // match on each event counts as one match worked.
-      const counts = new Map();
-      for (const ev of details) {
-        for (const match of (ev.matches || [])) {
-          for (const team of (match.teams || [])) {
-            const names = (team.participants && team.participants.length)
-              ? team.participants
-              : (team.team_name ? [team.team_name] : []);
-            for (const raw of names) {
-              const name = String(raw || '').trim();
-              // Skip empty + Cagematch placeholder. Keep this in sync with
-              // PLACEHOLDER_NAMES in src/export_to_html.py.
-              if (!name || name === '???') continue;
-              counts.set(name, (counts.get(name) || 0) + 1);
-            }
-          }
-        }
-      }
-
-      const ranked = [...counts.entries()]
-        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-        .slice(0, 8);
-
-      if (!ranked.length) {
-        rosterEl.innerHTML = '<div class="roster-empty">No match data</div>';
-        return;
-      }
-
-      rosterEl.innerHTML = ranked.map(([name, count], i) => {
-        const rank = String(i + 1).padStart(2, '0');
-        const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[name]) || jsSlugify(name);
-        return `
-          <div class="roster-row${i === 0 ? ' top' : ''}">
-            <div class="rank">${rank}</div>
-            <div class="name"><button class="wrestler-link" data-slug="${esc(slug)}" title="${esc(name)}">${esc(name)}</button></div>
-            <div class="count"><strong>${count}</strong></div>
-          </div>`;
-      }).join('');
-    } catch (err) {
-      rosterEl.innerHTML = '<div class="roster-empty">Failed to compute</div>';
-    }
-  }
-
-  // ------------------ Hero ------------------------------------------------
-  function renderHero(events, year, month) {
-    const ppv = events.find(e => e.show_type === 'PPV');
-    const pick = ppv || events[0];
-
-    if (!pick) {
-      heroEl.className = 'hero';
-      heroEl.innerHTML = `
-        <div class="hero-empty">
-          <div class="hero-kicker">Nothing this month</div>
-          <div class="hero-title">No events scheduled in ${MONTHS[month-1]} ${year}</div>
-        </div>`;
-      heroEl.onclick = null;
-      return;
-    }
-
-    const isPPV = pick.show_type === 'PPV';
-    const title = isPPV ? (pick.ppv_name || pick.title) : (pick.title || 'Event');
-    const date = new Date(pick.air_date + 'T00:00:00');
-    const dayLabel = `${WEEKDAYS[date.getUTCDay()]}, ${MONTHS_SHORT[date.getUTCMonth()]} ${date.getUTCDate()}`;
-    const kicker = isPPV ? 'HEADLINE EVENT' : 'WATCH NEXT';
-    const chipCls = SHOW_CLASS[pick.show_type];
-    const chipLabel = pick.show_type === 'PPV' ? 'Pay-Per-View' : pick.show_type;
-
-    heroEl.className = 'hero' + (isPPV ? ' ppv' : (pick.show_type === 'SmackDown' ? ' smackdown' : ''));
-    heroEl.innerHTML = `
-      <div class="hero-info">
-        <div class="hero-kicker"><span class="pulse"></span>${kicker}</div>
-        <div class="hero-title">${esc(title)}</div>
-        <div class="hero-meta">
-          <span class="chip ${chipCls}">${esc(chipLabel)}</span>
-          <span>${esc(dayLabel)}</span>
-          <span class="dot"></span>
-          <span>${pick.match_count} matches</span>
-        </div>
-      </div>
-      <button class="hero-cta">
-        <span>Open card</span>
-        <span class="arrow">→</span>
-      </button>
-    `;
-    heroEl.onclick = () => openModalForDate(events, pick.air_date);
-    heroEl.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModalForDate(events, pick.air_date); } };
-  }
-
-  function openModalForDate(events, iso) {
-    const dayEvents = events.filter(e => e.air_date === iso);
-    if (dayEvents.length) openModal(dayEvents, iso);
   }
 
   // ------------------ Calendar --------------------------------------------
-  function renderCalendar(year, month, events) {
+  // A full month grid: leading/trailing other-month days pad it to whole weeks.
+  function buildMonthCells(year, month, events) {
     const byDate = {};
     for (const e of events) (byDate[e.air_date] = byDate[e.air_date] || []).push(e);
-
     const firstDOW = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
     const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
     const prevMonthLast = new Date(Date.UTC(year, month - 1, 0)).getUTCDate();
-
     const cells = [];
     for (let i = firstDOW; i > 0; i--) cells.push({ day: prevMonthLast - i + 1, other: true });
     for (let d = 1; d <= daysInMonth; d++) {
-      const iso = `${year}-${String(month).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const iso = ymd(year, month, d);
       cells.push({ day: d, other: false, iso, events: byDate[iso] || [] });
     }
     let nextDay = 1;
     while (cells.length % 7 !== 0) cells.push({ day: nextDay++, other: true });
+    return cells;
+  }
 
+  // A single Sun..Sat week. Every day is real (no other-month padding); days
+  // from an adjacent month are still part of this week and stay clickable.
+  function buildWeekCells(weekStart, events) {
+    const byDate = {};
+    for (const e of events) (byDate[e.air_date] = byDate[e.air_date] || []).push(e);
+    const cells = [];
+    for (let i = 0; i < 7; i++) {
+      const iso = addDaysISO(weekStart, i);
+      cells.push({ day: parseInt(iso.slice(8, 10), 10), other: false, iso, events: byDate[iso] || [], showWd: true });
+    }
+    return cells;
+  }
+
+  function renderCalendarCells(cells) {
     calEl.innerHTML = '';
     cells.forEach((c, idx) => {
       const div = document.createElement('div');
@@ -3648,10 +3704,11 @@
       if (!c.other) div.dataset.iso = c.iso;
 
       const wdLabel = !c.other ? WEEKDAYS[idx % 7].slice(0, 2) : '';
+      const showWd = hasEvents || c.showWd;
       div.innerHTML = `
         <div class="date-row">
           <div class="date">${c.day}</div>
-          ${hasEvents ? `<div class="weekday-tiny">${wdLabel}</div>` : ''}
+          ${showWd ? `<div class="weekday-tiny">${wdLabel}</div>` : ''}
         </div>
       `;
 
@@ -4400,11 +4457,8 @@
       window.location.hash = '#calendar';
       return;
     }
-    const [y, m] = (ev.air_date || '').split('-');
-    if (y && m) {
-      yearSel.value = y;
-      monthSel.value = parseInt(m, 10);
-    }
+    // Land the browse view on this event's week (or month), wherever it falls.
+    if (ev.air_date) anchorISO = clampISO(ev.air_date);
     const onCalendar = window.location.hash === '' || window.location.hash === '#calendar';
     window.location.hash = '#calendar';
     // route() rerenders the calendar view; wait one frame so the view is mounted.
@@ -4419,8 +4473,7 @@
   }
 
   function navigateToMonth(year, month) {
-    yearSel.value = String(year);
-    monthSel.value = String(month);
+    anchorISO = clampISO(ymd(year, month, 1));
     const onCalendar = window.location.hash === '' || window.location.hash === '#calendar';
     window.location.hash = '#calendar';
     if (onCalendar) {
@@ -4602,7 +4655,11 @@
     // Old per-feature hashes now live together under My List.
     if (hash === '#watched' || hash === '#saved') hash = '#mylist';
     document.querySelectorAll('section.view').forEach(v => { v.hidden = true; });
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(t => t.classList.remove('active'));
+    const markNav = (view) => {
+      const link = document.querySelector(`.nav-link[data-nav="${view}"]`);
+      if (link) link.classList.add('active');
+    };
 
     if (hash.startsWith('#wrestler/')) {
       const slug = hash.slice('#wrestler/'.length);
@@ -4612,8 +4669,7 @@
     } else if (hash === '#roster') {
       const v = document.getElementById('view-roster');
       if (v) v.hidden = false;
-      const tab = document.querySelector('.tab[data-view="roster"]');
-      if (tab) tab.classList.add('active');
+      markNav('roster');
       renderRoster();
       // Browser scroll restoration may otherwise leave the user mid-roster
       // when arriving from a wrestler profile (different content height,
@@ -4622,26 +4678,41 @@
     } else if (hash === '#mylist') {
       const v = document.getElementById('view-mylist');
       if (v) v.hidden = false;
-      const tab = document.querySelector('.tab[data-view="mylist"]');
-      if (tab) tab.classList.add('active');
+      markNav('mylist');
       renderWatched();   // Watched history + progress
       renderSaved();     // Saved matches
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
       if (v) v.hidden = false;
-      const tab = document.querySelector('.tab[data-view="calendar"]');
-      if (tab) tab.classList.add('active');
+      markNav('calendar');
     }
   }
 
-  document.querySelectorAll('.tab[data-view]').forEach(tab => {
-    tab.addEventListener('click', () => {
-      wrestlerSource = null;
-      const view = tab.dataset.view;
-      window.location.hash = view === 'calendar' ? '#calendar' : '#' + view;
+  // ------------------ Menu drawer ("the sandwich") -----------------------
+  // Holds everything that is not chronological watching (Roster, My List).
+  // Keeping it one tap behind a labeled Menu leaves the landing focused on
+  // how to start watching, for a first-time visitor who has never seen WWE.
+  function setupNav() {
+    const backdrop = el('nav-backdrop'), menuBtn = el('menu-btn'), closeBtn = el('nav-close');
+    if (!backdrop || !menuBtn) return;
+    const openNav = () => { backdrop.classList.add('open'); menuBtn.setAttribute('aria-expanded', 'true'); };
+    const closeNav = () => { backdrop.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); };
+
+    menuBtn.addEventListener('click', () => backdrop.classList.contains('open') ? closeNav() : openNav());
+    if (closeBtn) closeBtn.addEventListener('click', closeNav);
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeNav(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && backdrop.classList.contains('open')) closeNav(); });
+
+    backdrop.querySelectorAll('.nav-link[data-nav]').forEach(link => {
+      link.addEventListener('click', () => {
+        wrestlerSource = null;
+        const view = link.dataset.nav;
+        closeNav();
+        window.location.hash = view === 'calendar' ? '#calendar' : '#' + view;
+      });
     });
-  });
+  }
 
   window.addEventListener('hashchange', route);
 
@@ -4990,6 +5061,7 @@
   setupWatchedNav();
   setupSearch();
   setupResume();
+  setupNav();
   loadCalendar();
   route();
   refreshResumeUI();

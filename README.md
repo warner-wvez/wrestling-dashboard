@@ -6,9 +6,12 @@ Spoiler-safe chronological watch companion for WWE 2001-2019. Single-file HTML b
 
 ## What it does
 
-- Full WWE calendar of every Raw, SmackDown, and PPV
+- Continue Watching: open the app and pick up at the exact next show, in chronological order, like a TV series
+- Browse every Raw, SmackDown, and PPV by week (the default) or by full month
 - Each event shows its match card with participants, stipulations, duration, and results
-- Spoilers hidden by default, per-match reveal toggle
+- Spoilers hidden by default, with a per-match reveal toggle
+- Track your journey: mark shows watched, see how far through 2001-2019 you are, and save individual matches
+- Search every event, wrestler, and stipulation
 - Runs entirely in the browser from a single HTML file
 - No account, no streaming, no backend
 
@@ -93,8 +96,7 @@ Not affiliated with WWE. This is a fan-made companion tool.
 - Beast in the East 2015 one-off
 - Fandom enrichment pass for SmackDown air date accuracy (2004-2015)
 - Parser cleanup for edge cases in team name fields
-- Optional filters (by brand, superstar, title, year)
-- Watch-tracking feature (local storage, no account)
+- Calendar-level filters (show only unwatched, filter by brand or title)
 
 ---
 
@@ -219,7 +221,7 @@ The scraper respects a 2.5-second inter-request delay, sends a descriptive User-
 
 ### Frontend stack
 
-Vanilla JS, no framework, no build step for the frontend itself. The frontend is one HTML file with inline `<style>` and inline `<script>`. At ~54 KB uncompressed before the data blob is injected. Fewer moving parts = longer project lifetime.
+Vanilla JS, no framework, no build step for the frontend itself. The frontend is one HTML file with inline `<style>` and inline `<script>`, ~189 KB uncompressed before the data blob is injected. Watch state (your Continue Watching position, watched shows, and saved matches) lives in `localStorage`, so there is no account and no backend. Fewer moving parts = longer project lifetime.
 
 ### Testing philosophy
 
