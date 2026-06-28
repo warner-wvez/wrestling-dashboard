@@ -32,6 +32,7 @@ from src.export_to_html import (  # noqa: E402
     inject, write_sharded)
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
+from src.roster_aliases import build_canon_map                          # noqa: E402
 
 START_YEAR, END_YEAR = 2020, 2026
 PPV_LIST_PAGE = "List of WWE pay-per-view and livestreaming supercards"
@@ -189,7 +190,25 @@ def main():
     old_events, old_matches = len(events), data["meta"]["match_count"]
     old_year_range = list(data["meta"]["year_range"])
     old_wrestlers, old_titles = len(data["wrestlers"]), len(data["title_reigns"])
-    next_eid = max(int(k) for k in events) + 1
+
+    # Rebuild the present-day range from scratch each run: drop everything from
+    # START_YEAR on, keep the clean 2001-2019 Cagematch base, then re-ingest with
+    # the current parsers. Without this, a re-run de-dupes the fresh (now cleaner)
+    # parse against the prior, dirtier events and keeps the dirt. The pre-2020
+    # base keeps its event IDs; the present-day range gets the same ID block back.
+    pre = {k: e for k, e in events.items()
+           if not ((e.get("air_date") or "")[:4].isdigit()
+                   and int(e["air_date"][:4]) >= START_YEAR)}
+    dropped = len(events) - len(pre)
+    data["events"] = events = pre
+    data["events_by_date"] = {}
+    for e in events.values():
+        if e.get("air_date"):
+            data["events_by_date"].setdefault(e["air_date"], []).append(int(e["id"]))
+    print(f"Dropped {dropped} events >= {START_YEAR} (rebuilding present-day range clean); "
+          f"{len(events)} pre-{START_YEAR} events kept.", flush=True)
+
+    next_eid = max((int(k) for k in events), default=0) + 1
     next_mid = max((mm["id"] for e in events.values() for mm in e["matches"]), default=0) + 1
 
     # De-dupe on (air_date, show_type, title): one Raw/SmackDown per date, while
@@ -253,8 +272,17 @@ def main():
         events[str(ev["id"])] = ev
         data["events_by_date"].setdefault(ev["air_date"], []).append(ev["id"])
 
-    print("\nRecomputing wrestler index + title reigns...", flush=True)
-    wrestlers, wrestlers_by_name = build_wrestlers_index(events)
+    print("\nBuilding roster alias map (SmackDown Hotel roster + spelling variants)...", flush=True)
+    name_counts = collections.Counter(
+        p for e in events.values() for m in e["matches"]
+        for t in m["teams"] for p in t.get("participants", []) if p)
+    canon = build_canon_map(name_counts)
+    aliased = sum(1 for n in name_counts if canon[n] != n)
+    print(f"  {len(name_counts)} distinct names -> {len({canon[n] for n in name_counts})} "
+          f"canonical wrestlers ({aliased} names merged)", flush=True)
+
+    print("Recomputing wrestler index + title reigns...", flush=True)
+    wrestlers, wrestlers_by_name = build_wrestlers_index(events, canon=lambda n: canon.get(n, n))
     title_reigns = build_title_reigns(events)
     wrbd = build_wrestler_reigns_by_date(title_reigns)
 

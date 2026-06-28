@@ -56,6 +56,7 @@ def strip_tags(s):
     s = re.sub(r"<[^>]+>", " ", s or "")
     s = (s.replace("&amp;", "&").replace("&nbsp;", " ").replace("&#39;", "'")
          .replace("&quot;", '"').replace("&rsquo;", "'").replace("&ndash;", "-"))
+    s = re.sub(r"[\u200b\u200c\u200d\ufeff]", "", s)   # zero-width chars break tail strips
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -66,11 +67,9 @@ def parse_date(text):
     return "%04d-%02d-%02d" % (int(m.group(3)), MONTHS[m.group(1).lower()], int(m.group(2)))
 
 
-def split_members(s):
-    """Split partners on '&'/'and'/',' at paren depth 0, then expand any
-    'Team (a & b)' token into its members so nested groups never break."""
+def _split_depth0(s, seps):
+    """Split s on any literal in seps, but only at paren depth 0."""
     out, cur, depth, i = [], [], 0, 0
-    seps = [" & ", " and ", ", "]
     while i < len(s):
         c = s[i]
         if c == "(":
@@ -83,14 +82,43 @@ def split_members(s):
                 out.append("".join(cur)); cur = []; i += len(hit); continue
         cur.append(c); i += 1
     out.append("".join(cur))
+    return [p.strip() for p in out if p.strip()]
+
+
+def split_members(s):
+    """Recursively flatten a side into individual wrestler names, descending into
+    nested stables: 'The Bloodline (Roman Reigns & The Usos (Jimmy & Jey Uso))'
+    -> [Roman Reigns, Jimmy Uso, Jey Uso]. A 'Label (members)' token contributes
+    only its members (the stable name is dropped); a bare token is a wrestler.
+    Greedy paren match spans nesting where the old [^()]* failed and leaked the
+    whole stable string as one fake 'wrestler'."""
     members = []
-    for p in (x.strip() for x in out if x.strip()):
-        tm = re.match(r"^(.+?)\s*\(([^()]*)\)\s*$", p)
-        if tm and re.search(r"&|\band\b|,", tm.group(2)):
-            members.extend(m.strip() for m in re.split(r"\s*&\s*|\s+and\s+|,\s*", tm.group(2)) if m.strip())
+    for tok in _split_depth0(s, [" & ", " and ", ", "]):
+        m = re.match(r"^(.+?)\s*\((.*)\)\s*$", tok)
+        if m and re.search(r"&|\band\b|,", m.group(2)):
+            members.extend(split_members(m.group(2)))
         else:
-            members.append(p)
+            members.append(tok)
+    # Partners often share a surname written once ('Jimmy & Jey Uso' arrives as
+    # ['Jimmy', 'Jey Uso']): lend the trailing two-word name's surname back to a
+    # preceding bare first-name partner so they don't fragment.
+    for i in range(len(members) - 1):
+        if members[i] and " " not in members[i] and members[i + 1].count(" ") == 1:
+            members[i] = members[i] + " " + members[i + 1].split()[-1]
     return members
+
+
+def strip_result_tail(s):
+    """Drop trailing result prose the source appends to the last name in a side:
+    '... ends in a No Contest', '; X retains the title', 'via Count-out', 'to win
+    the title', 'after interference', and battle-royal elimination narrative
+    ('<entrants>. X eliminates Y'). Keeps the wrestler/team, drops the narrative
+    so it never becomes part of a participant name. The elimination cut is
+    period-anchored and lookahead-guarded so initials like 'C.M. Punk' survive."""
+    s = re.split(r"\.\s+[^.]*\beliminat", s, maxsplit=1, flags=re.I)[0]
+    return re.split(
+        r"\s+ends in\b|;\s|\s+via\s+|\s+to\s+(?:win|retain|capture|become|advance|earn)\b|\s+after\s+",
+        s, maxsplit=1, flags=re.I)[0].strip()
 
 
 def split_teams_top(s):
@@ -123,8 +151,14 @@ def parse_side(s):
     if m:
         accompaniment = m.group(1).strip()
         s = (s[:m.start()] + s[m.end():]).strip()
+    # A leftover trailing "(Name)" with no team separators is a manager / real-
+    # name note, not a tag partner: peel it off so it doesn't fuse into the name.
+    note = re.match(r"^(.+?)\s*\(\s*([^()&,]+?)\s*\)\s*$", s)
+    if note and not re.search(r"\band\b", note.group(2)):
+        accompaniment = accompaniment or note.group(2).strip()
+        s = note.group(1).strip()
     team_name, participants = None, []
-    tm = re.match(r"^(.+?)\s*\(([^()]*)\)\s*$", s)        # "Team (a & b)"
+    tm = re.match(r"^(.+?)\s*\((.*)\)\s*$", s)            # "Team (a & b)", nesting ok
     if tm and re.search(r"&|\band\b|,", tm.group(2)):
         team_name = tm.group(1).strip()
         participants = split_members(tm.group(2))
@@ -150,6 +184,11 @@ def parse_match(li_html, order):
     text = strip_tags(re.sub(r"<strong>.*?</strong>", "", li_html, flags=re.S))
     if not text:
         return None
+    # Skip scraped page comments that leak in as <li> items ("... &middot; 3
+    # months ago", "pending moderation").
+    if re.search(r"&middot;|\b\d+\s+(?:month|year|week|day)s?\s+ago\b|pending moderation",
+                 text, re.I):
+        return None
     title, mtype, stip = parse_descriptor(desc)
     multiway = bool(MULTIWAY_RE.search((desc or "") + " " + text))
 
@@ -172,7 +211,7 @@ def parse_match(li_html, order):
         result_method = "no-decision"; conf = "low"
 
     for side, won, outcome in sides:
-        t = parse_side(side)
+        t = parse_side(strip_result_tail(side))
         if not t["participants"]:
             conf = "low"
         t.update(team_number=len(teams) + 1, was_winner=won, match_outcome=outcome)

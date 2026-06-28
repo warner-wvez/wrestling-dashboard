@@ -54,17 +54,30 @@ def slugify(name: str) -> str:
 PLACEHOLDER_NAMES: frozenset[str] = frozenset({"???"})
 
 
-def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
+def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
     """Pre-compute wrestler profiles from the assembled events dict.
 
     Returns (wrestlers, wrestlers_by_name) where wrestlers is keyed by slug
-    and wrestlers_by_name maps canonical display name -> slug.
+    and wrestlers_by_name maps display name -> slug.
+
+    `canon` optionally maps a raw participant name to a canonical wrestler name,
+    merging ring-name changes and spelling variants (WALTER + Gunther -> one
+    "Gunther" entry). Matches keep their era-accurate names; only the roster
+    aggregates under the canonical name, and wrestlers_by_name additionally maps
+    every alias -> the canonical slug so the frontend can still link an old name
+    in a match card to the merged profile.
 
     Invariant enforced by assertion:
         total_matches == wins + losses + draws + no_contests
     Ambiguous outcomes (was_winner=None, not a draw or no-contest) are
     counted as no_contests so the invariant holds exactly.
     """
+    canon = canon or (lambda n: n)
+
+    def parts_of(team):
+        return [canon(p) for p in team.get("participants", [])
+                if p and p not in PLACEHOLDER_NAMES]
+
     w_appearances: dict[str, list[tuple[str, int]]] = defaultdict(list)
     w_wins: Counter = Counter()
     w_losses: Counter = Counter()
@@ -106,7 +119,7 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
 
             # Per-wrestler stats
             for team in teams:
-                parts = [p for p in team.get("participants", []) if p and p not in PLACEHOLDER_NAMES]
+                parts = parts_of(team)
                 was_winner = team.get("was_winner")
                 was_champ = bool(team.get("was_champion_entering"))
 
@@ -148,8 +161,8 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
 
             # Rivalries: two-team singles only
             if is_singles:
-                a_parts = [p for p in teams[0].get("participants", []) if p and p not in PLACEHOLDER_NAMES]
-                b_parts = [p for p in teams[1].get("participants", []) if p and p not in PLACEHOLDER_NAMES]
+                a_parts = parts_of(teams[0])
+                b_parts = parts_of(teams[1])
                 for a in a_parts:
                     for b in b_parts:
                         w_rivals[a][b] += 1
@@ -157,7 +170,7 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
 
             # Tag partners: pairs within any team that has 2+ participants
             for team in teams:
-                team_parts = [p for p in team.get("participants", []) if p and p not in PLACEHOLDER_NAMES]
+                team_parts = parts_of(team)
                 if len(team_parts) < 2:
                     continue
                 for i, p1 in enumerate(team_parts):
@@ -252,6 +265,18 @@ def build_wrestlers_index(events: dict) -> tuple[dict, dict]:
             "recent_event_ids": recent_event_ids,
         }
         wrestlers_by_name[name] = slug
+
+    # Map every era-accurate alias (the name as it appears in a match card) to
+    # the canonical wrestler's slug, so clicking "WALTER" in a 2019 card opens
+    # the merged "Gunther" profile. Canonical names already mapped above win.
+    for ev in events.values():
+        for m in ev.get("matches", []):
+            for t in m.get("teams", []):
+                for p in t.get("participants", []):
+                    if p and p not in PLACEHOLDER_NAMES and p not in wrestlers_by_name:
+                        s = name_to_slug.get(canon(p))
+                        if s:
+                            wrestlers_by_name[p] = s
 
     return wrestlers, wrestlers_by_name
 
