@@ -581,6 +581,79 @@ def inject(bundle: dict, template_html: str) -> str:
     return template_html[:idx] + tag + template_html[idx:]
 
 
+# --------------------------------------------------------------------------
+# Sharded build: the heavy 87% of the bundle is the per-match teams/participants
+# detail. We split that out of the inline core into 3-year era files fetched on
+# demand, so the page loads a ~6MB core (event metadata + indexes + a compact
+# search index) instead of ~16MB, and never instantiates all match objects at
+# once. The single-file dist build keeps everything inline and is unaffected.
+SHARD_DIR = "shards"
+ERA_SPAN = 3
+
+
+def era_start(year) -> int:
+    """Start year of the 3-year era bucket holding `year`, aligned to multiples
+    of ERA_SPAN (2024 -> 2022, 2026 -> 2025). Stable for any year incl. the
+    pre-2001 backfill, and the frontend computes the identical bucket."""
+    return (int(year) // ERA_SPAN) * ERA_SPAN
+
+
+def build_search_index(events: dict) -> list:
+    """Compact per-match search records so global match search works in sharded
+    mode without the era files loaded: [event_id, match_id, matchup, sub].
+    The frontend joins date/show/show-name from the (always-present) compact
+    event and rebuilds the lowercase haystack client-side."""
+    out = []
+    for ev in events.values():
+        for m in ev.get("matches", []):
+            names = []
+            for t in m.get("teams", []):
+                ps = t.get("participants") or ([t["team_name"]] if t.get("team_name") else [])
+                if ps:
+                    names.append(" & ".join(ps))
+            matchup = " vs ".join(names)
+            sub = " · ".join(x for x in (m.get("match_type"), m.get("stipulation"),
+                                              m.get("title_at_stake")) if x)
+            out.append([ev["id"], m["id"], matchup, sub])
+    return out
+
+
+def split_core_and_shards(bundle: dict):
+    """Return (core, shards_by_era). core is the bundle with each event's heavy
+    `matches` array removed, plus a compact `search_matches` index and a
+    `meta.shards` manifest. shards_by_era maps an era-start year to
+    {event_id(str): [matches]} for every dated event in that era."""
+    events = bundle["events"]
+    shards = defaultdict(dict)
+    compact = {}
+    for eid, ev in events.items():
+        compact[eid] = {k: v for k, v in ev.items() if k != "matches"}
+        year = (ev.get("air_date") or "")[:4]
+        bucket = era_start(year) if year.isdigit() else 0
+        shards[bucket][str(ev["id"])] = ev.get("matches", [])
+    core = dict(bundle)
+    core["events"] = compact
+    core["search_matches"] = build_search_index(events)
+    core["meta"] = dict(bundle["meta"], shards=sorted(shards))
+    return core, shards
+
+
+def write_sharded(bundle: dict, root: Path, template_html: str):
+    """Write the sharded GitHub Pages build: index.html with the inline core and
+    shards/matches-<era>.json files. Returns (core, shards) for reporting."""
+    core, shards = split_core_and_shards(bundle)
+    sdir = root / SHARD_DIR
+    sdir.mkdir(parents=True, exist_ok=True)
+    for stale in sdir.glob("matches-*.json"):   # clear old eras so none linger
+        stale.unlink()
+    for era, matches_map in shards.items():
+        (sdir / f"matches-{era}.json").write_text(
+            json.dumps(matches_map, ensure_ascii=False, separators=(",", ":")),
+            encoding="utf-8")
+    (root / "index.html").write_text(inject(core, template_html), encoding="utf-8")
+    return core, shards
+
+
 def main() -> None:
     bundle = build_bundle()
     template_html = TEMPLATE.read_text(encoding="utf-8")

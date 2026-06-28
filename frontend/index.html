@@ -2841,6 +2841,13 @@
   const BUNDLE = dataEl ? JSON.parse(dataEl.textContent) : null;
   const SUMMARY_KEYS = ['id','air_date','show_type','title','venue','city','episode_number','ppv_name','match_count'];
 
+  // Cache the inline core + lazy match shards for offline-after-first-visit on
+  // the Pages build. Guarded to http(s) so the single-file build opened from
+  // file:// (where it works fully offline already) skips it without erroring.
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
   // In-memory cache of event details to make reopening modals instant.
   const detailCache = new Map();
 
@@ -2912,12 +2919,41 @@
     return out;
   }
 
+  // ------------------ Lazy match shards (sharded-core build) --------------
+  // The Pages build inlines a lean core (event metadata + indexes + search) but
+  // keeps the heavy per-match detail in shards/matches-<era>.json, fetched the
+  // first time a show in that 3-year era is opened. The single-file build inlines
+  // matches, so ensureMatches is a no-op there. Eras must match era_start() in
+  // export_to_html.py.
+  const SHARD_SPAN = 3;
+  const eraStartOf = (iso) => Math.floor(parseInt(String(iso).slice(0, 4), 10) / SHARD_SPAN) * SHARD_SPAN;
+  const shardPromises = new Map();
+  function loadShard(era) {
+    if (!shardPromises.has(era)) {
+      shardPromises.set(era, fetch(`shards/matches-${era}.json`)
+        .then(r => { if (!r.ok) throw new Error(`shard ${era}: ${r.status}`); return r.json(); })
+        .catch(err => { shardPromises.delete(era); throw err; }));   // let it retry later
+    }
+    return shardPromises.get(era);
+  }
+  async function ensureMatches(ev) {
+    if (Array.isArray(ev.matches)) return ev.matches;   // single-file build: already inline
+    try {
+      const shard = await loadShard(eraStartOf(ev.air_date));
+      ev.matches = shard[String(ev.id)] || [];
+    } catch (err) {
+      ev.matches = [];   // degrade to an empty card rather than failing the open
+    }
+    return ev.matches;
+  }
+
   async function getEventDetail(id) {
     if (detailCache.has(id)) return detailCache.get(id);
     let result;
     if (BUNDLE) {
       const ev = BUNDLE.events[String(id)];
       if (!ev) throw new Error(`event ${id} not in bundle`);
+      if (ev.matches === undefined) await ensureMatches(ev);   // sharded core: hydrate
       result = ev;
     } else {
       const res = await fetch(`${API}/api/events/${id}`);
@@ -3474,7 +3510,7 @@
       .join(' vs ');
   }
 
-  function renderSaved() {
+  async function renderSaved() {
     const container = el('saved-view-content');
     const sub = el('saved-sub');
     if (!container) return;
@@ -3483,7 +3519,8 @@
       const [eid, mid] = key.split(':');
       const ev = BUNDLE && BUNDLE.events && BUNDLE.events[eid];
       if (!ev) continue;
-      const match = (ev.matches || []).find(x => String(x.id) === String(mid));
+      const matches = await ensureMatches(ev);   // hydrate from the era shard if needed
+      const match = matches.find(x => String(x.id) === String(mid));
       if (match) items.push({ ev, match });
     }
     if (sub) sub.textContent = items.length ? `${items.length} match${items.length === 1 ? '' : 'es'} saved` : '';
@@ -4759,10 +4796,14 @@
       }
     }
 
+    // Precomputed in the sharded build so match search works without the era
+    // files loaded; built from inline match cards in the single-file build.
+    const sharded = Array.isArray(BUNDLE.search_matches);
+    const showNameOf = (ev) => ev.show_type === 'PPV'
+      ? (ev.ppv_name || ev.title || 'Pay-Per-View')
+      : (ev.title || ev.show_type || 'Event');
     for (const ev of Object.values(BUNDLE.events)) {
-      const showName = ev.show_type === 'PPV'
-        ? (ev.ppv_name || ev.title || 'Pay-Per-View')
-        : (ev.title || ev.show_type || 'Event');
+      const showName = showNameOf(ev);
       const year = String(ev.air_date || '').slice(0, 4);
       searchEvents.push({
         id: ev.id,
@@ -4773,6 +4814,7 @@
               (ev.show_type === 'PPV' ? 'ppv pay per view premium live event' : '')]
               .filter(Boolean).join(' ').toLowerCase(),
       });
+      if (sharded) continue;   // matches handled below from the precomputed index
       for (const m of (ev.matches || [])) {
         const matchup = matchupLabel(m);
         const subBits = [m.match_type, m.stipulation, m.title_at_stake].filter(Boolean);
@@ -4786,6 +4828,22 @@
           showName,
           hay: [matchup, m.stipulation, m.title_at_stake, m.match_type, showName]
                 .filter(Boolean).join(' ').toLowerCase(),
+        });
+      }
+    }
+    if (sharded) {
+      for (const [eventId, matchId, matchup, sub] of BUNDLE.search_matches) {
+        const ev = BUNDLE.events[String(eventId)];
+        if (!ev) continue;
+        const showName = showNameOf(ev);
+        searchMatches.push({
+          eventId, matchId,
+          date: ev.air_date,
+          show: ev.show_type,
+          matchup: matchup || 'Match',
+          sub: sub || '',
+          showName,
+          hay: `${matchup} ${sub} ${showName}`.toLowerCase(),
         });
       }
     }

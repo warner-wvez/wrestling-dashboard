@@ -28,7 +28,8 @@ ROOT = Path.home() / "wrestling-dashboard"
 sys.path.insert(0, str(ROOT))
 
 from src.export_to_html import (  # noqa: E402
-    build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date, inject)
+    build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date,
+    inject, write_sharded)
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
 
@@ -44,9 +45,22 @@ WRESTLEMANIA_BY_YEAR = {
 
 
 def load_existing():
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
-    m = re.search(r'<script id="wrestling-data"[^>]*>(.*?)</script>', html, re.S)
-    return json.loads(m.group(1).replace('<\\/', '</'))
+    """Load the prior FULL bundle (events still carrying their matches) so the
+    indexes can recompute. index.html is now the sharded core (no match arrays),
+    so prefer the single-file dist build, which stays fully inline; fall back to
+    index.html for the first sharded build (when it is still the full bundle)."""
+    for src in (ROOT / "dist" / "wrestling-dashboard.html", ROOT / "index.html"):
+        if not src.exists():
+            continue
+        m = re.search(r'<script id="wrestling-data"[^>]*>(.*?)</script>',
+                      src.read_text(encoding="utf-8"), re.S)
+        if not m:
+            continue
+        data = json.loads(m.group(1).replace('<\\/', '</'))
+        evs = data.get("events") or {}
+        if evs and any("matches" in e for e in evs.values()):   # a full bundle
+            return data
+    raise RuntimeError("no full inline bundle found in dist/ or index.html")
 
 
 def _outcome(was_winner, finish, nodecision):
@@ -255,11 +269,15 @@ def main():
         "title_reigns": title_reigns, "wrestler_reigns_by_date": wrbd,
     }
     template = (ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
-    html_out = inject(bundle, template)
-    dests = (ROOT / "index.html", ROOT / "dist" / "wrestling-dashboard.html")
-    for dest in dests:
-        dest.write_text(html_out, encoding="utf-8")
+    # Live Pages build: lean inline core (event metadata + indexes + search) with
+    # the heavy per-match detail in lazy-loaded shards/matches-<era>.json files.
+    core, shards = write_sharded(bundle, ROOT, template)
+    # Archival single-file build: everything inline, opens offline standalone.
+    (ROOT / "dist" / "wrestling-dashboard.html").write_text(
+        inject(bundle, template), encoding="utf-8")
 
+    idx, dist = ROOT / "index.html", ROOT / "dist" / "wrestling-dashboard.html"
+    shard_bytes = sum((ROOT / "shards" / f"matches-{e}.json").stat().st_size for e in shards)
     print("\n=== VALIDATION (before -> after) ===")
     print(f"  events:    {old_events} -> {len(events)}  (+{len(new)}: "
           f"{weekly_added} weekly, {ppv_added} PPV from {ppv_ok} events)")
@@ -267,8 +285,9 @@ def main():
     print(f"  year_range: {old_year_range} -> {bundle['meta']['year_range']}")
     print(f"  wrestlers: {old_wrestlers} -> {len(wrestlers)}")
     print(f"  titles:    {old_titles} -> {len(title_reigns)}")
-    for dest in dests:
-        print(f"  wrote {dest.relative_to(ROOT)} ({dest.stat().st_size / 1024 / 1024:.2f} MB)")
+    print(f"  wrote index.html (inline core {idx.stat().st_size/1024/1024:.2f} MB) + "
+          f"{len(shards)} era shards ({shard_bytes/1024/1024:.2f} MB) in shards/")
+    print(f"  wrote dist/wrestling-dashboard.html (single-file {dist.stat().st_size/1024/1024:.2f} MB)")
     by_year_show = collections.Counter(
         ((ev["air_date"][:4] if ev["air_date"] else "??"), ev["show_type"]) for ev in new)
     print("\n  New events by year / show:")
