@@ -6,7 +6,7 @@
 // stale-while-revalidate: serve from cache instantly when present, and refresh
 // in the background so a rebuilt shard is picked up on the next load. Bump CACHE
 // when the data schema changes to retire old entries.
-const CACHE = 'wrestling-dashboard-v1';
+const CACHE = 'wrestling-dashboard-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

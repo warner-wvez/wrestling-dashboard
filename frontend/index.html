@@ -2404,6 +2404,90 @@
     letter-spacing: 0.08em; text-transform: uppercase;
   }
 
+  /* ---- Roster: Time / All-time toggle -------------------------------- */
+  .roster-modes { display: inline-flex; border: 1px solid var(--ink); }
+  .rmode {
+    appearance: none; border: 0; border-right: 1px solid var(--ink);
+    background: transparent; cursor: pointer;
+    font-family: var(--font-sans); font-size: 12px; font-weight: 700;
+    color: var(--ink-dim); padding: 9px 14px; white-space: nowrap;
+  }
+  .rmode:last-child { border-right: 0; }
+  .rmode.active { background: var(--ink); color: #FFF; }
+  .rmode:hover:not(.active) { background: var(--surface-soft); }
+  .rmode:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .roster-controls { border: 1px solid var(--ink); }
+  .roster-search { border-right: 0; }
+
+  /* ---- Roster: time-aware view --------------------------------------- */
+  .roster-asof { margin-bottom: 22px; }
+  .roster-asof-main { font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--ink); }
+  .roster-asof-main strong { font-weight: 900; }
+  .roster-asof-sub {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--ink-faint); margin-top: 4px;
+  }
+  .brand-section { margin-bottom: 34px; }
+  .brand-section-head {
+    display: flex; align-items: center; gap: 9px;
+    font-family: var(--font-sans); font-weight: 900; font-size: 16px;
+    letter-spacing: -0.01em; color: var(--ink);
+    padding-bottom: 10px; margin-bottom: 16px; border-bottom: 2px solid var(--ink);
+  }
+  .brand-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+  .brand-dot.raw { background: var(--red); }
+  .brand-dot.smackdown { background: var(--blue); }
+  .brand-dot.wwe { background: var(--ink-faint); }
+  .bs-count { margin-left: auto; font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ink-faint); }
+  .roster-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); }
+  .r-card {
+    display: flex; flex-direction: column; align-items: stretch; text-align: left;
+    border: 1px solid var(--border); background: var(--surface);
+    padding: 0; cursor: pointer; overflow: hidden;
+    transition: border-color 120ms, box-shadow 120ms, transform 120ms;
+  }
+  .r-card:hover { border-color: var(--ink); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+  .r-card:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .r-card-photo { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--surface-soft); overflow: hidden; }
+  .r-card-ph {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-sans); font-weight: 900; font-size: 30px; color: var(--border-strong);
+  }
+  .r-card-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .r-card-name {
+    font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.01em; line-height: 1.25; padding: 9px 10px 0;
+  }
+  .brand-badge {
+    align-self: flex-start; margin: 6px 10px 10px;
+    font-family: var(--font-sans); font-weight: 700; font-size: 9px;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 7px;
+  }
+  .brand-badge.raw { background: var(--red-soft); color: var(--red); }
+  .brand-badge.smackdown { background: var(--blue-soft); color: var(--blue); }
+  .brand-badge.wwe { background: var(--surface-soft); color: var(--ink-dim); }
+  .roster-empty {
+    padding: 44px 20px; text-align: center; color: var(--ink-faint);
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.06em;
+  }
+  .r-skel { aspect-ratio: 1 / 1; background: var(--surface-soft); animation: rskel 1.2s ease-in-out infinite; }
+  @keyframes rskel { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.85; } }
+
+  /* ---- Roster: sortable all-time headers ----------------------------- */
+  .roster-table th.sortable { cursor: pointer; user-select: none; transition: color 120ms; }
+  .roster-table th.sortable:hover { color: var(--ink-dim); }
+  .roster-table th.is-sorted { color: var(--ink); }
+  .sort-caret { font-size: 8px; margin-left: 4px; vertical-align: middle; }
+  #wrestler-tooltip .tt-asof { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 7px; }
+  #wrestler-tooltip .tt-val.tt-muted { color: var(--ink-faint); font-style: italic; }
+
+  @media (max-width: 600px) {
+    .roster-grid { grid-template-columns: repeat(auto-fill, minmax(116px, 1fr)); gap: 8px; }
+    .r-card-ph { font-size: 24px; }
+    .roster-modes { width: 100%; }
+    .rmode { flex: 1; text-align: center; }
+  }
+
   /* ===========================================================
      WRESTLER PROFILE VIEW
      =========================================================== */
@@ -2661,14 +2745,12 @@
 <section id="view-roster" class="view" hidden>
   <div class="roster-view-header">
     <h2>Roster</h2>
+    <div class="roster-modes" id="roster-modes" role="tablist" aria-label="Roster view">
+      <button class="rmode active" type="button" data-mode="time" role="tab">As of your date</button>
+      <button class="rmode" type="button" data-mode="all" role="tab">All-time</button>
+    </div>
     <div class="roster-controls">
       <input class="roster-search" id="roster-search" type="search" placeholder="Filter by name..." autocomplete="off">
-      <select class="roster-sort" id="roster-sort" aria-label="Sort by">
-        <option value="name">Name</option>
-        <option value="matches">Total Matches</option>
-        <option value="ppv">PPV Appearances</option>
-        <option value="shows">Shows Worked</option>
-      </select>
     </div>
   </div>
   <div id="roster-view-content"></div>
@@ -3775,6 +3857,7 @@
   // ------------------ Modal -----------------------------------------------
   async function openModal(events, iso, sourceSlug = null, scrollMatchId = null) {
     lastModalCtx = { events, iso, sourceSlug };
+    if (iso) rosterViewISO = clampISO(iso);   // time-aware roster mirrors the show you're viewing
     mContent.innerHTML = '<div class="status">Loading…</div>';
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -4259,34 +4342,115 @@
     tooltipEl.style.top = top + 'px';
   }
 
+  // ---- As-of-date records ------------------------------------------------
+  // The roster's time view hover shows a wrestler's record UP TO the date you're
+  // watching (spoiler-safe: only the past). Computed from the match shards on
+  // demand and cached for that date; the first hover at a new date may take a
+  // moment while the shards up to that era load, later hovers are instant.
+  let asOfRecord = { iso: null, map: null };   // memo: {iso, Map slug -> {w,l,d,nc,m}}
+  let asOfRecordBuilding = null;
+  let asOfRecordToken = 0;
+  let currentTip = null;                        // {slug, anchor} of the visible tooltip
+
+  const ttMonthYear = (iso) => `${MONTHS[parseInt(iso.slice(5, 7), 10) - 1]} ${iso.slice(0, 4)}`;
+
+  function asOfRecordFor(slug, T) {
+    if (asOfRecord.iso !== T || !asOfRecord.map) return null;
+    return asOfRecord.map.get(slug) || { w: 0, l: 0, d: 0, nc: 0, m: 0 };
+  }
+  async function ensureAsOfRecords(T) {
+    if (asOfRecord.iso === T && asOfRecord.map) return asOfRecord.map;
+    if (asOfRecordBuilding === T) return null;
+    asOfRecordBuilding = T;
+    const token = ++asOfRecordToken;
+    const evs = [];
+    for (const iso in BUNDLE.events_by_date) {
+      if (iso <= T) for (const id of BUNDLE.events_by_date[iso]) { const ev = BUNDLE.events[String(id)]; if (ev) evs.push(ev); }
+    }
+    try { await Promise.all(evs.map(ev => ensureMatches(ev).catch(() => []))); } catch (_) {}
+    if (token !== asOfRecordToken) { asOfRecordBuilding = null; return null; }   // a newer date supersedes
+    const byName = BUNDLE.wrestlers_by_name || {};
+    const map = new Map();
+    for (const ev of evs) {
+      for (const m of (Array.isArray(ev.matches) ? ev.matches : [])) {
+        for (const t of (m.teams || [])) {
+          const o = t.match_outcome;
+          for (const name of (t.participants || [])) {
+            const slug = byName[name]; if (!slug || !BUNDLE.wrestlers[slug]) continue;
+            let r = map.get(slug); if (!r) { r = { w: 0, l: 0, d: 0, nc: 0, m: 0 }; map.set(slug, r); }
+            r.m++;
+            if (o === 'win' || (o && o.endsWith('-win'))) r.w++;
+            else if (o === 'loss' || (o && o.endsWith('-loss'))) r.l++;
+            else if (o === 'draw') r.d++;
+            else r.nc++;   // no-contest, null, other
+          }
+        }
+      }
+    }
+    asOfRecord = { iso: T, map };
+    asOfRecordBuilding = null;
+    // Refresh a visible as-of tooltip now that the numbers are ready.
+    if (currentTip && tooltipEl && tooltipEl.classList.contains('visible')) {
+      const el = currentTip.anchor.closest('[data-asof-date]');
+      if (el && el.dataset.asofDate === T) renderTooltipInto(currentTip.slug, currentTip.anchor);
+    }
+    return map;
+  }
+
+  // Build the tooltip body. Record scope depends on context: the roster time
+  // view shows the record AS OF the date being watched; the roster all-time view
+  // shows the all-time record; everywhere else (event modal, profiles) the
+  // all-time record stays gated behind the Spoilers toggle.
+  function renderTooltipInto(slug, anchor) {
+    const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
+    if (!w || !tooltipEl) return;
+    const asOfEl = anchor.closest('[data-asof-date]');
+    const asOf = asOfEl ? asOfEl.dataset.asofDate : null;
+    const dateEl = anchor.closest('[data-event-date]');
+    const ctxDate = asOf || (dateEl ? dateEl.dataset.eventDate : null);
+    const heldTitles = ctxDate ? titlesHeldOn(w.name, ctxDate) : [];
+    const yr = w.active_years[0] === w.active_years[1]
+      ? String(w.active_years[0])
+      : `${w.active_years[0]}-${w.active_years[1]}`;
+    let rows = '';
+    if (asOf) {
+      const rec = asOfRecordFor(slug, asOf);
+      rows += `<div class="tt-asof">through ${esc(ttMonthYear(asOf))}</div>`;
+      if (rec) {
+        rows += `<div class="tt-row"><span>Matches</span><span class="tt-val">${rec.m}</span></div>`;
+        rows += `<div class="tt-row"><span>Record</span><span class="tt-val">${rec.w}W-${rec.l}L${rec.d ? '-' + rec.d + 'D' : ''}</span></div>`;
+      } else {
+        rows += `<div class="tt-row"><span>Matches</span><span class="tt-val tt-muted">&hellip;</span></div>`;
+        rows += `<div class="tt-row"><span>Record</span><span class="tt-val tt-muted">working&hellip;</span></div>`;
+        ensureAsOfRecords(asOf);
+      }
+    } else {
+      rows += `<div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>`;
+      rows += `<div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>`;
+      const inRosterAllTime = !!anchor.closest('#roster-view-content') && rosterMode === 'all';
+      if (spoilers || inRosterAllTime) {
+        rows += `<div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>`;
+        if (w.win_pct != null) rows += `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>`;
+      }
+    }
+    if (heldTitles.length) {
+      rows += `<div class="tt-row"><span>${asOf ? 'Holding now' : 'Held at this time'}</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>`;
+    }
+    tooltipEl.innerHTML = `<div class="tt-name">${esc(w.name)}</div>${rows}`;
+    positionTooltip(anchor);
+    tooltipEl.classList.add('visible');
+    tooltipEl.setAttribute('aria-hidden', 'false');
+  }
+
   function showTooltip(slug, anchor) {
     if (!hasHover || !tooltipEl) return;
     clearTimeout(tooltipTimer);
-    tooltipTimer = setTimeout(() => {
-      const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
-      if (!w) return;
-      const dateEl = anchor.closest('[data-event-date]');
-      const eventDate = dateEl ? dateEl.dataset.eventDate : null;
-      const heldTitles = eventDate ? titlesHeldOn(w.name, eventDate) : [];
-      const yr = w.active_years[0] === w.active_years[1]
-        ? String(w.active_years[0])
-        : `${w.active_years[0]}-${w.active_years[1]}`;
-      tooltipEl.innerHTML = `
-        <div class="tt-name">${esc(w.name)}</div>
-        <div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>
-        <div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>
-        ${spoilers ? `<div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>` : ''}
-        ${spoilers && w.win_pct != null ? `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>` : ''}
-        ${heldTitles.length ? `<div class="tt-row"><span>Held at this time</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>` : ''}
-      `;
-      positionTooltip(anchor);
-      tooltipEl.classList.add('visible');
-      tooltipEl.setAttribute('aria-hidden', 'false');
-    }, 150);
+    tooltipTimer = setTimeout(() => { currentTip = { slug, anchor }; renderTooltipInto(slug, anchor); }, 150);
   }
 
   function hideTooltip() {
     clearTimeout(tooltipTimer);
+    currentTip = null;
     if (tooltipEl) {
       tooltipEl.classList.remove('visible');
       tooltipEl.setAttribute('aria-hidden', 'true');
@@ -4351,12 +4515,12 @@
   });
 
   document.addEventListener('mouseover', (e) => {
-    const btn = e.target.closest('button.wrestler-link');
+    const btn = e.target.closest('button[data-slug]');
     if (btn && btn.dataset.slug) showTooltip(btn.dataset.slug, btn);
   });
 
   document.addEventListener('mouseout', (e) => {
-    if (e.target.closest('button.wrestler-link')) hideTooltip();
+    if (e.target.closest('button[data-slug]')) hideTooltip();
   });
 
   // Defensive cleanup: hide tooltip on any state change that could orphan it.
@@ -4370,56 +4534,250 @@
   // ------------------------------------------------------------------
   // Roster render
   // ------------------------------------------------------------------
-  let rosterBuilt = false;
+  // Two views share this tab: a time-aware roster (who was active, and on which
+  // brand, as of the date you're watching) and the all-time table. Both derive
+  // from data already in the bundle, so no rebuild is needed. The corpus holds
+  // Raw, SmackDown and PPV only, so brand-at-time is Raw vs SmackDown, with a
+  // neutral "WWE" during the years the roster was a single shared one.
+  const ROSTER_WINDOW_DAYS = 90;          // trailing window that counts as "active"
+  // Brand-split windows (historical fact). Inside one, the roster was divided
+  // between Raw and SmackDown; outside, it was a single shared roster.
+  const BRAND_SPLITS = [
+    ['2002-03-25', '2011-08-28'],         // first brand extension
+    ['2016-07-19', '9999-12-31'],         // second brand split (ongoing)
+  ];
+  const isSplitEra = (iso) => BRAND_SPLITS.some(([a, b]) => iso >= a && iso <= b);
+
+  let rosterMode = 'time';                // 'time' | 'all'
+  let rosterControlsWired = false;
+  let rosterViewISO = null;               // date of the show you're viewing (set in openModal)
+  let rosterSortKey = 'name';             // all-time table sort column
+  let rosterSortDir = 1;                  // 1 ascending, -1 descending
+  let rosterCache = { iso: null, map: null };   // memo of the derived as-of roster
+  let rosterDeriveToken = 0;              // guards against stale async paints
+
+  // The date the roster mirrors: the show you're looking at, else your resume
+  // position, else the first show.
+  function rosterAnchorISO() {
+    if (rosterViewISO) return rosterViewISO;
+    const rid = computeResumeId();
+    if (rid && BUNDLE.events[String(rid)]) return BUNDLE.events[String(rid)].air_date;
+    const first = ORDERED_IDS.length ? BUNDLE.events[ORDERED_IDS[0]] : null;
+    return (first && first.air_date) || '2001-01-01';
+  }
+
+  // Event ids whose air_date is in (startISO, endISO].
+  function eventIdsInRange(startISO, endISO) {
+    const out = [];
+    if (!BUNDLE || !BUNDLE.events_by_date) return out;
+    for (const iso in BUNDLE.events_by_date) {
+      if (iso > startISO && iso <= endISO) {
+        for (const id of BUNDLE.events_by_date[iso]) out.push(String(id));
+      }
+    }
+    return out;
+  }
+
+  // Build the roster as of an anchor date: Map slug -> { w, apps, raw, sd,
+  // lastWeekly, lastWeeklyBrand } over the trailing window. apps = shows worked,
+  // raw/sd = weekly-show votes (PPV is cross-brand and doesn't vote). Async
+  // because it may hydrate a match shard (cached after first load; already inline
+  // in the single-file build).
+  async function deriveRosterAsOf(anchorISO) {
+    const endISO = clampISO(anchorISO);
+    const startISO = addDaysISO(endISO, -ROSTER_WINDOW_DAYS);
+    const byName = BUNDLE.wrestlers_by_name || {};
+    const evs = eventIdsInRange(startISO, endISO).map(id => BUNDLE.events[id]).filter(Boolean);
+    await Promise.all(evs.map(ev => ensureMatches(ev).catch(() => [])));
+    const out = new Map();
+    for (const ev of evs) {
+      const brand = ev.show_type;
+      const matches = Array.isArray(ev.matches) ? ev.matches : [];
+      const slugs = new Set();
+      for (const m of matches)
+        for (const t of (m.teams || []))
+          for (const name of (t.participants || [])) {
+            const slug = byName[name];
+            if (slug && BUNDLE.wrestlers[slug]) slugs.add(slug);
+          }
+      for (const slug of slugs) {
+        let rec = out.get(slug);
+        if (!rec) { rec = { w: BUNDLE.wrestlers[slug], apps: 0, raw: 0, sd: 0, lastWeekly: '', lastWeeklyBrand: '' }; out.set(slug, rec); }
+        rec.apps += 1;
+        if (brand === 'Raw' || brand === 'SmackDown') {
+          if (brand === 'Raw') rec.raw += 1; else rec.sd += 1;
+          if (ev.air_date > rec.lastWeekly) { rec.lastWeekly = ev.air_date; rec.lastWeeklyBrand = brand; }
+        }
+      }
+    }
+    return out;
+  }
+
+  // A wrestler's brand badge from their weekly votes and the era. Ties or a
+  // PPV-only window fall back to their most recent weekly brand, else WWE.
+  function brandOf(rec, anchorISO) {
+    if (!isSplitEra(anchorISO)) return 'WWE';
+    if (rec.raw > rec.sd) return 'Raw';
+    if (rec.sd > rec.raw) return 'SmackDown';
+    return rec.lastWeeklyBrand || 'WWE';
+  }
 
   function renderRoster() {
     if (!BUNDLE || !BUNDLE.wrestlers) return;
+    if (!document.getElementById('roster-view-content')) return;
+    wireRosterControls();
+    renderRosterBody();
+  }
+
+  // Wire the persistent controls once: the mode toggle, the search box, and a
+  // delegated click handler on the content container (survives innerHTML swaps)
+  // for column sorting, brand cards and name links.
+  function wireRosterControls() {
+    if (rosterControlsWired) return;
+    rosterControlsWired = true;
+    const modes = document.getElementById('roster-modes');
+    if (modes) modes.addEventListener('click', (e) => {
+      const btn = e.target.closest('.rmode');
+      if (!btn || btn.dataset.mode === rosterMode) return;
+      rosterMode = btn.dataset.mode;
+      modes.querySelectorAll('.rmode').forEach(b => b.classList.toggle('active', b.dataset.mode === rosterMode));
+      renderRosterBody();
+    });
+    const searchEl = document.getElementById('roster-search');
+    if (searchEl) searchEl.addEventListener('input', renderRosterBody);
     const container = document.getElementById('roster-view-content');
-    if (!container || rosterBuilt) return;
-    rosterBuilt = true;
+    if (container) container.addEventListener('click', (e) => {
+      const th = e.target.closest('th[data-sort]');
+      if (th) { setRosterSort(th.dataset.sort); return; }
+      const link = e.target.closest('[data-slug]');
+      if (link) window.location.hash = '#wrestler/' + link.dataset.slug;
+    });
+  }
 
-    const all = Object.values(BUNDLE.wrestlers);
-    all.sort((a, b) => a.name.localeCompare(b.name));
+  function renderRosterBody() {
+    const container = document.getElementById('roster-view-content');
+    if (!container) return;
+    const q = (document.getElementById('roster-search') ? document.getElementById('roster-search').value : '').toLowerCase().trim();
+    if (rosterMode === 'all') renderRosterAllTime(container, q);
+    else renderRosterTime(container, q);
+  }
 
+  // ---- All-time table (sortable columns) --------------------------------
+  function setRosterSort(key) {
+    if (rosterSortKey === key) rosterSortDir = -rosterSortDir;
+    else { rosterSortKey = key; rosterSortDir = key === 'name' ? 1 : -1; }   // numbers default high-first
+    renderRosterBody();
+  }
+  function sortRosterRows(rows, key, dir) {
+    const num = (w) => key === 'matches' ? w.total_matches
+      : key === 'ppv' ? w.ppv_appearances
+      : key === 'shows' ? w.unique_event_count
+      : key === 'active' ? (w.active_years[1] || 0) : 0;
+    const r = rows.slice();
+    if (key === 'name') r.sort((a, b) => dir * a.name.localeCompare(b.name));
+    else r.sort((a, b) => dir * (num(a) - num(b)) || a.name.localeCompare(b.name));
+    return r;
+  }
+  function rosterHeadCell(label, key) {
+    const on = rosterSortKey === key;
+    const caret = on ? `<span class="sort-caret">${rosterSortDir < 0 ? '▼' : '▲'}</span>` : '';
+    return `<th data-sort="${key}" class="sortable${on ? ' is-sorted' : ''}">${label}${caret}</th>`;
+  }
+  function renderRosterAllTime(container, q) {
+    let rows = Object.values(BUNDLE.wrestlers);
+    if (q) rows = rows.filter(w => w.name.toLowerCase().includes(q));
+    rows = sortRosterRows(rows, rosterSortKey, rosterSortDir);
     container.innerHTML = `
       <table class="roster-table">
         <thead>
           <tr>
             <th class="rt-rank">#</th>
-            <th>Name</th>
-            <th>Matches</th>
-            <th>PPV</th>
-            <th>Shows</th>
-            <th>Active</th>
+            ${rosterHeadCell('Name', 'name')}
+            ${rosterHeadCell('Matches', 'matches')}
+            ${rosterHeadCell('PPV', 'ppv')}
+            ${rosterHeadCell('Shows', 'shows')}
+            ${rosterHeadCell('Active', 'active')}
           </tr>
         </thead>
-        <tbody id="roster-tbody">${buildRosterRows(all)}</tbody>
+        <tbody>${rows.length ? buildRosterRows(rows)
+          : `<tr><td colspan="6" class="roster-no-results">No results for "${esc(q)}"</td></tr>`}</tbody>
       </table>`;
+  }
 
-    const searchEl = document.getElementById('roster-search');
-    const sortEl = document.getElementById('roster-sort');
-
-    function applyFilterSort() {
-      const q = searchEl.value.toLowerCase().trim();
-      const key = sortEl.value;
-      let rows = q ? all.filter(w => w.name.toLowerCase().includes(q)) : all.slice();
-      if (key === 'matches') rows.sort((a, b) => b.total_matches - a.total_matches);
-      else if (key === 'ppv')  rows.sort((a, b) => b.ppv_appearances - a.ppv_appearances);
-      else if (key === 'shows') rows.sort((a, b) => b.unique_event_count - a.unique_event_count);
-      else rows.sort((a, b) => a.name.localeCompare(b.name));
-      const tbody = document.getElementById('roster-tbody');
-      if (!tbody) return;
-      tbody.innerHTML = rows.length
-        ? buildRosterRows(rows)
-        : `<tr><td colspan="6" class="roster-no-results">No results for "${esc(q)}"</td></tr>`;
+  // ---- Time-aware view --------------------------------------------------
+  function renderRosterTime(container, q) {
+    const iso = clampISO(rosterAnchorISO());
+    const asOf = `${MONTHS[parseInt(iso.slice(5, 7), 10) - 1]} ${iso.slice(0, 4)}`;
+    if (rosterCache.iso === iso && rosterCache.map) {
+      paintRosterTime(container, rosterCache.map, iso, asOf, q);
+      return;
     }
-
-    searchEl.addEventListener('input', applyFilterSort);
-    sortEl.addEventListener('change', applyFilterSort);
-    container.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-slug]');
-      if (btn) window.location.hash = '#wrestler/' + btn.dataset.slug;
+    container.innerHTML = rosterAsOfHead(asOf, null) + rosterSkeleton();
+    const token = ++rosterDeriveToken;
+    deriveRosterAsOf(iso).then(map => {
+      if (token !== rosterDeriveToken || rosterMode !== 'time') return;
+      rosterCache = { iso, map };
+      const qNow = (document.getElementById('roster-search') ? document.getElementById('roster-search').value : '').toLowerCase().trim();
+      paintRosterTime(container, map, iso, asOf, qNow);
+    }).catch(() => {
+      if (token !== rosterDeriveToken || rosterMode !== 'time') return;
+      container.innerHTML = rosterAsOfHead(asOf, null) + `<div class="roster-empty">Couldn't build the roster for this date.</div>`;
     });
+  }
+  function paintRosterTime(container, map, iso, asOf, q) {
+    const split = isSplitEra(iso);
+    let recs = [...map.values()];
+    // Brand for grouping; badge label. In a split era, "WWE" means no weekly-show
+    // match in the window (their only matches were PPVs), so badge it "PPV".
+    recs.forEach(r => { r.brand = brandOf(r, iso); r.badge = (split && r.brand === 'WWE') ? 'PPV' : r.brand; });
+    const total = recs.length;
+    if (q) recs = recs.filter(r => r.w.name.toLowerCase().includes(q));
+    const groups = split ? { Raw: [], SmackDown: [], WWE: [] } : { WWE: [] };
+    for (const r of recs) (groups[r.brand] || groups.WWE).push(r);
+    for (const k in groups) groups[k].sort((a, b) => b.apps - a.apps || a.w.name.localeCompare(b.w.name));
+    const order = split ? ['Raw', 'SmackDown', 'WWE'] : ['WWE'];
+    const body = order.filter(k => groups[k] && groups[k].length)
+      .map(k => rosterSectionHtml(k, groups[k], split)).join('');
+    const empty = q ? `<div class="roster-empty">No one named "${esc(q)}" on the ${esc(asOf)} roster.</div>`
+      : `<div class="roster-empty">No roster data for ${esc(asOf)}.</div>`;
+    container.innerHTML = rosterAsOfHead(asOf, total) + (recs.length ? `<div data-asof-date="${iso}">${body}</div>` : empty);
+  }
+  function rosterAsOfHead(asOf, total) {
+    const sub = total == null ? 'Building the roster…'
+      : `${total} on the roster in the 90 days before this date`;
+    return `<div class="roster-asof">
+      <div class="roster-asof-main">Roster as of <strong>${esc(asOf)}</strong></div>
+      <div class="roster-asof-sub">${esc(sub)}</div>
+    </div>`;
+  }
+  function rosterSectionHtml(brand, recs, split) {
+    const label = split ? (brand === 'WWE' ? 'PPV only' : brand) : 'Active roster';
+    const bc = brand === 'Raw' ? 'raw' : brand === 'SmackDown' ? 'smackdown' : 'wwe';
+    return `<section class="brand-section">
+      <h3 class="brand-section-head"><span class="brand-dot ${bc}"></span>${esc(label)}<span class="bs-count">${recs.length}</span></h3>
+      <div class="roster-grid">${recs.map(rosterCardHtml).join('')}</div>
+    </section>`;
+  }
+  function cardInitials(name) {
+    const letters = (name.match(/[A-Za-z]+/g) || []).map(s => s[0]);
+    return (letters.slice(0, 2).join('') || '?').toUpperCase();
+  }
+  function rosterCardHtml(rec) {
+    const w = rec.w;
+    const bc = rec.brand === 'Raw' ? 'raw' : rec.brand === 'SmackDown' ? 'smackdown' : 'wwe';
+    return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(w.name)}">
+      <span class="r-card-photo">
+        <span class="r-card-ph">${esc(cardInitials(w.name))}</span>
+        <img class="r-card-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onerror="this.remove()">
+      </span>
+      <span class="r-card-name">${esc(w.name)}</span>
+      <span class="brand-badge ${bc}">${esc(rec.badge || rec.brand)}</span>
+    </button>`;
+  }
+  function rosterSkeleton() {
+    let cells = '';
+    for (let i = 0; i < 12; i++) cells += '<div class="r-skel"></div>';
+    return `<div class="roster-grid">${cells}</div>`;
   }
 
   function buildRosterRows(wrestlers) {
