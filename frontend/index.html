@@ -4020,9 +4020,10 @@
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
     const linkedNames = rawNames.map(n => {
-      // Keep this list in sync with PLACEHOLDER_NAMES in src/export_to_html.py.
-      if (n === '???') return esc(n);
-      const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
+      // Non-person names (placeholders, jobbers, local competitors) are absent
+      // from the wrestler index, so they render as plain text. See src/export_to_html.py.
+      const slug = BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
+      if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text, no broken link
       const linkClass = sourceSlug && slug === sourceSlug ? 'wrestler-link source' : 'wrestler-link';
       return `<button class="${linkClass}" data-slug="${esc(slug)}">${esc(n)}</button>`;
     }).join(' &amp; ');
@@ -4149,8 +4150,8 @@
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
     const linkFor = (n) => {
-      if (n === '???') return esc(n);
-      const slug = (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || jsSlugify(n);
+      const slug = BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
+      if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text, no broken link
       const linkClass = sourceSlug && slug === sourceSlug ? 'wrestler-link source' : 'wrestler-link';
       return `<button class="${linkClass}" data-slug="${esc(slug)}">${esc(n)}</button>`;
     };

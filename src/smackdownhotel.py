@@ -101,10 +101,14 @@ def split_members(s):
             members.append(tok)
     # Partners often share a surname written once ('Jimmy & Jey Uso' arrives as
     # ['Jimmy', 'Jey Uso']): lend the trailing two-word name's surname back to a
-    # preceding bare first-name partner so they don't fragment.
-    for i in range(len(members) - 1):
-        if members[i] and " " not in members[i] and members[i + 1].count(" ") == 1:
-            members[i] = members[i] + " " + members[i + 1].split()[-1]
+    # preceding bare first-name partner so they don't fragment. Guard to two-person
+    # sides only: in a battle-royal entrant list this same rule fires on every
+    # single-name wrestler and lends the NEXT entrant's surname ('Ricochet, Johnny
+    # Gargano' -> 'Ricochet Gargano'), inventing fake wrestlers.
+    if len(members) == 2:
+        for i in range(len(members) - 1):
+            if members[i] and " " not in members[i] and members[i + 1].count(" ") == 1:
+                members[i] = members[i] + " " + members[i + 1].split()[-1]
     return members
 
 
@@ -192,7 +196,9 @@ def parse_match(li_html, order):
     title, mtype, stip = parse_descriptor(desc)
     multiway = bool(MULTIWAY_RE.search((desc or "") + " " + text))
 
-    halves = re.split(r"\s+defeats?\s+", text, maxsplit=1, flags=re.I)
+    # Match "defeats"/"defeat", the typo "defeatz", and the abbreviation "def.";
+    # any unsplit result otherwise fuses both teams into one fake participant.
+    halves = re.split(r"\s+(?:defeat[sz]?|def\.)\s+", text, maxsplit=1, flags=re.I)
     teams, result_method, finish, conf = [], None, None, "high"
     if len(halves) == 2:
         win, lose = halves

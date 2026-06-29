@@ -47,11 +47,37 @@ def slugify(name: str) -> str:
     return s or "unknown"
 
 
-# Cagematch placeholder for unidentified wrestlers. Excluded from the wrestlers
-# index so "???" doesn't surface as a real wrestler in the roster, rivalries,
-# or tag partners. Match cards still render "???" but as plain text (see the
-# matching n === '???' branch in renderTeam in frontend/index.html).
+# Non-person participants that must never become wrestlers in the index (they
+# would otherwise pollute the roster, rivalries, and tag partners). Two kinds:
+#   - "???"         : Cagematch's unidentified-wrestler marker.
+#   - generic crowd : counts of enhancement talent a result names in place of a
+#                     real opponent, e.g. "a jobber", "3 local competitors",
+#                     "The Masked Ninja", and the numbered "El Local #1" variants
+#                     (but NOT the real recurring "El Local" gimmick).
+# Match cards still show the text: the frontend renders any name absent from the
+# wrestler index as plain text (see renderTeam/renderTeamBlock in
+# frontend/index.html), so these never become broken links either.
 PLACEHOLDER_NAMES: frozenset[str] = frozenset({"???"})
+
+_PLACEHOLDER_RE = re.compile(
+    r"^(?:"
+    r"(?:a|an|\d+)\s+jobbers?"                      # a jobber, 2 jobbers
+    r"|\d+\s+local\s+(?:competitors?|athletes?)"    # 3 local competitors / athletes
+    r"|\d+\s+ninjas?|the\s+masked\s+ninja"          # 3 ninjas, The Masked Ninja
+    r"|el\s+local\s+#?\d+"                          # El Local #1 (not bare "El Local")
+    # comment-section UI a scraper can swallow as a participant:
+    r"|facebook|google|twitter|disqus|login\s+this\s+site|newest(?:\s+best)?|oldest|popular"
+    r"|\d+\s+up\s+\d+\s+down|\d+\s+comments?"
+    # result-method words and title descriptors leaked in place of a name:
+    r"|and|countout|double\s+countout|no\s+contest|no\s+decision"
+    r"|.*\bchampion"
+    r")$", re.I)
+
+
+def is_placeholder_name(name: str) -> bool:
+    """True for non-person participants to keep out of the wrestlers index."""
+    n = (name or "").strip()
+    return n in PLACEHOLDER_NAMES or bool(_PLACEHOLDER_RE.match(n))
 
 
 def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
@@ -76,7 +102,7 @@ def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
 
     def parts_of(team):
         return [canon(p) for p in team.get("participants", [])
-                if p and p not in PLACEHOLDER_NAMES]
+                if p and not is_placeholder_name(p)]
 
     w_appearances: dict[str, list[tuple[str, int]]] = defaultdict(list)
     w_wins: Counter = Counter()
@@ -273,7 +299,7 @@ def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
         for m in ev.get("matches", []):
             for t in m.get("teams", []):
                 for p in t.get("participants", []):
-                    if p and p not in PLACEHOLDER_NAMES and p not in wrestlers_by_name:
+                    if p and not is_placeholder_name(p) and p not in wrestlers_by_name:
                         s = name_to_slug.get(canon(p))
                         if s:
                             wrestlers_by_name[p] = s
