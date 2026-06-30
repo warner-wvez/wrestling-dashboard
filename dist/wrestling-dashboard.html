@@ -1681,6 +1681,50 @@
   .vs-cell .def-text { display: none; }
   .vs-cell .def-arrow { color: var(--red); font-weight: 900; }
 
+  /* ---- Match-card headshots (faces follow wrestlers into matches) -------
+     A wrestler's roster headshot reused at match scale. Square, to match the
+     roster cards, the brand badges, and the VS cell. The initials placeholder
+     shows through when no webp exists (the img removes itself on error), so
+     every indexed wrestler keeps a tile and the two sides stay balanced. */
+  .mc-av {
+    position: relative; flex: 0 0 auto; display: inline-block;
+    overflow: hidden; vertical-align: middle;
+    background: transparent; border: 1px solid var(--border);
+  }
+  .mc-av .mc-av-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: top center;
+  }
+  .mc-av-lg { width: 48px; height: 48px; }
+  .mc-av-md { width: 38px; height: 38px; }
+  .mc-av-sm { width: 28px; height: 28px; }
+  /* Singles: the two headshots flank the VS like a tale of the tape, with the
+     names on the outer side. */
+  .team-names.mc-solo { display: flex; align-items: center; gap: 11px; }
+  .team.left .team-names.mc-solo { justify-content: flex-end; }
+  .team.right .team-names.mc-solo { justify-content: flex-start; }
+  /* Tag / multi-team: a small tile rides just before each name, inline. Each
+     [tile][name] is one inline-flex unit, so a long tag team wraps as whole
+     units (the tile never orphans from its name) and stays vertically centered. */
+  .mc-pair { display: inline-flex; align-items: center; vertical-align: middle; }
+  .team-names .mc-av-sm { margin: 0 7px 0 0; }
+  .team-names.mc-solo .champ-badge { margin-left: 0; }
+  /* Multi-person teams (3+) stack vertically so the headshots never cram or wrap.
+     Each row reserves a photo slot, so names line up whether or not a headshot
+     exists. The stack sits toward the VS via the team's text-align. */
+  .team-names.mc-stack { display: inline-flex; flex-direction: column; gap: 8px; vertical-align: middle; text-align: left; }
+  .mc-stack .mc-row { position: relative; display: flex; align-items: center; min-height: 38px; padding-left: 46px; }
+  .mc-stack .mc-row .mc-av { position: absolute; left: 0; top: 50%; transform: translateY(-50%); margin: 0; }
+  .mc-stack .mc-row-badge { min-height: 0; }
+  /* Battle-royal stacked layout: solo winner banner + the field grid. */
+  .team-block-banner { align-items: center; }
+  .team-block-banner .mc-av-lg { margin-right: 11px; }
+  /* Reserve a fixed photo slot so every name in the field aligns, whether or not
+     it has a headshot. A wrestler with no photo gets blank space, never a box. */
+  .team-block-grid .mc-cell { position: relative; display: flex; align-items: center; min-width: 0; min-height: 28px; padding-left: 36px; }
+  .team-block-grid .mc-cell .mc-av-sm { position: absolute; left: 0; top: 50%; transform: translateY(-50%); margin: 0; }
+  .team-block-grid .mc-cell .wrestler-link { min-width: 0; }
+
   .match-footer {
     display: flex;
     justify-content: space-between;
@@ -2448,7 +2492,7 @@
   }
   .r-card:hover { border-color: var(--ink); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
   .r-card:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
-  .r-card-photo { position: relative; width: 100%; aspect-ratio: 1 / 1; background: var(--surface-soft); overflow: hidden; }
+  .r-card-photo { position: relative; width: 100%; aspect-ratio: 1 / 1; background: transparent; overflow: hidden; }
   .r-card-ph {
     position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
     font-family: var(--font-sans); font-weight: 900; font-size: 30px; color: var(--border-strong);
@@ -2547,7 +2591,25 @@
   .breadcrumbs .crumb-sep {
     color: var(--border-strong); font-weight: 700;
   }
-  .profile-header { margin-bottom: 32px; padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+  .profile-header {
+    display: flex; align-items: center; gap: 22px;
+    margin-bottom: 32px; padding-bottom: 28px; border-bottom: 2px solid var(--ink);
+  }
+  /* The wrestler's roster headshot at hero scale: same square treatment as the
+     match-card tiles and roster cards, with an initials fallback when no webp. */
+  .profile-photo {
+    position: relative; flex: 0 0 auto; width: 124px; height: 124px;
+    background: transparent; border: 1px solid var(--border); overflow: hidden;
+  }
+  .profile-photo .pp-ph {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-sans); font-weight: 900; font-size: 40px; color: var(--border-strong);
+  }
+  .profile-photo .pp-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: top center;
+  }
+  .profile-id { min-width: 0; }
   .profile-name {
     font-family: var(--font-sans); font-weight: 900; font-size: 42px;
     letter-spacing: -0.025em; line-height: 1.02; margin-bottom: 8px;
@@ -2631,6 +2693,9 @@
     .header-actions { justify-self: center; justify-content: center; flex-wrap: wrap; }
   }
   @media (max-width: 720px) {
+    .profile-header { gap: 16px; }
+    .profile-photo { width: 88px; height: 88px; }
+    .profile-photo .pp-ph { font-size: 30px; }
     .profile-name { font-size: 28px; }
     .record-grid { grid-template-columns: repeat(2, 1fr); }
     .tabs .tab { padding: 8px 14px; font-size: 12px; }
@@ -4100,17 +4165,33 @@
       </div>`;
   }
 
-  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null, sourceSlug = null) {
+  // A wrestler's roster headshot at match scale: a square tile with an initials
+  // fallback that shows when the webp is missing (the img removes itself on
+  // error). Mirrors the roster card photo so faces follow wrestlers into matches.
+  // A wrestler's roster headshot at match scale, square to match the cards and
+  // roster. The transparent webp sits on a plain tile with nothing behind it, so
+  // no initials bleed through. On a card a wrestler with no headshot shows no
+  // tile at all (the tile removes itself when the image 404s), just the name,
+  // never an initials stand-in.
+  function wrestlerAvatar(slug, name, size) {
+    return `<span class="mc-av mc-av-${size || 'sm'}"><img class="mc-av-img" alt="" loading="lazy" src="roster-img/${esc(slug)}.webp" onerror="this.closest('.mc-av').remove()"></span>`;
+  }
+
+  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null, sourceSlug = null, faceoff = false, forceStack = false) {
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
-    const linkedNames = rawNames.map(n => {
+    const slugFor = (n) => BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
+    const linkOf = (n, slug) => {
       // Non-person names (placeholders, jobbers, local competitors) are absent
       // from the wrestler index, so they render as plain text. See src/export_to_html.py.
-      const slug = BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
-      if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text, no broken link
       const linkClass = sourceSlug && slug === sourceSlug ? 'wrestler-link source' : 'wrestler-link';
       return `<button class="${linkClass}" data-slug="${esc(slug)}">${esc(n)}</button>`;
-    }).join(' &amp; ');
+    };
+    // 3+ wrestlers (or a forced multi-man match) stack vertically so the headshots
+    // never cram or wrap. A 1-on-1 keeps the tale-of-the-tape; 2 stay inline.
+    const stack = forceStack || rawNames.length >= 3;
+    const solo = !stack && faceoff && rawNames.length === 1;
+
     let champ = '';
     if (t.was_champion_entering) {
       const tip = titleAtStake ? ` title="${esc(titleAtStake)}"` : '';
@@ -4131,6 +4212,32 @@
       metaBits.push(`as ${esc(t.team_name)}`);
     }
     const metaRow = metaBits.length ? `<span class="team-meta">${metaBits.join(' · ')}</span>` : '';
+
+    if (stack) {
+      // One [photo] name per row; each row reserves the photo slot so the names
+      // line up whether or not a wrestler has a headshot.
+      const rows = rawNames.map(n => {
+        const slug = slugFor(n);
+        const inner = slug ? `${wrestlerAvatar(slug, n, 'md')}${linkOf(n, slug)}` : esc(n);
+        return `<span class="mc-row">${inner}</span>`;
+      }).join('');
+      const badgeRow = champ ? `<span class="mc-row mc-row-badge">${champ}</span>` : '';
+      return `<div class="team ${side} ${cls}"><span class="team-names mc-stack">${rows}${badgeRow}</span>${metaRow}</div>`;
+    }
+
+    const linkedNames = rawNames.map(n => {
+      const slug = slugFor(n);
+      if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text
+      const link = linkOf(n, slug);
+      return solo ? link : `<span class="mc-pair">${wrestlerAvatar(slug, n, 'sm')}${link}</span>`;
+    }).join(' &amp; ');
+    if (solo) {
+      const slug = slugFor(rawNames[0]);
+      const av = slug ? wrestlerAvatar(slug, rawNames[0], 'lg') : '';
+      // Headshot on the inner side (toward the VS); name on the outer side.
+      const inner = side === 'left' ? `${linkedNames}${champ}${av}` : `${av}${linkedNames}${champ}`;
+      return `<div class="team ${side} ${cls}"><span class="team-names mc-solo">${inner}</span>${metaRow}</div>`;
+    }
     return `<div class="team ${side} ${cls}"><span class="team-names">${linkedNames}${champ}</span>${metaRow}</div>`;
   }
 
@@ -4153,6 +4260,9 @@
 
     if (teams.length === 2) {
       const [a, b] = shouldSwapTeams(m) ? [teams[1], teams[0]] : teams;
+      // If either side has 3+ wrestlers, stack both sides vertically so the
+      // headshots don't cram (a 4-man side wrapping inline is an unreadable mess).
+      const bigTeam = teams.some(t => (t.participants || []).length >= 3);
       const anyOutcome = (o) => teams.some(t => t.match_outcome === o);
       const noResult = anyOutcome('no-contest') || anyOutcome('draw') || (a.was_winner !== true && b.was_winner !== true);
       // The winner side is only ever expressed in the DOM when spoilers are on,
@@ -4166,12 +4276,12 @@
         : '';
       return `
         <div class="match-body">
-          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake, sourceSlug)}
+          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake, sourceSlug, true, bigTeam)}
           <div class="vs-cell">
             <span class="vs-text">VS</span>
             ${defText}
           </div>
-          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake, sourceSlug)}
+          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake, sourceSlug, true, bigTeam)}
         </div>`;
     }
 
@@ -4233,12 +4343,14 @@
   function renderTeamBlock(t, role, label, airDate, titleAtStake, sourceSlug) {
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
     const plainNames = rawNames.map(String).join(' & ');
+    const slugFor = (n) => BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
     const linkFor = (n) => {
-      const slug = BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
+      const slug = slugFor(n);
       if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text, no broken link
       const linkClass = sourceSlug && slug === sourceSlug ? 'wrestler-link source' : 'wrestler-link';
       return `<button class="${linkClass}" data-slug="${esc(slug)}">${esc(n)}</button>`;
     };
+    const avatarFor = (n, big) => { const slug = slugFor(n); return slug ? wrestlerAvatar(slug, n, big ? 'lg' : 'sm') : ''; };
 
     let champ = '';
     if (t.was_champion_entering) {
@@ -4256,9 +4368,12 @@
 
     let namesHtml;
     if (rawNames.length === 1) {
-      namesHtml = `<div class="team-block-banner">${linkFor(rawNames[0])}${champ}</div>`;
+      namesHtml = `<div class="team-block-banner">${avatarFor(rawNames[0], true)}${linkFor(rawNames[0])}${champ}</div>`;
     } else {
-      const grid = `<div class="team-block-grid">${rawNames.map(linkFor).join('')}</div>`;
+      // Each field entry is [tile][name] so the headshot rides with its name in
+      // the grid cell instead of becoming a stray grid item.
+      const cells = rawNames.map(n => `<span class="mc-cell">${avatarFor(n, false)}${linkFor(n)}</span>`).join('');
+      const grid = `<div class="team-block-grid">${cells}</div>`;
       namesHtml = champ ? `${grid}<div class="team-block-badges">${champ}</div>` : grid;
     }
 
@@ -4769,7 +4884,7 @@
     return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(w.name)}">
       <span class="r-card-photo">
         <span class="r-card-ph">${esc(cardInitials(w.name))}</span>
-        <img class="r-card-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onerror="this.remove()">
+        <img class="r-card-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onload="this.previousElementSibling.style.display='none'" onerror="this.remove()">
       </span>
       <span class="r-card-name">${esc(w.name)}</span>
       <span class="brand-badge ${bc}">${esc(rec.badge || rec.brand)}</span>
@@ -4969,8 +5084,14 @@
       ${nav.backBtnHtml}
 
       <div class="profile-header">
-        <div class="profile-name">${esc(w.name)}</div>
-        <div class="profile-years">${esc(yr)}</div>
+        <div class="profile-photo">
+          <span class="pp-ph">${esc(cardInitials(w.name))}</span>
+          <img class="pp-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onload="this.previousElementSibling.style.display='none'" onerror="this.remove()">
+        </div>
+        <div class="profile-id">
+          <div class="profile-name">${esc(w.name)}</div>
+          <div class="profile-years">${esc(yr)}</div>
+        </div>
       </div>
 
       <div class="profile-section">
