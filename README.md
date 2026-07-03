@@ -13,6 +13,7 @@ Spoiler-safe chronological watch companion for WWE, 2001 to present (2001-2026).
 - Track your journey: mark shows watched, see how far through the timeline you are, and save individual matches
 - A clean roster: one accurate profile per wrestler, with ring-name changes merged (WALTER and Gunther are one person, and the old name still links to the current profile)
 - Search every event, wrestler, and stipulation
+- Share any show: every event, full day, and saved match has its own URL (a copy-link button sits in the show view), and the browser Back button walks back out of a show naturally
 - Runs entirely in the browser, served as static files. No account, no streaming, no backend
 
 ## Why it exists
