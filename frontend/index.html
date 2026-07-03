@@ -640,6 +640,7 @@
   .modal-spoiler-btn .eye { width: 14px; height: 14px; }
   .modal-spoiler-btn:hover { background: var(--ink); color: #FFF; }
   .modal-spoiler-btn:hover .eye { background: #FFF; }
+  .modal-copylink svg { width: 13px; height: 13px; flex: 0 0 auto; }
 
   /* =============================================================
      BROWSE: full-width chronological calendar (secondary to Continue)
@@ -2932,6 +2933,13 @@
         <span class="eye"></span>
         <span class="sp-label">Spoilers Off</span>
       </button>
+      <button class="spoiler-btn modal-spoiler-btn modal-copylink" id="modal-copylink" type="button" aria-label="Copy a link to this show">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+          <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L11.6 6"></path>
+          <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4L12.4 18"></path>
+        </svg>
+        <span class="cl-label">Copy link</span>
+      </button>
       <button class="modal-close" id="modal-close" aria-label="Close">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
           <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
@@ -3920,6 +3928,77 @@
   }
 
   // ------------------ Modal -----------------------------------------------
+  // ------------------------------------------------------------------
+  // Deep links: the open modal mirrors itself into the URL so any show, day,
+  // or specific match is shareable. #event/<id> is one show,
+  // #event/<id>/<matchId> also scrolls to that match, #day/<YYYY-MM-DD> is
+  // every show on a date (what a calendar day cell opens). Opening pushes the
+  // link onto history, so the browser Back button closes the modal.
+  let modalHash = null;     // hash of the open modal, null when none
+  let modalPushed = false;  // we pushed it onto history, so Back should close
+
+  function eventHash(events, iso, matchId) {
+    if (events.length === 1 && events[0] && events[0].id != null) {
+      const safe = matchId != null && /^[\w-]+$/.test(String(matchId));
+      return '#event/' + events[0].id + (safe ? '/' + matchId : '');
+    }
+    return iso ? '#day/' + iso : null;
+  }
+
+  function syncModalHash(events, iso, matchId) {
+    const dh = eventHash(events, iso, matchId);
+    if (!dh) return;
+    if (window.location.hash !== dh) {
+      modalPushed = true;
+      window.location.hash = dh;  // route() sees the matching open modal and leaves the view alone
+    } else if (modalHash !== dh) {
+      modalPushed = false;        // arrived on this hash directly (deep load / URL edit)
+    }
+    modalHash = dh;
+  }
+
+  // Visual close only, no history adjustment. route() uses this when the hash
+  // moves away from the open modal (Back button or in-app navigation), and
+  // in-modal links use it before setting their own hash so the show stays in
+  // history and Back can retrace into it.
+  function dismissModal() {
+    mBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+    modalHash = null;
+    modalPushed = false;
+  }
+
+  // Open a modal from a deep link (page load on #event/... or a manual hash
+  // edit). The calendar behind lands on the show's week first, so closing the
+  // modal leaves the user in the right place in the timeline.
+  function openFromHash(hash) {
+    let events = null, iso = null, matchId = null;
+    if (hash.startsWith('#event/')) {
+      const parts = hash.slice('#event/'.length).split('/');
+      const ev = BUNDLE && BUNDLE.events && BUNDLE.events[String(parts[0])];
+      if (ev) {
+        events = [ev];
+        iso = ev.air_date;
+        if (parts[1] && /^[\w-]+$/.test(parts[1])) matchId = parts[1];
+      }
+    } else {
+      iso = hash.slice('#day/'.length);
+      const ids = (BUNDLE && BUNDLE.events_by_date && BUNDLE.events_by_date[iso]) || [];
+      events = ids.map(id => BUNDLE.events[String(id)]).filter(Boolean);
+      if (!events.length) events = null;
+    }
+    if (!events) {
+      // Unknown id or empty date: fall back to the calendar cleanly, without
+      // leaving a dead entry in history.
+      history.replaceState(null, '', window.location.pathname + window.location.search + '#calendar');
+      route();
+      return;
+    }
+    if (iso) anchorISO = clampISO(iso);
+    loadCalendar();
+    requestAnimationFrame(() => openModal(events, iso, null, matchId));
+  }
+
   async function openModal(events, iso, sourceSlug = null, scrollMatchId = null) {
     lastModalCtx = { events, iso, sourceSlug };
     if (iso) rosterViewISO = clampISO(iso);   // time-aware roster mirrors the show you're viewing
@@ -3927,6 +4006,7 @@
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
     if (mEl) mEl.scrollTop = 0;
+    syncModalHash(events, iso, scrollMatchId);
     try {
       const details = await Promise.all(events.map(e => getEventDetail(e.id)));
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
@@ -4028,12 +4108,59 @@
   }
 
   function closeModal() {
-    mBackdrop.classList.remove('open');
-    document.body.style.overflow = '';
+    const onModalHash = modalHash && window.location.hash === modalHash;
+    const pushed = modalPushed;
+    dismissModal();
+    if (onModalHash && pushed) {
+      // We pushed the deep link when the modal opened: step back to the
+      // pre-modal entry so history stays clean. route() sees the modal is
+      // already dismissed and just restores the underlying view.
+      history.back();
+    } else if (onModalHash) {
+      // Deep-loaded directly onto the modal: there is no in-app entry behind
+      // us. Point the URL at the calendar (already rendered underneath)
+      // without adding a history entry.
+      history.replaceState(null, '', window.location.pathname + window.location.search + '#calendar');
+    }
   }
   el('modal-close').addEventListener('click', closeModal);
   mBackdrop.addEventListener('click', (e) => { if (e.target === mBackdrop) closeModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  // Copy-link: the address bar already holds the deep link while a modal is
+  // open, so copying is just sharing the current URL. Clipboard API first,
+  // hidden-textarea fallback for older browsers and the file:// dist build.
+  (() => {
+    const copyBtn = el('modal-copylink');
+    if (!copyBtn) return;
+    const label = copyBtn.querySelector('.cl-label');
+    let copyTimer = null;
+    copyBtn.addEventListener('click', async () => {
+      const url = window.location.href;
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(url);
+        ok = true;
+      } catch (err) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = url;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          ok = document.execCommand('copy');
+          ta.remove();
+        } catch (err2) { ok = false; }
+      }
+      if (label) {
+        label.textContent = ok ? 'Copied' : 'Copy failed';
+        clearTimeout(copyTimer);
+        copyTimer = setTimeout(() => { label.textContent = 'Copy link'; }, 1600);
+      }
+    });
+  })();
 
   function buildMeta(d) {
     const bits = [];
@@ -4625,7 +4752,9 @@
     const btn = e.target.closest('button.wrestler-link');
     if (!btn || !btn.dataset.slug) return;
     captureWrestlerSource(btn);
-    closeModal();
+    // Visual dismiss only: the show's #event entry stays in history, so the
+    // browser Back button retraces from the profile into the show.
+    dismissModal();
     window.location.hash = '#wrestler/' + btn.dataset.slug;
   });
 
@@ -5170,6 +5299,14 @@
     let hash = window.location.hash;
     // Old per-feature hashes now live together under My List.
     if (hash === '#watched' || hash === '#saved') hash = '#mylist';
+    // Deep-link modal handling: when the open modal already matches this hash
+    // (openModal just mirrored itself into the URL), leave the view behind it
+    // untouched. Any other hash arriving while a modal is up (Back button,
+    // in-app navigation) dismisses the modal first, then routes normally.
+    if (mBackdrop.classList.contains('open')) {
+      if (modalHash && hash === modalHash) return;
+      dismissModal();
+    }
     document.querySelectorAll('section.view').forEach(v => { v.hidden = true; });
     document.querySelectorAll('.nav-link').forEach(t => t.classList.remove('active'));
     const markNav = (view) => {
@@ -5182,6 +5319,11 @@
       const v = document.getElementById('view-wrestler');
       if (v) v.hidden = false;
       renderWrestler(slug);
+    } else if (hash.startsWith('#event/') || hash.startsWith('#day/')) {
+      const v = document.getElementById('view-calendar');
+      if (v) v.hidden = false;
+      markNav('calendar');
+      openFromHash(hash);
     } else if (hash === '#roster') {
       const v = document.getElementById('view-roster');
       if (v) v.hidden = false;
