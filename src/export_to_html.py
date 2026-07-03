@@ -28,6 +28,7 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from src.fandom_scraper import _canonicalize_name  # noqa: E402
+from src.ship_guard import atomic_write_text       # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -695,13 +696,18 @@ def write_sharded(bundle: dict, root: Path, template_html: str):
     core, shards = split_core_and_shards(bundle)
     sdir = root / SHARD_DIR
     sdir.mkdir(parents=True, exist_ok=True)
-    for stale in sdir.glob("matches-*.json"):   # clear old eras so none linger
-        stale.unlink()
+    # Write the new artifacts first (atomically), then clear stale eras, so a
+    # crash at any point leaves either the old set or the new set servable,
+    # never an empty shards/ directory or a truncated index.html.
+    fresh = {f"matches-{era}.json" for era in shards}
     for era, matches_map in shards.items():
-        (sdir / f"matches-{era}.json").write_text(
-            json.dumps(matches_map, ensure_ascii=False, separators=(",", ":")),
-            encoding="utf-8")
-    (root / "index.html").write_text(inject(core, template_html), encoding="utf-8")
+        atomic_write_text(
+            sdir / f"matches-{era}.json",
+            json.dumps(matches_map, ensure_ascii=False, separators=(",", ":")))
+    atomic_write_text(root / "index.html", inject(core, template_html))
+    for stale in sdir.glob("matches-*.json"):   # clear old eras so none linger
+        if stale.name not in fresh:
+            stale.unlink()
     return core, shards
 
 
@@ -710,7 +716,7 @@ def main() -> None:
     template_html = TEMPLATE.read_text(encoding="utf-8")
     out_html = inject(bundle, template_html)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(out_html, encoding="utf-8")
+    atomic_write_text(OUT, out_html)
     size = OUT.stat().st_size
     meta = bundle["meta"]
     print(f"Wrote {OUT} ({size:,} bytes, {size/1024/1024:.2f} MB)")

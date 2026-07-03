@@ -13,6 +13,11 @@ a year disambiguator). New events are de-duped against the existing corpus, the
 wrestler + title-reign indexes are recomputed, and the rebuilt bundle is written
 to BOTH index.html (the GitHub Pages source) and dist/wrestling-dashboard.html.
 
+A ship gate guards the run: if any lane fetch fails, or a year comes back under
+its episode/PPV floor (src/ship_guard.py), the run exits nonzero BEFORE writing
+anything, and every artifact write is atomic (temp file + os.replace), so the
+live bundle can never end up truncated or silently incomplete.
+
 Run from repo root:
     uv run --with requests --with beautifulsoup4 src/build_update.py
 """
@@ -24,12 +29,14 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path.home() / "wrestling-dashboard"
-sys.path.insert(0, str(ROOT))
+ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from src.export_to_html import (  # noqa: E402
     build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date,
     inject, write_sharded)
+from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E402
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
 from src.roster_aliases import build_canon_map                          # noqa: E402
@@ -228,6 +235,11 @@ def main():
 
     new, years = [], range(START_YEAR, END_YEAR + 1)
 
+    # A lane fetch that fails no longer ships a silently thinner corpus: every
+    # failure is collected and the run halts at the ship gate below, before any
+    # artifact is written.
+    fetch_failures, weekly_counts = [], {}
+
     print("=== Weekly lane: SmackDown Hotel (Raw + SmackDown) ===", flush=True)
     weekly_added = 0
     for show in ("raw", "smackdown"):
@@ -236,7 +248,9 @@ def main():
                 eps = parse_year_html(fetch_year(show, year))
             except Exception as ex:
                 print(f"  {show}-{year}: FETCH FAILED ({ex})", flush=True)
+                fetch_failures.append(f"{show}-{year}: {ex}")
                 continue
+            weekly_counts[(show, year)] = len(eps)
             evs, next_eid, next_mid = map_sdh(eps, show, next_eid, next_mid)
             kept = take(evs)
             new += kept; weekly_added += len(kept)
@@ -250,7 +264,11 @@ def main():
         try:
             parsed = parse_event(fetch_wikitext(title))
         except Exception as ex:
-            skipped.append(f"{title} (error: {ex})")
+            # An error is not a skip: a candidate that won't fetch or parse
+            # needs an operator decision (same halt-don't-default stance as
+            # the historical classifier), so it blocks the ship gate below.
+            print(f"  {title}: FETCH/PARSE FAILED ({ex})", flush=True)
+            fetch_failures.append(f"{title}: {ex}")
             time.sleep(1)
             continue
         nmatch = sum(len(t["matches"]) for t in parsed["tables"])
@@ -266,6 +284,22 @@ def main():
         new += kept; ppv_added += len(kept); ppv_ok += 1
         print(f"  {title}: {nmatch} matches -> {len(kept)} event(s)", flush=True)
         time.sleep(1)                               # MediaWiki etiquette: serial, >=1s
+
+    # Ship gate: refuse to continue if any lane failed or came back thin.
+    # Nothing has been written yet, so a blocked run leaves the live bundle,
+    # shards, and dist build exactly as they were; fix the problem and re-run.
+    ppv_year_counts = collections.Counter(
+        int(ev["air_date"][:4]) for ev in new
+        if ev["show_type"] == "PPV" and ev["air_date"])
+    problems = ([f"fetch failed: {f}" for f in fetch_failures]
+                + corpus_floor_problems(weekly_counts, ppv_year_counts,
+                                        START_YEAR, END_YEAR))
+    if problems:
+        print(f"\n=== SHIP BLOCKED ({len(problems)} problem(s), nothing written) ===",
+              flush=True)
+        for p in problems:
+            print(f"  - {p}", flush=True)
+        sys.exit(1)
 
     # merge new events into the corpus + calendar index
     for ev in new:
@@ -301,8 +335,8 @@ def main():
     # the heavy per-match detail in lazy-loaded shards/matches-<era>.json files.
     core, shards = write_sharded(bundle, ROOT, template)
     # Archival single-file build: everything inline, opens offline standalone.
-    (ROOT / "dist" / "wrestling-dashboard.html").write_text(
-        inject(bundle, template), encoding="utf-8")
+    atomic_write_text(ROOT / "dist" / "wrestling-dashboard.html",
+                      inject(bundle, template))
 
     idx, dist = ROOT / "index.html", ROOT / "dist" / "wrestling-dashboard.html"
     shard_bytes = sum((ROOT / "shards" / f"matches-{e}.json").stat().st_size for e in shards)
