@@ -175,6 +175,8 @@ CURATED = {
     "Ted DiBiase Jr": "Ted DiBiase",
     "Chavo Guerrero Jr": "Chavo Guerrero",
     "Chavo Guerrero Classic": "Chavo Guerrero Sr",
+    "Buh Buh Ray Dudley": "Bubba Ray Dudley",
+    "Terri": "Terri Runnels",
     # --- scraper prose glued onto a participant name (result-method text) ---
     "Matt Hardy by TKO": "Matt Hardy",
     "Jeff Hardy by TKO": "Jeff Hardy",
