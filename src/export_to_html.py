@@ -81,11 +81,17 @@ def is_placeholder_name(name: str) -> bool:
     return n in PLACEHOLDER_NAMES or bool(_PLACEHOLDER_RE.match(n))
 
 
-def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
+def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[dict, dict]:
     """Pre-compute wrestler profiles from the assembled events dict.
 
     Returns (wrestlers, wrestlers_by_name) where wrestlers is keyed by slug
     and wrestlers_by_name maps display name -> slug.
+
+    `title_reigns` (the output of build_title_reigns) is the preferred source
+    for per-wrestler title wins: each non-pre-corpus reign start counts one win
+    per champion, so a profile's title count can never disagree with the title
+    history page. Without it, wins fall back to per-match counting, which
+    cannot see mislabeled contender matches.
 
     `canon` optionally maps a raw participant name to a canonical wrestler name,
     merging ring-name changes and spelling variants (WALTER + Gunther -> one
@@ -131,7 +137,10 @@ def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
         for match in matches:
             teams = match.get("teams", [])
             duration = match.get("duration_seconds")
-            title_at_stake = match.get("title_at_stake")
+            # Same normalization as the reigns page: real belts only (no
+            # stipulation blurbs, contendership matches, or match-type
+            # decoration), Championship/Title spellings unified.
+            belts_at_stake = _get_component_titles(match.get("title_at_stake"))
             match_order = match.get("match_order")
             is_main = max_order is not None and match_order == max_order
             raw_desc = match.get("raw_description") or ""
@@ -172,8 +181,14 @@ def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
                     if is_main:
                         w_main_events[name] += 1
 
-                    if title_at_stake and was_winner is True and not was_champ:
-                        w_title_wins[name][title_at_stake] += 1
+                    # Per-match fallback only (see title_reigns below). A
+                    # DQ/countout win never moves a belt: the champion
+                    # retains, so the challenger "winning" is not a title win.
+                    if (title_reigns is None
+                            and was_winner is True and not was_champ
+                            and team.get("match_outcome") not in ("dq-win", "countout-win")):
+                        for belt in belts_at_stake:      # one win per component belt
+                            w_title_wins[name][belt] += 1
 
                     if duration is not None:
                         existing = w_longest.get(name)
@@ -204,6 +219,18 @@ def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
                     for p2 in team_parts[i + 1:]:
                         w_partners[p1][p2] += 1
                         w_partners[p2][p1] += 1
+
+    # Preferred source for title wins: the reign chains. One win per champion
+    # per reign start observed in the corpus (pre-corpus reigns were won
+    # before our data begins, so there is no win to count).
+    if title_reigns is not None:
+        for title, reigns in title_reigns.items():
+            for reign in reigns:
+                if reign.get("pre_corpus"):
+                    continue
+                for champ in reign["champion_names"]:
+                    if not is_placeholder_name(champ):
+                        w_title_wins[canon(champ)][title] += 1
 
     # Assign slugs with composite sort for determinism.
     # Primary: name (alphabetical). Tiebreak: earliest (air_date, event_id).
@@ -314,18 +341,21 @@ def build_wrestlers_index(events: dict, canon=None) -> tuple[dict, dict]:
 
 _TITLE_FILTER_PATTERNS = (
     re.compile(r'Contendership', re.I),
+    re.compile(r'Contender', re.I),
     re.compile(r'Tournament', re.I),
     re.compile(r'Battle Royal', re.I),
+    re.compile(r'Qualif', re.I),
 )
 
-_TITLE_SUFFIXES_TO_STRIP = (
-    'Tables, Ladders and Chairs match',
-    'No Disqualification Match',
-    'No DQ Match',
-    'Elimination Match',
-    'Matches',
-    'Match',
-)
+# Scrapers store the belt name plus whatever decorated the line: a quoted
+# stipulation blurb, the match type ("... Championship Steel Cage Match"), or
+# both. Everything from a quote pair is stipulation, never belt.
+_QUOTED_STIP_RE = re.compile(r'"[^"]*"')
+# A belt is the shortest leading phrase that ends in Championship(s)/Title(s);
+# whatever follows ("Triple Threat Match", "Lumberjack Match", "Street Fight")
+# is match-type decoration. Parts with no such phrase ("vacant", "Steel Cage",
+# "New Year's Evil") are not belts at all.
+_BELT_RE = re.compile(r'^(.*?\b(?:Championships?|Titles?))(?=\s|$)', re.I)
 
 TITLE_ALIASES = {
     "WWF Championship Title": "WWF World Heavyweight Title",
@@ -335,10 +365,12 @@ TITLE_ALIASES = {
 
 def _normalize_title_part(part: str) -> str | None:
     s = re.sub(r'\s+', ' ', part).strip()
-    for suf in _TITLE_SUFFIXES_TO_STRIP:
-        if s.endswith(' ' + suf):
-            s = s[: -(len(suf) + 1)].rstrip()
-            break
+    m = _BELT_RE.match(s)
+    if not m:
+        return None
+    s = m.group(1)
+    s = re.sub(r'\bRAW\b', 'Raw', s)                       # WWE RAW / WWE Raw: same belt
+    s = re.sub(r'\bChampionships$', 'Titles', s)
     s = re.sub(r'\bChampionship$', 'Title', s).strip()
     s = TITLE_ALIASES.get(s, s)
     return s or None
@@ -347,14 +379,19 @@ def _normalize_title_part(part: str) -> str | None:
 def _get_component_titles(raw: str | None) -> list[str]:
     if not raw:
         return []
+    rem = re.sub(r'\s+', ' ', _QUOTED_STIP_RE.sub(' ', raw)).strip()
+    if not rem:                       # pure stipulation ("If X wins ..."): no belt at stake
+        return []
     for p in _TITLE_FILTER_PATTERNS:
-        if p.search(raw):
+        if p.search(rem):
             return []
     out: list[str] = []
-    for part in raw.split(' / '):
-        s = _normalize_title_part(part)
-        if s:
-            out.append(s)
+    for chunk in rem.split(' / '):
+        # Unification matches join two belts with "vs.": both are at stake.
+        for part in re.split(r'\s+vs\.?\s+', chunk):
+            s = _normalize_title_part(part)
+            if s:
+                out.append(s)
     return out
 
 
@@ -425,6 +462,17 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                 first = False
 
             if winner is None or not winner.get('participants'):
+                continue
+            # Champion retains on a challenger's DQ/countout win: no reign change.
+            if (winner.get('match_outcome') in ('dq-win', 'countout-win')
+                    and not winner.get('was_champion_entering')):
+                continue
+            # Mid-chain match with no champion in it: a mislabeled contender
+            # match (scrapers sometimes store the belt a match is qualifying
+            # FOR as title_at_stake). The belt cannot change hands in a match
+            # its holder is not part of. current is None still passes so the
+            # first observed winner of a never-seen belt starts its chain.
+            if current is not None and champ_team is None:
                 continue
 
             new_champs = list(winner['participants'])
@@ -601,9 +649,17 @@ def build_bundle(db_path: Path = DB_PATH) -> dict:
     years = sorted({e["air_date"][:4] for e in events.values()})
     year_range = [int(years[0]), int(years[-1])] if years else [0, 0]
 
-    wrestlers, wrestlers_by_name = build_wrestlers_index(events)
+    # Same alias handling as build_update: without it this path ships an
+    # un-merged roster that disagrees with the live one.
+    from src.roster_aliases import build_canon_map, load_roster_snapshot
+    name_counts = Counter(
+        p for e in events.values() for m in e["matches"]
+        for t in m["teams"] for p in t.get("participants", []) if p)
+    canon = build_canon_map(name_counts, roster_pairs=load_roster_snapshot() or [])
 
     title_reigns = build_title_reigns(events)
+    wrestlers, wrestlers_by_name = build_wrestlers_index(
+        events, canon=lambda n: canon.get(n, n), title_reigns=title_reigns)
     wrestler_reigns_by_date = build_wrestler_reigns_by_date(title_reigns)
 
     return {

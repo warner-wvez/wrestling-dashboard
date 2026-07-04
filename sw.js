@@ -1,12 +1,19 @@
 // Service worker for the WWE dashboard Pages build.
 //
 // The page inlines a lean core and lazy-fetches per-era match shards from
-// shards/matches-<era>.json. This worker caches those shards (and the app shell)
-// so the site keeps working offline after the first visit. Strategy is
-// stale-while-revalidate: serve from cache instantly when present, and refresh
-// in the background so a rebuilt shard is picked up on the next load. Bump CACHE
-// when the data schema changes to retire old entries.
-const CACHE = 'wrestling-dashboard-v3';
+// shards/matches-<era>.json. This worker keeps the site working offline after
+// the first visit, with different strategies per asset:
+//
+//  - Shell (index.html, which carries the baked roster/title indexes):
+//    NETWORK-first, cache as offline fallback. A deploy therefore reaches
+//    returning visitors on their next load; the old stale-while-revalidate
+//    strategy could pin them to a previous build's stats indefinitely
+//    because the background refresh was not kept alive with waitUntil.
+//  - Shards: cache-first for speed, refreshed in the background under
+//    event.waitUntil so the refresh survives the response being returned.
+//
+// Bump CACHE on data or schema changes to retire old entries wholesale.
+const CACHE = 'wrestling-dashboard-v4';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
@@ -30,11 +37,21 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    const cached = await cache.match(req);
-    const network = fetch(req).then((res) => {
-      if (res && res.ok) cache.put(req, res.clone());
+    // Fetch + cache as one unit so a single waitUntil keeps both alive.
+    const network = fetch(req).then(async (res) => {
+      if (res && res.ok) await cache.put(req, res.clone());
       return res;
     }).catch(() => null);
-    return cached || (await network) || new Response('offline', { status: 503 });
+
+    if (isShell) {
+      return (await network) || (await cache.match(req))
+        || new Response('offline', { status: 503 });
+    }
+    const cached = await cache.match(req);
+    if (cached) {
+      event.waitUntil(network);   // refresh completes even after we respond
+      return cached;
+    }
+    return (await network) || new Response('offline', { status: 503 });
   })());
 });
