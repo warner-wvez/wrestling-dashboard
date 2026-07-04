@@ -156,6 +156,59 @@ def map_wikipedia(parsed, eid, mid):
     return out, eid, mid
 
 
+def event_key(ev):
+    """An event's identity across rebuilds: one Raw/SmackDown per date, while
+    two different PPVs sharing a date stay distinct."""
+    return (ev.get("air_date"), ev.get("show_type"), ev.get("title"))
+
+
+def restore_stable_ids(new, prior_by_key, base_events):
+    """Give re-scraped events back the IDs they had in the previous build.
+
+    The present-day range is rebuilt from scratch each run, and IDs used to be
+    handed out in scrape-iteration order, so one added episode or a changed
+    discovery order renumbered every following event. But users' watched
+    history and saved matches live in localStorage keyed by event and match
+    IDs, and deep links embed them, so IDs must survive rebuilds.
+
+    Each new event that matches a prior event's identity keeps that event's ID,
+    and its matches are paired to the prior matches by table position so saved
+    matches stay pointed at the same bout. Genuinely new events (and extra
+    matches a better parse found) get fresh IDs above every ID ever used, so
+    nothing ever collides with a retired one.
+    """
+    used_eids = {int(k) for k in base_events}
+    used_mids = {m["id"] for e in base_events.values() for m in e["matches"]}
+    for ev in prior_by_key.values():
+        used_eids.add(int(ev["id"]))
+        used_mids.update(m["id"] for m in ev["matches"])
+    next_eid = max(used_eids, default=0) + 1
+    next_mid = max(used_mids, default=0) + 1
+
+    kept_ids = 0
+    for ev in new:
+        prior = prior_by_key.get(event_key(ev))
+        if prior:
+            ev["id"] = prior["id"]
+            prior_mids = [m["id"] for m in prior["matches"]]
+            for i, m in enumerate(ev["matches"]):
+                if i < len(prior_mids):
+                    m["id"] = prior_mids[i]
+                else:
+                    m["id"] = next_mid
+                    next_mid += 1
+            kept_ids += 1
+        else:
+            ev["id"] = next_eid
+            next_eid += 1
+            for m in ev["matches"]:
+                m["id"] = next_mid
+                next_mid += 1
+    print(f"  stable IDs: {kept_ids} events kept their prior IDs, "
+          f"{len(new) - kept_ids} new events got fresh IDs", flush=True)
+    return new
+
+
 def discover_ppv_titles(years):
     """Wikipedia article titles for every WWE PPV/PLE held in `years`.
 
@@ -208,6 +261,9 @@ def main():
     pre = {k: e for k, e in events.items()
            if not ((e.get("air_date") or "")[:4].isdigit()
                    and int(e["air_date"][:4]) >= START_YEAR)}
+    # Identity -> prior event for everything being rebuilt, so the re-scrape
+    # can hand the same events their old IDs back (see restore_stable_ids).
+    prior_present = {event_key(e): e for k, e in events.items() if k not in pre}
     dropped = len(events) - len(pre)
     data["events"] = events = pre
     data["events_by_date"] = {}
@@ -220,19 +276,17 @@ def main():
     next_eid = max((int(k) for k in events), default=0) + 1
     next_mid = max((mm["id"] for e in events.values() for mm in e["matches"]), default=0) + 1
 
-    # De-dupe on (air_date, show_type, title): one Raw/SmackDown per date, while
-    # two different PPVs that share a date both survive. Seed from the existing
-    # corpus (ends 2019-12-30) so a re-run can never double-add an event.
-    def key(ev):
-        return (ev.get("air_date"), ev.get("show_type"), ev.get("title"))
-    seen = {key(e) for e in events.values()}
+    # De-dupe on event_key: one Raw/SmackDown per date, while two different
+    # PPVs that share a date both survive. Seed from the existing corpus
+    # (ends 2019-12-30) so a re-run can never double-add an event.
+    seen = {event_key(e) for e in events.values()}
 
     def take(evs):
         kept = []
         for ev in evs:
-            if key(ev) in seen:
+            if event_key(ev) in seen:
                 continue
-            seen.add(key(ev)); kept.append(ev)
+            seen.add(event_key(ev)); kept.append(ev)
         return kept
 
     new, years = [], range(START_YEAR, END_YEAR + 1)
@@ -302,6 +356,11 @@ def main():
         for p in problems:
             print(f"  - {p}", flush=True)
         sys.exit(1)
+
+    # Restore stable IDs before anything is written: same identity -> same ID
+    # as the previous build, so watched history, saved matches, and deep links
+    # survive the rebuild.
+    new = restore_stable_ids(new, prior_present, events)
 
     # merge new events into the corpus + calendar index
     for ev in new:
