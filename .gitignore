@@ -15,3 +15,4 @@ venv/
 # Data folder: ignore everything except placeholder
 data/*
 !data/.gitkeep
+!data/sdh-roster-pairs.json

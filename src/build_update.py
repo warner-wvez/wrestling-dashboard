@@ -39,7 +39,9 @@ from src.export_to_html import (  # noqa: E402
 from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E402
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
-from src.roster_aliases import build_canon_map                          # noqa: E402
+from src.roster_aliases import (                                        # noqa: E402
+    SNAPSHOT_PATH, build_canon_map, load_roster_snapshot, save_roster_snapshot,
+    scrape_roster)
 
 START_YEAR, END_YEAR = 2020, 2026
 PPV_LIST_PAGE = "List of WWE pay-per-view and livestreaming supercards"
@@ -310,14 +312,30 @@ def main():
     name_counts = collections.Counter(
         p for e in events.values() for m in e["matches"]
         for t in m["teams"] for p in t.get("participants", []) if p)
-    canon = build_canon_map(name_counts)
+    # A failed roster scrape used to silently drop every roster-derived rename,
+    # un-merging wrestlers and shipping halved all-time stats. Now: refresh the
+    # committed snapshot on success, fall back to it on failure, and refuse to
+    # ship if neither is available.
+    try:
+        roster_pairs = scrape_roster()
+        save_roster_snapshot(roster_pairs)
+    except Exception as exc:
+        roster_pairs = load_roster_snapshot()
+        if roster_pairs is None:
+            print(f"\n=== SHIP BLOCKED (roster scrape failed: {exc}; no snapshot at "
+                  f"{SNAPSHOT_PATH}, nothing written) ===", flush=True)
+            sys.exit(1)
+        print(f"  roster scrape failed ({exc}); using committed snapshot "
+              f"({len(roster_pairs)} pairs)", flush=True)
+    canon = build_canon_map(name_counts, roster_pairs=roster_pairs)
     aliased = sum(1 for n in name_counts if canon[n] != n)
     print(f"  {len(name_counts)} distinct names -> {len({canon[n] for n in name_counts})} "
           f"canonical wrestlers ({aliased} names merged)", flush=True)
 
     print("Recomputing wrestler index + title reigns...", flush=True)
-    wrestlers, wrestlers_by_name = build_wrestlers_index(events, canon=lambda n: canon.get(n, n))
     title_reigns = build_title_reigns(events)
+    wrestlers, wrestlers_by_name = build_wrestlers_index(
+        events, canon=lambda n: canon.get(n, n), title_reigns=title_reigns)
     wrbd = build_wrestler_reigns_by_date(title_reigns)
 
     yrs = sorted({e["air_date"][:4] for e in events.values() if e["air_date"]})
