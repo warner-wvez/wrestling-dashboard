@@ -161,13 +161,37 @@ CURATED = {
     'Seth "Freakin" Rollins': "Seth Rollins",
     "Diego": "Primo",
     "Fernando": "Epico",
+    # --- gimmick-era billings and short forms (unquoted, so normkey's
+    # quoted-nickname stripping cannot catch them) ---
+    "Broken Matt Hardy": "Matt Hardy",
+    "Matt Hardy Version 1.0": "Matt Hardy",
+    "#DIY Tommaso Ciampa": "Tommaso Ciampa",
+    "Gentleman Jack Gallagher": "Jack Gallagher",
+    "Reverend D-Von": "D-Von Dudley",
+    "D-Von": "D-Von Dudley",
+    "Bubba Ray": "Bubba Ray Dudley",
+    "Katie Lea Burchill": "Katie Lea",
+    "Rey Mysterio Jr": "Rey Mysterio",
+    "Ted DiBiase Jr": "Ted DiBiase",
+    "Chavo Guerrero Jr": "Chavo Guerrero",
+    "Chavo Guerrero Classic": "Chavo Guerrero Sr",
+    # --- scraper prose glued onto a participant name (result-method text) ---
+    "Matt Hardy by TKO": "Matt Hardy",
+    "Jeff Hardy by TKO": "Jeff Hardy",
+    "Shawn Stasiak by TKO": "Shawn Stasiak",
+    "Daniel Bryan by Reverse Decision": "Daniel Bryan",
+    "Isla Dawn to unify the titles": "Isla Dawn",
+    "The Rock Non": "The Rock",
 }
 
 # Distinct people who shared or reused a ring name; never merge these even if
 # a pair of them looks like a rename (documented so nobody "fixes" them later):
 #   Naomi vs Cameron (Funkadactyls teammates), Kayden Carter vs Katana Chance
 #   (tag partners), Sin Cara (Mistico then Hunico under the same mask),
-#   Ariya Daivari vs Daivari (brothers), Ivory vs Tori, Gillberg vs Goldberg.
+#   Ariya Daivari vs Daivari (brothers), Ivory vs Tori, Gillberg vs Goldberg,
+#   Chavo Guerrero Sr / "Chavo Guerrero Classic" vs Chavo Guerrero (father vs
+#   son), Mini Mr. Kennedy vs Mr. Kennedy (lookalike performer), Jack
+#   Swagger's Soaring Eagle (costumed extra, not Swagger).
 
 # Names that must keep their established ring name and never be aliased away.
 # The live roster page sometimes lists a wrestler under a real name (Triple H ->
@@ -182,12 +206,20 @@ PROTECTED = {
 }
 
 
+_QUOTED_NICK_RE = re.compile(r'["“”][^"“”]*["“”]')
+
+
 def normkey(name):
-    """Spelling-insensitive identity key: transliterate diacritics, lowercase,
-    drop a leading 'the', strip everything but a-z0-9.
-    'The Big Show'/'Big Show' -> 'bigshow'; 'Rey Fénix'/'Rey Fenix' -> 'reyfenix'."""
+    """Spelling-insensitive identity key: drop quoted nicknames, transliterate
+    diacritics, lowercase, drop a leading 'the', strip everything but a-z0-9.
+    'The Big Show'/'Big Show' -> 'bigshow'; 'Rey Fénix'/'Rey Fenix' -> 'reyfenix';
+    '"Dirty" Dominik Mysterio'/'Dominik Mysterio' -> 'dominikmysterio'.
+    A name that is nothing but its quoted part keeps it (never key on '')."""
     n = unicodedata.normalize("NFKD", name or "")
     n = "".join(c for c in n if not unicodedata.combining(c)).lower().strip()
+    unquoted = _QUOTED_NICK_RE.sub(" ", n).strip()
+    if unquoted:
+        n = unquoted
     n = re.sub(r"^the\s+", "", n)
     return re.sub(r"[^a-z0-9]+", "", n)
 
