@@ -2430,16 +2430,29 @@
     font-size: 13px;
   }
   .roster-table td:not(:first-child) { text-align: right; }
+  /* The name column anchors the row on the LEFT, next to the rank; only the
+     numeric columns sit right. (Right-aligning the name left a huge void.) */
+  .roster-table td.rt-name, .roster-table th[data-sort="name"] { text-align: left; }
   .roster-table tr:hover td { background: var(--surface-soft); }
   .roster-table .rt-rank { font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); width: 48px; }
   .roster-table .rt-name button {
     border: 0; background: 0; padding: 0;
+    display: inline-flex; align-items: center; gap: 11px;
+    cursor: pointer; text-align: left;
+  }
+  .rt-av { position: relative; width: 34px; height: 34px; flex: 0 0 auto; overflow: hidden; background: var(--surface-soft); }
+  .rt-av-ph {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-sans); font-weight: 900; font-size: 12px; color: var(--border-strong);
+  }
+  .rt-av img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .rt-nm {
     font-family: var(--font-sans); font-size: 14px; font-weight: 700;
-    color: var(--ink); cursor: pointer; letter-spacing: -0.01em; text-align: left;
+    color: var(--ink); letter-spacing: -0.01em;
     text-decoration: underline; text-decoration-color: transparent;
     text-underline-offset: 2px; transition: text-decoration-color 120ms, color 120ms;
   }
-  .roster-table .rt-name button:hover { text-decoration-color: var(--red); color: var(--red); }
+  .roster-table .rt-name button:hover .rt-nm { text-decoration-color: var(--red); color: var(--red); }
   .roster-table .rt-name button:focus-visible { outline: 2px solid var(--red); }
   .roster-table .rt-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--ink-soft); }
   .roster-table .rt-years { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
@@ -2517,6 +2530,35 @@
   }
   .r-skel { aspect-ratio: 1 / 1; background: var(--surface-soft); animation: rskel 1.2s ease-in-out infinite; }
   @keyframes rskel { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.85; } }
+  .roster-warn {
+    margin-bottom: 18px; padding: 10px 12px;
+    border: 1px solid var(--border-strong); background: var(--surface-soft);
+    color: var(--ink-dim); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em;
+  }
+
+  /* ---- Roster: all-time list/cards toggle ----------------------------- */
+  .roster-alltime-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .rview-toggle { display: inline-flex; border: 1px solid var(--ink); }
+  .rview {
+    appearance: none; border: 0; border-right: 1px solid var(--ink);
+    background: transparent; cursor: pointer;
+    font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+    color: var(--ink-dim); padding: 7px 12px; white-space: nowrap;
+  }
+  .rview:last-child { border-right: 0; }
+  .rview.active { background: var(--ink); color: #FFF; }
+  .rview:hover:not(.active) { background: var(--surface-soft); }
+  .rview:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .rsort {
+    border: 1px solid var(--ink); background: var(--surface);
+    font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+    color: var(--ink-dim); padding: 6px 8px; cursor: pointer;
+  }
+  .rsort:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .r-card-sub {
+    font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint);
+    letter-spacing: 0.03em; padding: 4px 10px 10px;
+  }
 
   /* ---- Roster: sortable all-time headers ----------------------------- */
   .roster-table th.sortable { cursor: pointer; user-select: none; transition: color 120ms; }
@@ -3096,10 +3138,13 @@
     try {
       const shard = await loadShard(eraStartOf(ev.air_date));
       ev.matches = shard[String(ev.id)] || [];
+      return ev.matches;
     } catch (err) {
-      ev.matches = [];   // degrade to an empty card rather than failing the open
+      // Degrade to empty for THIS render, but leave ev.matches unset: a
+      // transient fetch failure must not permanently zero the event for the
+      // whole session (the roster and records derive from these).
+      return [];
     }
-    return ev.matches;
   }
 
   async function getEventDetail(id) {
@@ -3966,6 +4011,11 @@
     document.body.style.overflow = '';
     modalHash = null;
     modalPushed = false;
+    // The time-aware roster mirrors the show being viewed; once the modal is
+    // closed, fall back to the resume position. Without this, peeking at a
+    // 2019 show pinned the roster (and its records) to 2019 for the rest of
+    // the session: wrong, and a spoiler leak.
+    rosterViewISO = null;
   }
 
   // Open a modal from a deep link (page load on #event/... or a manual hash
@@ -4610,7 +4660,16 @@
       if (iso <= T) for (const id of BUNDLE.events_by_date[iso]) { const ev = BUNDLE.events[String(id)]; if (ev) evs.push(ev); }
     }
     try { await Promise.all(evs.map(ev => ensureMatches(ev).catch(() => []))); } catch (_) {}
-    if (token !== asOfRecordToken) { asOfRecordBuilding = null; return null; }   // a newer date supersedes
+    // A newer date supersedes this build. Leave asOfRecordBuilding alone: it
+    // now belongs to that newer build, and clearing it here would let a repeat
+    // hover start a duplicate build that cancels the newer one.
+    if (token !== asOfRecordToken) return null;
+    if (!evs.every(ev => Array.isArray(ev.matches))) {
+      // A shard failed: don't memoize a partial record set. Clearing the
+      // building flag lets the next hover retry.
+      asOfRecordBuilding = null;
+      return null;
+    }
     const byName = BUNDLE.wrestlers_by_name || {};
     const map = new Map();
     for (const ev of evs) {
@@ -4640,9 +4699,9 @@
   }
 
   // Build the tooltip body. Record scope depends on context: the roster time
-  // view shows the record AS OF the date being watched; the roster all-time view
-  // shows the all-time record; everywhere else (event modal, profiles) the
-  // all-time record stays gated behind the Spoilers toggle.
+  // view shows the record AS OF the date being watched (spoiler-safe: only
+  // the past); everywhere else the all-time record stays gated behind the
+  // Spoilers toggle.
   function renderTooltipInto(slug, anchor) {
     const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
     if (!w || !tooltipEl) return;
@@ -4669,8 +4728,9 @@
     } else {
       rows += `<div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>`;
       rows += `<div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>`;
-      const inRosterAllTime = !!anchor.closest('#roster-view-content') && rosterMode === 'all';
-      if (spoilers || inRosterAllTime) {
+      // Career W-L is an outcome: gate it behind the Spoilers toggle
+      // everywhere, including the All-time roster (which used to leak it).
+      if (spoilers) {
         rows += `<div class="tt-row"><span>Record</span><span class="tt-val">${w.wins}W-${w.losses}L</span></div>`;
         if (w.win_pct != null) rows += `<div class="tt-row"><span>Win %</span><span class="tt-val">${w.win_pct}%</span></div>`;
       }
@@ -4795,8 +4855,11 @@
   let rosterMode = 'time';                // 'time' | 'all'
   let rosterControlsWired = false;
   let rosterViewISO = null;               // date of the show you're viewing (set in openModal)
-  let rosterSortKey = 'name';             // all-time table sort column
-  let rosterSortDir = 1;                  // 1 ascending, -1 descending
+  let rosterSortKey = 'matches';          // all-time sort column (table and cards)
+  let rosterSortDir = -1;                 // 1 ascending, -1 descending; default = most matches first, so the rank column reads as a career-volume ranking
+  const RVIEW_KEY = 'wvez_wrestling_rosterview';
+  let rosterAllView = 'list';             // all-time layout: 'list' | 'cards'
+  try { rosterAllView = localStorage.getItem(RVIEW_KEY) === 'cards' ? 'cards' : 'list'; } catch (_) {}
   let rosterCache = { iso: null, map: null };   // memo of the derived as-of roster
   let rosterDeriveToken = 0;              // guards against stale async paints
 
@@ -4833,6 +4896,9 @@
     const byName = BUNDLE.wrestlers_by_name || {};
     const evs = eventIdsInRange(startISO, endISO).map(id => BUNDLE.events[id]).filter(Boolean);
     await Promise.all(evs.map(ev => ensureMatches(ev).catch(() => [])));
+    // A failed shard leaves ev.matches unset; the result is then incomplete
+    // and must not be memoized (the caller retries on the next render).
+    const complete = evs.every(ev => Array.isArray(ev.matches));
     const out = new Map();
     for (const ev of evs) {
       const brand = ev.show_type;
@@ -4854,7 +4920,7 @@
         }
       }
     }
-    return out;
+    return { map: out, complete };
   }
 
   // A wrestler's brand badge from their weekly votes and the era. Ties or a
@@ -4893,8 +4959,20 @@
     if (container) container.addEventListener('click', (e) => {
       const th = e.target.closest('th[data-sort]');
       if (th) { setRosterSort(th.dataset.sort); return; }
+      const vbtn = e.target.closest('.rview');
+      if (vbtn) {
+        if (vbtn.dataset.view !== rosterAllView) {
+          rosterAllView = vbtn.dataset.view;
+          try { localStorage.setItem(RVIEW_KEY, rosterAllView); } catch (_) {}
+          renderRosterBody();
+        }
+        return;
+      }
       const link = e.target.closest('[data-slug]');
       if (link) window.location.hash = '#wrestler/' + link.dataset.slug;
+    });
+    if (container) container.addEventListener('change', (e) => {
+      if (e.target && e.target.id === 'rsort') setRosterSort(e.target.value);
     });
   }
 
@@ -4927,11 +5005,45 @@
     const caret = on ? `<span class="sort-caret">${rosterSortDir < 0 ? '▼' : '▲'}</span>` : '';
     return `<th data-sort="${key}" class="sortable${on ? ' is-sorted' : ''}">${label}${caret}</th>`;
   }
+  // The layout bar: List/Cards segmented toggle, plus a sort select in card
+  // mode (the table's own sortable headers cover list mode).
+  function rosterAllTimeBar() {
+    const btn = (view, label) =>
+      `<button class="rview${rosterAllView === view ? ' active' : ''}" type="button" data-view="${view}">${label}</button>`;
+    const SORTS = [['name', 'Name'], ['matches', 'Matches'], ['ppv', 'PPV'], ['shows', 'Shows'], ['active', 'Active']];
+    const sort = rosterAllView === 'cards'
+      ? `<select id="rsort" class="rsort" aria-label="Sort by">${SORTS.map(([k, l]) =>
+          `<option value="${k}"${k === rosterSortKey ? ' selected' : ''}>Sort: ${l}</option>`).join('')}</select>`
+      : '';
+    return `<div class="roster-alltime-bar">
+      <div class="rview-toggle" role="group" aria-label="Layout">${btn('list', 'List')}${btn('cards', 'Cards')}</div>
+      ${sort}
+    </div>`;
+  }
+  function rosterAllCardHtml(w) {
+    const yr = w.active_years[0] === w.active_years[1]
+      ? w.active_years[0]
+      : `${w.active_years[0]}-${w.active_years[1]}`;
+    return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(w.name)}">
+      <span class="r-card-photo">
+        <span class="r-card-ph">${esc(cardInitials(w.name))}</span>
+        <img class="r-card-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onload="this.previousElementSibling.style.display='none'" onerror="this.remove()">
+      </span>
+      <span class="r-card-name">${esc(w.name)}</span>
+      <span class="r-card-sub">${w.total_matches} ${w.total_matches === 1 ? 'match' : 'matches'} &middot; ${yr}</span>
+    </button>`;
+  }
   function renderRosterAllTime(container, q) {
     let rows = Object.values(BUNDLE.wrestlers);
     if (q) rows = rows.filter(w => w.name.toLowerCase().includes(q));
     rows = sortRosterRows(rows, rosterSortKey, rosterSortDir);
-    container.innerHTML = `
+    if (rosterAllView === 'cards') {
+      container.innerHTML = rosterAllTimeBar() + (rows.length
+        ? `<div class="roster-grid">${rows.map(rosterAllCardHtml).join('')}</div>`
+        : `<div class="roster-empty">No results for "${esc(q)}"</div>`);
+      return;
+    }
+    container.innerHTML = rosterAllTimeBar() + `
       <table class="roster-table">
         <thead>
           <tr>
@@ -4949,6 +5061,7 @@
   }
 
   // ---- Time-aware view --------------------------------------------------
+  let rosterDeriveInflight = { iso: null, p: null };   // dedupe per-keystroke re-derives
   function renderRosterTime(container, q) {
     const iso = clampISO(rosterAnchorISO());
     const asOf = `${MONTHS[parseInt(iso.slice(5, 7), 10) - 1]} ${iso.slice(0, 4)}`;
@@ -4958,17 +5071,26 @@
     }
     container.innerHTML = rosterAsOfHead(asOf, null) + rosterSkeleton();
     const token = ++rosterDeriveToken;
-    deriveRosterAsOf(iso).then(map => {
+    let p = rosterDeriveInflight.iso === iso ? rosterDeriveInflight.p : null;
+    if (!p) {
+      p = deriveRosterAsOf(iso).finally(() => {
+        if (rosterDeriveInflight.p === p) rosterDeriveInflight = { iso: null, p: null };
+      });
+      rosterDeriveInflight = { iso, p };
+    }
+    p.then(({ map, complete }) => {
       if (token !== rosterDeriveToken || rosterMode !== 'time') return;
-      rosterCache = { iso, map };
+      // Only memoize a fully-hydrated roster: a partial one (a shard fetch
+      // failed) paints once with a warning and retries on the next render.
+      if (complete) rosterCache = { iso, map };
       const qNow = (document.getElementById('roster-search') ? document.getElementById('roster-search').value : '').toLowerCase().trim();
-      paintRosterTime(container, map, iso, asOf, qNow);
+      paintRosterTime(container, map, iso, asOf, qNow, !complete);
     }).catch(() => {
       if (token !== rosterDeriveToken || rosterMode !== 'time') return;
       container.innerHTML = rosterAsOfHead(asOf, null) + `<div class="roster-empty">Couldn't build the roster for this date.</div>`;
     });
   }
-  function paintRosterTime(container, map, iso, asOf, q) {
+  function paintRosterTime(container, map, iso, asOf, q, partial) {
     const split = isSplitEra(iso);
     let recs = [...map.values()];
     // Brand for grouping; badge label. In a split era, "WWE" means no weekly-show
@@ -4984,7 +5106,11 @@
       .map(k => rosterSectionHtml(k, groups[k], split)).join('');
     const empty = q ? `<div class="roster-empty">No one named "${esc(q)}" on the ${esc(asOf)} roster.</div>`
       : `<div class="roster-empty">No roster data for ${esc(asOf)}.</div>`;
-    container.innerHTML = rosterAsOfHead(asOf, total) + (recs.length ? `<div data-asof-date="${iso}">${body}</div>` : empty);
+    const warn = partial
+      ? `<div class="roster-warn">Some match data didn't load, so this list may be incomplete. It retries automatically.</div>`
+      : '';
+    container.innerHTML = rosterAsOfHead(asOf, total) + warn
+      + (recs.length ? `<div data-asof-date="${iso}">${body}</div>` : empty);
   }
   function rosterAsOfHead(asOf, total) {
     const sub = total == null ? 'Building the roster…'
@@ -5031,7 +5157,10 @@
         : `${w.active_years[0]}-${w.active_years[1]}`;
       return `<tr>
         <td class="rt-rank">${i + 1}</td>
-        <td class="rt-name"><button class="wrestler-link" data-slug="${esc(w.slug)}">${esc(w.name)}</button></td>
+        <td class="rt-name"><button class="wrestler-link" data-slug="${esc(w.slug)}">
+          <span class="rt-av"><span class="rt-av-ph">${esc(cardInitials(w.name))}</span><img alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onload="this.previousElementSibling.style.display='none'" onerror="this.remove()"></span>
+          <span class="rt-nm">${esc(w.name)}</span>
+        </button></td>
         <td class="rt-num">${w.total_matches}</td>
         <td class="rt-num">${w.ppv_appearances}</td>
         <td class="rt-num">${w.unique_event_count}</td>
