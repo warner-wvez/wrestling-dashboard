@@ -7,11 +7,16 @@
 #
 # Why direct fetch: the original www.thesmackdownhotel.com.har only held one
 # roster page (~142 renders). The same images are addressable by URL, so we pull
-# the rest by slug. Paced at ~1 req/sec with backoff; faster bursts get
-# rate-limited (every request then fails, which reads as a false miss).
+# the rest by slug. Paced at ~1 req/sec (per REQUEST, not per slug) with
+# backoff; faster bursts get rate-limited (every request then fails, which
+# reads as a false miss).
 #
-# Records: appends slug<TAB>sdh-name to sdh-fetched.tsv; writes unresolved names
-# to sdh-misses.txt. Safe to re-run: slugs that already have a webp are skipped.
+# Records: appends slug<TAB>sdh-name to sdh-fetched.tsv; rewrites sdh-misses.txt
+# with this run's unresolved names (only when at least one target existed, so a
+# broken run can never wipe the worklist). Safe to re-run: slugs that already
+# have a webp are skipped. Crops land in roster-img/ atomically (temp file +
+# mv), so an interrupted run never leaves a truncated webp that the
+# skip-if-exists check would then treat as done forever.
 set -uo pipefail
 cd "$(dirname "$0")/../.." || exit 1            # repo root
 TOPN="${1:-500}"
@@ -21,12 +26,17 @@ UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, l
 FET="$PIPE/sdh-fetched.tsv"; MISS="$PIPE/sdh-misses.txt"
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 
-node -e '
+# Target list. A node failure (missing SLUGS.tsv, parse error) must abort, not
+# silently continue with zero targets and then clobber the miss worklist.
+if ! node -e '
 const fs=require("fs");
 const rows=fs.readFileSync("roster-img/SLUGS.tsv","utf8").trim().split("\n").slice(1).map(l=>{const[s,n,m]=l.split("\t");return{s,m:+m}});
 const have=new Set(fs.readdirSync("roster-img").filter(f=>f.endsWith(".webp")).map(f=>f.replace(/\.webp$/,"")));
 rows.slice(0,+process.argv[1]).filter(r=>!have.has(r.s)).forEach(r=>console.log(r.s+"\t"+r.m));
-' "$TOPN" > "$WORK/targets.txt"
+' "$TOPN" > "$WORK/targets.txt"; then
+  echo "FATAL: could not build target list (is roster-img/SLUGS.tsv present?)" >&2
+  exit 1
+fi
 TOTAL=$(wc -l < "$WORK/targets.txt" | tr -d ' '); echo "missing within top $TOPN: $TOTAL"
 
 candidates_for(){ local s="$1"; local -a c=()
@@ -53,6 +63,11 @@ while IFS=$'\t' read -r slug mc; do
     throttled=0
     while read -r cand; do
       code=$(curl -s -o "$WORK/$slug.png" -w "%{http_code} %{content_type}" -A "$UA" -H "Referer: https://www.thesmackdownhotel.com/" --max-time 25 "$B/$cand.png")
+      rc=$?
+      sleep 1                                   # pace EVERY request, not every slug
+      # A dropped connection (rc!=0) can leave a truncated body behind 200
+      # headers: treat it as transient (backoff + retry), never as a hit.
+      if [ "$rc" -ne 0 ]; then throttled=1; break; fi
       [[ "$code" == 200\ image/* ]] && { got="$cand"; break; }
       [[ "${code%% *}" == 404 ]] && continue
       throttled=1; break
@@ -62,11 +77,21 @@ while IFS=$'\t' read -r slug mc; do
       bo=$((15*attempt)); echo "[$i/$TOTAL] throttled $slug, backoff ${bo}s"; sleep "$bo"; continue; fi
     outcome=miss; break
   done
-  if [ "$outcome" = hit ] && crop_one "$WORK/$slug.png" "roster-img/$slug.webp"; then
+  # Crop to a temp file and move into place: the shipped dir never holds a
+  # half-written webp (which the skip above would treat as done forever).
+  if [ "$outcome" = hit ] && crop_one "$WORK/$slug.png" "$WORK/$slug.webp"; then
+    mv "$WORK/$slug.webp" "roster-img/$slug.webp"
     printf '%s\t%s\n' "$slug" "$got" >> "$FET"; hits=$((hits+1)); echo "[$i/$TOTAL] HIT $slug <= $got"
-  else printf '%s\t%sm\t%s\n' "$slug" "$mc" "$outcome" >> "$WORK/miss.txt"; misses=$((misses+1)); echo "[$i/$TOTAL] miss $slug ($outcome)"; fi
-  sleep 1
+  else
+    reason="$outcome"; [ "$outcome" = hit ] && reason=crop-fail   # download OK, crop failed
+    printf '%s\t%sm\t%s\n' "$slug" "$mc" "$reason" >> "$WORK/miss.txt"
+    misses=$((misses+1)); echo "[$i/$TOTAL] miss $slug ($reason)"
+  fi
 done < "$WORK/targets.txt"
-{ echo "# SDH had no full-body image for these. slug<TAB>matches<TAB>reason"; sort -t$'\t' -k2 -nr "$WORK/miss.txt"; } > "$MISS"
+if [ "$TOTAL" -gt 0 ]; then
+  { echo "# SDH had no full-body image for these. slug<TAB>matches<TAB>reason"; sort -t$'\t' -k2 -nr "$WORK/miss.txt"; } > "$MISS"
+else
+  echo "no targets processed: leaving $MISS untouched"
+fi
 echo "DONE  HITS:$hits  MISSES:$misses"
 echo "Run: node $PIPE/verify.js   to confirm 0 orphans."

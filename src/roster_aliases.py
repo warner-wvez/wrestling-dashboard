@@ -223,7 +223,10 @@ def normkey(name):
     if unquoted:
         n = unquoted
     n = re.sub(r"^the\s+", "", n)
-    return re.sub(r"[^a-z0-9]+", "", n)
+    key = re.sub(r"[^a-z0-9]+", "", n)
+    # An all-symbol name ('"???"') would key to '' and collide with every
+    # other all-symbol name; keep its symbols as its identity instead.
+    return key or re.sub(r"\s+", "", n)
 
 
 def scrape_roster(html=None):
