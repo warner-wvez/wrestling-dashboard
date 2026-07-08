@@ -43,7 +43,8 @@ CREATE TABLE IF NOT EXISTS events (
   air_date           TEXT    NOT NULL,
   tape_date          TEXT,
   date_derivation    TEXT CHECK (date_derivation IN (
-                       'live-broadcast', 'fandom-provided', 'tape-plus-2-estimate')),
+                       'live-broadcast', 'fandom-provided', 'tape-plus-2-estimate',
+                       'air-night-estimate')),
   show_type          TEXT    NOT NULL CHECK (show_type IN ('Raw', 'SmackDown', 'PPV')),
   episode_number     INTEGER,
   title              TEXT,

@@ -5,11 +5,14 @@ extracts match-level data, and writes into SQLite via db.merge_cagematch_event
 
 Date handling:
   Raw  / PPV     : air_date = tape_date = Cagematch 'Date' field; derivation='live-broadcast'
-  SmackDown      : tape_date = Cagematch 'Date' field; air_date = tape_date + 2 days
-                   derivation='tape-plus-2-estimate' when no Fandom row exists.
-                   When a Fandom row already lives at this air_date, the merge
-                   preserves Fandom's derivation='fandom-provided' (COALESCE
-                   never overwrites non-NULL values).
+  SmackDown      : tape_date = Cagematch 'Date' field; air_date is derived from the
+                   era-aware broadcast schedule (src/smackdown_schedule.py), which
+                   snaps the taping date forward to SmackDown's actual air night for
+                   that era (Thu/Fri/Tue-live). derivation='air-night-estimate' (or
+                   'live-broadcast' for the 2016-2019 Tuesday-live era) when no
+                   Fandom row exists. When a Fandom row already lives at this
+                   air_date, the merge preserves Fandom's derivation='fandom-provided'
+                   (COALESCE never overwrites non-NULL values).
 
 Run:
   .venv/bin/python src/cagematch_scraper.py               # default: run both smoke tests
@@ -41,6 +44,7 @@ from src.db import (
     ensure_source,
 )
 from src.fandom_scraper import _split_team, _classify_outcome
+from src.smackdown_schedule import smackdown_air_date
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -394,8 +398,7 @@ def build_event_from_html(nr, html, cagematch_url):
         raise ValueError(f"nr={nr}: could not parse Date={meta.get('Date')!r}")
 
     if show_type == "SmackDown":
-        air_date = tape_date + timedelta(days=2)
-        date_derivation = "tape-plus-2-estimate"
+        air_date, date_derivation = smackdown_air_date(tape_date)
     else:
         air_date = tape_date
         date_derivation = "live-broadcast"
