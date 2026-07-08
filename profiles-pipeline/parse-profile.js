@@ -181,11 +181,22 @@ function parseProfile(html, opts = {}) {
     const container = infoHead.nextElementSibling;
     container.querySelectorAll('.field-entry').forEach((fe) => {
       const label = fe.querySelector('.field-label');
-      const value = fe.querySelector('.field-value');
-      if (label && value) {
-        const k = clean(label.text).replace(/:$/, '');
-        if (!(k in bio)) bio[k] = clean(value.text);
+      if (!label) return;
+      const k = clean(label.text).replace(/:$/, '');
+      if (k in bio) return;
+      // Multi-value fields (e.g. Billed From) render as a <ul> whose first <li>
+      // is the current/canonical value and the rest are dated history. Take only
+      // the first item, otherwise the values concatenate ("EnglandThe Jungle").
+      const firstLi = fe.querySelector('ul.fields-container > li');
+      let val;
+      if (firstLi) {
+        const v = firstLi.querySelector('.field-value');
+        val = clean(v ? v.text : firstLi.text);
+      } else {
+        const value = fe.querySelector('.field-value');
+        val = value ? clean(value.text) : '';
       }
+      if (val) bio[k] = val;
     });
   }
   const pick = (k) => bio[k] || null;

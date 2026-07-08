@@ -76,7 +76,10 @@ for (const f of files) {
       const out = { iso: r.iso, date: r.date };
       if (fs.existsSync(path.join(ROOT, rel))) out.img = rel;
       return out;
-    }).filter((r) => r.img);   // only entries whose photo we actually have
+    }).filter((r) => r.img)     // only entries whose photo we actually have
+      // Strictly newest-first: the era picker takes the first snapshot on/before
+      // the target date, so any source ordering glitch must be normalised here.
+      .sort((a, b) => (b.iso || '').localeCompare(a.iso || ''));
   }
   const pruned = prune(obj);
   // Require at least some real bio content (not just source_url).
