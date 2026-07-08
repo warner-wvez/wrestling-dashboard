@@ -2689,6 +2689,39 @@
   .recent-event-row .re-date {
     font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0;
   }
+  /* SDH-sourced profile depth (bio, moves, themes, alignment) */
+  .bio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .bio-cell { background: var(--surface-soft); border: 1px solid var(--border); padding: 12px 14px; min-width: 0; }
+  .bio-cell .bio-label {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 5px;
+  }
+  .bio-cell .bio-value { font-family: var(--font-sans); font-weight: 700; font-size: 14px; line-height: 1.3; word-break: break-word; }
+  .nick-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .nick-chip {
+    font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--ink);
+    background: var(--surface-soft); border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px;
+  }
+  .kv-list { display: flex; flex-direction: column; }
+  .kv-row {
+    display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-row .kv-name { font-family: var(--font-sans); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .kv-row.sig .kv-name { color: var(--red); font-weight: 900; }
+  .kv-row .kv-desc { font-family: var(--font-sans); font-size: 12.5px; color: var(--ink-soft, var(--ink-faint)); }
+  .kv-row .kv-era { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0; }
+  .align-badge {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border);
+  }
+  .align-badge.face { color: #1a7f4b; border-color: #1a7f4b55; }
+  .align-badge.heel { color: var(--red); border-color: var(--red); }
+  .profile-source {
+    margin-top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--ink-faint);
+  }
+  .profile-source a { color: var(--ink-faint); text-decoration: underline; text-underline-offset: 2px; }
+  .profile-source a:hover { color: var(--red); }
   .signature-match { background: var(--surface-soft); border: 1px solid var(--border); padding: 18px 20px; }
   .signature-match .sm-duration { font-family: var(--font-mono); font-size: 24px; font-weight: 700; margin-bottom: 10px; }
   .sm-event-link {
@@ -3207,6 +3240,22 @@
     return mediaPromise;
   }
   const mediaFor = (id) => (MEDIA && id != null && MEDIA[String(id)]) || null;
+
+  // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful
+  // seam as loadMedia: the site works if shards/profiles.json is absent, and the
+  // wrestler view lazy-loads it then re-renders (see renderWrestler).
+  let PROFILES = null;
+  let profilesPromise = null;
+  function loadProfiles() {
+    if (!profilesPromise) {
+      profilesPromise = fetch('shards/profiles.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { PROFILES = map; return map; });
+    }
+    return profilesPromise;
+  }
+  const profileFor = (slug) => (PROFILES && slug && PROFILES[slug]) || null;
 
   async function getEventDetail(id) {
     if (detailCache.has(id)) return detailCache.get(id);
@@ -5373,9 +5422,72 @@
     }
   }
 
+  // ---- SDH profile-depth section builders (return '' when no data) --------
+  function profSection(title, inner) {
+    return `<div class="profile-section"><div class="profile-section-title">${title}</div>${inner}</div>`;
+  }
+  function profEra(from, to) {
+    const yr = (d) => { const m = String(d || '').match(/(\d{4})/); return m ? m[1] : ''; };
+    const f = yr(from), t = /present/i.test(to || '') ? 'now' : yr(to);
+    return f && t ? `${f}–${t}` : (f || t || '');
+  }
+  function bioSectionHtml(prof) {
+    const cells = [];
+    const add = (label, val) => { if (val) cells.push(`<div class="bio-cell"><div class="bio-label">${label}</div><div class="bio-value">${esc(val)}</div></div>`); };
+    add('Real name', prof.real_name);
+    add('From', prof.billed_from);
+    add('Born', prof.born);
+    add('Height', prof.height);
+    add('Weight', prof.weight);
+    add('Nationality', prof.nationality);
+    const nicks = (prof.nicknames || []).length
+      ? `<div class="nick-chips">${prof.nicknames.map((n) => `<span class="nick-chip">${esc(n)}</span>`).join('')}</div>` : '';
+    if (!cells.length && !nicks) return '';
+    return profSection('Profile', `<div class="bio-grid">${cells.join('')}</div>${nicks}`);
+  }
+  function movesSectionHtml(prof) {
+    const fin = prof.finishers || [], sig = prof.signature_moves || [];
+    if (!fin.length && !sig.length) return '';
+    const row = (m, isFin) => `<div class="kv-row${isFin ? ' sig' : ''}"><span class="kv-name">${esc(m.name)}</span>${m.description ? `<span class="kv-desc">${esc(m.description)}</span>` : ''}</div>`;
+    let inner = '';
+    if (fin.length) inner += `<div class="kv-list">${fin.map((m) => row(m, true)).join('')}</div>`;
+    if (sig.length) inner += `<div class="bio-label" style="margin:16px 0 6px">Signature moves</div><div class="kv-list">${sig.map((m) => row(m, false)).join('')}</div>`;
+    return profSection('Finishers &amp; Signature Moves', inner);
+  }
+  function themesSectionHtml(prof) {
+    const th = prof.themes || [];
+    if (!th.length) return '';
+    const rows = th.map((t) => `<div class="kv-row"><span class="kv-name">${esc(t.title)}</span>${t.artist ? `<span class="kv-desc">${esc(t.artist)}</span>` : ''}<span class="kv-era">${esc(profEra(t.from, t.to))}</span></div>`).join('');
+    return profSection('Theme Songs', `<div class="kv-list">${rows}</div>`);
+  }
+  function alignmentSectionHtml(prof, spoilersOn) {
+    const al = prof.alignment_history || [];
+    if (!al.length) return '';
+    // Turn descriptions narrate future storylines, so gate them like title history.
+    if (!spoilersOn) return profSection('Face / Heel Turns', `<div class="profile-hint">Character turns stay hidden while spoilers are off. Turn spoilers on to see them.</div>`);
+    const rows = al.map((a) => {
+      const cls = /heel/i.test(a.alignment) ? 'heel' : /face/i.test(a.alignment) ? 'face' : '';
+      return `<div class="kv-row"><span class="align-badge ${cls}">${esc(a.alignment)}</span>${a.details ? `<span class="kv-desc">${esc(a.details)}</span>` : ''}<span class="kv-era">${esc(profEra(a.from, a.to))}</span></div>`;
+    }).join('');
+    return profSection('Face / Heel Turns', `<div class="kv-list">${rows}</div>`);
+  }
+  function profSourceHtml(prof) {
+    return prof.source_url ? `<div class="profile-source">Profile data from <a href="${esc(prof.source_url)}" target="_blank" rel="noopener">The SmackDown Hotel</a></div>` : '';
+  }
+
   function renderWrestler(slug) {
     const container = document.getElementById('wrestler-profile-content');
     if (!container) return;
+    // Lazy-load the SDH profile sidecar on first wrestler view, then re-render
+    // this same profile once it lands (graceful if the sidecar is absent).
+    if (!PROFILES) {
+      loadProfiles().then(() => {
+        const cur = window.location.hash.startsWith('#wrestler/')
+          ? decodeURIComponent(window.location.hash.slice('#wrestler/'.length)) : null;
+        if (cur === slug) renderWrestler(slug);
+      });
+    }
+    const prof = profileFor(slug);
     const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
     if (!w) {
       container.innerHTML = `<div class="status">Wrestler not found: ${esc(slug)}</div>`;
@@ -5474,6 +5586,8 @@
         </div>
       </div>
 
+      ${prof ? bioSectionHtml(prof) : ''}
+
       <div class="profile-section">
         <div class="profile-section-title">Career Record</div>
         <div class="record-grid">
@@ -5487,10 +5601,15 @@
         ${recordHint}
       </div>
 
+      ${prof ? movesSectionHtml(prof) : ''}
+      ${prof ? themesSectionHtml(prof) : ''}
+
       <div class="profile-section">
         <div class="profile-section-title">Title History</div>
         ${titleHistoryHtmlGated || titleHtml}
       </div>
+
+      ${prof ? alignmentSectionHtml(prof, spoilers) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Biggest Rivalries</div>
@@ -5511,6 +5630,8 @@
         <div class="profile-section-title">Recent Events</div>
         ${recentHtml}
       </div>
+
+      ${prof ? profSourceHtml(prof) : ''}
     `;
 
     document.getElementById('profile-back-btn').addEventListener('click', () => {

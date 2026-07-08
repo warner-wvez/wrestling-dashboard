@@ -13,7 +13,7 @@
 //    event.waitUntil so the refresh survives the response being returned.
 //
 // Bump CACHE on data or schema changes to retire old entries wholesale.
-const CACHE = 'wrestling-dashboard-v5';
+const CACHE = 'wrestling-dashboard-v6';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
@@ -32,7 +32,8 @@ self.addEventListener('fetch', (event) => {
 
   // Only manage the app shell + match shards; let everything else hit the network.
   const isShard = url.pathname.includes('/shards/matches-')
-    || url.pathname.endsWith('/shards/media.json');
+    || url.pathname.endsWith('/shards/media.json')
+    || url.pathname.endsWith('/shards/profiles.json');
   const isShell = url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
   if (!isShard && !isShell) return;
 
