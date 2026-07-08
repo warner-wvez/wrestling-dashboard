@@ -652,10 +652,11 @@ def parse_episode_page(html, list_entry=None):
     elif air_iso:
         date_derivation = "fandom-provided"
     elif tape_iso:
-        date_derivation = "tape-plus-2-estimate"
-        # compute air from tape + 2
-        td = date.fromisoformat(tape_iso)
-        air_iso = (td + timedelta(days=2)).isoformat()
+        # Derive the air date from SmackDown's era-aware broadcast schedule
+        # rather than a flat tape + 2 (only correct in the Thursday eras).
+        from src.smackdown_schedule import smackdown_air_date
+        air_d, date_derivation = smackdown_air_date(date.fromisoformat(tape_iso))
+        air_iso = air_d.isoformat()
     else:
         date_derivation = "unknown"
 
