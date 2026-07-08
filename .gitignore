@@ -19,3 +19,11 @@ data/*
 
 # Media pipeline: keep the tool + reports, drop the heavy fetch caches
 media-pipeline/cache/
+
+# Profiles pipeline: keep the tool + output shard, drop caches and deps
+profiles-pipeline/cache/
+profiles-pipeline/node_modules/
+profiles-pipeline/misses.txt
+profiles-pipeline/gimmick-misses.txt
+profiles-pipeline/era-misses.txt
+profiles-pipeline/*.log

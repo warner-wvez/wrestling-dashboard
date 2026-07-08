@@ -2689,6 +2689,48 @@
   .recent-event-row .re-date {
     font-family: var(--font-mono); font-size: 11px; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0;
   }
+  /* SDH-sourced profile depth (bio, moves, themes, alignment) */
+  .bio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .bio-cell { background: var(--surface-soft); border: 1px solid var(--border); padding: 12px 14px; min-width: 0; }
+  .bio-cell .bio-label {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 5px;
+  }
+  .bio-cell .bio-value { font-family: var(--font-sans); font-weight: 700; font-size: 14px; line-height: 1.3; word-break: break-word; }
+  .nick-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .nick-chip {
+    font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--ink);
+    background: var(--surface-soft); border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px;
+  }
+  .kv-list { display: flex; flex-direction: column; }
+  .kv-row {
+    display: flex; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .kv-row:last-child { border-bottom: none; }
+  .kv-row .kv-name { font-family: var(--font-sans); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+  .kv-row.sig .kv-name { color: var(--red); font-weight: 900; }
+  .kv-row .kv-desc { font-family: var(--font-sans); font-size: 12.5px; color: var(--ink-soft, var(--ink-faint)); }
+  .kv-row .kv-era { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--ink-faint); white-space: nowrap; flex-shrink: 0; }
+  .align-badge {
+    font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 3px; flex-shrink: 0; border: 1px solid var(--border);
+  }
+  .align-badge.face { color: #1a7f4b; border-color: #1a7f4b55; }
+  .align-badge.heel { color: var(--red); border-color: var(--red); }
+  .gimmick-list { display: flex; flex-direction: column; }
+  .gimmick-row { display: flex; align-items: center; gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .gimmick-row:last-child { border-bottom: none; }
+  .gimmick-img, .gimmick-ph {
+    width: 44px; height: 44px; border-radius: 6px; object-fit: cover; flex-shrink: 0;
+    background: var(--surface-soft); border: 1px solid var(--border);
+  }
+  .gimmick-name { font-family: var(--font-sans); font-weight: 800; font-size: 15px; }
+  .gimmick-era { font-family: var(--font-sans); font-size: 14px; color: var(--ink-faint); margin-left: 7px; }
+  .profile-source {
+    margin-top: 10px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; color: var(--ink-faint);
+  }
+  .profile-source a { color: var(--ink-faint); text-decoration: underline; text-underline-offset: 2px; }
+  .profile-source a:hover { color: var(--red); }
   .signature-match { background: var(--surface-soft); border: 1px solid var(--border); padding: 18px 20px; }
   .signature-match .sm-duration { font-family: var(--font-mono); font-size: 24px; font-weight: 700; margin-bottom: 10px; }
   .sm-event-link {
@@ -3206,6 +3248,65 @@
     return mediaPromise;
   }
   const mediaFor = (id) => (MEDIA && id != null && MEDIA[String(id)]) || null;
+
+  // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful
+  // seam as loadMedia: the site works if shards/profiles.json is absent, and the
+  // wrestler view lazy-loads it then re-renders (see renderWrestler).
+  let PROFILES = null;
+  let profilesPromise = null;
+  function loadProfiles() {
+    if (!profilesPromise) {
+      profilesPromise = fetch('shards/profiles.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { PROFILES = map; return map; });
+    }
+    return profilesPromise;
+  }
+  const profileFor = (slug) => (PROFILES && slug && PROFILES[slug]) || null;
+
+  // Era-accurate headshot: SDH's Ring Names & Gimmicks list carries a dated
+  // thumbnail per gimmick, so given a date we can show the wrestler as they
+  // looked then (2002 Triple H, not his current look). Returns a gimmick-img
+  // path whose [from,to] contains the date, else null (caller falls back to the
+  // default roster headshot). ring_names are newest-first.
+  const parseSDHDate = (s) => {
+    if (!s) return null;
+    if (/present|current/i.test(s)) return 8.64e15;   // treat "Present" as open-ended
+    const t = Date.parse(s);
+    return isNaN(t) ? null : t;
+  };
+  function eraImageFor(slug, iso) {
+    const p = profileFor(slug);
+    if (!p) return null;
+    const d = iso ? Date.parse(iso) : Date.now();
+    if (isNaN(d)) return null;
+    // 1) Images History: dated look-snapshots (newest-first). The first entry
+    //    whose date is on/before the target is the closest look at that moment.
+    //    This is the accurate source: it tracks look changes (2002 biker vs
+    //    deadman Undertaker) that name-based Ring Names can't see.
+    const ih = p.images_history;
+    if (ih && ih.length) {
+      for (const e of ih) {
+        if (!e.img) continue;
+        const t = e.iso ? Date.parse(e.iso) : null;
+        if (t != null && t <= d) return e.img;
+      }
+      for (let i = ih.length - 1; i >= 0; i--) if (ih[i].img) return ih[i].img;  // predates all: oldest
+    }
+    // 2) Fallback: Ring Names gimmick image whose [from,to] contains the date.
+    const rn = p.ring_names;
+    if (rn && rn.length) {
+      for (const r of rn) {
+        if (!r.img) continue;
+        const f = parseSDHDate(r.from);
+        const t = parseSDHDate(r.to);
+        if (f != null && d >= f && (t == null || d <= t)) return r.img;
+      }
+      for (let i = rn.length - 1; i >= 0; i--) if (rn[i].img) return rn[i].img;
+    }
+    return null;
+  }
 
   async function getEventDetail(id) {
     if (detailCache.has(id)) return detailCache.get(id);
@@ -5101,6 +5202,14 @@
   function renderRosterBody() {
     const container = document.getElementById('roster-view-content');
     if (!container) return;
+    // Era-accurate card photos need the profiles sidecar. Load it lazily and
+    // repaint once when it lands; the first render still paints immediately with
+    // the default headshots, so nothing blocks.
+    if (!PROFILES) {
+      loadProfiles().then(() => {
+        if (window.location.hash === '#roster') renderRosterBody();
+      });
+    }
     const q = (document.getElementById('roster-search') ? document.getElementById('roster-search').value : '').toLowerCase().trim();
     if (rosterMode === 'all') renderRosterAllTime(container, q);
     else renderRosterTime(container, q);
@@ -5225,7 +5334,7 @@
     for (const k in groups) groups[k].sort((a, b) => b.apps - a.apps || a.w.name.localeCompare(b.w.name));
     const order = split ? ['Raw', 'SmackDown', 'WWE'] : ['WWE'];
     const body = order.filter(k => groups[k] && groups[k].length)
-      .map(k => rosterSectionHtml(k, groups[k], split)).join('');
+      .map(k => rosterSectionHtml(k, groups[k], split, iso)).join('');
     const empty = q ? `<div class="roster-empty">No one named "${esc(q)}" on the ${esc(asOf)} roster.</div>`
       : `<div class="roster-empty">No roster data for ${esc(asOf)}.</div>`;
     const warn = partial
@@ -5242,25 +5351,30 @@
       <div class="roster-asof-sub">${esc(sub)}</div>
     </div>`;
   }
-  function rosterSectionHtml(brand, recs, split) {
+  function rosterSectionHtml(brand, recs, split, iso) {
     const label = split ? (brand === 'WWE' ? 'PPV only' : brand) : 'Active roster';
     const bc = brand === 'Raw' ? 'raw' : brand === 'SmackDown' ? 'smackdown' : 'wwe';
     return `<section class="brand-section">
       <h3 class="brand-section-head"><span class="brand-dot ${bc}"></span>${esc(label)}<span class="bs-count">${recs.length}</span></h3>
-      <div class="roster-grid">${recs.map(rosterCardHtml).join('')}</div>
+      <div class="roster-grid">${recs.map(r => rosterCardHtml(r, iso)).join('')}</div>
     </section>`;
   }
   function cardInitials(name) {
     const letters = (name.match(/[A-Za-z]+/g) || []).map(s => s[0]);
     return (letters.slice(0, 2).join('') || '?').toUpperCase();
   }
-  function rosterCardHtml(rec) {
+  function rosterCardHtml(rec, iso) {
     const w = rec.w;
     const bc = rec.brand === 'Raw' ? 'raw' : rec.brand === 'SmackDown' ? 'smackdown' : 'wwe';
+    // Era-accurate photo for the roster's as-of date, falling back to the
+    // default headshot (also the src the img reverts to if the era file 404s).
+    const era = eraImageFor(w.slug, iso);
+    const dflt = `roster-img/${esc(w.slug)}.webp`;
+    const src = era ? esc(era) : dflt;
     return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(w.name)}">
       <span class="r-card-photo">
         <span class="r-card-ph">${esc(cardInitials(w.name))}</span>
-        <img class="r-card-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onload="this.previousElementSibling.style.display='none'" onerror="this.remove()">
+        <img class="r-card-img" alt="" loading="lazy" src="${src}" data-fallback="${dflt}" onload="this.previousElementSibling.style.display='none'" onerror="if(this.dataset.fallback&&this.src.indexOf(this.dataset.fallback)<0){this.src=this.dataset.fallback}else{this.remove()}">
       </span>
       <span class="r-card-name">${esc(w.name)}</span>
       <span class="brand-badge ${bc}">${esc(rec.badge || rec.brand)}</span>
@@ -5372,15 +5486,101 @@
     }
   }
 
+  // ---- SDH profile-depth section builders (return '' when no data) --------
+  function profSection(title, inner) {
+    return `<div class="profile-section"><div class="profile-section-title">${title}</div>${inner}</div>`;
+  }
+  function profEra(from, to) {
+    const yr = (d) => { const m = String(d || '').match(/(\d{4})/); return m ? m[1] : ''; };
+    const f = yr(from), t = /present/i.test(to || '') ? 'now' : yr(to);
+    return f && t ? `${f}–${t}` : (f || t || '');
+  }
+  function bioSectionHtml(prof) {
+    const cells = [];
+    const add = (label, val) => { if (val) cells.push(`<div class="bio-cell"><div class="bio-label">${label}</div><div class="bio-value">${esc(val)}</div></div>`); };
+    add('Real name', prof.real_name);
+    add('From', prof.billed_from);
+    add('Born', prof.born);
+    add('Height', prof.height);
+    add('Weight', prof.weight);
+    add('Nationality', prof.nationality);
+    const nicks = (prof.nicknames || []).length
+      ? `<div class="nick-chips">${prof.nicknames.map((n) => `<span class="nick-chip">${esc(n)}</span>`).join('')}</div>` : '';
+    if (!cells.length && !nicks) return '';
+    return profSection('Profile', `<div class="bio-grid">${cells.join('')}</div>${nicks}`);
+  }
+  function movesSectionHtml(prof) {
+    const fin = prof.finishers || [], sig = prof.signature_moves || [];
+    if (!fin.length && !sig.length) return '';
+    const row = (m, isFin) => `<div class="kv-row${isFin ? ' sig' : ''}"><span class="kv-name">${esc(m.name)}</span>${m.description ? `<span class="kv-desc">${esc(m.description)}</span>` : ''}</div>`;
+    let inner = '';
+    if (fin.length) inner += `<div class="kv-list">${fin.map((m) => row(m, true)).join('')}</div>`;
+    if (sig.length) inner += `<div class="bio-label" style="margin:16px 0 6px">Signature moves</div><div class="kv-list">${sig.map((m) => row(m, false)).join('')}</div>`;
+    return profSection('Finishers &amp; Signature Moves', inner);
+  }
+  function themesSectionHtml(prof) {
+    const th = prof.themes || [];
+    if (!th.length) return '';
+    const rows = th.map((t) => `<div class="kv-row"><span class="kv-name">${esc(t.title)}</span>${t.artist ? `<span class="kv-desc">${esc(t.artist)}</span>` : ''}<span class="kv-era">${esc(profEra(t.from, t.to))}</span></div>`).join('');
+    return profSection('Theme Songs', `<div class="kv-list">${rows}</div>`);
+  }
+  function alignmentSectionHtml(prof, spoilersOn) {
+    const al = prof.alignment_history || [];
+    if (!al.length) return '';
+    // Turn descriptions narrate future storylines, so gate them like title history.
+    if (!spoilersOn) return profSection('Face / Heel Turns', `<div class="profile-hint">Character turns stay hidden while spoilers are off. Turn spoilers on to see them.</div>`);
+    const rows = al.map((a) => {
+      const cls = /heel/i.test(a.alignment) ? 'heel' : /face/i.test(a.alignment) ? 'face' : '';
+      return `<div class="kv-row"><span class="align-badge ${cls}">${esc(a.alignment)}</span>${a.details ? `<span class="kv-desc">${esc(a.details)}</span>` : ''}<span class="kv-era">${esc(profEra(a.from, a.to))}</span></div>`;
+    }).join('');
+    return profSection('Face / Heel Turns', `<div class="kv-list">${rows}</div>`);
+  }
+  function ringNamesSectionHtml(prof) {
+    const rn = prof.ring_names || [];
+    if (!rn.length) return '';
+    const rows = rn.map((r) => {
+      const dates = (r.from || r.to)
+        ? `<span class="gimmick-era">(${esc(r.from || '?')}${r.to ? ' - ' + esc(r.to) : ''})</span>` : '';
+      const img = r.img
+        ? `<img class="gimmick-img" alt="" loading="lazy" src="${esc(r.img)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'gimmick-ph'}))">`
+        : `<span class="gimmick-ph"></span>`;
+      return `<div class="gimmick-row">${img}<span class="gimmick-txt"><span class="gimmick-name">${esc(r.name)}</span>${dates}</span></div>`;
+    }).join('');
+    return profSection('Ring Names &amp; Gimmicks', `<div class="gimmick-list">${rows}</div>`);
+  }
+  function profSourceHtml(prof) {
+    return prof.source_url ? `<div class="profile-source">Profile data from <a href="${esc(prof.source_url)}" target="_blank" rel="noopener">The SmackDown Hotel</a></div>` : '';
+  }
+
   function renderWrestler(slug) {
     const container = document.getElementById('wrestler-profile-content');
     if (!container) return;
+    // Lazy-load the SDH profile sidecar on first wrestler view, then re-render
+    // this same profile once it lands (graceful if the sidecar is absent).
+    if (!PROFILES) {
+      loadProfiles().then(() => {
+        const cur = window.location.hash.startsWith('#wrestler/')
+          ? decodeURIComponent(window.location.hash.slice('#wrestler/'.length)) : null;
+        if (cur === slug) renderWrestler(slug);
+      });
+    }
+    const prof = profileFor(slug);
     const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
     if (!w) {
       container.innerHTML = `<div class="status">Wrestler not found: ${esc(slug)}</div>`;
       return;
     }
     const nav = buildWrestlerNav(slug, w);
+
+    // If the user reached this profile from an event, show the era-accurate
+    // headshot for that event's date (2002 look when opened from a 2002 show);
+    // otherwise the default current headshot.
+    const arrivalEv = (wrestlerSource && wrestlerSource.event_id && BUNDLE && BUNDLE.events)
+      ? BUNDLE.events[wrestlerSource.event_id] : null;
+    const arrivalDate = (arrivalEv && arrivalEv.air_date) || (wrestlerSource && wrestlerSource.event_date) || null;
+    const heroDefault = `roster-img/${esc(w.slug)}.webp`;
+    const heroEra = arrivalDate ? eraImageFor(slug, arrivalDate) : null;
+    const heroImg = heroEra ? esc(heroEra) : heroDefault;
 
     const yr = w.active_years[0] === w.active_years[1]
       ? String(w.active_years[0])
@@ -5465,13 +5665,16 @@
       <div class="profile-header">
         <div class="profile-photo">
           <span class="pp-ph">${esc(cardInitials(w.name))}</span>
-          <img class="pp-img" alt="" loading="lazy" src="roster-img/${esc(w.slug)}.webp" onload="this.previousElementSibling.style.display='none'" onerror="this.remove()">
+          <img class="pp-img" alt="" loading="lazy" src="${heroImg}" data-fallback="${heroDefault}" onload="this.previousElementSibling.style.display='none'" onerror="if(this.dataset.fallback&&this.src.indexOf(this.dataset.fallback)<0){this.src=this.dataset.fallback}else{this.remove()}">
         </div>
         <div class="profile-id">
           <div class="profile-name">${esc(w.name)}</div>
           <div class="profile-years">${esc(yr)}</div>
         </div>
       </div>
+
+      ${prof ? bioSectionHtml(prof) : ''}
+      ${prof ? ringNamesSectionHtml(prof) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Career Record</div>
@@ -5486,10 +5689,15 @@
         ${recordHint}
       </div>
 
+      ${prof ? movesSectionHtml(prof) : ''}
+      ${prof ? themesSectionHtml(prof) : ''}
+
       <div class="profile-section">
         <div class="profile-section-title">Title History</div>
         ${titleHistoryHtmlGated || titleHtml}
       </div>
+
+      ${prof ? alignmentSectionHtml(prof, spoilers) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Biggest Rivalries</div>
@@ -5510,6 +5718,8 @@
         <div class="profile-section-title">Recent Events</div>
         ${recentHtml}
       </div>
+
+      ${prof ? profSourceHtml(prof) : ''}
     `;
 
     document.getElementById('profile-back-btn').addEventListener('click', () => {

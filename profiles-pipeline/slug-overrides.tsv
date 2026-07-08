@@ -1,0 +1,36 @@
+# roster-slug<TAB>sdh-profile-slug
+# Wrestlers whose SDH profile lives at a combined ring-name slug the fetcher
+# can't guess from the roster slug. Resolved from SDH's sitemap by name-token
+# match (2026-07-08), then filtered to high-confidence, unambiguous mappings.
+# Ambiguous ones (butch/pete-dunne, ezekiel, stardust, ted-dibiase, mikey,
+# jevon-evans) were intentionally left out to avoid putting wrong data on a
+# profile. Used by fetch-overrides.sh and build-profiles.js (for source_url).
+charlotte	charlotte-flair
+damien-sandow	damien-sandow-aron-stevens
+dash-wilder	dash-wilder-cash-wheeler
+emma	emma-tenille-dashwood
+fallon-henley	fallon-henley-tesha-price
+giovanni-vinci	fabian-aichner-giovanni-vinci
+goldust	goldust-dustin-rhodes
+ivar	ivar-hanson
+jaxson-ryker	jaxson-ryker-gunner
+jillian	jillian-hall
+joaquin-wilde	joaquin-wilde-djz
+karrion-kross	killer-kross-karrion-kross
+ludwig-kaiser	ludwig-kaiser-marcel-barthel
+neville	pac-neville
+scott-dawson	scott-dawson-dax-harwood
+shotzi	shotzi-blackheart
+the-godfather	the-godfather-papa-shango-kama-mustafa
+trent-barreta	trent-trent-barreta
+zelina-vega	zelina-vega-rosita
+zoey-stark	zoey-stark-lacey-ryan
+john-morrison	john-morrison-mundo
+finlay	fit-finlay
+primo	primo-colon
+gunther	walter
+john-bradshaw-layfield	jbl-bradshaw
+king-corbin	baron-corbin
+king-booker	booker-t
+raquel-rodriguez	raquel-gonzalez
+johnny-nitro	john-morrison-mundo
