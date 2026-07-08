@@ -1,0 +1,10 @@
+{
+  "sources": [
+    {"id": "wwevault",   "platform": "youtube",     "handle": "WWEVault",              "tier": "official", "grammar": "vault",      "enabled": true},
+    {"id": "momoicon",   "platform": "youtube",     "handle": "MomoIconV2",            "tier": "fan",      "grammar": "momo",       "enabled": true},
+    {"id": "wfattitude", "platform": "youtube",     "handle": "WFAttitudeVideos2",     "tier": "fan",      "grammar": "yearonly",   "enabled": true},
+    {"id": "ruthless",   "platform": "youtube",     "handle": "RuthlessAggressionV12", "tier": "fan",      "grammar": "yearonly",   "enabled": true},
+    {"id": "wshows",     "platform": "dailymotion", "handle": "w_wrestling_shows",     "tier": "fan",      "grammar": "dmfull",     "enabled": true},
+    {"id": "wmoves",     "platform": "dailymotion", "handle": "Wrestlemoves",          "tier": "fan",      "grammar": "dmfull",     "enabled": true, "note": "commercial piracy flag, user decision pending"}
+  ]
+}

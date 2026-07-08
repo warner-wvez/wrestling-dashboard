@@ -2786,6 +2786,47 @@
     border-bottom-color: var(--ink);
     outline: none;
   }
+  /* ---------------- Watch links (media sidecar) ---------------- */
+  .watch-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
+  .watch-btn {
+    display: inline-flex; align-items: center; gap: 9px; padding: 10px 16px;
+    background: var(--ink); border: 2px solid var(--ink); color: #fff;
+    font-weight: 700; font-size: 14px; text-decoration: none; letter-spacing: 0.01em;
+  }
+  .watch-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+  .watch-btn .wb-play { font-size: 10px; line-height: 1; }
+  .watch-btn .watch-src {
+    font-family: var(--font-mono); font-weight: 400; font-size: 11px;
+    letter-spacing: 0.05em; opacity: 0.72;
+  }
+  .watch-btn.find { background: transparent; color: var(--ink); }
+  .watch-btn.find:hover { background: var(--ink); color: #fff; }
+  .watch-note { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); max-width: 340px; }
+  .watch-chip {
+    display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px;
+    border: 1.5px solid var(--ink); color: var(--ink); background: transparent;
+    font-size: 11.5px; font-weight: 700; text-decoration: none; letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .watch-chip:hover { background: var(--ink); color: #fff; }
+  .watch-chip.official { border-color: var(--red); color: var(--red); }
+  .watch-chip.official:hover { background: var(--red); color: #fff; }
+  .moments-block { padding: 6px 22px 24px; border-top: 1px solid var(--border); }
+  .moments-head {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-dim); margin: 16px 0 8px;
+  }
+  .moment-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
+    padding: 10px 0; border-bottom: 1px dashed var(--border-strong);
+    text-decoration: none; color: var(--ink);
+  }
+  .moment-row:hover .mo-label { color: var(--red); }
+  .mo-label { font-weight: 600; font-size: 14px; }
+  .mo-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); white-space: nowrap; }
+  @media (max-width: 720px) {
+    .moments-block { padding: 4px 14px 20px; }
+    .moment-row { flex-direction: column; gap: 3px; }
+  }
 </style>
 </head>
 <body>
@@ -3147,6 +3188,25 @@
       return [];
     }
   }
+
+  // ------------------ Watch links (optional media sidecar) ----------------
+  // shards/media.json maps event id -> { show: [...], matches: { order: [...] },
+  // moments: [...] }, outbound video links assembled by media-pipeline/ from an
+  // allowlist of archive channels. Purely an overlay: when the file is absent
+  // (single-file build, or the sidecar was never generated) every lookup misses
+  // and the event hero falls back to a prefilled web search, nothing else changes.
+  let MEDIA = null;
+  let mediaPromise = null;
+  function loadMedia() {
+    if (!mediaPromise) {
+      mediaPromise = fetch('shards/media.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { MEDIA = map; return map; });
+    }
+    return mediaPromise;
+  }
+  const mediaFor = (id) => (MEDIA && id != null && MEDIA[String(id)]) || null;
 
   async function getEventDetail(id) {
     if (detailCache.has(id)) return detailCache.get(id);
@@ -4059,7 +4119,10 @@
     if (mEl) mEl.scrollTop = 0;
     syncModalHash(events, iso, scrollMatchId);
     try {
-      const details = await Promise.all(events.map(e => getEventDetail(e.id)));
+      const [details] = await Promise.all([
+        Promise.all(events.map(e => getEventDetail(e.id))),
+        loadMedia(),   // watch links render inline, so the map must be ready
+      ]);
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
       // Defer stagger index assignment so first paint isn't blocked.
@@ -4250,12 +4313,63 @@
           <h3 class="event-title-modal">${esc(title)}</h3>
           ${subtitle ? `<div class="event-meta-modal"><span class="piece">${esc(subtitle)}</span></div>` : ''}
           ${meta ? `<div class="event-meta-modal">${meta}</div>` : ''}
+          ${renderWatchRow(d)}
         </div>
         <div class="matches-list">
           ${(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
+        ${renderMoments(d)}
       </div>
     `;
+  }
+
+  // "Where do I actually watch this?" answered on every event, always. A
+  // verified link when the media sidecar has one; otherwise a search prefilled
+  // in the title dialect the full-show archive channels actually use, so
+  // whatever mirror currently exists is what surfaces.
+  const MEDIA_MONTHS = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+  function watchSearchURL(d) {
+    const p = String(d.air_date || '').split('-').map(Number);
+    const q = d.show_type === 'PPV'
+      ? `${d.ppv_name || d.title || 'WWE PPV'} FULL SHOW`
+      : `WWE ${d.show_type === 'Raw' ? 'RAW' : 'SMACKDOWN'} ${p[2] || ''} ${MEDIA_MONTHS[(p[1] || 1) - 1]} ${p[0] || ''} FULL SHOW`;
+    return `https://www.google.com/search?q=${encodeURIComponent(q.trim())}`;
+  }
+  function renderWatchRow(d) {
+    const em = mediaFor(d.id);
+    const shows = (em && em.show) || [];
+    if (shows.length) {
+      const links = shows.map(s => `
+        <a class="watch-btn${s.tier === 'official' ? ' official' : ''}" href="${esc(s.url)}" target="_blank" rel="noopener">
+          <span class="wb-play" aria-hidden="true">&#9654;</span>Watch this show
+          <span class="watch-src">${esc(s.platform || '')}${s.min ? ` &middot; ${Math.round(s.min)} min` : ''}${s.tier === 'official' ? ' &middot; Official' : ''}</span>
+        </a>`).join('');
+      const fan = shows.some(s => s.tier !== 'official');
+      return `<div class="watch-row">${links}${fan
+        ? '<span class="watch-note">Fan upload. Opens externally; quality varies and videos can go offline.</span>' : ''}</div>`;
+    }
+    return `<div class="watch-row">
+      <a class="watch-btn find" href="${esc(watchSearchURL(d))}" target="_blank" rel="noopener">Find this show<span class="watch-src">web search</span></a>
+      <span class="watch-note">We don't host video. This searches the show on the open web.</span>
+    </div>`;
+  }
+
+  // Short, dated backstage and story clips tied to this show: the bonus-content
+  // shelf. Labels come pre-cleaned from the pipeline (no winners in them).
+  function renderMoments(d) {
+    const em = mediaFor(d.id);
+    const moments = (em && em.moments) || [];
+    if (!moments.length) return '';
+    return `
+      <div class="moments-block">
+        <div class="moments-head">Moments from this show</div>
+        ${moments.map(mo => `
+          <a class="moment-row" href="${esc(mo.url)}" target="_blank" rel="noopener">
+            <span class="mo-label">${esc(mo.label || mo.title || 'Clip')}</span>
+            <span class="mo-meta">${mo.min ? `${Math.round(mo.min)} min &middot; ` : ''}${esc(mo.platform || '')}${mo.tier === 'official' ? ' &middot; Official' : ''}</span>
+          </a>`).join('')}
+      </div>`;
   }
 
   function renderMatch(m, airDate, sourceSlug = null, eventId = null) {
@@ -4272,6 +4386,13 @@
     const detailsToggle = hasDetails
       ? `<button class="details-toggle" data-toggle-details type="button" aria-expanded="false">Details<span class="chev"></span></button>`
       : '';
+    // Watch chip: a verified video of THIS match (media sidecar). Keyed by
+    // match_order with match id as the fallback key, mirroring media-pipeline.
+    const em = mediaFor(eventId);
+    const mLinks = em ? (em.matches[String(m.match_order)] || em.matches[String(m.id)] || []) : [];
+    const watchChip = mLinks.length
+      ? `<a class="watch-chip${mLinks[0].tier === 'official' ? ' official' : ''}" href="${esc(mLinks[0].url)}" target="_blank" rel="noopener" title="${esc(mLinks[0].label || mLinks[0].title || '')}">&#9654; Watch${mLinks[0].tier === 'official' ? ' &middot; Official' : ''}</a>`
+      : '';
     const canSave = eventId != null && m.id != null;
     const isS = canSave && saved.has(savedKey(eventId, m.id));
     const saveBtn = canSave
@@ -4283,6 +4404,7 @@
           <span class="m-number">M${order}</span>
           <span class="m-type">${esc(type)}</span>
           ${titleTag}${stipTag}${ratingTag}
+          ${watchChip}
           ${detailsToggle}
           ${saveBtn}
         </div>
