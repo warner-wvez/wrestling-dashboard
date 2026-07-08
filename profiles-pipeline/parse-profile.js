@@ -123,6 +123,50 @@ function parseMove(text) {
   return { name: clean(body), description: null, from, to };
 }
 
+// Ring Names & Gimmicks: each <li> carries a 200x200 gimmick thumbnail
+// (img.field-value-icon), the ring name, and a from/to date range. Returns the
+// remote image src (absolutized) so a downloader can localise it.
+const SDH_ORIGIN = 'https://www.thesmackdownhotel.com';
+function parseRingNames(node) {
+  if (!node) return [];
+  return node.querySelectorAll('li').map((li) => {
+    const img = li.querySelector('img.field-value-icon') || li.querySelector('img');
+    let src = img && img.getAttribute('src');
+    if (src && src.startsWith('/')) src = SDH_ORIGIN + src;
+    const nameEl = li.querySelector('.field-entry.name .field-value') || li.querySelector('.name .field-value');
+    const from = li.querySelector('.from-date .field-value');
+    const to = li.querySelector('.to-date .field-value');
+    const name = nameEl ? clean(nameEl.text) : clean(li.text).replace(/\s*\([^)]*\)\s*$/, '');
+    return { name, from: from ? clean(from.text) : null, to: to ? clean(to.text) : null, src: src || null };
+  }).filter((r) => r.name);
+}
+
+// Images History: dated look-snapshots (".roster" cells with an <img> whose
+// title/alt is a "Mon YYYY" date). This tracks LOOK changes over time (biker vs
+// deadman Undertaker), which Ring Names (name changes only) misses, so it's the
+// right source for a time-accurate headshot. Returns newest-first entries with a
+// sortable YYYY-MM-01 date and the absolutized image src.
+const MON = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06', jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12' };
+function monYearToISO(label) {
+  const m = String(label || '').match(/([A-Za-z]{3})[a-z]*\.?\s+(\d{4})/);
+  if (!m) return null;
+  const mm = MON[m[1].toLowerCase()];
+  return mm ? `${m[2]}-${mm}-01` : null;
+}
+function parseImagesHistory(node) {
+  if (!node) return [];
+  const cells = node.querySelectorAll('.roster');
+  const src = cells.length ? cells : node.querySelectorAll('img');
+  return src.map((cell) => {
+    const img = cell.tagName === 'IMG' ? cell : cell.querySelector('img');
+    if (!img) return null;
+    let s = img.getAttribute('src');
+    if (s && s.startsWith('/')) s = SDH_ORIGIN + s;
+    const label = img.getAttribute('title') || img.getAttribute('alt') || '';
+    return { date: clean(label), iso: monYearToISO(label), src: s || null };
+  }).filter((r) => r && r.src);
+}
+
 function parseProfile(html, opts = {}) {
   const root = parse(html);
   const art = root.querySelector('.item-page') || root;
@@ -162,7 +206,8 @@ function parseProfile(html, opts = {}) {
     return h ? h.nextElementSibling : null;
   };
 
-  out.ring_names = listItems(sectionNode(/^Ring Names/i));
+  out.ring_names = parseRingNames(sectionNode(/^Ring Names/i));
+  out.images_history = parseImagesHistory(sectionNode(/^Images History/i));
   out.roles = listItems(sectionNode(/^Roles$/i)).map((t) => {
     const { body, from, to } = splitTrailingDates(t);
     return { role: body, from, to };

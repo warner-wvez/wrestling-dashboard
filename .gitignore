@@ -24,4 +24,6 @@ media-pipeline/cache/
 profiles-pipeline/cache/
 profiles-pipeline/node_modules/
 profiles-pipeline/misses.txt
+profiles-pipeline/gimmick-misses.txt
+profiles-pipeline/era-misses.txt
 profiles-pipeline/*.log

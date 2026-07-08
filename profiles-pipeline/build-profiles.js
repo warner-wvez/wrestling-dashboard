@@ -58,6 +58,26 @@ for (const f of files) {
     continue;
   }
   obj.source_url = `${SDH_BASE}/${override[slug] || slug}`;
+  // Attach the downloaded local gimmick thumbnail to each ring name (if present)
+  // and drop the remote src from the shipped data.
+  if (Array.isArray(obj.ring_names)) {
+    obj.ring_names = obj.ring_names.map((r, i) => {
+      const rel = `gimmick-img/${slug}-${i}.webp`;
+      const out = { name: r.name, from: r.from, to: r.to };
+      if (fs.existsSync(path.join(ROOT, rel))) out.img = rel;
+      return out;
+    });
+  }
+  // Images History drives the time-accurate headshot: keep the sortable iso date
+  // and the local era-img path, drop the remote src.
+  if (Array.isArray(obj.images_history)) {
+    obj.images_history = obj.images_history.map((r, i) => {
+      const rel = `era-img/${slug}-${i}.webp`;
+      const out = { iso: r.iso, date: r.date };
+      if (fs.existsSync(path.join(ROOT, rel))) out.img = rel;
+      return out;
+    }).filter((r) => r.img);   // only entries whose photo we actually have
+  }
   const pruned = prune(obj);
   // Require at least some real bio content (not just source_url).
   const meaningful = Object.keys(pruned).filter((k) => k !== 'source_url');

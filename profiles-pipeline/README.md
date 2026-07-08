@@ -34,9 +34,28 @@ cd profiles-pipeline && npm install --cache "$(mktemp -d)" node-html-parser@6 &&
 bash profiles-pipeline/fetch.sh
 #    or a custom subset: bash profiles-pipeline/fetch.sh path/to/slugs.txt
 
-# 2. parse every cached page into shards/profiles.json (keyed by roster slug)
+# 2. (optional) download the two image sets scraped from each page:
+#    - Ring Names & Gimmicks thumbnails -> gimmick-img/<slug>-<i>.webp
+#    - Images History look-snapshots     -> era-img/<slug>-<i>.webp
+#    Both: ~1 req/s, resumable, 160px lossy webp. gimmick-img powers the Ring
+#    Names & Gimmicks profile section; era-img powers the time-accurate headshot.
+node profiles-pipeline/fetch-gimmicks.js
+node profiles-pipeline/fetch-era.js
+
+# 3. parse every cached page into shards/profiles.json (keyed by roster slug).
+#    Attaches local image paths for any downloaded thumbnails; safe to run with
+#    none, some, or all images present.
 node profiles-pipeline/build-profiles.js
 ```
+
+## Time-accurate headshots
+
+`images_history` (from the Images History section) is a newest-first list of
+dated look-snapshots (`{iso, date, img}`). The UI's `eraImageFor(slug, date)`
+picks the snapshot on/before a match's date, so a 2002 Undertaker shows his
+biker look, not the Deadman. It falls back to a dated Ring Names gimmick image,
+then the default `roster-img/<slug>.webp`. Applied to roster cards (scoped to the
+as-of date) and the profile header (scoped to the event you arrived from).
 
 ## Slug notes
 
