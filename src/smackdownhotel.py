@@ -23,6 +23,24 @@ import urllib.request
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 BASE = "https://www.thesmackdownhotel.com/events-results/wwe/{show}-{year}"
 
+# Real WWE family/sibling tag teams whose side text writes the shared surname
+# once ('Jimmy & Jey Uso', 'Nikki & Brie Bella'). Only these surnames may be
+# lent back to a preceding mononym partner (see split_members); everything else
+# is left as-is so a mononym like 'Kane' or 'Edge' is never fused into a fake
+# name. Verified against the 2001-2026 corpus; add a surname here only after
+# confirming both partners appear under it as a genuine family team.
+# Sibling teams whose members are genuinely written first-name-first with the
+# surname stated once ('Jimmy & Jey Uso', 'Nikki & Brie Bella'). Deliberately
+# NARROW: wrestlers known by a full ring name (Rey Mysterio, Cody Rhodes, Eddie
+# Guerrero) are written in full, so putting those surnames here would fabricate
+# names when they tag with an outsider mononym ('Edge & Rey Mysterio' ->
+# 'Edge Mysterio'). Single-token surnames only (the lend takes the partner's
+# last word). Add a surname only after confirming BOTH members appear as bare
+# first names in the corpus.
+SHARED_SURNAME = frozenset({
+    "Uso", "Hardy", "Steiner", "Dudley", "Bella", "Singh",
+})
+
 MONTHS = {m: i for i, m in enumerate(
     ["january", "february", "march", "april", "may", "june", "july", "august",
      "september", "october", "november", "december"], 1)}
@@ -102,12 +120,18 @@ def split_members(s):
     # Partners often share a surname written once ('Jimmy & Jey Uso' arrives as
     # ['Jimmy', 'Jey Uso']): lend the trailing two-word name's surname back to a
     # preceding bare first-name partner so they don't fragment. Guard to two-person
-    # sides only: in a battle-royal entrant list this same rule fires on every
-    # single-name wrestler and lends the NEXT entrant's surname ('Ricochet, Johnny
-    # Gargano' -> 'Ricochet Gargano'), inventing fake wrestlers.
+    # sides only, AND only lend a surname that is a known shared-surname family
+    # (SHARED_SURNAME): a bare mononym is usually a COMPLETE name, not a first name
+    # missing its surname, so lending unconditionally invents wrestlers -- 'Kane &
+    # Daniel Bryan' would become 'Kane Bryan', 'Edge & Rey Mysterio' -> 'Edge
+    # Mysterio'. Fragmentation ('Jimmy' + 'Jey Uso' left unmerged) is recoverable
+    # downstream by alias resolution; a fabricated participant is corruption that
+    # is not. When in doubt, do not lend.
     if len(members) == 2:
         for i in range(len(members) - 1):
-            if members[i] and " " not in members[i] and members[i + 1].count(" ") == 1:
+            if (members[i] and " " not in members[i]
+                    and members[i + 1].count(" ") == 1
+                    and members[i + 1].split()[-1] in SHARED_SURNAME):
                 members[i] = members[i] + " " + members[i + 1].split()[-1]
     return members
 

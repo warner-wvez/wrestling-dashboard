@@ -70,6 +70,120 @@ def _smackdowns_by_date(events):
     return byd
 
 
+def _is_cross_source_dup(a, b):
+    """True only when a and b look like the SAME show ingested from two sources
+    (one Cagematch, one not) with near-identical cards. The cross-source
+    precondition guards the destructive drop path: two same-source episodes on
+    one date are far more likely genuine back-to-back tapings than a twin, so
+    they must never be silently deleted on card overlap alone."""
+    sa, sb = _match_sig(a), _match_sig(b)
+    if not sa or not sb:
+        return False
+    sources = {a.get("primary_source"), b.get("primary_source")}
+    cross = "cagematch" in sources and any(s != "cagematch" for s in sources)
+    shared = len(set(sa) & set(sb))
+    return cross and shared >= max(1, int(min(len(sa), len(sb)) * 0.6))
+
+
+def _occupied_smackdown_dates(events, exclude_ids):
+    """Every date currently held by a SmackDown, minus the ids being dropped."""
+    return {e["air_date"] for e in events.values()
+            if e.get("show_type") == "SmackDown" and e.get("air_date")
+            and str(e["id"]) not in exclude_ids}
+
+
+def _next_free_week(after_iso, occupied):
+    """First weekly broadcast slot strictly after after_iso that no other
+    SmackDown already holds, so respacing can never manufacture a new collision."""
+    d = date.fromisoformat(after_iso)
+    for _ in range(520):                       # 10 years of weeks: a hard stop
+        d = d + timedelta(days=7)
+        if d.isoformat() not in occupied:
+            return d.isoformat()
+    raise RuntimeError(f"no free SmackDown week within 10 years after {after_iso}")
+
+
+def _merge_media(media, frm, to):
+    """Move frm's watch links into to, bucket by bucket (show / matches /
+    moments), de-duping by url. media entries are dicts of those three buckets,
+    NOT flat lists -- treating them as lists corrupts/ crashes the merge."""
+    src = media.get(frm)
+    if src is None:
+        return
+    dst = media.setdefault(to, {"show": [], "matches": {}, "moments": []})
+    for bucket in ("show", "moments"):
+        existing = dst.setdefault(bucket, [])
+        seen = {x.get("url") for x in existing}
+        existing.extend(x for x in src.get(bucket, []) if x.get("url") not in seen)
+    dst_matches = dst.setdefault("matches", {})
+    for key, links in src.get("matches", {}).items():
+        existing = dst_matches.setdefault(key, [])
+        seen = {x.get("url") for x in existing}
+        existing.extend(x for x in links if x.get("url") not in seen)
+    del media[frm]
+
+
+def resolve_collisions(events, media):
+    """Resolve every SmackDown date that carries 2+ shows after the snap, in
+    place. Returns (drop_ids, dups, respaced).
+
+    A collided date can carry a cross-source twin AND a double-taping at once
+    (3+ shows), so it folds EVERY event on the date against the survivors kept
+    so far -- not just the first two. A cross-source twin is dropped (its watch
+    links merged into the survivor); everything distinct is kept; the extra
+    survivors are respaced onto later broadcast weeks that no other SmackDown
+    holds, so respacing can never manufacture a fresh collision.
+    """
+    drop_ids = []
+    media_moves = []          # (from_id, to_id)
+    dups = respaced = 0
+
+    for d, evs in sorted(_smackdowns_by_date(events).items()):
+        if len(evs) < 2:
+            continue
+        evs.sort(key=lambda e: e.get("episode_number") or 0)
+
+        survivors = []
+        for ev in evs:
+            twin = next((s for s in survivors if _is_cross_source_dup(s, ev)), None)
+            if twin is None:
+                survivors.append(ev)
+                continue
+            # Keep the Cagematch record; drop the other (usually the Fandom twin).
+            if twin.get("primary_source") == "cagematch":
+                keep, drop = twin, ev
+            else:
+                keep, drop = ev, twin
+                survivors[survivors.index(twin)] = ev
+            drop_ids.append(str(drop["id"]))
+            if str(drop["id"]) in media:
+                media_moves.append((str(drop["id"]), str(keep["id"])))
+            # Audit trail: log the card that justified a destructive drop.
+            print(f"  dedup {d}: dropping event {drop['id']} "
+                  f"(source={drop.get('primary_source')}, {len(_match_sig(drop))} matches) "
+                  f"into {keep['id']} (source={keep.get('primary_source')})")
+            dups += 1
+
+        # Distinct survivors sharing the date are double-tapings: the earliest
+        # (lowest episode number) keeps the date; each later one moves to the
+        # next broadcast week that no other SmackDown holds. Reserving as we go
+        # (occupied is recomputed live) means two extras never land together.
+        for ev in survivors[1:]:
+            occupied = _occupied_smackdown_dates(events, drop_ids)
+            ev["air_date"] = _next_free_week(d, occupied)
+            ev["date_derivation"] = "air-night-estimate"
+            respaced += 1
+
+    # Apply media moves (bucket-wise merge), then drop the duplicate events.
+    for frm, to in media_moves:
+        _merge_media(media, frm, to)
+    for i in drop_ids:
+        events.pop(i, None)
+    if media_moves:
+        print(f"  moved watch links: {media_moves}")
+    return drop_ids, dups, respaced
+
+
 def main():
     bundle = load_existing()
     events = bundle["events"]
@@ -91,58 +205,10 @@ def main():
     print(f"Snapped {snapped} estimated SmackDown air dates to their era's night.")
 
     # 2. Resolve collisions created by the snap.
-    media = json.loads(MEDIA_PATH.read_text()) if MEDIA_PATH.exists() else {}
-    drop_ids = []
-    media_moves = []          # (from_id, to_id)
-    dups = respaced = 0
-
-    for d, evs in sorted(_smackdowns_by_date(events).items()):
-        if len(evs) < 2:
-            continue
-        evs.sort(key=lambda e: e.get("episode_number") or 0)
-        lo, hi = evs[0], evs[1]
-        sa, sb = _match_sig(lo), _match_sig(hi)
-        shared = len(set(sa) & set(sb))
-        is_dup = shared >= max(1, int(min(len(sa), len(sb)) * 0.6))
-
-        if is_dup:
-            # Keep the Cagematch record; drop the other (the Fandom twin).
-            keep, drop = (lo, hi) if lo.get("primary_source") == "cagematch" else (hi, lo)
-            drop_ids.append(str(drop["id"]))
-            if str(drop["id"]) in media:
-                media_moves.append((str(drop["id"]), str(keep["id"])))
-            dups += 1
-        else:
-            # Double-taping: re-space onto consecutive broadcast weeks anchored
-            # to the prior episode's air date (rebuild map fresh each time so
-            # earlier fixes are visible; collisions are isolated, not chained).
-            ep_map = {e.get("episode_number"): e["air_date"]
-                      for e in events.values()
-                      if e.get("show_type") == "SmackDown" and e.get("air_date")
-                      and str(e["id"]) not in drop_ids}
-            anchor = ep_map.get((lo.get("episode_number") or 0) - 1)
-            if anchor:
-                a = date.fromisoformat(anchor)
-                lo["air_date"] = (a + timedelta(days=7)).isoformat()
-                hi["air_date"] = (a + timedelta(days=14)).isoformat()
-            else:
-                hi["air_date"] = (date.fromisoformat(d) + timedelta(days=7)).isoformat()
-            respaced += 1
-
-    # Apply media moves, then drop the duplicate events.
-    for frm, to in media_moves:
-        media.setdefault(to, media.get(to) or media[frm])
-        if media.get(to) is not media[frm]:
-            # survivor already had media; keep both sets' links (dedupe by url)
-            seen = {x.get("url") for x in media[to]}
-            media[to] += [x for x in media[frm] if x.get("url") not in seen]
-        del media[frm]
-    for i in drop_ids:
-        events.pop(i, None)
+    media = json.loads(MEDIA_PATH.read_text(encoding="utf-8")) if MEDIA_PATH.exists() else {}
+    drop_ids, dups, respaced = resolve_collisions(events, media)
     print(f"Resolved collisions: deduped {dups} cross-source twins "
           f"(dropped events {drop_ids}), re-spaced {respaced} double-tapings.")
-    if media_moves:
-        print(f"  moved watch links: {media_moves}")
 
     # 3. Rebuild the date + wrestler + title indexes for consistency.
     events_by_date = {}

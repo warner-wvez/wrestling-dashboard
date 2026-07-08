@@ -77,8 +77,11 @@ SMOKE_SMACKDOWN_NR = 2269    # WWF SmackDown #131, taped 2002-02-12, air 2002-02
 # Duration: (M:SS) or (H:MM:SS). Require at least one colon to avoid matching
 # stray parenthesized numbers.
 _DURATION_RE = re.compile(r"\((\d+):(\d+)(?::(\d+))?\)")
-# Cagematch uses present tense: "defeat" / "defeats" (also handle "defeated").
-_WIN_VERB_RE = re.compile(r"\s+(defeat(?:s|ed)?|beat(?:s|en)?)\s+", re.IGNORECASE)
+# Cagematch uses present-tense ACTIVE voice: "defeat"/"defeats"/"defeated",
+# "beat"/"beats". Deliberately NOT matching the passive "beaten": in "X was
+# beaten by Y" the winner is on the RIGHT, so matching it here would split the
+# line the wrong way and mark the loser as the winner.
+_WIN_VERB_RE = re.compile(r"\s+(defeat(?:s|ed)?|beats?)\s+", re.IGNORECASE)
 _VS_RE = re.compile(r"\s+vs\.?\s+", re.IGNORECASE)
 _ACCOMP_RE = re.compile(r"\(w\s*/\s*([^)]+)\)")
 # Champion tag: "(c)" with optional "[Title]" bracket suffix that names which
@@ -504,7 +507,8 @@ def smoke(conn):
 
 
 def full(conn):
-    events_to_scrape = json.load(open(DATA_DIR / "events_to_scrape.json"))
+    with (DATA_DIR / "events_to_scrape.json").open(encoding="utf-8") as f:
+        events_to_scrape = json.load(f)
     n = len(events_to_scrape)
     print(f"Full run: {n} events", flush=True)
     stats = {"inserted": 0, "merged": 0, "errors": 0, "skipped": 0, "cached": 0, "fresh": 0,

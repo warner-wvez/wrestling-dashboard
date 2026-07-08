@@ -273,9 +273,10 @@ def build_canon_map(name_counts, roster_pairs=None, curated=None):
     if roster_pairs is None:
         try:
             roster_pairs = scrape_roster()
-        except Exception as exc:  # offline / page moved: fall back to variants+curated
-            print(f"  roster scrape failed ({exc}); aliasing from curated + variants only")
-            roster_pairs = []
+        except Exception as exc:  # offline / page moved: fall back to the snapshot
+            roster_pairs = load_roster_snapshot() or []
+            src = "committed snapshot" if roster_pairs else "curated + variants only"
+            print(f"  roster scrape failed ({exc}); aliasing from {src}")
 
     canonical_by_key = {}
     for slug, name in roster_pairs:               # name-key and slug-key -> current name

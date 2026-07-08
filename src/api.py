@@ -117,7 +117,11 @@ def health() -> dict:
 
 @app.get("/api/events", response_model=list[EventSummary])
 def list_events(
-    year: int = Query(..., ge=2001, le=2004),
+    # Bounds are a sanity range, not the corpus extent: the corpus now spans
+    # 2001..present and keeps growing, so a tight cap (was le=2004) 422'd every
+    # request for a year the data actually has. Any year with no events simply
+    # returns an empty list.
+    year: int = Query(..., ge=1980, le=2100),
     month: int = Query(..., ge=1, le=12),
 ) -> list[EventSummary]:
     start = date(year, month, 1).isoformat()
