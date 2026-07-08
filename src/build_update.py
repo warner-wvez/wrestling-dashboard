@@ -398,7 +398,7 @@ def main():
     wrbd = build_wrestler_reigns_by_date(title_reigns)
 
     yrs = sorted({e["air_date"][:4] for e in events.values() if e["air_date"]})
-    match_count = sum(e["match_count"] for e in events.values())
+    match_count = sum(e.get("match_count", len(e.get("matches") or [])) for e in events.values())
     bundle = {
         "meta": {"generated_at": datetime.now(timezone.utc).isoformat(),
                  "event_count": len(events), "match_count": match_count,

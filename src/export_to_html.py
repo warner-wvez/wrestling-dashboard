@@ -126,6 +126,12 @@ def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[
     for eid_str, ev in events.items():
         eid = int(eid_str)
         air_date = ev.get("air_date", "")
+        # A dateless event can't be placed on the roster timeline, and a null
+        # air_date would blow up the first_date min()/int(date[:4]) below. Skip
+        # the whole event so appearances and outcomes stay in lockstep (the
+        # W+L+D+NC == appearances invariant asserted later depends on it).
+        if not air_date:
+            continue
         show_type = ev.get("show_type", "")
         is_ppv = show_type == "PPV"
         event_name = ev.get("ppv_name") or ev.get("title") or ""

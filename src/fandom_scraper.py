@@ -126,7 +126,7 @@ def fetch_episode_html(slug, delay=REQUEST_DELAY_SEC):
     EPISODES_DIR.mkdir(parents=True, exist_ok=True)
     path = EPISODES_DIR / f"{slug}.html"
     if path.exists():
-        return path.read_text(), True  # cached
+        return path.read_text(encoding="utf-8"), True  # cached
 
     url = FANDOM_BASE + slug
     last_err = None
@@ -134,7 +134,7 @@ def fetch_episode_html(slug, delay=REQUEST_DELAY_SEC):
         try:
             resp = requests.get(url, headers=HEADERS, timeout=20)
             resp.raise_for_status()
-            path.write_text(resp.text)
+            path.write_text(resp.text, encoding="utf-8")
             time.sleep(delay)
             return resp.text, False  # freshly fetched
         except requests.RequestException as exc:
@@ -162,9 +162,11 @@ def _extract_infobox(main):
 
 _TAPE_DATE_RE = re.compile(r"took place on\s+([A-Z][a-z]+\s+\d+\s*,\s*\d{4})")
 _EPISODE_NUM_RE = re.compile(r"(?:Smackdown|SmackDown)\s*#\s*(\d+)", re.IGNORECASE)
-# Duration is (M:SS) found anywhere in the body. We extract it, then strip it
-# AND any trailing prose (context notes that follow the duration).
-_DURATION_RE = re.compile(r"\((\d+):(\d+)\)")
+# Duration is (M:SS) or (H:MM:SS) found anywhere in the body. We extract it,
+# then strip it AND any trailing prose (context notes that follow it). The
+# optional third group catches hour-long bouts (Iron Man / 60-min Broadways);
+# without it a "(1:05:23)" matched nothing and the duration was lost.
+_DURATION_RE = re.compile(r"\((\d+):(\d+)(?::(\d+))?\)")
 _ACCOMP_RE = re.compile(r"\(w\s*/\s*([^)]+)\)")
 _STABLE_RE = re.compile(r"^(.+?)\s*\(\s*(.+?)\s*\)\s*$")
 _CHAMPION_RE = re.compile(r"\s*\(\s*c\s*\)\s*", re.IGNORECASE)
@@ -467,7 +469,11 @@ def _parse_match_li(li, order):
     duration_seconds = None
     m = _DURATION_RE.search(body)
     if m:
-        duration_seconds = int(m.group(1)) * 60 + int(m.group(2))
+        g1, g2, g3 = m.group(1), m.group(2), m.group(3)
+        if g3 is not None:                       # H:MM:SS
+            duration_seconds = int(g1) * 3600 + int(g2) * 60 + int(g3)
+        else:                                    # M:SS
+            duration_seconds = int(g1) * 60 + int(g2)
         body = body[:m.start()].strip()
     body = body.rstrip("-").strip()
     body_lower = body.lower()

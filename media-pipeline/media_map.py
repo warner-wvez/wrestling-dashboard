@@ -64,6 +64,10 @@ def split_sides(txt):
 def load_corpus():
     h = open(os.path.join(REPO, "index.html"), encoding="utf-8").read()
     m = re.search(r'<script[^>]*id="wrestling-data"[^>]*>(.*?)</script>', h, re.S)
+    if not m:
+        raise RuntimeError(
+            "no wrestling-data payload in index.html: rebuild the bundle first "
+            "(the media map is built against the shipped corpus).")
     data = json.loads(m.group(1))
     events = {int(k): v for k, v in data["events"].items()}
     matches = {}
@@ -125,7 +129,14 @@ def find_ppv(ppv_by_year, name, year):
     toks = set(re.sub(r"[^\w\s]", "", name.lower()).split()) - {"wwf", "wwe", "the", str(year)}
     hits = []
     for cand_toks, eid in ppv_by_year.get(year, []):
-        if toks and (toks <= cand_toks or cand_toks <= toks or len(toks & cand_toks) >= max(1, len(toks) - 1)):
+        # Both sides must have real tokens AND actually overlap. Without the
+        # `cand_toks and (toks & cand_toks)` guard, a corpus PPV whose name
+        # reduced to zero tokens made `cand_toks <= toks` (empty subset) true
+        # and matched EVERY query that year.
+        if not (toks and cand_toks and (toks & cand_toks)):
+            continue
+        if (toks <= cand_toks or cand_toks <= toks
+                or len(toks & cand_toks) >= max(1, len(toks) - 1)):
             if eid not in hits:
                 hits.append(eid)
     return (hits[0] if len(hits) == 1 else None), len(hits)
@@ -300,10 +311,17 @@ def main():
         if not src.get("enabled"):
             continue
         sid, gram, tier = src["id"], GRAMMARS[src["grammar"]], src["tier"]
-        if src["platform"] == "youtube":
-            vids = json.load(open(os.path.join(HERE, f"cache/yt_{src['handle']}.json")))
-        else:
-            vids = json.load(open(os.path.join(HERE, f"cache/dm_{src['handle']}.json")))
+        prefix = "yt" if src["platform"] == "youtube" else "dm"
+        cache_path = os.path.join(HERE, f"cache/{prefix}_{src['handle']}.json")
+        try:
+            with open(cache_path) as f:
+                vids = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError) as ex:
+            # A missing/corrupt cache for one source must not sink the whole
+            # build: skip the source and report it, don't crash mid-run.
+            print(f"  WARNING: skipping source {sid}: cannot read {cache_path} ({ex})")
+            continue
+        if src["platform"] != "youtube":
             for v in vids:
                 v["url"] = v.get("url") or f"https://www.dailymotion.com/video/{v['id']}"
 
@@ -313,8 +331,12 @@ def main():
             if src["platform"] == "youtube":
                 p = os.path.join(desc_dir, f"{v['id']}.json")
                 if os.path.exists(p):
-                    dd = json.load(open(p))
-                    desc = dd.get("description") or desc
+                    try:
+                        with open(p) as f:
+                            dd = json.load(f)
+                        desc = dd.get("description") or desc
+                    except json.JSONDecodeError:
+                        pass   # half-written/corrupt desc cache: treat as no desc
             info = gram(v, desc) if src["grammar"] == "yearonly" else gram(v)
             kind = veto(info.get("kind"), v.get("duration"), info.get("part"))
             stats[sid][f"kind:{info.get('kind')}"] += 1
@@ -402,14 +424,20 @@ def main():
         }
     json.dump(out_map, open(os.path.join(HERE, "media_map.json"), "w"), indent=1)
 
+    def _tsv_row(cells):
+        # Strip tabs/newlines from any field (video titles can carry both) so
+        # they can't shift or split columns in the TSV.
+        return "\t".join(str(c).replace("\t", " ").replace("\n", " ").replace("\r", " ")
+                         for c in cells) + "\n"
+
     with open(os.path.join(HERE, "reports/ambiguous.tsv"), "w") as f:
         f.write("source\treason\ttitle\n")
         for r in ambiguous:
-            f.write("\t".join(r) + "\n")
+            f.write(_tsv_row(r))
     with open(os.path.join(HERE, "reports/unmatched.tsv"), "w") as f:
         f.write("source\treason\ttitle\n")
         for r in unmatched:
-            f.write("\t".join(r) + "\n")
+            f.write(_tsv_row(r))
 
     # coverage report
     ev_with_show = sum(1 for b in media.values() if b["show"])

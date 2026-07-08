@@ -35,7 +35,11 @@ for (const t of tasks) {
   n++;
   const dest = path.join(OUT, `${t.slug}-${t.i}.webp`);
   if (fs.existsSync(dest)) { skip++; continue; }
-  const ext = (t.src.split('?')[0].split('.').pop() || 'img').toLowerCase().replace(/[^a-z0-9]/g, '') || 'img';
+  // Take the extension from the LAST PATH SEGMENT only. Splitting the whole URL
+  // on '.' pulls dots out of the host ('host.com/img/foo' -> 'com/img/foo'), a
+  // bogus extension magick can't decode. Default to jpg when the path has none.
+  const seg = t.src.split('?')[0].split('#')[0].split('/').pop() || '';
+  const ext = (seg.includes('.') ? seg.split('.').pop() : 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
   const raw = dest + '.dl.' + ext;
   const tmp = dest + '.tmp';
   let ok = false;

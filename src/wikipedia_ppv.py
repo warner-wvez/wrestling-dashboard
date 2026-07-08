@@ -18,6 +18,7 @@ import argparse
 import json
 import re
 import sys
+from datetime import date as _date
 import time
 import urllib.parse
 import urllib.request
@@ -168,7 +169,13 @@ def parse_time(t):
 
 
 def _iso(y, mo, d):
-    return "%04d-%02d-%02d" % (y, mo, d)
+    # Validate against the real calendar so malformed wikitext (e.g. a captured
+    # "February 30") can't emit an impossible date string that only explodes
+    # far downstream. Returns None on an invalid day so callers can skip it.
+    try:
+        return _date(int(y), int(mo), int(d)).isoformat()
+    except ValueError:
+        return None
 
 
 def parse_dates(text):
@@ -181,15 +188,17 @@ def parse_dates(text):
     y = int(ym.group(1))
     m = re.search(MONTH_RE + r"\s+(\d{1,2})\s*-\s*" + MONTH_RE + r"\s+(\d{1,2})", s)
     if m:
-        return [_iso(y, MONTHS[m.group(1)], int(m.group(2))),
-                _iso(y, MONTHS[m.group(3)], int(m.group(4)))]
+        out = [_iso(y, MONTHS[m.group(1)], int(m.group(2))),
+               _iso(y, MONTHS[m.group(3)], int(m.group(4)))]
+        return [d for d in out if d]
     m = re.search(MONTH_RE + r"\s+(\d{1,2})\s*(?:-|and)\s*(\d{1,2})", s)
     if m:
         mo, d1, d2 = MONTHS[m.group(1)], int(m.group(2)), int(m.group(3))
-        return [_iso(y, mo, d) for d in range(d1, d2 + 1)] if d1 <= d2 else [_iso(y, mo, d1)]
+        rng = range(d1, d2 + 1) if d1 <= d2 else [d1]
+        return [iso for d in rng if (iso := _iso(y, mo, d))]
     m = re.search(MONTH_RE + r"\s+(\d{1,2})", s)
     if m:
-        return [_iso(y, MONTHS[m.group(1)], int(m.group(2)))]
+        return [d for d in [_iso(y, MONTHS[m.group(1)], int(m.group(2)))] if d]
     return []
 
 

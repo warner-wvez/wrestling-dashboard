@@ -39,7 +39,10 @@ for (const t of tasks) {
   if (fs.existsSync(dest)) { skip++; continue; }
   // Name the download with its real extension: magick picks its decoder by
   // extension, and a ".raw" name would wrongly route to a camera-RAW delegate.
-  const ext = (t.src.split('?')[0].split('.').pop() || 'img').toLowerCase().replace(/[^a-z0-9]/g, '') || 'img';
+  // Take the extension from the LAST PATH SEGMENT only, so dots in the host
+  // ('host.com/img/foo') don't produce a bogus extension. Default to jpg.
+  const seg = t.src.split('?')[0].split('#')[0].split('/').pop() || '';
+  const ext = (seg.includes('.') ? seg.split('.').pop() : 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
   const raw = dest + '.dl.' + ext;
   const tmp = dest + '.tmp';
   let ok = false;
