@@ -322,22 +322,31 @@
   .wp-text strong { color: var(--ink); font-weight: 700; }
 
   /* Watched history view */
+  /* Spans the section like everything under it. At 360px wide with no bottom
+     margin it butted straight into the catch-up box, which carries the same
+     fill and border, and the two read as one grey slab. */
   .watched-progress-lg {
     height: 8px;
-    max-width: 360px;
-    margin-top: 12px;
+    margin: 12px 0 18px;
     background: var(--surface-soft);
     border: 1px solid var(--border);
     overflow: hidden;
   }
-  .watched-controls {
+  /* Shared control band. Every view's toolbar gets the same treatment, so the
+     calendar and My List open with one rhythm. The bracketing rules turn the
+     slack between control groups into a deliberate band rather than a void:
+     space-between across a bare row just reads as a hole. */
+  .view-toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
-    margin-bottom: 16px;
+    padding: 13px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
+  .watched-controls { margin-bottom: 16px; }
   .watched-filters { display: flex; gap: 8px; flex-wrap: wrap; }
   .wf-chip {
     display: inline-flex;
@@ -452,8 +461,11 @@
     white-space: nowrap;
     transition: background 140ms, color 140ms, border-color 140ms;
   }
-  .mark-month:hover { border-color: var(--ink); color: var(--ink); }
+  .mark-month:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
   .mark-month.active { background: var(--ink); border-color: var(--ink); color: #FFF; }
+  /* Disabled rather than hidden on an empty period: the button keeps its slot
+     so the toolbar does not reflow as you page through show-less weeks. */
+  .mark-month:disabled { opacity: 0.38; cursor: default; }
   .mark-month[hidden] { display: none; }
   .mini-chip.watched { opacity: 0.4; }
   @media (max-width: 600px) {
@@ -848,13 +860,11 @@
   /* =============================================================
      BROWSE HEADER: month title + relocated month nav
      ============================================================= */
+  /* Title block owns its own line. The controls used to sit opposite it, which
+     left ~190px of dead centre because the title is short and the control
+     cluster is wide; they now live in .browse-toolbar below. */
   .browse-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 18px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     padding: 0 2px;
   }
   .browse-kicker {
@@ -874,7 +884,24 @@
     letter-spacing: -0.025em;
   }
   .browse-title .year { color: var(--ink-faint); font-weight: 500; margin-left: 10px; }
-  .browse-head-r { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+  /* Calendar's control bar: .view-toolbar, flush with the grid's outer edges
+     (no side padding, matching .calendar). space-between distributes the slack
+     evenly between the four groups instead of pooling it in one gap. */
+
+  /* Jump to a specific date. 3,046 shows across 25 years: paging week by week
+     to reach one night is hopeless, so the picker is the way in. */
+  .jump-date { display: inline-flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+  .jump-date-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
   /* Show count sits with the period title it describes (proximity), not in the
      control cluster, so the right side stays a clean set of ranked controls. */
   .browse-count {
@@ -1005,6 +1032,20 @@
   }
   .day.has-ppv:hover {
     box-shadow: 0 8px 20px rgba(200,16,46,0.10);
+  }
+  /* The day you jumped to. Pulses twice, then settles into a plain outline so
+     the cell stays findable after the animation ends (and for anyone running
+     prefers-reduced-motion, where the animation never plays at all). */
+  .day.jump-hit {
+    border-color: var(--ink);
+    box-shadow: 0 0 0 2px var(--ink);
+    animation: card-in 220ms cubic-bezier(0.2,0.8,0.2,1) forwards,
+               jump-flash 1500ms ease-out 220ms 1;
+  }
+  @keyframes jump-flash {
+    0%, 100% { box-shadow: 0 0 0 2px var(--ink); }
+    15%, 55% { box-shadow: 0 0 0 4px var(--red); }
+    35%, 75% { box-shadow: 0 0 0 2px var(--ink); }
   }
 
   .date-row {
@@ -2134,7 +2175,14 @@
     .hero { grid-template-columns: 1fr; padding: 22px; gap: 18px; }
     .hero-title { font-size: 26px; }
     .hero-side { grid-template-columns: 1fr; gap: 18px; padding-top: 18px; }
-    .browse-head-r { width: 100%; justify-content: space-between; }
+    /* Narrow: the four control groups stack into rows rather than fighting for
+       one line. The nav cluster and the date jump each take a full row. */
+    .browse-toolbar { gap: 12px; padding: 12px 0; }
+    .browse-toolbar .controls,
+    .browse-toolbar .jump-date { width: 100%; }
+    .browse-toolbar .controls { justify-content: space-between; }
+    .browse-toolbar .controls select { flex: 1; min-width: 0; }
+    .jump-date-input { flex: 1; min-width: 0; }
     .calendar { gap: 4px; }
     .weekdays { font-size: 9px; }
     .day { min-height: 66px; padding: 8px; }
@@ -2162,6 +2210,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; }
+    /* .day starts at opacity 0 and is faded in by the card-in animation, which
+       the rule above cancels. Without this the whole calendar grid renders
+       invisible for anyone who asked for less motion. */
+    .day { opacity: 1; }
   }
 
   /* ===========================================================
@@ -2852,6 +2904,156 @@
   .watch-chip:hover { background: var(--ink); color: #fff; }
   .watch-chip.official { border-color: var(--red); color: var(--red); }
   .watch-chip.official:hover { background: var(--red); color: #fff; }
+  /* ---------------- Video library view ---------------- */
+  /* Title block owns its line; the controls live in the .view-toolbar below,
+     matching .browse-head. */
+  .video-view-header { margin-bottom: 14px; }
+  .video-view-header h2 {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -0.025em;
+  }
+  .video-sub {
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-dim);
+    letter-spacing: 0.02em;
+  }
+  .video-toolbar { margin-bottom: 22px; }
+  .video-filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .video-note {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    padding: 10px 12px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    margin-bottom: 26px;
+  }
+
+  /* Year bands turn a 440-event list into something scannable. The heading
+     sticks so you always know which year you are looking at mid-scroll. */
+  .video-year { margin-bottom: 34px; }
+  .vy-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 0 8px;
+    margin-bottom: 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--ink);
+  }
+  .vy-head h3 {
+    font-family: var(--font-sans);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .vy-n {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .video-event {
+    padding: 14px 0 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ve-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+  .ve-date {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    min-width: 104px;
+  }
+  .ve-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-sans);
+    color: var(--ink);
+  }
+  .ve-title .brand-chip {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding: 2px 7px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ve-name { font-size: 15px; font-weight: 700; }
+  .ve-title:hover .ve-name { color: var(--red); }
+  .ve-title:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .ve-n {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .ve-shows { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 10px 118px; }
+  .ve-shows .watch-btn { padding: 8px 14px; font-size: 13px; }
+  .ve-matches { display: flex; flex-direction: column; margin-left: 118px; }
+
+  .video-match {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 10px;
+    text-decoration: none;
+    color: var(--ink);
+    border-left: 2px solid var(--border-strong);
+    transition: background 140ms, border-color 140ms;
+  }
+  .video-match:hover { background: var(--surface-soft); border-left-color: var(--red); }
+  .video-match.official { border-left-color: var(--red); }
+  .video-match .vm-play { font-size: 8px; color: var(--ink-faint); flex: 0 0 auto; }
+  .video-match:hover .vm-play { color: var(--red); }
+  .vm-label { font-size: 13.5px; font-weight: 600; flex: 1; min-width: 0; }
+  .vm-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--ink-dim);
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+  /* Scoped to this view: the event modal's own Watch button keeps its black
+     treatment, where it is the single primary action on the card. */
+  .ve-shows .watch-btn.official { border-color: var(--red); background: var(--red); }
+  .ve-shows .watch-btn.official:hover { background: var(--ink); border-color: var(--ink); }
+
+  @media (max-width: 720px) {
+    /* Chips and search each take a full row rather than leaving a ragged gap. */
+    .video-toolbar .video-filters,
+    .video-toolbar .roster-controls { width: 100%; }
+    .watched-controls .watched-filters,
+    .watched-controls .roster-sort { width: 100%; }
+    /* Drop the date gutter: the links sit under the title instead of beside it. */
+    .ve-shows, .ve-matches { margin-left: 0; }
+    .ve-n { margin-left: 0; }
+    .video-match { flex-direction: column; align-items: flex-start; gap: 3px; }
+    .vm-meta { white-space: normal; }
+  }
+
   .moments-block { padding: 6px 22px 24px; border-top: 1px solid var(--border); }
   .moments-head {
     font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
@@ -2906,24 +3108,30 @@
      next to what it controls, not in the global header. -->
 <section class="browse" id="browse">
   <div class="browse-head">
-    <div class="browse-head-l">
-      <div class="browse-kicker">Browse the calendar</div>
-      <h2 class="browse-title"><span id="month-name">January</span><span class="year" id="month-year">2001</span></h2>
-      <span class="browse-count"><strong id="month-count">0</strong> <span id="count-label">shows</span></span>
+    <div class="browse-kicker">Browse the calendar</div>
+    <h2 class="browse-title"><span id="month-name">January</span><span class="year" id="month-year">2001</span></h2>
+    <span class="browse-count"><strong id="month-count">0</strong> <span id="count-label">shows</span></span>
+  </div>
+  <!-- Every control that acts on the grid sits in one bar spanning the grid's
+       own width, so the toolbar edges line up with the Sun and Sat columns.
+       Mark-week keeps its slot even when the period is empty (disabled, not
+       hidden) so the bar never reflows as you page through weeks. -->
+  <div class="view-toolbar browse-toolbar">
+    <div class="calview-toggle" id="calview-toggle" role="group" aria-label="Calendar view">
+      <button class="cv-btn" id="cv-week" type="button" data-cv="week" aria-pressed="true">Week</button>
+      <button class="cv-btn" id="cv-month" type="button" data-cv="month" aria-pressed="false">Month</button>
     </div>
-    <div class="browse-head-r">
-      <div class="calview-toggle" id="calview-toggle" role="group" aria-label="Calendar view">
-        <button class="cv-btn" id="cv-week" type="button" data-cv="week" aria-pressed="true">Week</button>
-        <button class="cv-btn" id="cv-month" type="button" data-cv="month" aria-pressed="false">Month</button>
-      </div>
-      <div class="controls">
-        <button class="month-nav" id="month-prev" aria-label="Previous" type="button">◀</button>
-        <select id="month" aria-label="Month"></select>
-        <select id="year" aria-label="Year"></select>
-        <button class="month-nav" id="month-next" aria-label="Next" type="button">▶</button>
-      </div>
-      <button class="mark-month" id="mark-month-btn" type="button" hidden>Mark week watched</button>
+    <div class="controls">
+      <button class="month-nav" id="month-prev" aria-label="Previous" type="button">◀</button>
+      <select id="month" aria-label="Month"></select>
+      <select id="year" aria-label="Year"></select>
+      <button class="month-nav" id="month-next" aria-label="Next" type="button">▶</button>
     </div>
+    <div class="jump-date">
+      <label class="jump-date-label" for="jump-date-input">Go to date</label>
+      <input type="date" id="jump-date-input" class="cu-date jump-date-input" aria-label="Go to a specific date">
+    </div>
+    <button class="mark-month" id="mark-month-btn" type="button">Mark week watched</button>
   </div>
   <div class="weekdays">
     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
@@ -2966,7 +3174,7 @@
       <button class="cu-apply" id="cu-apply" type="button">Mark watched</button>
       <span class="cu-preview" id="cu-preview"></span>
     </div>
-    <div class="watched-controls">
+    <div class="view-toolbar watched-controls">
       <div class="watched-filters" id="watched-filters">
         <button class="wf-chip active" type="button" data-wfilter="all">All <span class="wf-n" data-wcount="all">0</span></button>
         <button class="wf-chip" type="button" data-wfilter="Raw">Raw <span class="wf-n" data-wcount="Raw">0</span></button>
@@ -2989,6 +3197,29 @@
     </div>
     <div id="saved-view-content"></div>
   </div>
+</section>
+
+<!-- VIDEO LIBRARY: every event the media sidecar has a direct full-show or
+     full-match link for, so the shows you can actually watch are findable
+     without opening 3,046 cards to check. Built from shards/media.json alone
+     (labels ship with the links), so it needs no era shards. -->
+<section id="view-video" class="view" hidden>
+  <div class="video-view-header">
+    <h2>Video library</h2>
+    <p class="video-sub" id="video-sub">Shows and matches with a direct video link.</p>
+  </div>
+  <!-- Same title-then-ruled-band rhythm as the calendar's browse toolbar. -->
+  <div class="view-toolbar video-toolbar">
+    <div class="video-filters" id="video-filters" role="group" aria-label="Filter by link type">
+      <button class="wf-chip vf-chip active" type="button" data-vfilter="all">All <span class="wf-n" data-vcount="all">0</span></button>
+      <button class="wf-chip vf-chip" type="button" data-vfilter="show">Full shows <span class="wf-n" data-vcount="show">0</span></button>
+      <button class="wf-chip vf-chip" type="button" data-vfilter="match">Matches <span class="wf-n" data-vcount="match">0</span></button>
+    </div>
+    <div class="roster-controls">
+      <input class="roster-search" id="video-search" type="search" placeholder="Filter by show, wrestler, or year..." autocomplete="off">
+    </div>
+  </div>
+  <div id="video-view-content"></div>
 </section>
 
 <section id="view-wrestler" class="view" hidden>
@@ -3015,6 +3246,10 @@
       <button class="nav-link" data-nav="mylist" type="button">
         <span class="nav-link-name">My List</span>
         <span class="nav-link-sub">Your progress and saved matches</span>
+      </button>
+      <button class="nav-link" data-nav="video" type="button">
+        <span class="nav-link-name">Video Library</span>
+        <span class="nav-link-sub">Shows and matches with a direct video link</span>
       </button>
       <button class="nav-link" data-nav="roster" type="button">
         <span class="nav-link-name">Roster</span>
@@ -3161,6 +3396,9 @@
   const CALVIEW_KEY = 'wvez_wrestling_calview';
   let calView = localStorage.getItem(CALVIEW_KEY) === 'month' ? 'month' : 'week';
   let anchorISO = null;
+  // Set by the "Go to date" picker and consumed by the next renderCalendarCells,
+  // which flags the matching cell so the eye lands on the day that was asked for.
+  let jumpTargetISO = null;
 
   const pad2 = (n) => String(n).padStart(2, '0');
   const ymd = (y, m, d) => `${y}-${pad2(m)}-${pad2(d)}`;
@@ -3672,10 +3910,16 @@
     const btn = el('mark-month-btn');
     if (!btn) return;
     const ids = currentPeriodEvents.map(e => String(e.id));
-    if (!ids.length) { btn.hidden = true; return; }
-    btn.hidden = false;
-    const allWatched = ids.every(id => watched.has(id));
     const noun = calView === 'week' ? 'week' : 'month';
+    // Empty period: keep the button in place, greyed out. Hiding it collapsed
+    // its slot and reflowed the whole toolbar on every show-less week.
+    btn.disabled = !ids.length;
+    if (!ids.length) {
+      btn.textContent = `Mark ${noun} watched`;
+      btn.classList.remove('active');
+      return;
+    }
+    const allWatched = ids.every(id => watched.has(id));
     btn.textContent = allWatched ? `Unwatch this ${noun}` : `Mark ${noun} watched`;
     btn.classList.toggle('active', allWatched);
   }
@@ -3927,6 +4171,170 @@
     });
   }
 
+  // ------------------ Video library ---------------------------------------
+  // The media sidecar knows which shows and matches have a watchable link, but
+  // that only ever surfaced one event at a time. This view inverts it: the
+  // whole corpus of links, grouped by year. Link labels ship inside media.json,
+  // so nothing here touches the era shards.
+  let videoFilter = 'all';
+  let videoQuery = '';
+  let VIDEO_ROWS = null;
+
+  // One row per event that has at least one full-show or full-match link.
+  // Moment clips are deliberately excluded: they are promos and segments, not
+  // "watch the whole thing" links, and they would swamp the real matches.
+  function buildVideoRows() {
+    if (VIDEO_ROWS) return VIDEO_ROWS;
+    const rows = [];
+    for (const [eid, entry] of Object.entries(MEDIA || {})) {
+      const ev = BUNDLE && BUNDLE.events && BUNDLE.events[eid];
+      if (!ev) continue;
+      const shows = entry.show || [];
+      const matches = [];
+      for (const [key, links] of Object.entries(entry.matches || {})) {
+        for (const link of links) matches.push({ key, ...link });
+      }
+      if (!shows.length && !matches.length) continue;
+      // media.json keys match links by match_order, so a numeric sort restores
+      // card order. Non-numeric keys (match-id fallbacks) sink to the bottom.
+      matches.sort((a, b) => (parseInt(a.key, 10) || 999) - (parseInt(b.key, 10) || 999));
+      const showName = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
+      const haystack = [
+        showName, ev.show_type, ev.air_date, ev.venue, ev.city,
+        ...matches.map(m => m.label || m.title || ''),
+      ].join(' ').toLowerCase();
+      rows.push({ ev, showName, shows, matches, haystack });
+    }
+    rows.sort((a, b) => (a.ev.air_date || '').localeCompare(b.ev.air_date || ''));
+    VIDEO_ROWS = rows;
+    return rows;
+  }
+
+  function videoRowMatches(row) {
+    if (videoFilter === 'show' && !row.shows.length) return false;
+    if (videoFilter === 'match' && !row.matches.length) return false;
+    return !videoQuery || row.haystack.includes(videoQuery);
+  }
+
+  function videoLinkMeta(link) {
+    const bits = [];
+    if (link.min) bits.push(`${Math.round(link.min)} min`);
+    if (link.platform) bits.push(link.platform);
+    if (link.tier === 'official') bits.push('Official');
+    return bits.join(' · ');
+  }
+
+  function renderVideoRow(row) {
+    const { ev, showName, shows, matches } = row;
+    const cls = SHOW_CLASS[ev.show_type] || '';
+    const showLinks = shows.map(s => `
+      <a class="watch-btn${s.tier === 'official' ? ' official' : ''}" href="${esc(s.url)}" target="_blank" rel="noopener">
+        <span class="wb-play" aria-hidden="true">&#9654;</span>Watch full show
+        <span class="watch-src">${esc(videoLinkMeta(s))}</span>
+      </a>`).join('');
+    // Labels arrive pre-cleaned from the pipeline (matchup only, never the
+    // finish), so the library stays spoiler-safe like the rest of the app.
+    const matchLinks = matches.map(m => `
+      <a class="video-match${m.tier === 'official' ? ' official' : ''}" href="${esc(m.url)}" target="_blank" rel="noopener">
+        <span class="vm-play" aria-hidden="true">&#9654;</span>
+        <span class="vm-label">${esc(m.label || m.title || 'Match')}</span>
+        <span class="vm-meta">${esc(videoLinkMeta(m))}</span>
+      </a>`).join('');
+    const n = shows.length + matches.length;
+    return `
+      <div class="video-event">
+        <div class="ve-head">
+          <span class="ve-date">${esc(fmtDateLong(ev.air_date))}</span>
+          <button class="ve-title" type="button" data-go-event="${esc(String(ev.id))}" title="Open this show">
+            <span class="brand-chip ${cls}">${esc(ev.show_type === 'PPV' ? 'PPV' : ev.show_type)}</span>
+            <span class="ve-name">${esc(showName)}</span>
+          </button>
+          <span class="ve-n">${n} link${n === 1 ? '' : 's'}</span>
+        </div>
+        ${showLinks ? `<div class="ve-shows">${showLinks}</div>` : ''}
+        ${matchLinks ? `<div class="ve-matches">${matchLinks}</div>` : ''}
+      </div>`;
+  }
+
+  async function renderVideo() {
+    const container = el('video-view-content');
+    if (!container) return;
+    container.innerHTML = '<div class="status">Loading video links...</div>';
+    await loadMedia();
+    const rows = buildVideoRows();
+
+    // Chip counts describe the whole library, not the filtered slice, so they
+    // stay a stable map of what exists rather than a mirror of the search box.
+    const counts = {
+      all: rows.length,
+      show: rows.filter(r => r.shows.length).length,
+      match: rows.filter(r => r.matches.length).length,
+    };
+    document.querySelectorAll('[data-vcount]').forEach(nEl => {
+      nEl.textContent = counts[nEl.getAttribute('data-vcount')].toLocaleString('en-US');
+    });
+
+    const sub = el('video-sub');
+    if (sub) {
+      const showLinks = rows.reduce((a, r) => a + r.shows.length, 0);
+      const matchLinks = rows.reduce((a, r) => a + r.matches.length, 0);
+      sub.textContent = rows.length
+        ? `${showLinks.toLocaleString('en-US')} full shows and ${matchLinks.toLocaleString('en-US')} matches you can watch, across ${rows.length.toLocaleString('en-US')} events.`
+        : 'Shows and matches with a direct video link.';
+    }
+
+    if (!rows.length) {
+      container.innerHTML = `<div class="saved-empty">No video links are loaded. The sidecar lives in <code>shards/media.json</code>, which the single-file build does not carry.</div>`;
+      return;
+    }
+
+    const visible = rows.filter(videoRowMatches);
+    if (!visible.length) {
+      container.innerHTML = `<div class="saved-empty">Nothing matches that filter. Try a wrestler, a show name, or a year.</div>`;
+      return;
+    }
+
+    // Group by year so a 440-event list reads as a timeline you can scan.
+    let html = `<div class="video-note">Links open on YouTube or Dailymotion. We don't host video; fan uploads vary in quality and can go offline.</div>`;
+    let year = null;
+    for (const row of visible) {
+      const y = (row.ev.air_date || '').slice(0, 4);
+      if (y !== year) {
+        if (year !== null) html += '</div>';
+        year = y;
+        const inYear = visible.filter(r => (r.ev.air_date || '').slice(0, 4) === y).length;
+        html += `<div class="video-year"><div class="vy-head"><h3>${esc(y)}</h3><span class="vy-n">${inYear} event${inYear === 1 ? '' : 's'}</span></div>`;
+      }
+      html += renderVideoRow(row);
+    }
+    if (year !== null) html += '</div>';
+    container.innerHTML = html;
+
+    container.querySelectorAll('[data-go-event]').forEach(btn => {
+      btn.addEventListener('click', () => navigateToEvent(btn.getAttribute('data-go-event')));
+    });
+  }
+
+  function setupVideoNav() {
+    const filters = el('video-filters');
+    if (filters) filters.addEventListener('click', (e) => {
+      const chip = e.target.closest('[data-vfilter]');
+      if (!chip) return;
+      videoFilter = chip.getAttribute('data-vfilter');
+      filters.querySelectorAll('.vf-chip').forEach(c => c.classList.toggle('active', c === chip));
+      renderVideo();
+    });
+    const search = el('video-search');
+    if (search) {
+      let t = null;
+      search.addEventListener('input', () => {
+        clearTimeout(t);
+        // Debounced: every keystroke otherwise re-renders up to 440 event blocks.
+        t = setTimeout(() => { videoQuery = search.value.trim().toLowerCase(); renderVideo(); }, 140);
+      });
+    }
+  }
+
   // ------------------ Dropdowns -------------------------------------------
   const yr = BUNDLE?.meta?.year_range || [2001, 2004];
   for (let y = yr[0]; y <= yr[1]; y++) {
@@ -3963,6 +4371,7 @@
   function syncSelectsToAnchor() {
     yearSel.value = String(parseInt(anchorISO.slice(0, 4), 10));
     monthSel.value = String(parseInt(anchorISO.slice(5, 7), 10));
+    if (jumpInput) jumpInput.value = anchorISO;
   }
   function onSelectChange() {
     // Jump to that month. In Week view, show the week containing the 1st.
@@ -3971,6 +4380,28 @@
   }
   yearSel.addEventListener('change', onSelectChange);
   monthSel.addEventListener('change', onSelectChange);
+
+  // ------------------ Go to a specific date -------------------------------
+  // The month/year selects only reach a month. Finding one night out of 3,046
+  // shows means naming the day, so the picker drives the anchor directly and
+  // renderCalendarCells flags the cell it landed on (jumpTargetISO).
+  const jumpInput = el('jump-date-input');
+  if (jumpInput) {
+    jumpInput.min = `${yr[0]}-01-01`;
+    jumpInput.max = `${yr[1]}-12-31`;
+    jumpInput.value = anchorISO;
+    jumpInput.addEventListener('change', () => {
+      // An empty or half-typed value clears the control rather than jumping to
+      // a clamped corpus boundary the viewer never asked for.
+      if (!jumpInput.value) return;
+      const target = clampISO(jumpInput.value);
+      jumpTargetISO = target;
+      anchorISO = target;
+      loadCalendar();
+      const browse = el('browse');
+      if (browse) browse.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
 
   // Prev/Next steps by the active period: one week in Week view, one month in Month view.
   function stepPeriod(delta) {
@@ -4131,6 +4562,16 @@
     });
     markResumeDay(computeResumeId());
     markWatchedChips();
+    markJumpTarget();
+  }
+
+  // Outline the day the picker jumped to. Consumed once: paging away with the
+  // arrows or the toggle must not keep re-flagging a day the viewer has left.
+  function markJumpTarget() {
+    if (!jumpTargetISO) return;
+    const cell = calEl.querySelector(`.day[data-iso="${jumpTargetISO}"]`);
+    jumpTargetISO = null;
+    if (cell) cell.classList.add('jump-hit');
   }
 
   // ------------------ Modal -----------------------------------------------
@@ -5801,6 +6242,12 @@
       renderWatched();   // Watched history + progress
       renderSaved();     // Saved matches
       window.scrollTo({ top: 0, behavior: 'auto' });
+    } else if (hash === '#video') {
+      const v = document.getElementById('view-video');
+      if (v) v.hidden = false;
+      markNav('video');
+      renderVideo();
+      window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
       if (v) v.hidden = false;
@@ -6199,6 +6646,7 @@
   renderFooter();
 
   setupWatchedNav();
+  setupVideoNav();
   setupSearch();
   setupResume();
   setupNav();
