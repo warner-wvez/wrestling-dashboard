@@ -294,3 +294,41 @@ and a commentator cut promos without ever wrestling. A collapse toward zero woul
 mean the date join is wrong.
 
 Idempotent: the sidecar is rebuilt from scratch each run.
+
+---
+
+# parse_feuds.py -> fill_feuds.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/parse_feuds.py
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/fill_feuds.py [--dry-run]
+```
+
+A feud is a rated storyline arc over a span of months. `parse_feuds` lifts the
+406 rows; `fill_feuds` reads a clean `X vs. Y` out of each title and writes
+`shards/feuds.json`. The event page shows the feuds whose month window covers the
+show: a "Storylines around this show" shelf under the promos.
+
+## German titles, and why /en/ does not help
+
+The feud titles are written in German by Cagematch's contributors, and the `/en/`
+view translates only the page chrome, not these strings, so a language re-scrape
+returns the same German. What is language-neutral is the matchup inside the
+title, since wrestler names are proper nouns: "Das Comeback des Showstoppers:
+**Michaels vs. Triple H**".
+
+## Reading the matchup, grounded in the roster
+
+The matchup is the text after the last `:` or dash, split on `vs.` or the German
+`gegen`, with stray prose trimmed off each side. Prose can imitate a matchup
+(`Legend vs. Icon`), so a candidate is accepted only when **both sides resolve to
+the roster** — a real wrestler by full name (Rey Mysterio) or by the surname the
+title uses (Mysterio). `Legend` and `Icon` are nobody, so that one is dropped.
+This is the whole reason extraction lives in `fill` and not `parse`: it needs the
+bundle's `wrestlers_by_name`.
+
+Only feuds whose window reaches the 2001+ corpus are kept (nothing earlier has a
+show to hang on). 183 of the 300 corpus-era feuds survive; the rest have no
+matchup, use team nicknames whose sides are not individual names (`Hardys vs.
+E&C`), or are too German to parse. A clean 183 beats a padded list with `Cena
+entthront JBL` in it. Idempotent: rebuilt from scratch each run.

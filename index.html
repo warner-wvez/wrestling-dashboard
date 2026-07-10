@@ -3592,6 +3592,21 @@
   }
   const promosFor = (id) => (PROMOS && id != null && PROMOS[String(id)]) || null;
 
+  // Rated Cagematch feuds, a flat list of storyline arcs each spanning a month
+  // window. Unlike promos and moments a feud is not owned by one show, so this
+  // is not keyed by event id; the event page filters by date at render time.
+  let FEUDS = null;
+  let feudsPromise = null;
+  function loadFeuds() {
+    if (!feudsPromise) {
+      feudsPromise = fetch('shards/feuds.json')
+        .then(r => (r.ok ? r.json() : []))
+        .catch(() => [])
+        .then(list => { FEUDS = list; return list; });
+    }
+    return feudsPromise;
+  }
+
   // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful
   // seam as loadMedia: the site works if shards/profiles.json is absent, and the
   // wrestler view lazy-loads it then re-renders (see renderWrestler).
@@ -4774,6 +4789,7 @@
         Promise.all(events.map(e => getEventDetail(e.id))),
         loadMedia(),   // watch links render inline, so the map must be ready
         loadPromos(),  // the promos shelf renders inline too
+        loadFeuds(),   // and the storylines shelf
       ]);
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
@@ -4985,6 +5001,7 @@
         </div>
         ${renderMoments(d)}
         ${renderPromos(d)}
+        ${renderFeuds(d)}
       </div>
     `;
   }
@@ -5058,6 +5075,44 @@
             <span class="promo-main">
               <span class="mo-label">${esc(p.title)}</span>
               <span class="promo-people">${esc((p.workers || []).join(', '))}</span>
+            </span>
+            ${rating}
+          </a>`;
+        }).join('')}
+      </div>`;
+  }
+
+  // Storyline arcs running during this show: the feuds whose month window covers
+  // it, best-first. A feud spans months and many shows, so unlike a promo it is
+  // matched to the show by date here rather than owned by one event. Capped so a
+  // WrestleMania-season card does not list a dozen.
+  const FEUD_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function fmtFeudMonth(ym) {
+    const [y, m] = ym.split('-').map(Number);
+    return `${FEUD_MON[(m || 1) - 1]} ${y}`;
+  }
+  function renderFeuds(d) {
+    if (!FEUDS || !FEUDS.length) return '';
+    const month = String(d.air_date || '').slice(0, 7);
+    if (!month) return '';
+    const active = FEUDS.filter(f => f.start <= month && month <= f.end).slice(0, 6);
+    if (!active.length) return '';
+    return `
+      <div class="moments-block">
+        <div class="moments-head">Storylines around this show</div>
+        ${active.map(f => {
+          const span = f.start === f.end
+            ? fmtFeudMonth(f.start)
+            : `${fmtFeudMonth(f.start)} &ndash; ${fmtFeudMonth(f.end)}`;
+          const votes = f.votes ? ` from ${f.votes} vote${f.votes === 1 ? '' : 's'}` : '';
+          const rating = f.rating != null
+            ? `<span class="m-rating" title="Cagematch feud rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${f.rating.toFixed(1)}</span></span>`
+            : '';
+          return `
+          <a class="moment-row promo-row" href="${esc(f.url)}" target="_blank" rel="noopener">
+            <span class="promo-main">
+              <span class="mo-label">${esc(f.matchup)}</span>
+              <span class="promo-people">${span}</span>
             </span>
             ${rating}
           </a>`;
