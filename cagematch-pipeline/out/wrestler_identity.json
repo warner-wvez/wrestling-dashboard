@@ -5,6 +5,7 @@
    "The Sultan Of Shawarma"
   ],
   "cagematch_id": 14766,
+  "kept_separate": [],
   "merged_from": [
    "eric-abraham",
    "the-sultan-of-shawarma"
@@ -19,6 +20,7 @@
    "Leo Kruger"
   ],
   "cagematch_id": 9031,
+  "kept_separate": [],
   "merged_from": [
    "adam-rose",
    "leo-kruger"
@@ -33,6 +35,7 @@
    "Kay Lee Ray"
   ],
   "cagematch_id": 9917,
+  "kept_separate": [],
   "merged_from": [
    "alba-fyre",
    "kay-lee-ray"
@@ -47,6 +50,7 @@
    "Dos Caras"
   ],
   "cagematch_id": 1407,
+  "kept_separate": [],
   "merged_from": [
    "alberto-del-rio",
    "dos-caras"
@@ -61,6 +65,7 @@
    "Randy Row"
   ],
   "cagematch_id": 20411,
+  "kept_separate": [],
   "merged_from": [
    "alex-malcom",
    "randy-row"
@@ -75,6 +80,7 @@
    "Barrett Brown"
   ],
   "cagematch_id": 10412,
+  "kept_separate": [],
   "merged_from": [
    "americo",
    "barrett-brown"
@@ -91,6 +97,7 @@
    "Tehuti Miles"
   ],
   "cagematch_id": 21800,
+  "kept_separate": [],
   "merged_from": [
    "ashante-adonis",
    "elijah-king",
@@ -107,6 +114,7 @@
    "Uncle Howdy"
   ],
   "cagematch_id": 7311,
+  "kept_separate": [],
   "merged_from": [
    "bo-dallas",
    "bo-rotundo"
@@ -122,6 +130,7 @@
    "Rudy Rude"
   ],
   "cagematch_id": 880,
+  "kept_separate": [],
   "merged_from": [
    "bobby-roode",
    "rudy-rude"
@@ -136,6 +145,7 @@
    "Joshua Kingsley"
   ],
   "cagematch_id": 7047,
+  "kept_separate": [],
   "merged_from": [
    "brad-maddox",
    "joshua-kingsley"
@@ -150,6 +160,7 @@
    "John Bradshaw Layfield"
   ],
   "cagematch_id": 193,
+  "kept_separate": [],
   "merged_from": [
    "jbl",
    "john-bradshaw-layfield"
@@ -164,6 +175,7 @@
    "Brendon Scott"
   ],
   "cagematch_id": 10882,
+  "kept_separate": [],
   "merged_from": [
    "brandon-scott",
    "brendon-scott"
@@ -177,8 +189,10 @@
    "Frank Venezia"
   ],
   "cagematch_id": 12153,
+  "kept_separate": [
+   "brian-thomas"
+  ],
   "merged_from": [
-   "brian-thomas",
    "frank-venezia"
   ],
   "name": "Brian Thomas",
@@ -191,6 +205,7 @@
    "Chris Cage"
   ],
   "cagematch_id": 982,
+  "kept_separate": [],
   "merged_from": [
    "caylen-croft",
    "chris-cage"
@@ -206,6 +221,7 @@
    "Shorty Gable"
   ],
   "cagematch_id": 15197,
+  "kept_separate": [],
   "merged_from": [
    "chad-gable",
    "shorty-gable"
@@ -220,6 +236,7 @@
    "Mitchell Lyons"
   ],
   "cagematch_id": 25305,
+  "kept_separate": [],
   "merged_from": [
    "channing-stacks-lorenzo",
    "mitchell-lyons"
@@ -236,6 +253,7 @@
    "Kerwin White"
   ],
   "cagematch_id": 895,
+  "kept_separate": [],
   "merged_from": [
    "chavo-guerrero",
    "jack-swaggers-soaring-eagle"
@@ -250,6 +268,7 @@
    "Christy Hemme"
   ],
   "cagematch_id": 1489,
+  "kept_separate": [],
   "merged_from": [
    "christy",
    "christy-hemme"
@@ -265,6 +284,7 @@
    "Scotty Goldman"
   ],
   "cagematch_id": 994,
+  "kept_separate": [],
   "merged_from": [
    "chris-guy",
    "colt-cabana",
@@ -280,6 +300,7 @@
    "Commander Azeez"
   ],
   "cagematch_id": 17984,
+  "kept_separate": [],
   "merged_from": [
    "babatunde",
    "commander-azeez"
@@ -294,6 +315,7 @@
    "Sterling Keenan"
   ],
   "cagematch_id": 1527,
+  "kept_separate": [],
   "merged_from": [
    "corey-graves",
    "sterling-keenan"
@@ -308,6 +330,7 @@
    "Evan Anderhaul"
   ],
   "cagematch_id": 9821,
+  "kept_separate": [],
   "merged_from": [
    "bryan-kennedy",
    "evan-anderhaul"
@@ -323,6 +346,7 @@
    "Curt Hawkins"
   ],
   "cagematch_id": 2749,
+  "kept_separate": [],
   "merged_from": [
    "brian-majors",
    "curt-hawkins"
@@ -338,6 +362,7 @@
    "Michael McGillicutty"
   ],
   "cagematch_id": 5271,
+  "kept_separate": [],
   "merged_from": [
    "curtis-axel",
    "joe-hennig"
@@ -355,6 +380,7 @@
    "Macho Mandow"
   ],
   "cagematch_id": 636,
+  "kept_separate": [],
   "merged_from": [
    "aaron-stevens",
    "damien-mizdow",
@@ -372,6 +398,7 @@
    "Dana Brooke"
   ],
   "cagematch_id": 15363,
+  "kept_separate": [],
   "merged_from": [
    "ash-by-elegance",
    "dana-brooke"
@@ -386,6 +413,7 @@
    "Daniel Bryan"
   ],
   "cagematch_id": 86,
+  "kept_separate": [],
   "merged_from": [
    "bryan-danielson",
    "daniel-bryan"
@@ -400,6 +428,7 @@
    "Fred Sampson"
   ],
   "cagematch_id": 2040,
+  "kept_separate": [],
   "merged_from": [
    "darren-young",
    "fred-sampson"
@@ -415,6 +444,7 @@
    "Harry Smith"
   ],
   "cagematch_id": 1076,
+  "kept_separate": [],
   "merged_from": [
    "david-hart-smith",
    "harry-smith"
@@ -429,6 +459,7 @@
    "Rachel Levy"
   ],
   "cagematch_id": 15226,
+  "kept_separate": [],
   "merged_from": [
    "delilah-dawson",
    "rachel-levy"
@@ -443,6 +474,7 @@
    "Mike Spinner"
   ],
   "cagematch_id": 2391,
+  "kept_separate": [],
   "merged_from": [
    "derek-werley",
    "mike-spinner"
@@ -459,6 +491,7 @@
    "Nicky"
   ],
   "cagematch_id": 2515,
+  "kept_separate": [],
   "merged_from": [
    "dolph-ziggler",
    "nic-nemeth",
@@ -474,6 +507,7 @@
    "Duke Hudson"
   ],
   "cagematch_id": 13674,
+  "kept_separate": [],
   "merged_from": [
    "brendan-vink",
    "duke-hudson"
@@ -488,6 +522,7 @@
    "Randy Taylor"
   ],
   "cagematch_id": 10869,
+  "kept_separate": [],
   "merged_from": [
    "dustin-lawyer",
    "randy-taylor"
@@ -502,6 +537,7 @@
    "Minihausen"
   ],
   "cagematch_id": 4962,
+  "kept_separate": [],
   "merged_from": [
    "el-torito",
    "minihausen"
@@ -516,6 +552,7 @@
    "Karissa"
   ],
   "cagematch_id": 21885,
+  "kept_separate": [],
   "merged_from": [
    "elektra-lopez",
    "karissa"
@@ -531,6 +568,7 @@
    "Ezekiel"
   ],
   "cagematch_id": 7461,
+  "kept_separate": [],
   "merged_from": [
    "elias",
    "elias-samson"
@@ -547,6 +585,7 @@
    "Tito Colon"
   ],
   "cagematch_id": 4441,
+  "kept_separate": [],
   "merged_from": [
    "epico",
    "epico-colon",
@@ -562,6 +601,7 @@
    "Eric Perez"
   ],
   "cagematch_id": 2217,
+  "kept_separate": [],
   "merged_from": [
    "eric-escobar",
    "eric-perez"
@@ -577,6 +617,7 @@
    "Rowe"
   ],
   "cagematch_id": 2725,
+  "kept_separate": [],
   "merged_from": [
    "erik",
    "raymond-rowe"
@@ -591,6 +632,7 @@
    "Matt Sydal"
   ],
   "cagematch_id": 1065,
+  "kept_separate": [],
   "merged_from": [
    "evan-bourne",
    "matt-sydal"
@@ -605,6 +647,7 @@
    "Ron Simmons"
   ],
   "cagematch_id": 715,
+  "kept_separate": [],
   "merged_from": [
    "faarooq",
    "ron-simmons"
@@ -619,6 +662,7 @@
    "Flash Funk"
   ],
   "cagematch_id": 649,
+  "kept_separate": [],
   "merged_from": [
    "2-cold-scorpio",
    "flash-funk"
@@ -633,6 +677,7 @@
    "Jody Reese"
   ],
   "cagematch_id": 8524,
+  "kept_separate": [],
   "merged_from": [
    "jody-kristofferson",
    "jody-reese"
@@ -647,6 +692,7 @@
    "Gunner Scott"
   ],
   "cagematch_id": 1160,
+  "kept_separate": [],
   "merged_from": [
    "brent-albright",
    "gunner-scott"
@@ -661,6 +707,7 @@
    "Little Bastard"
   ],
   "cagematch_id": 3586,
+  "kept_separate": [],
   "merged_from": [
    "hornswoggle",
    "little-bastard"
@@ -676,6 +723,7 @@
    "Mr. America"
   ],
   "cagematch_id": 504,
+  "kept_separate": [],
   "merged_from": [
    "hollywood-hogan",
    "hulk-hogan",
@@ -692,6 +740,7 @@
    "Humberto Carrillo"
   ],
   "cagematch_id": 14606,
+  "kept_separate": [],
   "merged_from": [
    "berto",
    "humberto-carrillo"
@@ -706,6 +755,7 @@
    "Stacy Coates"
   ],
   "cagematch_id": 16420,
+  "kept_separate": [],
   "merged_from": [
    "isla-dawn",
    "stacy-coates"
@@ -721,6 +771,7 @@
    "Todd Smith"
   ],
   "cagematch_id": 4657,
+  "kept_separate": [],
   "merged_from": [
    "ivar",
    "todd-smith"
@@ -735,6 +786,7 @@
    "Jake Hager"
   ],
   "cagematch_id": 4071,
+  "kept_separate": [],
   "merged_from": [
    "jack-swagger",
    "jake-hager"
@@ -749,6 +801,7 @@
    "Karen Lundy"
   ],
   "cagematch_id": 20740,
+  "kept_separate": [],
   "merged_from": [
    "jaylee",
    "karen-lundy"
@@ -764,6 +817,7 @@
    "Jimmy James"
   ],
   "cagematch_id": 13033,
+  "kept_separate": [],
   "merged_from": [
    "jay-alexander",
    "jeff-brooks",
@@ -779,6 +833,7 @@
    "Jeff Hardy"
   ],
   "cagematch_id": 891,
+  "kept_separate": [],
   "merged_from": [
    "brother-nero",
    "jeff-hardy"
@@ -794,9 +849,11 @@
    "Slam Master J"
   ],
   "cagematch_id": 1171,
+  "kept_separate": [
+   "jesse"
+  ],
   "merged_from": [
    "cousin-ray",
-   "jesse",
    "ray-gordy"
   ],
   "name": "Jesse",
@@ -809,6 +866,7 @@
    "The Hardkore Kidd"
   ],
   "cagematch_id": 578,
+  "kept_separate": [],
   "merged_from": [
    "jesus",
    "the-hardkore-kidd"
@@ -823,6 +881,7 @@
    "John Robinson"
   ],
   "cagematch_id": 7351,
+  "kept_separate": [],
   "merged_from": [
    "jimmy-uso",
    "john-robinson"
@@ -838,6 +897,7 @@
    "Mercury"
   ],
   "cagematch_id": 340,
+  "kept_separate": [],
   "merged_from": [
    "joey-mercury",
    "joseph-mercury",
@@ -853,6 +913,7 @@
    "Joey Ryan"
   ],
   "cagematch_id": 632,
+  "kept_separate": [],
   "merged_from": [
    "joey-blalock",
    "joey-ryan"
@@ -867,6 +928,7 @@
    "Prototype"
   ],
   "cagematch_id": 691,
+  "kept_separate": [],
   "merged_from": [
    "john-cena",
    "prototype"
@@ -883,6 +945,7 @@
    "Nitro"
   ],
   "cagematch_id": 1099,
+  "kept_separate": [],
   "merged_from": [
    "john-hennigan",
    "john-morrison",
@@ -898,6 +961,7 @@
    "Rob Grymes"
   ],
   "cagematch_id": 6959,
+  "kept_separate": [],
   "merged_from": [
    "johnny-silver",
    "rob-grymes"
@@ -913,6 +977,7 @@
    "Scott Jackson"
   ],
   "cagematch_id": 12492,
+  "kept_separate": [],
   "merged_from": [
    "john-skyler",
    "kevin-mahoney",
@@ -929,6 +994,7 @@
    "Johnny Jeter"
   ],
   "cagematch_id": 151,
+  "kept_separate": [],
   "merged_from": [
    "conquistador-dos",
    "johnny",
@@ -944,6 +1010,7 @@
    "Johnny Gargano"
   ],
   "cagematch_id": 4129,
+  "kept_separate": [],
   "merged_from": [
    "cedrick-von-haussen",
    "johnny-gargano"
@@ -958,6 +1025,7 @@
    "The Bunny"
   ],
   "cagematch_id": 8016,
+  "kept_separate": [],
   "merged_from": [
    "justin-gabriel",
    "the-bunny"
@@ -973,6 +1041,7 @@
    "Kenny Dykstra"
   ],
   "cagematch_id": 1195,
+  "kept_separate": [],
   "merged_from": [
    "kenn-phoenix",
    "kenny-dykstra"
@@ -987,6 +1056,7 @@
    "Kevin Nash"
   ],
   "cagematch_id": 429,
+  "kept_separate": [],
   "merged_from": [
    "diesel",
    "kevin-nash"
@@ -1001,6 +1071,7 @@
    "Mordecai"
   ],
   "cagematch_id": 1080,
+  "kept_separate": [],
   "merged_from": [
    "kevin-thorn",
    "mordecai"
@@ -1015,6 +1086,7 @@
    "Ryan O'Reilly"
   ],
   "cagematch_id": 1795,
+  "kept_separate": [],
   "merged_from": [
    "konnor",
    "ryan-oreilly"
@@ -1029,6 +1101,7 @@
    "Kyle Roberts"
   ],
   "cagematch_id": 19684,
+  "kept_separate": [],
   "merged_from": [
    "bryant",
    "kyle-roberts"
@@ -1043,6 +1116,7 @@
    "Nate Nickerson"
   ],
   "cagematch_id": 2029,
+  "kept_separate": [],
   "merged_from": [
    "lil-nate",
    "nate-nickerson"
@@ -1058,8 +1132,10 @@
    "Marcel Barthel"
   ],
   "cagematch_id": 5855,
+  "kept_separate": [
+   "el-grande-americano"
+  ],
   "merged_from": [
-   "el-grande-americano",
    "ludwig-kaiser"
   ],
   "name": "Ludwig Kaiser",
@@ -1072,6 +1148,7 @@
    "Luke Hawx"
   ],
   "cagematch_id": 187,
+  "kept_separate": [],
   "merged_from": [
    "luke-hawkins",
    "luke-hawx"
@@ -1086,6 +1163,7 @@
    "Maria Kanellis"
   ],
   "cagematch_id": 1848,
+  "kept_separate": [],
   "merged_from": [
    "maria",
    "maria-kanellis"
@@ -1100,6 +1178,7 @@
    "Matt Striker"
   ],
   "cagematch_id": 1359,
+  "kept_separate": [],
   "merged_from": [
    "matt-martel",
    "matt-striker"
@@ -1114,6 +1193,7 @@
    "Mike Stevens"
   ],
   "cagematch_id": 5681,
+  "kept_separate": [],
   "merged_from": [
    "matthew-justice",
    "mike-stevens"
@@ -1128,6 +1208,7 @@
    "Michael Shane"
   ],
   "cagematch_id": 66,
+  "kept_separate": [],
   "merged_from": [
    "matt-bentley",
    "michael-shane"
@@ -1142,6 +1223,7 @@
    "Tyrone Jones"
   ],
   "cagematch_id": 5730,
+  "kept_separate": [],
   "merged_from": [
    "michael-tarver",
    "tyrone-jones"
@@ -1157,6 +1239,7 @@
    "Reckoning"
   ],
   "cagematch_id": 9679,
+  "kept_separate": [],
   "merged_from": [
    "michin",
    "reckoning"
@@ -1172,6 +1255,7 @@
    "Mick Foley"
   ],
   "cagematch_id": 6,
+  "kept_separate": [],
   "merged_from": [
    "mankind",
    "mick-foley"
@@ -1186,6 +1270,7 @@
    "Mike Kruel"
   ],
   "cagematch_id": 1159,
+  "kept_separate": [],
   "merged_from": [
    "michael-w-kruel",
    "mike-kruel"
@@ -1200,6 +1285,7 @@
    "Mikey"
   ],
   "cagematch_id": 364,
+  "kept_separate": [],
   "merged_from": [
    "mike-mondo",
    "mikey"
@@ -1214,6 +1300,7 @@
    "Miss Jackie"
   ],
   "cagematch_id": 102,
+  "kept_separate": [],
   "merged_from": [
    "jackie-gayda",
    "miss-jackie"
@@ -1228,6 +1315,7 @@
    "Zachary Wentz"
   ],
   "cagematch_id": 16824,
+  "kept_separate": [],
   "merged_from": [
    "nash-carter",
    "zachary-wentz"
@@ -1243,6 +1331,7 @@
    "Nattie Neidhart"
   ],
   "cagematch_id": 2048,
+  "kept_separate": [],
   "merged_from": [
    "natalya",
    "nattie-neidhart"
@@ -1257,6 +1346,7 @@
    "Neville"
   ],
   "cagematch_id": 3497,
+  "kept_separate": [],
   "merged_from": [
    "adrian-neville",
    "neville"
@@ -1271,6 +1361,7 @@
    "Nunzio"
   ],
   "cagematch_id": 342,
+  "kept_separate": [],
   "merged_from": [
    "little-guido",
    "nunzio"
@@ -1285,6 +1376,7 @@
    "The Carolina Panther"
   ],
   "cagematch_id": 8069,
+  "kept_separate": [],
   "merged_from": [
    "oney-lorcan",
    "the-carolina-panther"
@@ -1298,8 +1390,10 @@
    "Paul London"
   ],
   "cagematch_id": 972,
+  "kept_separate": [
+   "el-gran-luchadore"
+  ],
   "merged_from": [
-   "el-gran-luchadore",
    "paul-london"
   ],
   "name": "Paul London",
@@ -1313,6 +1407,7 @@
    "Rayo Americano"
   ],
   "cagematch_id": 10529,
+  "kept_separate": [],
   "merged_from": [
    "pete-dunne",
    "rayo-americano"
@@ -1327,6 +1422,7 @@
    "Short Sleeve Sampson"
   ],
   "cagematch_id": 2799,
+  "kept_separate": [],
   "merged_from": [
    "pocket-rocket",
    "short-sleeve-sampson"
@@ -1342,6 +1438,7 @@
    "Primo Colon"
   ],
   "cagematch_id": 1860,
+  "kept_separate": [],
   "merged_from": [
    "primo",
    "primo-colon"
@@ -1356,6 +1453,7 @@
    "Ricardo Rodriguez"
   ],
   "cagematch_id": 5368,
+  "kept_separate": [],
   "merged_from": [
    "el-local",
    "ricardo-rodriguez"
@@ -1371,6 +1469,7 @@
    "The Road Warrior"
   ],
   "cagematch_id": 509,
+  "kept_separate": [],
   "merged_from": [
    "animal",
    "road-warrior-animal",
@@ -1387,6 +1486,7 @@
    "Robert Conway"
   ],
   "cagematch_id": 22,
+  "kept_separate": [],
   "merged_from": [
    "conquistador-uno",
    "rob-conway",
@@ -1402,6 +1502,7 @@
    "Rob Eckos"
   ],
   "cagematch_id": 1743,
+  "kept_separate": [],
   "merged_from": [
    "mr-stone",
    "rob-eckos"
@@ -1416,6 +1517,7 @@
    "Robbie McAllister"
   ],
   "cagematch_id": 1115,
+  "kept_separate": [],
   "merged_from": [
    "robbie",
    "robbie-mcallister"
@@ -1430,6 +1532,7 @@
    "Rodney Mack"
   ],
   "cagematch_id": 514,
+  "kept_separate": [],
   "merged_from": [
    "redd-dogg",
    "rodney-mack"
@@ -1444,6 +1547,7 @@
    "Rory McAllister"
   ],
   "cagematch_id": 1116,
+  "kept_separate": [],
   "merged_from": [
    "rory",
    "rory-mcallister"
@@ -1459,6 +1563,7 @@
    "Rosey"
   ],
   "cagematch_id": 424,
+  "kept_separate": [],
   "merged_from": [
    "kimo",
    "matt-anoai",
@@ -1474,6 +1579,7 @@
    "Rusev"
   ],
   "cagematch_id": 10610,
+  "kept_separate": [],
   "merged_from": [
    "alexander-rusev",
    "rusev"
@@ -1489,6 +1595,7 @@
    "Ryan Braddock"
   ],
   "cagematch_id": 302,
+  "kept_separate": [],
   "merged_from": [
    "bradley-jay",
    "jay-bradley",
@@ -1505,6 +1612,7 @@
    "Santino Marella"
   ],
   "cagematch_id": 3689,
+  "kept_separate": [],
   "merged_from": [
    "boris-alexiev",
    "santino-marella"
@@ -1519,6 +1627,7 @@
    "Shantelle"
   ],
   "cagematch_id": 3229,
+  "kept_separate": [],
   "merged_from": [
    "sensai",
    "shantelle"
@@ -1533,6 +1642,7 @@
    "Shad Gaspard"
   ],
   "cagematch_id": 1113,
+  "kept_separate": [],
   "merged_from": [
    "shad",
    "shad-gaspard"
@@ -1547,6 +1657,7 @@
    "Shaniqua"
   ],
   "cagematch_id": 867,
+  "kept_separate": [],
   "merged_from": [
    "linda-miles",
    "shaniqua"
@@ -1562,6 +1673,7 @@
    "Sheamus O'Shaunessy"
   ],
   "cagematch_id": 2641,
+  "kept_separate": [],
   "merged_from": [
    "king-sheamus",
    "sheamus"
@@ -1576,6 +1688,7 @@
    "Shinsuke Nakamura"
   ],
   "cagematch_id": 56,
+  "kept_separate": [],
   "merged_from": [
    "king-nakamura",
    "shinsuke-nakamura"
@@ -1590,6 +1703,7 @@
    "Simon Dean"
   ],
   "cagematch_id": 192,
+  "kept_separate": [],
   "merged_from": [
    "nova",
    "simon-dean"
@@ -1603,9 +1717,11 @@
    "Hunico"
   ],
   "cagematch_id": 3669,
-  "merged_from": [
-   "hunico",
+  "kept_separate": [
    "sin-cara"
+  ],
+  "merged_from": [
+   "hunico"
   ],
   "name": "Sin Cara",
   "reason": "corpus-decisive",
@@ -1617,6 +1733,7 @@
    "Snitsky"
   ],
   "cagematch_id": 1168,
+  "kept_separate": [],
   "merged_from": [
    "gene-snitsky",
    "snitsky"
@@ -1631,6 +1748,7 @@
    "Super Stacy"
   ],
   "cagematch_id": 606,
+  "kept_separate": [],
   "merged_from": [
    "stacy-keibler",
    "super-stacy"
@@ -1646,6 +1764,7 @@
    "Sylvan Grenier"
   ],
   "cagematch_id": 82,
+  "kept_separate": [],
   "merged_from": [
    "sylvain-grenier",
    "sylvan-grenier"
@@ -1660,6 +1779,7 @@
    "Tom LaRuffa"
   ],
   "cagematch_id": 6276,
+  "kept_separate": [],
   "merged_from": [
    "sylvester-lefort",
    "tom-laruffa"
@@ -1675,6 +1795,7 @@
    "T-BAR"
   ],
   "cagematch_id": 14174,
+  "kept_separate": [],
   "merged_from": [
    "dijak",
    "dominik-dijakovic"
@@ -1689,8 +1810,10 @@
    "The Brooklyn Brawler"
   ],
   "cagematch_id": 874,
+  "kept_separate": [
+   "doink"
+  ],
   "merged_from": [
-   "doink",
    "kim-chee",
    "the-brooklyn-brawler"
   ],
@@ -1704,6 +1827,7 @@
    "TJP"
   ],
   "cagematch_id": 847,
+  "kept_separate": [],
   "merged_from": [
    "tj-perkins",
    "tjp"
@@ -1718,6 +1842,7 @@
    "Tommaso Ciampa"
   ],
   "cagematch_id": 3593,
+  "kept_separate": [],
   "merged_from": [
    "ciampa",
    "tommaso-ciampa"
@@ -1732,6 +1857,7 @@
    "Tonga Loa"
   ],
   "cagematch_id": 7828,
+  "kept_separate": [],
   "merged_from": [
    "camacho",
    "tonga-loa"
@@ -1746,6 +1872,7 @@
    "Trent Barreta"
   ],
   "cagematch_id": 2963,
+  "kept_separate": [],
   "merged_from": [
    "greg-cardona",
    "trent-barreta"
@@ -1761,6 +1888,7 @@
    "Tye Dillinger"
   ],
   "cagematch_id": 3190,
+  "kept_separate": [],
   "merged_from": [
    "gavin-spears",
    "shawn-spears",
@@ -1776,6 +1904,7 @@
    "Tyler Bate"
   ],
   "cagematch_id": 5386,
+  "kept_separate": [],
   "merged_from": [
    "bravo-americano",
    "tyler-bate"
@@ -1790,6 +1919,7 @@
    "Ryan Taylor"
   ],
   "cagematch_id": 4830,
+  "kept_separate": [],
   "merged_from": [
    "russ-taylor",
    "ryan-taylor"
@@ -1805,6 +1935,7 @@
    "Umaga"
   ],
   "cagematch_id": 1087,
+  "kept_separate": [],
   "merged_from": [
    "ekmo",
    "umaga"
@@ -1820,6 +1951,7 @@
    "Val Venis"
   ],
   "cagematch_id": 588,
+  "kept_separate": [],
   "merged_from": [
    "chief-morley",
    "the-big-valbowski",
@@ -1835,6 +1967,7 @@
    "Vladimir Kozlov"
   ],
   "cagematch_id": 2817,
+  "kept_separate": [],
   "merged_from": [
    "oleg-prudius",
    "vladimir-kozlov"
@@ -1849,6 +1982,7 @@
    "Von Wagner"
   ],
   "cagematch_id": 21860,
+  "kept_separate": [],
   "merged_from": [
    "cal-bloom",
    "von-wagner"
@@ -1866,6 +2000,7 @@
    "Wade Barrett"
   ],
   "cagematch_id": 2849,
+  "kept_separate": [],
   "merged_from": [
    "lawrence-knight",
    "stu-sanders",
@@ -1881,6 +2016,7 @@
    "Wendy Choo"
   ],
   "cagematch_id": 18190,
+  "kept_separate": [],
   "merged_from": [
    "mei-ying",
    "wendy-choo"
@@ -1895,6 +2031,7 @@
    "Wesley Blake"
   ],
   "cagematch_id": 14786,
+  "kept_separate": [],
   "merged_from": [
    "blake",
    "wesley-blake"
@@ -1909,6 +2046,7 @@
    "Will Hobbs"
   ],
   "cagematch_id": 12277,
+  "kept_separate": [],
   "merged_from": [
    "royce-keys",
    "will-hobbs"
@@ -1923,6 +2061,7 @@
    "Xavier Woods"
   ],
   "cagematch_id": 4955,
+  "kept_separate": [],
   "merged_from": [
    "king-woods",
    "xavier-woods"
@@ -1937,6 +2076,7 @@
    "Xyon Quinn"
   ],
   "cagematch_id": 21211,
+  "kept_separate": [],
   "merged_from": [
    "daniel-vidot",
    "xyon-quinn"
@@ -1954,6 +2094,7 @@
    "Zack Ryder"
   ],
   "cagematch_id": 2750,
+  "kept_separate": [],
   "merged_from": [
    "brett-majors",
    "brett-matthews",
@@ -1971,6 +2112,7 @@
    "Zelina Vega"
   ],
   "cagematch_id": 10147,
+  "kept_separate": [],
   "merged_from": [
    "zelina",
    "zelina-vega"

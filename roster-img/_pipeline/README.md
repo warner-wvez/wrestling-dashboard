@@ -21,9 +21,28 @@ See `../PROVENANCE.md` for the full record of what was mapped, skipped, and why.
 - `verify.js`: loads the live wrestlers map from `index.html`, lists every webp
   in `roster-img/`, and reports orphans (a webp whose slug is not in the data).
   Run after any addition. Zero orphans is the pass condition.
-- `sdh-fetch.sh`: the primary way to add headshots now. Fetches missing wrestlers
-  straight from SDH's full-body image URLs (no har needed), crops, and logs.
-  Repo-relative, no path edits. `bash sdh-fetch.sh [TOPN]`.
+- `sdh-fetch.sh`: fetches missing wrestlers straight from SDH's full-body image
+  URLs (no har needed), crops, and logs. Repo-relative, no path edits.
+  `bash sdh-fetch.sh [TOPN]`. Two assumptions limit it, both addressed below:
+  it takes targets from `SLUGS.tsv` (top-N by match count) and it guesses the
+  image filename from the slug.
+- `sdh-fetch-aliases.sh`: run after an identity merge. Targets come from
+  `cagematch-pipeline/out/needs_fetch.tsv`, and each wrestler is tried under
+  *every ring name they used*, not only their canonical slug. Humberto
+  Carrillo's 98 matches were split three ways, dropping every fragment below
+  the top-500 cutoff, so `sdh-fetch.sh` never even asked for him.
+- `sdh-fetch-page.sh`: second pass. Resolves the image URL from the wrestler's
+  SDH page (`<meta property="og:image">`) instead of guessing it. SDH
+  year-stamps refreshed renders (`chad-gable-2026.png`), 301s old ring names to
+  the current page (`/wrestlers/dominik-dijakovic` -> the Dijak page), and does
+  not keep filenames in sync with slugs (`dominik-dijak.png`,
+  `ashtante-adonis.png` — their typo — `tyler-taylor-rust.png`). So it follows
+  redirects, and checks the page `<title>` names the wrestler rather than
+  checking the filename. Writes `still-missing.tsv`.
+
+  Candidates for both come from the worker's alias list in
+  `wrestler_identity.json`, already restricted to names no other wrestler used,
+  so a candidate page can never yield a different person's face.
 - `qa.sh`: flags off-style images (sprite / blank / tiny figure) by file size and
   opaque fraction, so you do not have to eyeball every file.
 - `sdh-fetched.tsv`: slug TAB sdh-source-name for every directly fetched image.

@@ -64,6 +64,7 @@ from src.export_to_html import slugify  # noqa: E402  (one slug source of truth)
 from src.roster_aliases import PROTECTED, normkey  # noqa: E402
 
 OUT = Path(__file__).resolve().parent / "out"
+FORCE = "--force" in sys.argv
 
 # Corpus counts win only when the dominant name is at least this many times the
 # runner-up. Below it the counts are a coin flip and full history decides.
@@ -164,6 +165,29 @@ def main():
         worker_slugs[w].add(s)
     splits = {w: ss for w, ss in worker_slugs.items() if len(ss) > 1}
 
+    # This reads the shipped bundle, so it must run BEFORE apply_merge. Run it
+    # after and almost every wrestler is already merged, leaving only the few
+    # residual splits that shared ring names create. It would then overwrite the
+    # committed artifacts with a near-empty canon map and an empty fetch
+    # worklist. Unlike apply_merge this script cannot be idempotent: its input
+    # is the thing apply_merge rewrites.
+    #
+    # Detect it directly rather than by counting splits: if a previous run's
+    # identities are on disk and the slugs they merged away are gone from the
+    # bundle, the merge has already been applied.
+    prev_path = OUT / "wrestler_identity.json"
+    if prev_path.exists() and not FORCE:
+        prev = json.loads(prev_path.read_text(encoding="utf-8"))
+        merged_away = {s for rec in prev.values() for s in rec["merged_from"]
+                       if s != slugify(rec["name"])}
+        if merged_away and not (merged_away & set(W)):
+            sys.exit(
+                f"index.html is already merged ({len(merged_away)} merged-away slugs "
+                f"are absent from it).\nRefusing to overwrite out/ with "
+                f"{len(splits)} residual splits.\nTo regenerate, restore the pre-merge "
+                f"bundle first:\n  git show <commit-before-merge>:index.html > index.html\n"
+                f"Or pass --force if you really mean it.")
+
     # --- name the merged identity --------------------------------------------
     protected_by_key = {normkey(p): p for p in PROTECTED}
     assert not (set(OVERRIDES) & {w for w in splits
@@ -211,11 +235,18 @@ def main():
                     skipped_shared.append((n, name))
                 continue
             canon_map[n] = name
+        # A member survives the merge if its display name is one of the shared
+        # ring names we refuse to remap: Chad Gable's worker owns the
+        # 'el-grande-americano' entry, but that mask is also Ludwig Kaiser's, so
+        # the entry stays. Listing it under merged_from would claim a merge that
+        # never happens, and the already-merged guard reads this field.
+        kept = sorted(s for s in members if W[s]["name"] in shared)
         identity[slugify(name)] = {
             "cagematch_id": int(w),
             "name": name,
             "reason": reason,
-            "merged_from": sorted(members),
+            "merged_from": sorted(set(members) - set(kept)),
+            "kept_separate": kept,
             "aliases": sorted(n for n in corpus_names[w] if n not in shared),
             "total_matches": sum(W[s]["total_matches"] for s in members),
         }
