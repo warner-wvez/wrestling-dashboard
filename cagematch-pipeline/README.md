@@ -257,3 +257,40 @@ and the page carries one too, they must agree within 0.30. They are the same
 Cagematch number seen at two scrape times. More than 2% disagreeing means the
 within-event join is wrong, and the run aborts before writing. Idempotent:
 fill-when-absent means a second run changes nothing.
+
+---
+
+# parse_promos.py -> fill_promos.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/parse_promos.py
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/fill_promos.py [--dry-run]
+```
+
+A promo on Cagematch is a rated talking segment, the mic work fans argue about
+the way they argue about a match. `parse_promos` flattens the 13 promo pages
+(1236 rows, 1043 rated) into `out/cm_promos.json`; `fill_promos` hangs each on
+its show and writes `shards/promos.json`, a lazy sidecar keyed by event id,
+exactly like `shards/media.json`. The event page renders it as a "Promos from
+this show" shelf beside the video-clip Moments shelf.
+
+## The join
+
+By date, like a match: Cagematch dates a promo by its taping night, so the key
+is the event's `tape_date or air_date`. 208 promos predate the 2001 corpus and
+~55 more fall on nights with no Raw / SmackDown / PPV; those stay unattached.
+When two events share a night, the tie is broken by which card actually featured
+the promo's workers, and an unresolvable tie is dropped rather than guessed. 791
+promos attach to 592 shows.
+
+## The check
+
+There is no second promo source to agree with, so correctness is read off the
+participants: on a right join, a segment's workers are people who were on that
+show. `worker_overlap` reports the share of uniquely-dated promos whose workers
+touch the event's match card. It sits around 44%, well above the ~0% a random
+date would give, and it is not meant to be higher: Vince McMahon, Paul Heyman
+and a commentator cut promos without ever wrestling. A collapse toward zero would
+mean the date join is wrong.
+
+Idempotent: the sidecar is rebuilt from scratch each run.

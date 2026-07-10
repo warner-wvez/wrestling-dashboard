@@ -3151,6 +3151,10 @@
   .moment-row:hover .mo-label { color: var(--red); }
   .mo-label { font-weight: 600; font-size: 14px; }
   .mo-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); white-space: nowrap; }
+  .promo-row { align-items: flex-start; }
+  .promo-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .promo-people { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .promo-row .m-rating { flex: none; }
   @media (max-width: 720px) {
     .moments-block { padding: 4px 14px 20px; }
     .moment-row { flex-direction: column; gap: 3px; }
@@ -3571,6 +3575,22 @@
     return mediaPromise;
   }
   const mediaFor = (id) => (MEDIA && id != null && MEDIA[String(id)]) || null;
+
+  // Cagematch-rated promos tied to this show: the mic-work companion to the
+  // video Moments shelf. Same graceful seam as loadMedia; if shards/promos.json
+  // is absent the shelf simply does not render and nothing else changes.
+  let PROMOS = null;
+  let promosPromise = null;
+  function loadPromos() {
+    if (!promosPromise) {
+      promosPromise = fetch('shards/promos.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { PROMOS = map; return map; });
+    }
+    return promosPromise;
+  }
+  const promosFor = (id) => (PROMOS && id != null && PROMOS[String(id)]) || null;
 
   // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful
   // seam as loadMedia: the site works if shards/profiles.json is absent, and the
@@ -4753,6 +4773,7 @@
       const [details] = await Promise.all([
         Promise.all(events.map(e => getEventDetail(e.id))),
         loadMedia(),   // watch links render inline, so the map must be ready
+        loadPromos(),  // the promos shelf renders inline too
       ]);
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
@@ -4963,6 +4984,7 @@
           ${(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
         ${renderMoments(d)}
+        ${renderPromos(d)}
       </div>
     `;
   }
@@ -5013,6 +5035,33 @@
             <span class="mo-label">${esc(mo.label || mo.title || 'Clip')}</span>
             <span class="mo-meta">${mo.min ? `${Math.round(mo.min)} min &middot; ` : ''}${esc(mo.platform || '')}${mo.tier === 'official' ? ' &middot; Official' : ''}</span>
           </a>`).join('')}
+      </div>`;
+  }
+
+  // Rated Cagematch promos on this card: the mic-work companion to Moments.
+  // These are text, not video, so each row shows the line, who cut it, and the
+  // crowd's rating (the same pill a rated match wears), and links to the promo's
+  // Cagematch page rather than a clip. Sorted best-first by the pipeline.
+  function renderPromos(d) {
+    const promos = promosFor(d.id) || [];
+    if (!promos.length) return '';
+    return `
+      <div class="moments-block">
+        <div class="moments-head">Promos from this show</div>
+        ${promos.map(p => {
+          const votes = p.votes ? ` from ${p.votes} vote${p.votes === 1 ? '' : 's'}` : '';
+          const rating = p.rating != null
+            ? `<span class="m-rating" title="Cagematch promo rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${p.rating.toFixed(1)}</span></span>`
+            : '';
+          return `
+          <a class="moment-row promo-row" href="${esc(p.url)}" target="_blank" rel="noopener">
+            <span class="promo-main">
+              <span class="mo-label">${esc(p.title)}</span>
+              <span class="promo-people">${esc((p.workers || []).join(', '))}</span>
+            </span>
+            ${rating}
+          </a>`;
+        }).join('')}
       </div>`;
   }
 
