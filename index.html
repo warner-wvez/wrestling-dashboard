@@ -5170,14 +5170,9 @@
   function renderMatch(m, airDate, sourceSlug = null, eventId = null) {
     const order = String(m.match_order).padStart(2, '0');
     const type = m.match_type || 'Match';
-    // Brand + era in one mark. A saved match or a search hit is read out of
-    // context, where "Raw" alone says nothing about which Raw. No logo (an
-    // unjoined event) renders nothing rather than an empty chip.
-    const mEv = eventById(eventId);
-    const eraBadge = mEv && mEv.logo
-      ? showBadge(mEv.logo, mEv.show_type === 'PPV' ? 'PPV' : mEv.show_type,
-                  SHOW_CLASS[mEv.show_type] || '', 'xs')
-      : '';
+    // The show's logo lives in the modal header, so it is not repeated on every
+    // match row here. The saved-matches and search views, which show a match out
+    // of its show's context, carry their own badge (see renderSaved).
     const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
     const stipTag = m.stipulation ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
     // Rating is NOT a spoiler: surfaced unconditionally so spoiler-hidden users
@@ -5209,7 +5204,6 @@
     return `
       <div class="match-card"${canSave ? ` data-match-id="${esc(String(m.id))}"` : ''}>
         <div class="match-header-row">
-          ${eraBadge}
           <span class="m-number">M${order}</span>
           <span class="m-type">${esc(type)}</span>
           ${titleTag}${stipTag}${ratingTag}${wonTag}
