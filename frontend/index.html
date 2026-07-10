@@ -12,6 +12,11 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
+    /* Live height of the sticky header. Seeded with the one-row desktop
+       height so the first paint is right, then kept exact by JS. Every
+       sticky offset on the page is expressed relative to it. */
+    --header-h: 65px;
+
     /* WWE palette: black, white, red, blue */
     --bg: #FFFFFF;
     --surface: #FFFFFF;
@@ -50,6 +55,9 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+  /* Keeps hash links and scrollIntoView() from parking their target underneath
+     the sticky header. Honored by the scroll container, so both paths get it. */
+  html { scroll-padding-top: calc(var(--header-h) + 16px); }
   html, body {
     font-family: var(--font-sans);
     background: var(--bg);
@@ -69,7 +77,23 @@
   /* =============================================================
      HEADER
      ============================================================= */
+  /* The header pins so the menu, search, and spoiler toggle stay reachable
+     deep inside a long roster or year list. Its height is republished to
+     --header-h (see the ResizeObserver in the script) because the sticky
+     offsets below depend on it and the action row can wrap.
+
+     z-index 50 keeps the header above page content but below the modal
+     backdrop (100), search, and the nav drawer (200), so those still cover it.
+
+     The box-shadow paints an opaque band across the 24px margin-bottom, which
+     is outside the background box and would otherwise let content scroll
+     visibly through the gap between the rule and the first card. */
   header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    box-shadow: 0 24px 0 var(--bg);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1121,7 +1145,7 @@
     padding: 20px;
     margin-bottom: 20px;
     position: sticky;
-    top: 20px;
+    top: calc(var(--header-h) + 20px);
   }
   .side-panel-title {
     font-family: var(--font-sans);
@@ -2938,7 +2962,7 @@
   .video-year { margin-bottom: 34px; }
   .vy-head {
     position: sticky;
-    top: 0;
+    top: var(--header-h);
     z-index: 2;
     display: flex;
     align-items: baseline;
@@ -6644,6 +6668,30 @@
     line.innerHTML = `${esc(stats)} · ${esc(attr)} · ${repo}`;
   }
   renderFooter();
+
+  // The sticky header is the origin every other sticky offset is measured from
+  // (.side-panel, .vy-head, and html's scroll-padding-top all read --header-h).
+  // Its height is not a constant: the action row wraps on narrow viewports and
+  // the webfont swap reflows it. Republish on every resize so a stale value
+  // never leaves the sidebar tucked under the header.
+  function setupStickyHeader() {
+    const hdr = document.querySelector('header');
+    if (!hdr) return;
+    const publish = () => {
+      const h = Math.round(hdr.getBoundingClientRect().height);
+      if (h) document.documentElement.style.setProperty('--header-h', `${h}px`);
+    };
+    if (typeof ResizeObserver === 'function') {
+      new ResizeObserver(publish).observe(hdr);
+    } else {
+      window.addEventListener('resize', publish);   // Safari < 13.1
+    }
+    publish();
+    // getBoundingClientRect() before the webfont lands measures the fallback
+    // face, so re-measure once the real one is in.
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(publish);
+  }
+  setupStickyHeader();
 
   setupWatchedNav();
   setupVideoNav();
