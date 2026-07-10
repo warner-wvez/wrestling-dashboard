@@ -250,6 +250,40 @@
   }
   .event-hero-top .brand-chip { margin-bottom: 0; }
 
+  /* =============================================================
+     ERA BADGE
+     The logo Cagematch rendered beside this exact event, so a 1998 Raw wears
+     RAW IS WAR and a 2003 Raw does not. Files are the original 102x52 gifs
+     (cagematch-pipeline/extract_logos.py); each bakes in its own background,
+     black for most and white for a few, so the hairline border is what keeps
+     the white ones from dissolving into the page.
+
+     The text chip stays in the DOM as the fallback: if the gif 404s the image
+     removes itself and flags the wrapper, which reveals the chip. That way a
+     missing logo degrades to exactly what shipped before.
+     ============================================================= */
+  .show-brand { display: inline-flex; align-items: center; flex-shrink: 0; }
+  .show-brand:not(.no-logo) > .brand-chip,
+  .show-brand:not(.no-logo) > .chip { display: none; }
+  .show-logo {
+    display: block;
+    width: auto;
+    border: 1px solid var(--border);
+    image-rendering: -webkit-optimize-contrast;   /* 102px wide, never upscaled */
+  }
+  /* Every logo is 102x52, so a fixed height gives every badge the same width.
+     One size per surface keeps a row of cards from looking ragged. */
+  .show-logo     { height: 40px; }   /* modal hero */
+  .show-logo.sm  { height: 20px; }   /* card rows: watched, saved, video, search */
+  .show-logo.xs  { height: 18px; }   /* match card, up-next queue */
+  .mini-chip .mini-logo {
+    height: 16px;
+    width: auto;
+    flex: 0 0 auto;
+    margin-right: 6px;
+    border: 1px solid var(--border);
+  }
+
   /* Calendar day holding the current resume show (your place in the journey).
      A pulsing ring draws the eye to the next show on the agenda. */
   .day.is-resume { border-color: var(--red); }
@@ -3378,7 +3412,7 @@
 
   const dataEl = document.getElementById('wrestling-data');
   const BUNDLE = dataEl ? JSON.parse(dataEl.textContent) : null;
-  const SUMMARY_KEYS = ['id','air_date','show_type','title','venue','city','episode_number','ppv_name','match_count'];
+  const SUMMARY_KEYS = ['id','air_date','show_type','title','venue','city','episode_number','ppv_name','match_count','logo'];
 
   // Cache the inline core + lazy match shards for offline-after-first-visit on
   // the Pages build. Guarded to http(s) so the single-file build opened from
@@ -3754,7 +3788,7 @@
       const c = SHOW_CLASS[e.show_type] || '';
       const chip = e.show_type === 'PPV' ? 'PPV' : (e.show_type === 'SmackDown' ? 'SD' : 'Raw');
       return `<button class="hero-up-row" type="button" data-go="${esc(id)}">
-          <span class="chip ${c}">${esc(chip)}</span>
+          ${showBadge(e.logo, chip, c, 'xs', 'chip')}
           <span class="hu-main"><span class="hu-name">${esc(cleanName(e))}</span><span class="hu-date">${esc(fmtDateLong(e.air_date))}</span></span>
         </button>`;
     }).join('');
@@ -3772,7 +3806,7 @@
     // Just brand, date, and match count. The venue/city is trivia that competes
     // with the few things that actually drive the decision to press play.
     const metaBits = [
-      `<span class="chip ${cls}">${esc(chipLabel)}</span>`,
+      showBadge(ev.logo, chipLabel, cls, 'sm', 'chip'),
       `<span>${esc(fmtDateLong(ev.air_date))}</span>`,
       `<span class="dot"></span>`,
       `<span>${ev.match_count} ${ev.match_count === 1 ? 'match' : 'matches'}</span>`,
@@ -4062,7 +4096,7 @@
         <button class="watched-row" type="button" data-go-event="${esc(String(ev.id))}">
           <span class="wr-check" aria-hidden="true"></span>
           <span class="wr-date">${esc(fmtDateLong(ev.air_date))}</span>
-          <span class="wr-show"><span class="brand-chip ${cls}">${esc(ev.show_type === 'PPV' ? 'PPV' : ev.show_type)}</span><span class="wr-name">${esc(showName)}</span></span>
+          <span class="wr-show">${showBadge(ev.logo, ev.show_type === 'PPV' ? 'PPV' : ev.show_type, cls, 'sm')}<span class="wr-name">${esc(showName)}</span></span>
           <span class="wr-meta">${ev.match_count != null ? esc(ev.match_count + ' matches') : ''}</span>
           <span class="wr-go">Rewatch</span>
           <span class="wr-remove" data-unwatch="${esc(String(ev.id))}" role="button" tabindex="0" title="Remove from watched">Remove</span>
@@ -4172,7 +4206,7 @@
       return `
         <button class="saved-row" type="button" data-go-event="${esc(String(ev.id))}" data-go-match="${esc(String(match.id))}">
           <span class="sr-date">${esc(fmtDateLong(ev.air_date))}</span>
-          <span class="sr-show"><span class="brand-chip ${cls}">${esc(ev.show_type === 'PPV' ? 'PPV' : ev.show_type)}</span>${esc(showName)}</span>
+          <span class="sr-show">${showBadge(ev.logo, ev.show_type === 'PPV' ? 'PPV' : ev.show_type, cls, 'sm')}${esc(showName)}</span>
           <span class="sr-match"><span class="sr-type">${esc(match.match_type || 'Match')}</span>${tags}${rating}</span>
           ${matchup ? `<span class="sr-people">${esc(matchup)}</span>` : ''}
           <span class="sr-remove" data-remove="${esc(savedKey(ev.id, match.id))}" title="Remove from saved" role="button" tabindex="0">Remove</span>
@@ -4270,7 +4304,7 @@
         <div class="ve-head">
           <span class="ve-date">${esc(fmtDateLong(ev.air_date))}</span>
           <button class="ve-title" type="button" data-go-event="${esc(String(ev.id))}" title="Open this show">
-            <span class="brand-chip ${cls}">${esc(ev.show_type === 'PPV' ? 'PPV' : ev.show_type)}</span>
+            ${showBadge(ev.logo, ev.show_type === 'PPV' ? 'PPV' : ev.show_type, cls, 'sm')}
             <span class="ve-name">${esc(showName)}</span>
           </button>
           <span class="ve-n">${n} link${n === 1 ? '' : 's'}</span>
@@ -4576,7 +4610,12 @@
           if (ev.show_type === 'PPV') label = (ev.ppv_name || 'PPV').replace(/^WW[EF]\s+/, '');
           else if (ev.show_type === 'Raw') label = 'Raw';
           else label = 'SmackDown';
-          m.innerHTML = `<span class="label">${esc(label)}</span><span class="ct">${ev.match_count}</span>`;
+          // The era logo rides the day marker, so scrolling the calendar through
+          // the years shows the brand actually changing under you.
+          const era = ev.logo
+            ? `<img class="mini-logo" src="logo-img/${esc(ev.logo)}.gif" alt="" loading="lazy" onerror="this.remove()">`
+            : '';
+          m.innerHTML = `${era}<span class="label">${esc(label)}</span><span class="ct">${ev.match_count}</span>`;
           markers.appendChild(m);
         }
         div.appendChild(markers);
@@ -4880,7 +4919,7 @@
       <div class="event-block" data-event-id="${bmId}" data-event-date="${esc(d.air_date || '')}" data-event-name="${esc(title || '')}">
         <div class="event-hero ${cls}">
           <div class="event-hero-top">
-            <span class="brand-chip ${cls}">${esc(chipLabel)}</span>
+            ${showBadge(d.logo, chipLabel, cls)}
             <div class="event-hero-actions">
               <button class="watched-btn${isW ? ' active' : ''}" data-watched-id="${bmId}" type="button" aria-pressed="${isW ? 'true' : 'false'}" title="${isW ? 'Mark as not watched' : 'Mark this show watched'}">
                 <span class="wb-check" aria-hidden="true"></span>
@@ -4953,6 +4992,14 @@
   function renderMatch(m, airDate, sourceSlug = null, eventId = null) {
     const order = String(m.match_order).padStart(2, '0');
     const type = m.match_type || 'Match';
+    // Brand + era in one mark. A saved match or a search hit is read out of
+    // context, where "Raw" alone says nothing about which Raw. No logo (an
+    // unjoined event) renders nothing rather than an empty chip.
+    const mEv = eventById(eventId);
+    const eraBadge = mEv && mEv.logo
+      ? showBadge(mEv.logo, mEv.show_type === 'PPV' ? 'PPV' : mEv.show_type,
+                  SHOW_CLASS[mEv.show_type] || '', 'xs')
+      : '';
     const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
     const stipTag = m.stipulation ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
     // Rating is NOT a spoiler: surfaced unconditionally so spoiler-hidden users
@@ -4979,6 +5026,7 @@
     return `
       <div class="match-card"${canSave ? ` data-match-id="${esc(String(m.id))}"` : ''}>
         <div class="match-header-row">
+          ${eraBadge}
           <span class="m-number">M${order}</span>
           <span class="m-type">${esc(type)}</span>
           ${titleTag}${stipTag}${ratingTag}
@@ -6386,6 +6434,7 @@
         id: ev.id,
         date: ev.air_date,
         show: ev.show_type,
+        logo: ev.logo,
         name: showName,
         hay: [showName, ev.venue, ev.city, ev.state_province, ev.show_type, year,
               (ev.show_type === 'PPV' ? 'ppv pay per view premium live event' : '')]
@@ -6400,6 +6449,7 @@
           matchId: m.id,
           date: ev.air_date,
           show: ev.show_type,
+          logo: ev.logo,
           matchup: matchup || (m.match_type || 'Match'),
           sub: subBits.join(' · '),
           showName,
@@ -6417,6 +6467,7 @@
           eventId, matchId,
           date: ev.air_date,
           show: ev.show_type,
+          logo: ev.logo,
           matchup: matchup || 'Match',
           sub: sub || '',
           showName,
@@ -6494,10 +6545,27 @@
       `<div class="search-hint">Search ${counts} and the full roster. Try a wrestler, a PPV, a venue, or a stipulation like <em>Hell in a Cell</em> or <em>Ladder Match</em>.</div>`;
   }
 
-  function brandChip(show) {
+  // The era badge. `logo` is a slug stamped onto every event by
+  // cagematch-pipeline/extract_logos.py, taken from the logo Cagematch rendered
+  // beside that exact show rather than inferred from its date. Renders the gif
+  // with the old text chip behind it as a fallback (see the ERA BADGE css).
+  function showBadge(logo, label, cls, size, chipClass) {
+    const chip = `<span class="${chipClass || 'brand-chip'} ${cls}">${esc(label)}</span>`;
+    if (!logo) return `<span class="show-brand no-logo">${chip}</span>`;
+    return `<span class="show-brand"><img class="show-logo${size ? ' ' + size : ''}"`
+      + ` src="logo-img/${esc(logo)}.gif" alt="${esc(label)}" loading="lazy"`
+      + ` onerror="this.closest('.show-brand').classList.add('no-logo');this.remove();">`
+      + `${chip}</span>`;
+  }
+
+  // Look up an event by id for renderers that only receive the id.
+  const eventById = (id) => (id == null || !BUNDLE || !BUNDLE.events)
+    ? null : (BUNDLE.events[String(id)] || null);
+
+  function brandChip(show, logo) {
     const cls = SHOW_CLASS[show] || '';
     const label = show === 'PPV' ? 'PPV' : show;
-    return `<span class="brand-chip ${cls}">${esc(label)}</span>`;
+    return showBadge(logo, label, cls, 'sm');
   }
 
   function renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal }) {
@@ -6535,7 +6603,7 @@
       for (const e of ev) {
         html.push(
           `<button class="sresult" role="option" type="button" data-kind="event" data-event="${esc(String(e.id))}">
-             ${brandChip(e.show)}
+             ${brandChip(e.show, e.logo)}
              <span class="ss-main">
                <span class="ss-title">${hlSearch(e.name, toks)}</span>
                <span class="ss-sub">${esc(fmtDateLong(e.date))}</span>
@@ -6552,7 +6620,7 @@
         const sub = [m.sub, m.showName, fmtDateLong(m.date)].filter(Boolean).join(' · ');
         html.push(
           `<button class="sresult" role="option" type="button" data-kind="match" data-event="${esc(String(m.eventId))}" data-match="${esc(String(m.matchId))}">
-             ${brandChip(m.show)}
+             ${brandChip(m.show, m.logo)}
              <span class="ss-main">
                <span class="ss-title">${hlSearch(m.matchup, toks)}</span>
                <span class="ss-sub">${hlSearch(sub, toks)}</span>

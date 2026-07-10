@@ -1,0 +1,212 @@
+{
+ "ecw": {
+  "file": "ecw.gif",
+  "show": "ECW",
+  "source": "1_ECW.gif",
+  "valid_from": null,
+  "valid_to": null
+ },
+ "promotion": {
+  "file": "promotion.gif",
+  "show": "WWE (promotion)",
+  "source": "1.gif",
+  "valid_from": null,
+  "valid_to": null
+ },
+ "promotion-19971209": {
+  "file": "promotion-19971209.gif",
+  "show": "WWE (promotion)",
+  "source": "1__19971209-20020505.gif",
+  "valid_from": "19971209",
+  "valid_to": "20020505"
+ },
+ "promotion-20020506": {
+  "file": "promotion-20020506.gif",
+  "show": "WWE (promotion)",
+  "source": "1__20020506-20140817.gif",
+  "valid_from": "20020506",
+  "valid_to": "20140817"
+ },
+ "wwe-friday-night-smackdown-20050906": {
+  "file": "wwe-friday-night-smackdown-20050906.gif",
+  "show": "WWE Friday Night SmackDown",
+  "source": "1_WWE Friday Night SmackDown_20050906-20080115.gif",
+  "valid_from": "20050906",
+  "valid_to": "20080115"
+ },
+ "wwe-friday-night-smackdown-20080122": {
+  "file": "wwe-friday-night-smackdown-20080122.gif",
+  "show": "WWE Friday Night SmackDown",
+  "source": "1_WWE Friday Night SmackDown_20080122-20150106.gif",
+  "valid_from": "20080122",
+  "valid_to": "20150106"
+ },
+ "wwe-friday-night-smackdown-20191004": {
+  "file": "wwe-friday-night-smackdown-20191004.gif",
+  "show": "WWE Friday Night SmackDown",
+  "source": "1_WWE Friday Night SmackDown_20191004-20240906.gif",
+  "valid_from": "20191004",
+  "valid_to": "20240906"
+ },
+ "wwe-friday-night-smackdown-20240913": {
+  "file": "wwe-friday-night-smackdown-20240913.gif",
+  "show": "WWE Friday Night SmackDown",
+  "source": "1_WWE Friday Night SmackDown_20240913-.gif",
+  "valid_from": "20240913",
+  "valid_to": null
+ },
+ "wwe-monday-night-raw-20051003": {
+  "file": "wwe-monday-night-raw-20051003.gif",
+  "show": "WWE Monday Night RAW",
+  "source": "1_WWE Monday Night RAW_20051003-20061002.gif",
+  "valid_from": "20051003",
+  "valid_to": "20061002"
+ },
+ "wwe-monday-night-raw-20061009": {
+  "file": "wwe-monday-night-raw-20061009.gif",
+  "show": "WWE Monday Night RAW",
+  "source": "1_WWE Monday Night RAW_20061009-20120716.gif",
+  "valid_from": "20061009",
+  "valid_to": "20120716"
+ },
+ "wwe-monday-night-raw-20120723": {
+  "file": "wwe-monday-night-raw-20120723.gif",
+  "show": "WWE Monday Night RAW",
+  "source": "1_WWE Monday Night RAW_20120723-20160718.gif",
+  "valid_from": "20120723",
+  "valid_to": "20160718"
+ },
+ "wwe-monday-night-raw-20160725": {
+  "file": "wwe-monday-night-raw-20160725.gif",
+  "show": "WWE Monday Night RAW",
+  "source": "1_WWE Monday Night RAW_20160725-20190923.gif",
+  "valid_from": "20160725",
+  "valid_to": "20190923"
+ },
+ "wwe-monday-night-raw-20190930": {
+  "file": "wwe-monday-night-raw-20190930.gif",
+  "show": "WWE Monday Night RAW",
+  "source": "1_WWE Monday Night RAW_20190930-20241230.gif",
+  "valid_from": "20190930",
+  "valid_to": "20241230"
+ },
+ "wwe-monday-night-raw-20250106": {
+  "file": "wwe-monday-night-raw-20250106.gif",
+  "show": "WWE Monday Night RAW",
+  "source": "1_WWE Monday Night RAW_20250106-.gif",
+  "valid_from": "20250106",
+  "valid_to": null
+ },
+ "wwe-nxt-20120517": {
+  "file": "wwe-nxt-20120517.gif",
+  "show": "WWE NXT",
+  "source": "1_WWE NXT_20120517-20210913.gif",
+  "valid_from": "20120517",
+  "valid_to": "20210913"
+ },
+ "wwe-nxt-20210914": {
+  "file": "wwe-nxt-20210914.gif",
+  "show": "WWE NXT",
+  "source": "1_WWE NXT_20210914-20220913.gif",
+  "valid_from": "20210914",
+  "valid_to": "20220913"
+ },
+ "wwe-nxt-20220914": {
+  "file": "wwe-nxt-20220914.gif",
+  "show": "WWE NXT",
+  "source": "1_WWE NXT_20220914-20240930.gif",
+  "valid_from": "20220914",
+  "valid_to": "20240930"
+ },
+ "wwe-nxt-20241001": {
+  "file": "wwe-nxt-20241001.gif",
+  "show": "WWE NXT",
+  "source": "1_WWE NXT_20241001-.gif",
+  "valid_from": "20241001",
+  "valid_to": null
+ },
+ "wwe-nxt-takeover": {
+  "file": "wwe-nxt-takeover.gif",
+  "show": "WWE NXT TakeOver",
+  "source": "1_WWE NXT TakeOver.gif",
+  "valid_from": null,
+  "valid_to": null
+ },
+ "wwe-nxt-uk": {
+  "file": "wwe-nxt-uk.gif",
+  "show": "WWE NXT UK",
+  "source": "1_WWE NXT UK.gif",
+  "valid_from": null,
+  "valid_to": null
+ },
+ "wwe-raw-20020506": {
+  "file": "wwe-raw-20020506.gif",
+  "show": "WWE RAW",
+  "source": "1_WWE RAW_20020506-20050926.gif",
+  "valid_from": "20020506",
+  "valid_to": "20050926"
+ },
+ "wwe-smackdown-20020507": {
+  "file": "wwe-smackdown-20020507.gif",
+  "show": "WWE SmackDown",
+  "source": "1_WWE SmackDown_20020507-20050830.gif",
+  "valid_from": "20020507",
+  "valid_to": "20050830"
+ },
+ "wwe-smackdown-live-2016": {
+  "file": "wwe-smackdown-live-2016.gif",
+  "show": "WWE SmackDown Live",
+  "source": "1_WWE SmackDown Live_2016-2019.gif",
+  "valid_from": "2016",
+  "valid_to": "2019"
+ },
+ "wwe-thursday-night-smackdown-20150113": {
+  "file": "wwe-thursday-night-smackdown-20150113.gif",
+  "show": "WWE Thursday Night SmackDown",
+  "source": "1_WWE Thursday Night SmackDown_20150113-20160712.gif",
+  "valid_from": "20150113",
+  "valid_to": "20160712"
+ },
+ "wwe-tribute-to-the-troops": {
+  "file": "wwe-tribute-to-the-troops.gif",
+  "show": "WWE Tribute To The Troops",
+  "source": "1_WWE Tribute To The Troops.gif",
+  "valid_from": null,
+  "valid_to": null
+ },
+ "wwf-raw-20010917": {
+  "file": "wwf-raw-20010917.gif",
+  "show": "WWF RAW",
+  "source": "1_WWF RAW_20010917-20020325.gif",
+  "valid_from": "20010917",
+  "valid_to": "20020325"
+ },
+ "wwf-raw-20020401": {
+  "file": "wwf-raw-20020401.gif",
+  "show": "WWF RAW",
+  "source": "1_WWF RAW_20020401-20020429.gif",
+  "valid_from": "20020401",
+  "valid_to": "20020429"
+ },
+ "wwf-raw-is-war-19970310": {
+  "file": "wwf-raw-is-war-19970310.gif",
+  "show": "WWF RAW is WAR",
+  "source": "1_WWF RAW is WAR_19970310-20010910.gif",
+  "valid_from": "19970310",
+  "valid_to": "20010910"
+ },
+ "wwf-smackdown-1999": {
+  "file": "wwf-smackdown-1999.gif",
+  "show": "WWF SmackDown",
+  "source": "1_WWF SmackDown_1999-20010807.gif",
+  "valid_from": "1999",
+  "valid_to": "20010807"
+ },
+ "wwf-smackdown-20010814": {
+  "file": "wwf-smackdown-20010814.gif",
+  "show": "WWF SmackDown",
+  "source": "1_WWF SmackDown_20010814-20020430.gif",
+  "valid_from": "20010814",
+  "valid_to": "20020430"
+ }
+}
