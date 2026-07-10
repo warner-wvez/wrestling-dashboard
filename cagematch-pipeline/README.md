@@ -386,3 +386,18 @@ German is "Tage" (days), dropped for the day count.
 
 Champions who wrestle only in NXT / EVOLVE / ID are outside the Raw-SmackDown-PPV
 corpus, so they render as plain text rather than a profile link. Idempotent.
+
+---
+
+# fix_german_leftovers.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/fix_german_leftovers.py [--dry-run]
+```
+
+The last German strings the untargeted scrape left in fields the `/en/` view does
+not translate: `tv_network` "PPV Sender" -> "Pay-Per-View" (109) and "lokale TV
+Sender (USA)" -> "Local TV (USA)" (2), `city` "Bagdad" -> "Baghdad" (3) and
+"Mailand" -> "Milan" (2). A straight rename, since these are labels, not real
+spellings. A tripwire scan flags any German-looking value it does not know how to
+translate, so a new straggler is loud rather than shipped. Idempotent.
