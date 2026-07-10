@@ -4841,10 +4841,23 @@
     });
   })();
 
+  // "San Jose, California" / "Sheffield, South Yorkshire, UK" / "Riyadh, Saudi Arabia".
+  // city/state/country are stored split (see src/cagematch_scraper._parse_location),
+  // so the line has to reassemble them. USA is dropped: it is 92% of the corpus and
+  // saying it every time is noise. Older rows had the state baked into city and no
+  // country at all, which is why this used to print just the city field.
+  function placeOf(d) {
+    if (!d.city) return null;
+    const parts = [d.city, d.state_province];
+    if (d.country && d.country !== 'USA') parts.push(d.country);
+    return parts.filter(Boolean).join(', ');
+  }
+
   function buildMeta(d) {
     const bits = [];
     if (d.venue) bits.push(esc(d.venue));
-    if (d.city) bits.push(esc(d.city));
+    const place = placeOf(d);
+    if (place) bits.push(esc(place));
     if (d.attendance) bits.push(`${d.attendance.toLocaleString()} fans`);
     if (d.tape_date && d.tape_date !== d.air_date) bits.push(`Taped ${esc(d.tape_date)}`);
     if (d.tv_network) bits.push(esc(d.tv_network));

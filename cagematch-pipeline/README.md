@@ -128,6 +128,76 @@ the 82 events that do not join to Cagematch still has a shipped canonical, and
 that canonical may itself be merging away (`T-Bar` -> `Dijak` -> `T-BAR`).
 Resolving one level leaves an orphan fragment beside the merged entry.
 
+---
+
+# fill_locations.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/fill_locations.py [--dry-run]
+```
+
+Fills venue and location, and backfills `events.cagematch_nr`. Idempotent.
+
+| field | empty before | empty after |
+|---|---|---|
+| venue | 680 | 8 |
+| city | 673 | 2 |
+| state_province | 877 | 44 |
+| country | 863 | 2 |
+| cagematch_nr | 863 | 5 |
+
+The 863 events with no `cagematch_nr` were exactly the ones with a location
+problem: 673 SmackDownHotel rows had nothing at all, while 114 Wikipedia and 76
+Fandom rows jammed the state into the city (`Houston, Texas`, and some with a
+stray space: `Hartford, Connecticut , USA`). A join problem, not a scrape.
+
+## Four keys, in order
+
+1. **date + show type** settles 781.
+2. **date + episode**, for nights Cagematch files two shows on (see below).
+3. **date + venue**, for the two PPVs that share a night. WrestleMania Saturday
+   and NXT Stand & Deliver are in different buildings, and a PPV has no episode
+   number. Titles cannot settle it: Cagematch calls it "WrestleMania XL -
+   Saturday" where the dashboard calls it "Night 1".
+4. **episode + date window**, for shows whose broadcast date has no Cagematch
+   row at all.
+
+Every match is one-to-one. 3041 of 3046 events join; the 5 that do not are left
+alone, beyond splitting their own jammed city string in place.
+
+## Two traps
+
+**Cagematch dates the taping.** parse_raw already handles taped SmackDown. Raw
+needs no rule *except* in 2020, when WWE taped two episodes a night at the
+Performance Center: Cagematch files RAW #1405 and #1406 both on 2020-04-27,
+while they aired a week apart. The second episode has no row on its broadcast
+date, which is why key 4 exists.
+
+**Episode numbers disagree between sources.** Cagematch calls the 2001-01-04
+SmackDown #73; Fandom calls it #72, consistently, for 74 straight events. The
+venue (Freeman Coliseum, San Antonio) proves the *date* join is the right one,
+so episode number can only be a tiebreaker, and only once the per-source offset
+is learned from events already joined. Fandom SmackDown is +1, everything else 0.
+
+## What it overwrites
+
+Venue is filled when absent and **never** overwritten. Where both sides have
+one, they are the same building under two names, and neither source is reliably
+better (`Omaha Civic Auditorium` beats `Civic Auditorium`, but `Fort Worth
+Convention Center` beats `Convention Center Arena`). The 86 disagreements go to
+`out/location_conflicts.tsv` unresolved.
+
+City, state and country are taken from Cagematch wholesale, because the shipped
+strings are the dirty ones. This also fixes rows that duplicated the state into
+the city (`city="Omaha, Nebraska"`, `state="Nebraska"`), German country names
+left by the original scrape (`Irak`, `Italien`), and at least one plain error:
+the 2001-08-16 SmackDown was filed under Salt Lake City, but the arena is in
+West Valley City. All 243 rewrites are in `out/location_rewrites.tsv`.
+
+Still German, and still wrong, from that original scrape: five foreign *city*
+names (`Bagdad`, `Mailand`). The listing spells them the same way, so this pass
+cannot fix them.
+
 ## Fidelity gate
 
 There is no local `wrestling.db`, so the bundle cannot be regenerated from
