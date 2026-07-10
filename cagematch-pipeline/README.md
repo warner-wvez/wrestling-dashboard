@@ -365,3 +365,24 @@ written into the DOM when spoilers are on. The tournament's *name* is not a
 spoiler and always shows; with spoilers off the row reads "Winner hidden. Turn
 spoilers on to reveal.", and the winner's name is never placed in the markup.
 Idempotent: rebuilt from scratch each run.
+
+---
+
+# parse_titles.py -> fill_titles.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/parse_titles.py
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/fill_titles.py [--dry-run]
+```
+
+The titles page is a snapshot of every active WWE championship and who holds it,
+with a prestige rating for each lineage. `parse_titles` lifts every row (active
+and retired); `fill_titles` keeps the 22 active ones (the retired lineages read
+INACTIVE with no champion), resolves each champion to a dashboard profile, and
+writes `shards/titles.json`, sorted by rating. It powers the **Titles** view: the
+belt and its rating always show, the current holder only with spoilers on, since
+the holder is a result like any other. Titles are already English; the only
+German is "Tage" (days), dropped for the day count.
+
+Champions who wrestle only in NXT / EVOLVE / ID are outside the Raw-SmackDown-PPV
+corpus, so they render as plain text rather than a profile link. Idempotent.

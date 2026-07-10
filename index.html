@@ -3005,6 +3005,22 @@
     color: var(--ink-dim);
     letter-spacing: 0.02em;
   }
+  .titles-board { max-width: 780px; }
+  .title-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 14px 2px; border-bottom: 1px solid var(--border);
+  }
+  .title-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .title-name {
+    font-family: var(--font-sans); font-weight: 700; font-size: 15px;
+    color: var(--ink); text-decoration: none;
+  }
+  .title-name:hover { color: var(--red); }
+  .title-holder { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim); }
+  .title-champ-link { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--border-strong); }
+  .title-champ-link:hover { color: var(--red); }
+  .title-since { color: var(--ink-dim); }
+  .title-row .m-rating { flex: none; }
   .video-toolbar { margin-bottom: 22px; }
   .video-filters { display: flex; gap: 8px; flex-wrap: wrap; }
   .video-note {
@@ -3310,6 +3326,14 @@
   <div id="video-view-content"></div>
 </section>
 
+<section id="view-titles" class="view" hidden>
+  <div class="video-view-header">
+    <h2>Titles</h2>
+    <p class="video-sub">Active WWE championships, sorted by how the lineage is rated. The current holder shows with spoilers on.</p>
+  </div>
+  <div id="titles-content" class="titles-board"></div>
+</section>
+
 <section id="view-wrestler" class="view" hidden>
   <div id="wrestler-profile-content"></div>
 </section>
@@ -3342,6 +3366,10 @@
       <button class="nav-link" data-nav="roster" type="button">
         <span class="nav-link-name">Roster</span>
         <span class="nav-link-sub">Look up any wrestler's career</span>
+      </button>
+      <button class="nav-link" data-nav="titles" type="button">
+        <span class="nav-link-name">Titles</span>
+        <span class="nav-link-sub">Who holds every belt, by prestige</span>
       </button>
     </nav>
     <div class="nav-drawer-foot">
@@ -3623,6 +3651,67 @@
   }
   const tournamentsFor = (id) => (TOURNEYS && id != null && TOURNEYS[String(id)]) || null;
 
+  // The Titles view: active championships with their current holder and the
+  // Cagematch prestige rating, loaded once from its own sidecar. The holder is a
+  // spoiler and is written into the DOM only with spoilers on (see renderTitles).
+  let TITLES_BOARD = null;
+  let titlesBoardPromise = null;
+  function loadTitlesBoard() {
+    if (!titlesBoardPromise) {
+      titlesBoardPromise = fetch('shards/titles.json')
+        .then(r => (r.ok ? r.json() : []))
+        .catch(() => [])
+        .then(list => { TITLES_BOARD = list; return list; });
+    }
+    return titlesBoardPromise;
+  }
+  const TITLE_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function fmtTitleSince(iso) {
+    const [y, m, d] = String(iso).split('-').map(Number);
+    return `${d} ${TITLE_MONTHS[(m || 1) - 1]} ${y}`;
+  }
+  function titleChampHTML(t) {
+    // A champion in the corpus links to their profile; an NXT/EVOLVE/ID holder
+    // who is not in it renders as plain text. A tag title names the team.
+    const links = t.champions.map(c => c.slug
+      ? `<a class="title-champ-link" href="#wrestler/${esc(c.slug)}">${esc(c.name)}</a>`
+      : `<span>${esc(c.name)}</span>`).join(' & ');
+    return t.team_name ? `${esc(t.team_name)} <span class="title-team">(${links})</span>` : links;
+  }
+  async function renderTitles() {
+    const container = el('titles-content');
+    if (!container) return;
+    if (!TITLES_BOARD) {
+      container.innerHTML = '<div class="status">Loading titles...</div>';
+      await loadTitlesBoard();
+    }
+    const board = TITLES_BOARD || [];
+    if (!board.length) {
+      container.innerHTML = '<div class="status">No title data available.</div>';
+      return;
+    }
+    container.innerHTML = board.map(t => {
+      const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
+      const rating = t.rating != null
+        ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
+        : '';
+      const since = t.since
+        ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.days_held ? `, ${t.days_held} days` : ''}</span>`
+        : '';
+      const holder = spoilers
+        ? `held by ${titleChampHTML(t)}${since}`
+        : `<span class="report-hidden">Champion hidden while spoilers are off</span>`;
+      return `
+        <div class="title-row">
+          <span class="title-main">
+            <a class="title-name" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.title)}</a>
+            <span class="title-holder">${holder}</span>
+          </span>
+          ${rating}
+        </div>`;
+    }).join('');
+  }
+
   // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful
   // seam as loadMedia: the site works if shards/profiles.json is absent, and the
   // wrestler view lazy-loads it then re-renders (see renderWrestler).
@@ -3732,6 +3821,7 @@
     rerenderOpenModal();
     const h = window.location.hash;
     if (h.startsWith('#wrestler/')) renderWrestler(h.slice('#wrestler/'.length));
+    if (h === '#titles') renderTitles();   // the current champion is spoiler-gated
   }
   for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
@@ -6521,6 +6611,12 @@
       if (v) v.hidden = false;
       markNav('video');
       renderVideo();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } else if (hash === '#titles') {
+      const v = document.getElementById('view-titles');
+      if (v) v.hidden = false;
+      markNav('titles');
+      renderTitles();
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
