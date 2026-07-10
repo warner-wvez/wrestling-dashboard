@@ -3607,6 +3607,22 @@
     return feudsPromise;
   }
 
+  // Tournaments keyed by the show where the final was decided. The winner is a
+  // spoiler, so it stays in this map and is only written into the DOM when
+  // spoilers are on (see renderTournaments). Same graceful seam as the rest.
+  let TOURNEYS = null;
+  let tourneysPromise = null;
+  function loadTournaments() {
+    if (!tourneysPromise) {
+      tourneysPromise = fetch('shards/tournaments.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { TOURNEYS = map; return map; });
+    }
+    return tourneysPromise;
+  }
+  const tournamentsFor = (id) => (TOURNEYS && id != null && TOURNEYS[String(id)]) || null;
+
   // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful
   // seam as loadMedia: the site works if shards/profiles.json is absent, and the
   // wrestler view lazy-loads it then re-renders (see renderWrestler).
@@ -4790,6 +4806,7 @@
         loadMedia(),   // watch links render inline, so the map must be ready
         loadPromos(),  // the promos shelf renders inline too
         loadFeuds(),   // and the storylines shelf
+        loadTournaments(),  // and the tournaments shelf
       ]);
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
@@ -5002,6 +5019,7 @@
         ${renderMoments(d)}
         ${renderPromos(d)}
         ${renderFeuds(d)}
+        ${renderTournaments(d)}
       </div>
     `;
   }
@@ -5113,6 +5131,35 @@
             <span class="promo-main">
               <span class="mo-label">${esc(f.matchup)}</span>
               <span class="promo-people">${span}</span>
+            </span>
+            ${rating}
+          </a>`;
+        }).join('')}
+      </div>`;
+  }
+
+  // Tournaments whose final was decided at this show. The winner is a spoiler and
+  // is treated like a match result: the name is written into the DOM only when
+  // spoilers are on. The tournament's name is not a spoiler and always shows.
+  function renderTournaments(d) {
+    const tourneys = tournamentsFor(d.id) || [];
+    if (!tourneys.length) return '';
+    return `
+      <div class="moments-block">
+        <div class="moments-head">Tournaments decided here</div>
+        ${tourneys.map(t => {
+          const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
+          const rating = t.rating != null
+            ? `<span class="m-rating" title="Cagematch tournament rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
+            : '';
+          const winner = spoilers
+            ? `Won by ${esc((t.winners || []).join(' & ')) || 'unknown'}`
+            : 'Winner hidden. Turn spoilers on to reveal.';
+          return `
+          <a class="moment-row promo-row" href="${esc(t.url)}" target="_blank" rel="noopener">
+            <span class="promo-main">
+              <span class="mo-label">${esc(t.title)}</span>
+              <span class="promo-people${spoilers ? '' : ' report-hidden'}">${winner}</span>
             </span>
             ${rating}
           </a>`;

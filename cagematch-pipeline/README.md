@@ -332,3 +332,36 @@ show to hang on). 183 of the 300 corpus-era feuds survive; the rest have no
 matchup, use team nicknames whose sides are not individual names (`Hardys vs.
 E&C`), or are too German to parse. A clean 183 beats a padded list with `Cena
 entthront JBL` in it. Idempotent: rebuilt from scratch each run.
+
+---
+
+# parse_tournaments.py -> fill_tournaments.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/parse_tournaments.py
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/fill_tournaments.py [--dry-run]
+```
+
+A tournament is a named bracket with a dated final and a winner. Unlike feuds the
+titles are already English and the winners are *linked*, so their names come
+clean rather than pulled out of prose. `parse_tournaments` lifts the 231 rows;
+`fill_tournaments` hangs each on the show at its final's date and writes
+`shards/tournaments.json`. The event page shows a "Tournaments decided here"
+shelf. Cagematch files the Royal Rumble and the Andre Battle Royal here too,
+which is right: winning one is the same kind of accolade.
+
+## The join
+
+By the tournament's `end` date (the final) against the event's `tape_date or
+air_date`. 135 of 231 land on a unique corpus show; 92 concluded before 2001 or
+on an NXT / house show the corpus does not carry. Four dates carry two shows, and
+the tie is broken by which card the winner wrestled on, since the winner of a
+final was in the final.
+
+## The winner is a spoiler
+
+So it is treated exactly like a match result: it stays in the sidecar and is only
+written into the DOM when spoilers are on. The tournament's *name* is not a
+spoiler and always shows; with spoilers off the row reads "Winner hidden. Turn
+spoilers on to reveal.", and the winner's name is never placed in the markup.
+Idempotent: rebuilt from scratch each run.
