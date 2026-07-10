@@ -1702,6 +1702,32 @@
     font-size: 11px;
     line-height: 1;
   }
+  /* Wrestling Observer star rating, printed the way Meltzer prints it. Kept
+     visually distinct from the Cagematch 0-10 score because they are different
+     scales and readers conflate them otherwise: a "5" from the crowd is average,
+     a "*****" from the Observer is a classic. */
+  .m-won {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-dim);
+    border: 1px solid var(--border);
+    background: var(--surface-soft);
+    white-space: nowrap;
+  }
+  .m-won .won-src { font-size: 9px; letter-spacing: 0.08em; color: var(--ink-faint); }
+  .m-won .won-val { color: var(--blue); letter-spacing: 0.02em; }
+  .rating-votes {
+    margin-left: 10px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+  }
   .m-rating .num {
     color: var(--ink);
     font-weight: 700;
@@ -5004,10 +5030,15 @@
     const stipTag = m.stipulation ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
     // Rating is NOT a spoiler: surfaced unconditionally so spoiler-hidden users
     // can still triage which matches are worth watching.
+    // A 9.1 from 12 voters is not a 9.1, so the vote count rides the tooltip.
+    const votes = m.match_guide_votes ? ` from ${m.match_guide_votes} vote${m.match_guide_votes === 1 ? '' : 's'}` : '';
     const ratingTag = m.match_guide_rating != null
-      ? `<span class="m-rating" title="Cagematch Match Guide rating"><span class="star" aria-hidden="true">★</span><span class="num">${m.match_guide_rating.toFixed(1)}</span></span>`
+      ? `<span class="m-rating" title="Cagematch Match Guide rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${m.match_guide_rating.toFixed(1)}</span></span>`
       : '';
-    const hasDetails = Boolean(m.raw_description) || m.match_guide_rating != null;
+    const wonTag = m.won_rating
+      ? `<span class="m-won" title="Wrestling Observer star rating (Dave Meltzer)"><span class="won-src">WON</span><span class="won-val">${esc(m.won_rating)}</span></span>`
+      : '';
+    const hasDetails = Boolean(m.raw_description) || m.match_guide_rating != null || Boolean(m.won_rating);
     const detailsToggle = hasDetails
       ? `<button class="details-toggle" data-toggle-details type="button" aria-expanded="false">Details<span class="chev"></span></button>`
       : '';
@@ -5029,7 +5060,7 @@
           ${eraBadge}
           <span class="m-number">M${order}</span>
           <span class="m-type">${esc(type)}</span>
-          ${titleTag}${stipTag}${ratingTag}
+          ${titleTag}${stipTag}${ratingTag}${wonTag}
           ${watchChip}
           ${detailsToggle}
           ${saveBtn}
@@ -5057,15 +5088,27 @@
   function renderMatchDetails(m) {
     const hasRaw = Boolean(m.raw_description);
     const hasRating = m.match_guide_rating != null;
-    if (!hasRaw && !hasRating) return '';
+    const hasWon = Boolean(m.won_rating);
+    if (!hasRaw && !hasRating && !hasWon) return '';
 
     const rows = [];
     if (hasRating) {
       // Rating is not a spoiler: shown in both modes, matching the header badge.
+      const votes = m.match_guide_votes
+        ? `<span class="rating-votes">${m.match_guide_votes.toLocaleString()} votes</span>` : '';
       rows.push(`
         <div class="details-row">
           <span class="label">Rating</span>
-          <span class="value">${renderRating(m.match_guide_rating)}</span>
+          <span class="value">${renderRating(m.match_guide_rating)}${votes}</span>
+        </div>`);
+    }
+    if (hasWon) {
+      // A different scale from a different source, so it gets its own row rather
+      // than sitting next to a 0-10 number that means something else.
+      rows.push(`
+        <div class="details-row">
+          <span class="label">Observer</span>
+          <span class="value mono">${esc(m.won_rating)}<span class="rating-votes">Wrestling Observer</span></span>
         </div>`);
     }
     if (hasRaw) {
