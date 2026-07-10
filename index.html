@@ -782,6 +782,22 @@
     font-weight: 500;
     color: var(--ink-dim);
   }
+  .hero-mainevent { display: flex; flex-direction: column; gap: 9px; margin: 20px 0 6px; }
+  .hero-me-label {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-dim);
+  }
+  .hero-me-teams { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .hero-me-team { display: flex; align-items: center; gap: 9px; }
+  .hero-me-avs { display: inline-flex; }
+  .hero-me-avs .mc-av { margin-left: -8px; box-shadow: 0 0 0 2px var(--surface); border-radius: 50%; }
+  .hero-me-avs .mc-av:first-child { margin-left: 0; }
+  .hero-me-avs .mc-av-img { border-radius: 50%; }
+  .hero-me-names { font-family: var(--font-sans); font-weight: 800; font-size: 16px; letter-spacing: -0.01em; }
+  .hero-me-vs {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    color: var(--ink-dim); letter-spacing: 0.12em;
+  }
   .hero-meta .chip {
     display: inline-flex;
     align-items: center;
@@ -3999,6 +4015,7 @@
         <div class="hero-kicker"><span class="pulse"></span>${nothing ? 'Start from the beginning' : 'Continue watching'}</div>
         <div class="hero-title">${esc(cleanName(ev))}</div>
         <div class="hero-meta">${metaBits.join('')}</div>
+        <div class="hero-mainevent" id="hero-mainevent" hidden></div>
         <div class="hero-progress">
           <div class="hero-bar"><div class="hero-bar-fill" style="width:${pct}%"></div></div>
           <div class="hero-bar-label">${progressLabel}</div>
@@ -4011,7 +4028,40 @@
         </button>
         ${upBlock}
       </div>`;
+    injectHeroMainEvent(ev);   // fills the billboard's open space, async from the shard
     markResumeDay(resumeId);
+  }
+
+  // The marquee match on the resume show, shown with headshots in the billboard's
+  // open space. The matchup is not a spoiler (the whole app shows matchups with
+  // spoilers off), only the result would be, so no gating. Loaded from the era
+  // shard after the hero paints, and dropped in only if the resume show has not
+  // changed underneath the async load.
+  function heroMainEventTeam(t) {
+    const names = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
+    const avs = names.map(n => {
+      const slug = BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
+      return slug ? wrestlerAvatar(slug, n, 'md') : '';
+    }).join('');
+    return `<span class="hero-me-team"><span class="hero-me-avs">${avs}</span><span class="hero-me-names">${esc(names.join(' & '))}</span></span>`;
+  }
+  async function injectHeroMainEvent(ev) {
+    const slot = document.getElementById('hero-mainevent');
+    if (!slot || !ev) return;
+    let matches;
+    try { matches = await ensureMatches(ev); } catch (err) { return; }
+    if (String(ev.id) !== String(resumeTargetId)) return;   // resume moved while loading
+    if (!matches || !matches.length) return;
+    // The main event closes the show: the highest match order.
+    const me = matches.reduce((a, b) => ((b.match_order || 0) > (a.match_order || 0) ? b : a));
+    const teams = (me.teams || []).filter(t => (t.participants || []).length || t.team_name);
+    const small = teams.length === 2 && teams.every(t => (t.participants || []).length <= 3);
+    if (!small) return;   // battle royals / multi-ways would swamp the billboard
+    slot.innerHTML =
+      `<span class="hero-me-label">Main event</span>` +
+      `<span class="hero-me-teams">${heroMainEventTeam(teams[0])}` +
+      `<span class="hero-me-vs">vs</span>${heroMainEventTeam(teams[1])}</span>`;
+    slot.hidden = false;
   }
 
   // Watched state is the only input to the resume position. Re-render the hero
