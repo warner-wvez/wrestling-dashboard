@@ -63,9 +63,76 @@ match. A majority vote across a wrestler's career absorbs it.)
 Joining on `cagematch_nr` where present, else `(air_date, show_type)`:
 
 - **781 of the 863** events with no `cagematch_nr` match a unique Cagematch event
-- **1199 of 1366** wrestlers resolve to a worker id, 1191 of them unanimously
-- **133 split identities**: one person rendered as several on the roster,
+- **1203 of 1366** wrestlers resolve to a worker id
+- **136 split identities**: one person rendered as several on the roster,
   `jbl(102) + john-bradshaw-layfield(152)` among them
 
 Classification and location splitting are imported from `src.cagematch_scraper`
 rather than reimplemented, so a corpus rule cannot drift between the two.
+
+---
+
+# resolve_identities.py -> apply_merge.py
+
+```
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/resolve_identities.py
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/apply_merge.py [--dry-run]
+```
+
+The resolver decides one roster identity per worker and names it. The applier
+rewrites `wrestlers` and `wrestlers_by_name` in `index.html`, and copies
+headshots onto the canonical slug. Matches, events and title reigns are never
+touched, so the shards stay valid. Both are idempotent.
+
+## Naming rule
+
+The name the wrestler is best known by, never a real name, never a one-off
+storyline alias. Match cards keep the era-accurate alias and link to the merged
+profile; only the roster aggregates under the canonical name.
+
+Trust the corpus window (2001-2026) when it is decisive, meaning the dominant
+name is at least `MARGIN` times the runner-up. Otherwise fall back to full WWE
+history. Corpus counts are frequently near-ties that carry no signal (Robert
+Roode 65, Bobby Roode 62); full history alone would name him Mankind rather than
+Mick Foley. Two threshold artifacts are pinned in `OVERRIDES`, keyed by worker nr
+so a spelling change cannot unhook them the way the quoted `CURATED` keys did.
+
+The SmackDownHotel roster is deliberately not consulted: it records today's
+gimmick, which for Pete Dunne is "Rayo Americano" and for Humberto Carrillo is
+"Berto".
+
+## Three guards, each protecting against a merge that looked right
+
+**Resolve inside the event, not globally.** 95 ring names belong to two workers.
+`Kane` is Glenn Jacobs 2719 times and Luke Gallows once. Career-wide majority
+vote then absorbs the single night both wrestled as Kane.
+
+**Never remap a shared name.** `canon` is a global name -> name function with no
+way to say "that night this name meant someone else", so a name worn by more
+than one wrestler keeps its own roster entry. `El Grande Americano` is worn by
+Chad Gable and Ludwig Kaiser; `Doink` by four workers. Without this the majority
+owner swallows the others' matches. The resolver prints every name it refuses.
+
+**Donor headshots come only from unshared names.** Steve Lombardi wrestled once
+as "MVP"; the first version of the donor search handed the Brooklyn Brawler
+MVP's face.
+
+## Two joins that are easy to get subtly wrong
+
+Names are matched against the night's roster by exact string, then by `normkey`.
+The corpora disagree on 329 participations (`Finn Bálor`, `T-Bar` vs `T-BAR`,
+`Seth "Freakin" Rollins`, `Big Show`), and exact-only matching strands them.
+
+The applier follows the canon chain one level: a name whose only matches sit in
+the 82 events that do not join to Cagematch still has a shipped canonical, and
+that canonical may itself be merging away (`T-Bar` -> `Dijak` -> `T-BAR`).
+Resolving one level leaves an orphan fragment beside the merged entry.
+
+## Fidelity gate
+
+There is no local `wrestling.db`, so the bundle cannot be regenerated from
+source. It does not need to be: `build_wrestlers_index` takes an events dict,
+and `events` is recoverable exactly from the bundle's event metadata plus the
+match shards. Before changing anything, `apply_merge` rebuilds the index with
+the *shipped* canon and asserts it reproduces the shipped index exactly. If the
+reconstruction were wrong, every number downstream would shift silently.

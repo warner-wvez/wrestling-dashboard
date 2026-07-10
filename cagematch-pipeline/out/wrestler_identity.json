@@ -1,0 +1,1982 @@
+{
+ "abe-jackson": {
+  "aliases": [
+   "Eric Abraham",
+   "The Sultan Of Shawarma"
+  ],
+  "cagematch_id": 14766,
+  "merged_from": [
+   "eric-abraham",
+   "the-sultan-of-shawarma"
+  ],
+  "name": "Abe Jackson",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "adam-rose": {
+  "aliases": [
+   "Adam Rose",
+   "Leo Kruger"
+  ],
+  "cagematch_id": 9031,
+  "merged_from": [
+   "adam-rose",
+   "leo-kruger"
+  ],
+  "name": "Adam Rose",
+  "reason": "corpus-decisive",
+  "total_matches": 60
+ },
+ "alba-fyre": {
+  "aliases": [
+   "Alba Fyre",
+   "Kay Lee Ray"
+  ],
+  "cagematch_id": 9917,
+  "merged_from": [
+   "alba-fyre",
+   "kay-lee-ray"
+  ],
+  "name": "Alba Fyre",
+  "reason": "corpus-decisive",
+  "total_matches": 40
+ },
+ "alberto-del-rio": {
+  "aliases": [
+   "Alberto Del Rio",
+   "Dos Caras"
+  ],
+  "cagematch_id": 1407,
+  "merged_from": [
+   "alberto-del-rio",
+   "dos-caras"
+  ],
+  "name": "Alberto Del Rio",
+  "reason": "corpus-decisive",
+  "total_matches": 391
+ },
+ "alex-malcom": {
+  "aliases": [
+   "Alex Malcom",
+   "Randy Row"
+  ],
+  "cagematch_id": 20411,
+  "merged_from": [
+   "alex-malcom",
+   "randy-row"
+  ],
+  "name": "Alex Malcom",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "americo": {
+  "aliases": [
+   "Americo",
+   "Barrett Brown"
+  ],
+  "cagematch_id": 10412,
+  "merged_from": [
+   "americo",
+   "barrett-brown"
+  ],
+  "name": "Americo",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "ashante-adonis": {
+  "aliases": [
+   "Ashante \"Thee\" Adonis",
+   "Ashante Adonis",
+   "Elijah King",
+   "Tehuti Miles"
+  ],
+  "cagematch_id": 21800,
+  "merged_from": [
+   "ashante-adonis",
+   "elijah-king",
+   "tehuti-miles"
+  ],
+  "name": "Ashante Adonis",
+  "reason": "corpus-decisive",
+  "total_matches": 22
+ },
+ "bo-dallas": {
+  "aliases": [
+   "Bo Dallas",
+   "Bo Rotundo",
+   "Uncle Howdy"
+  ],
+  "cagematch_id": 7311,
+  "merged_from": [
+   "bo-dallas",
+   "bo-rotundo"
+  ],
+  "name": "Bo Dallas",
+  "reason": "corpus-decisive",
+  "total_matches": 151
+ },
+ "bobby-roode": {
+  "aliases": [
+   "Bobby Roode",
+   "Robert Roode",
+   "Rudy Rude"
+  ],
+  "cagematch_id": 880,
+  "merged_from": [
+   "bobby-roode",
+   "rudy-rude"
+  ],
+  "name": "Bobby Roode",
+  "reason": "full-history",
+  "total_matches": 130
+ },
+ "brad-maddox": {
+  "aliases": [
+   "Brad Maddox",
+   "Joshua Kingsley"
+  ],
+  "cagematch_id": 7047,
+  "merged_from": [
+   "brad-maddox",
+   "joshua-kingsley"
+  ],
+  "name": "Brad Maddox",
+  "reason": "corpus-decisive",
+  "total_matches": 9
+ },
+ "bradshaw": {
+  "aliases": [
+   "Bradshaw",
+   "John Bradshaw Layfield"
+  ],
+  "cagematch_id": 193,
+  "merged_from": [
+   "jbl",
+   "john-bradshaw-layfield"
+  ],
+  "name": "Bradshaw",
+  "reason": "full-history",
+  "total_matches": 254
+ },
+ "brandon-scott": {
+  "aliases": [
+   "Brandon Scott",
+   "Brendon Scott"
+  ],
+  "cagematch_id": 10882,
+  "merged_from": [
+   "brandon-scott",
+   "brendon-scott"
+  ],
+  "name": "Brandon Scott",
+  "reason": "corpus-decisive",
+  "total_matches": 3
+ },
+ "brian-thomas": {
+  "aliases": [
+   "Frank Venezia"
+  ],
+  "cagematch_id": 12153,
+  "merged_from": [
+   "brian-thomas",
+   "frank-venezia"
+  ],
+  "name": "Brian Thomas",
+  "reason": "full-history",
+  "total_matches": 3
+ },
+ "caylen-croft": {
+  "aliases": [
+   "Caylen Croft",
+   "Chris Cage"
+  ],
+  "cagematch_id": 982,
+  "merged_from": [
+   "caylen-croft",
+   "chris-cage"
+  ],
+  "name": "Caylen Croft",
+  "reason": "corpus-decisive",
+  "total_matches": 12
+ },
+ "chad-gable": {
+  "aliases": [
+   "Chad Gable",
+   "Shorty G",
+   "Shorty Gable"
+  ],
+  "cagematch_id": 15197,
+  "merged_from": [
+   "chad-gable",
+   "shorty-gable"
+  ],
+  "name": "Chad Gable",
+  "reason": "corpus-decisive",
+  "total_matches": 256
+ },
+ "channing-stacks-lorenzo": {
+  "aliases": [
+   "Channing \"Stacks\" Lorenzo",
+   "Mitchell Lyons"
+  ],
+  "cagematch_id": 25305,
+  "merged_from": [
+   "channing-stacks-lorenzo",
+   "mitchell-lyons"
+  ],
+  "name": "Channing \"Stacks\" Lorenzo",
+  "reason": "corpus-decisive",
+  "total_matches": 10
+ },
+ "chavo-guerrero": {
+  "aliases": [
+   "Chavo Guerrero",
+   "Chavo Guerrero Jr",
+   "Jack Swagger's Soaring Eagle",
+   "Kerwin White"
+  ],
+  "cagematch_id": 895,
+  "merged_from": [
+   "chavo-guerrero",
+   "jack-swaggers-soaring-eagle"
+  ],
+  "name": "Chavo Guerrero",
+  "reason": "corpus-decisive",
+  "total_matches": 249
+ },
+ "christy-hemme": {
+  "aliases": [
+   "Christy",
+   "Christy Hemme"
+  ],
+  "cagematch_id": 1489,
+  "merged_from": [
+   "christy",
+   "christy-hemme"
+  ],
+  "name": "Christy Hemme",
+  "reason": "corpus-decisive",
+  "total_matches": 12
+ },
+ "colt-cabana": {
+  "aliases": [
+   "Chris Guy",
+   "Colt Cabana",
+   "Scotty Goldman"
+  ],
+  "cagematch_id": 994,
+  "merged_from": [
+   "chris-guy",
+   "colt-cabana",
+   "scotty-goldman"
+  ],
+  "name": "Colt Cabana",
+  "reason": "override",
+  "total_matches": 8
+ },
+ "commander-azeez": {
+  "aliases": [
+   "Babatunde",
+   "Commander Azeez"
+  ],
+  "cagematch_id": 17984,
+  "merged_from": [
+   "babatunde",
+   "commander-azeez"
+  ],
+  "name": "Commander Azeez",
+  "reason": "corpus-decisive",
+  "total_matches": 11
+ },
+ "corey-graves": {
+  "aliases": [
+   "Corey Graves",
+   "Sterling Keenan"
+  ],
+  "cagematch_id": 1527,
+  "merged_from": [
+   "corey-graves",
+   "sterling-keenan"
+  ],
+  "name": "Corey Graves",
+  "reason": "full-history",
+  "total_matches": 4
+ },
+ "corey-hollis": {
+  "aliases": [
+   "Bryan Kennedy",
+   "Evan Anderhaul"
+  ],
+  "cagematch_id": 9821,
+  "merged_from": [
+   "bryan-kennedy",
+   "evan-anderhaul"
+  ],
+  "name": "Corey Hollis",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "curt-hawkins": {
+  "aliases": [
+   "Brian Major",
+   "Brian Majors",
+   "Curt Hawkins"
+  ],
+  "cagematch_id": 2749,
+  "merged_from": [
+   "brian-majors",
+   "curt-hawkins"
+  ],
+  "name": "Curt Hawkins",
+  "reason": "corpus-decisive",
+  "total_matches": 117
+ },
+ "curtis-axel": {
+  "aliases": [
+   "Curtis Axel",
+   "Joe Hennig",
+   "Michael McGillicutty"
+  ],
+  "cagematch_id": 5271,
+  "merged_from": [
+   "curtis-axel",
+   "joe-hennig"
+  ],
+  "name": "Curtis Axel",
+  "reason": "corpus-decisive",
+  "total_matches": 240
+ },
+ "damien-sandow": {
+  "aliases": [
+   "Aaron Stevens",
+   "Damien Mizdow",
+   "Damien Sandow",
+   "Idol Stevens",
+   "Macho Mandow"
+  ],
+  "cagematch_id": 636,
+  "merged_from": [
+   "aaron-stevens",
+   "damien-mizdow",
+   "damien-sandow",
+   "idol-stevens",
+   "macho-mandow"
+  ],
+  "name": "Damien Sandow",
+  "reason": "corpus-decisive",
+  "total_matches": 197
+ },
+ "dana-brooke": {
+  "aliases": [
+   "Ash by Elegance",
+   "Dana Brooke"
+  ],
+  "cagematch_id": 15363,
+  "merged_from": [
+   "ash-by-elegance",
+   "dana-brooke"
+  ],
+  "name": "Dana Brooke",
+  "reason": "corpus-decisive",
+  "total_matches": 126
+ },
+ "daniel-bryan": {
+  "aliases": [
+   "Bryan Danielson",
+   "Daniel Bryan"
+  ],
+  "cagematch_id": 86,
+  "merged_from": [
+   "bryan-danielson",
+   "daniel-bryan"
+  ],
+  "name": "Daniel Bryan",
+  "reason": "corpus-decisive",
+  "total_matches": 459
+ },
+ "darren-young": {
+  "aliases": [
+   "Darren Young",
+   "Fred Sampson"
+  ],
+  "cagematch_id": 2040,
+  "merged_from": [
+   "darren-young",
+   "fred-sampson"
+  ],
+  "name": "Darren Young",
+  "reason": "corpus-decisive",
+  "total_matches": 131
+ },
+ "david-hart-smith": {
+  "aliases": [
+   "DH Smith",
+   "David Hart Smith",
+   "Harry Smith"
+  ],
+  "cagematch_id": 1076,
+  "merged_from": [
+   "david-hart-smith",
+   "harry-smith"
+  ],
+  "name": "David Hart Smith",
+  "reason": "corpus-decisive",
+  "total_matches": 62
+ },
+ "delilah-dawson": {
+  "aliases": [
+   "Delilah Dawson",
+   "Rachel Levy"
+  ],
+  "cagematch_id": 15226,
+  "merged_from": [
+   "delilah-dawson",
+   "rachel-levy"
+  ],
+  "name": "Delilah Dawson",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "derek-werley": {
+  "aliases": [
+   "Derek Werley",
+   "Mike Spinner"
+  ],
+  "cagematch_id": 2391,
+  "merged_from": [
+   "derek-werley",
+   "mike-spinner"
+  ],
+  "name": "Derek Werley",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "dolph-ziggler": {
+  "aliases": [
+   "Dolph Ziggler",
+   "Nic Nemeth",
+   "Nick Nemeth",
+   "Nicky"
+  ],
+  "cagematch_id": 2515,
+  "merged_from": [
+   "dolph-ziggler",
+   "nic-nemeth",
+   "nick-nemeth"
+  ],
+  "name": "Dolph Ziggler",
+  "reason": "corpus-decisive",
+  "total_matches": 781
+ },
+ "duke-hudson": {
+  "aliases": [
+   "Brendan Vink",
+   "Duke Hudson"
+  ],
+  "cagematch_id": 13674,
+  "merged_from": [
+   "brendan-vink",
+   "duke-hudson"
+  ],
+  "name": "Duke Hudson",
+  "reason": "full-history",
+  "total_matches": 10
+ },
+ "dustin-lawyer": {
+  "aliases": [
+   "Dustin Lawyer",
+   "Randy Taylor"
+  ],
+  "cagematch_id": 10869,
+  "merged_from": [
+   "dustin-lawyer",
+   "randy-taylor"
+  ],
+  "name": "Dustin Lawyer",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "el-torito": {
+  "aliases": [
+   "El Torito",
+   "Minihausen"
+  ],
+  "cagematch_id": 4962,
+  "merged_from": [
+   "el-torito",
+   "minihausen"
+  ],
+  "name": "El Torito",
+  "reason": "corpus-decisive",
+  "total_matches": 14
+ },
+ "elektra-lopez": {
+  "aliases": [
+   "Elektra Lopez",
+   "Karissa"
+  ],
+  "cagematch_id": 21885,
+  "merged_from": [
+   "elektra-lopez",
+   "karissa"
+  ],
+  "name": "Elektra Lopez",
+  "reason": "corpus-decisive",
+  "total_matches": 5
+ },
+ "elias": {
+  "aliases": [
+   "Elias",
+   "Elias Samson",
+   "Ezekiel"
+  ],
+  "cagematch_id": 7461,
+  "merged_from": [
+   "elias",
+   "elias-samson"
+  ],
+  "name": "Elias",
+  "reason": "corpus-decisive",
+  "total_matches": 136
+ },
+ "epico": {
+  "aliases": [
+   "Epico",
+   "Epico Colon",
+   "Fernando",
+   "Tito Colon"
+  ],
+  "cagematch_id": 4441,
+  "merged_from": [
+   "epico",
+   "epico-colon",
+   "tito-colon"
+  ],
+  "name": "Epico",
+  "reason": "full-history",
+  "total_matches": 150
+ },
+ "eric-escobar": {
+  "aliases": [
+   "Eric Escobar",
+   "Eric Perez"
+  ],
+  "cagematch_id": 2217,
+  "merged_from": [
+   "eric-escobar",
+   "eric-perez"
+  ],
+  "name": "Eric Escobar",
+  "reason": "corpus-decisive",
+  "total_matches": 9
+ },
+ "erik": {
+  "aliases": [
+   "Erik",
+   "Raymond Rowe",
+   "Rowe"
+  ],
+  "cagematch_id": 2725,
+  "merged_from": [
+   "erik",
+   "raymond-rowe"
+  ],
+  "name": "Erik",
+  "reason": "corpus-decisive",
+  "total_matches": 151
+ },
+ "evan-bourne": {
+  "aliases": [
+   "Evan Bourne",
+   "Matt Sydal"
+  ],
+  "cagematch_id": 1065,
+  "merged_from": [
+   "evan-bourne",
+   "matt-sydal"
+  ],
+  "name": "Evan Bourne",
+  "reason": "corpus-decisive",
+  "total_matches": 101
+ },
+ "faarooq": {
+  "aliases": [
+   "Faarooq",
+   "Ron Simmons"
+  ],
+  "cagematch_id": 715,
+  "merged_from": [
+   "faarooq",
+   "ron-simmons"
+  ],
+  "name": "Faarooq",
+  "reason": "corpus-decisive",
+  "total_matches": 74
+ },
+ "flash-funk": {
+  "aliases": [
+   "2 Cold Scorpio",
+   "Flash Funk"
+  ],
+  "cagematch_id": 649,
+  "merged_from": [
+   "2-cold-scorpio",
+   "flash-funk"
+  ],
+  "name": "Flash Funk",
+  "reason": "corpus-decisive",
+  "total_matches": 3
+ },
+ "garrett-dylan": {
+  "aliases": [
+   "Jody Kristofferson",
+   "Jody Reese"
+  ],
+  "cagematch_id": 8524,
+  "merged_from": [
+   "jody-kristofferson",
+   "jody-reese"
+  ],
+  "name": "Garrett Dylan",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "gunner-scott": {
+  "aliases": [
+   "Brent Albright",
+   "Gunner Scott"
+  ],
+  "cagematch_id": 1160,
+  "merged_from": [
+   "brent-albright",
+   "gunner-scott"
+  ],
+  "name": "Gunner Scott",
+  "reason": "corpus-decisive",
+  "total_matches": 8
+ },
+ "hornswoggle": {
+  "aliases": [
+   "Hornswoggle",
+   "Little Bastard"
+  ],
+  "cagematch_id": 3586,
+  "merged_from": [
+   "hornswoggle",
+   "little-bastard"
+  ],
+  "name": "Hornswoggle",
+  "reason": "corpus-decisive",
+  "total_matches": 64
+ },
+ "hulk-hogan": {
+  "aliases": [
+   "Hollywood Hogan",
+   "Hulk Hogan",
+   "Mr. America"
+  ],
+  "cagematch_id": 504,
+  "merged_from": [
+   "hollywood-hogan",
+   "hulk-hogan",
+   "mr-america"
+  ],
+  "name": "Hulk Hogan",
+  "reason": "corpus-decisive",
+  "total_matches": 36
+ },
+ "humberto-carrillo": {
+  "aliases": [
+   "Berto",
+   "Humberto",
+   "Humberto Carrillo"
+  ],
+  "cagematch_id": 14606,
+  "merged_from": [
+   "berto",
+   "humberto-carrillo"
+  ],
+  "name": "Humberto Carrillo",
+  "reason": "full-history",
+  "total_matches": 98
+ },
+ "isla-dawn": {
+  "aliases": [
+   "Isla Dawn",
+   "Stacy Coates"
+  ],
+  "cagematch_id": 16420,
+  "merged_from": [
+   "isla-dawn",
+   "stacy-coates"
+  ],
+  "name": "Isla Dawn",
+  "reason": "corpus-decisive",
+  "total_matches": 18
+ },
+ "ivar": {
+  "aliases": [
+   "Hanson",
+   "Ivar",
+   "Todd Smith"
+  ],
+  "cagematch_id": 4657,
+  "merged_from": [
+   "ivar",
+   "todd-smith"
+  ],
+  "name": "Ivar",
+  "reason": "corpus-decisive",
+  "total_matches": 152
+ },
+ "jack-swagger": {
+  "aliases": [
+   "Jack Swagger",
+   "Jake Hager"
+  ],
+  "cagematch_id": 4071,
+  "merged_from": [
+   "jack-swagger",
+   "jake-hager"
+  ],
+  "name": "Jack Swagger",
+  "reason": "corpus-decisive",
+  "total_matches": 359
+ },
+ "jaylee": {
+  "aliases": [
+   "Jaylee",
+   "Karen Lundy"
+  ],
+  "cagematch_id": 20740,
+  "merged_from": [
+   "jaylee",
+   "karen-lundy"
+  ],
+  "name": "Jaylee",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "jeff-brooks": {
+  "aliases": [
+   "Jay Alexander",
+   "Jeff Brooks",
+   "Jimmy James"
+  ],
+  "cagematch_id": 13033,
+  "merged_from": [
+   "jay-alexander",
+   "jeff-brooks",
+   "jimmy-james"
+  ],
+  "name": "Jeff Brooks",
+  "reason": "full-history",
+  "total_matches": 3
+ },
+ "jeff-hardy": {
+  "aliases": [
+   "Brother Nero",
+   "Jeff Hardy"
+  ],
+  "cagematch_id": 891,
+  "merged_from": [
+   "brother-nero",
+   "jeff-hardy"
+  ],
+  "name": "Jeff Hardy",
+  "reason": "corpus-decisive",
+  "total_matches": 445
+ },
+ "jesse": {
+  "aliases": [
+   "Cousin Ray",
+   "Ray Gordy",
+   "Slam Master J"
+  ],
+  "cagematch_id": 1171,
+  "merged_from": [
+   "cousin-ray",
+   "jesse",
+   "ray-gordy"
+  ],
+  "name": "Jesse",
+  "reason": "corpus-decisive",
+  "total_matches": 56
+ },
+ "jesus": {
+  "aliases": [
+   "Jesus",
+   "The Hardkore Kidd"
+  ],
+  "cagematch_id": 578,
+  "merged_from": [
+   "jesus",
+   "the-hardkore-kidd"
+  ],
+  "name": "Jesus",
+  "reason": "corpus-decisive",
+  "total_matches": 4
+ },
+ "jimmy-uso": {
+  "aliases": [
+   "Jimmy Uso",
+   "John Robinson"
+  ],
+  "cagematch_id": 7351,
+  "merged_from": [
+   "jimmy-uso",
+   "john-robinson"
+  ],
+  "name": "Jimmy Uso",
+  "reason": "corpus-decisive",
+  "total_matches": 473
+ },
+ "joey-mercury": {
+  "aliases": [
+   "Joey Mercury",
+   "Joseph Mercury",
+   "Mercury"
+  ],
+  "cagematch_id": 340,
+  "merged_from": [
+   "joey-mercury",
+   "joseph-mercury",
+   "mercury"
+  ],
+  "name": "Joey Mercury",
+  "reason": "full-history",
+  "total_matches": 74
+ },
+ "joey-ryan": {
+  "aliases": [
+   "Joey Blalock",
+   "Joey Ryan"
+  ],
+  "cagematch_id": 632,
+  "merged_from": [
+   "joey-blalock",
+   "joey-ryan"
+  ],
+  "name": "Joey Ryan",
+  "reason": "corpus-decisive",
+  "total_matches": 6
+ },
+ "john-cena": {
+  "aliases": [
+   "John Cena",
+   "Prototype"
+  ],
+  "cagematch_id": 691,
+  "merged_from": [
+   "john-cena",
+   "prototype"
+  ],
+  "name": "John Cena",
+  "reason": "corpus-decisive",
+  "total_matches": 869
+ },
+ "john-morrison": {
+  "aliases": [
+   "John Hennigan",
+   "John Morrison",
+   "Johnny Nitro",
+   "Nitro"
+  ],
+  "cagematch_id": 1099,
+  "merged_from": [
+   "john-hennigan",
+   "john-morrison",
+   "nitro"
+  ],
+  "name": "John Morrison",
+  "reason": "corpus-decisive",
+  "total_matches": 366
+ },
+ "john-silver": {
+  "aliases": [
+   "Johnny Silver",
+   "Rob Grymes"
+  ],
+  "cagematch_id": 6959,
+  "merged_from": [
+   "johnny-silver",
+   "rob-grymes"
+  ],
+  "name": "John Silver",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "john-skyler": {
+  "aliases": [
+   "John Skyler",
+   "Kevin Mahoney",
+   "Scott Jackson"
+  ],
+  "cagematch_id": 12492,
+  "merged_from": [
+   "john-skyler",
+   "kevin-mahoney",
+   "scott-jackson"
+  ],
+  "name": "John Skyler",
+  "reason": "full-history",
+  "total_matches": 3
+ },
+ "johnny": {
+  "aliases": [
+   "Conquistador Dos",
+   "Johnny",
+   "Johnny Jeter"
+  ],
+  "cagematch_id": 151,
+  "merged_from": [
+   "conquistador-dos",
+   "johnny",
+   "johnny-jeter"
+  ],
+  "name": "Johnny",
+  "reason": "corpus-decisive",
+  "total_matches": 27
+ },
+ "johnny-gargano": {
+  "aliases": [
+   "Cedrick von Haussen",
+   "Johnny Gargano"
+  ],
+  "cagematch_id": 4129,
+  "merged_from": [
+   "cedrick-von-haussen",
+   "johnny-gargano"
+  ],
+  "name": "Johnny Gargano",
+  "reason": "corpus-decisive",
+  "total_matches": 94
+ },
+ "justin-gabriel": {
+  "aliases": [
+   "Justin Gabriel",
+   "The Bunny"
+  ],
+  "cagematch_id": 8016,
+  "merged_from": [
+   "justin-gabriel",
+   "the-bunny"
+  ],
+  "name": "Justin Gabriel",
+  "reason": "corpus-decisive",
+  "total_matches": 112
+ },
+ "kenny-dykstra": {
+  "aliases": [
+   "Kenn Phoenix",
+   "Kenny",
+   "Kenny Dykstra"
+  ],
+  "cagematch_id": 1195,
+  "merged_from": [
+   "kenn-phoenix",
+   "kenny-dykstra"
+  ],
+  "name": "Kenny Dykstra",
+  "reason": "full-history",
+  "total_matches": 77
+ },
+ "kevin-nash": {
+  "aliases": [
+   "Diesel",
+   "Kevin Nash"
+  ],
+  "cagematch_id": 429,
+  "merged_from": [
+   "diesel",
+   "kevin-nash"
+  ],
+  "name": "Kevin Nash",
+  "reason": "corpus-decisive",
+  "total_matches": 21
+ },
+ "kevin-thorn": {
+  "aliases": [
+   "Kevin Thorn",
+   "Mordecai"
+  ],
+  "cagematch_id": 1080,
+  "merged_from": [
+   "kevin-thorn",
+   "mordecai"
+  ],
+  "name": "Kevin Thorn",
+  "reason": "corpus-decisive",
+  "total_matches": 9
+ },
+ "konnor": {
+  "aliases": [
+   "Konnor",
+   "Ryan O'Reilly"
+  ],
+  "cagematch_id": 1795,
+  "merged_from": [
+   "konnor",
+   "ryan-oreilly"
+  ],
+  "name": "Konnor",
+  "reason": "corpus-decisive",
+  "total_matches": 106
+ },
+ "kyle-roberts": {
+  "aliases": [
+   "Bryant",
+   "Kyle Roberts"
+  ],
+  "cagematch_id": 19684,
+  "merged_from": [
+   "bryant",
+   "kyle-roberts"
+  ],
+  "name": "Kyle Roberts",
+  "reason": "corpus-decisive",
+  "total_matches": 3
+ },
+ "lil-nate": {
+  "aliases": [
+   "Lil Nate",
+   "Nate Nickerson"
+  ],
+  "cagematch_id": 2029,
+  "merged_from": [
+   "lil-nate",
+   "nate-nickerson"
+  ],
+  "name": "Lil Nate",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "ludwig-kaiser": {
+  "aliases": [
+   "\"Original\" El Grande Americano",
+   "Ludwig Kaiser",
+   "Marcel Barthel"
+  ],
+  "cagematch_id": 5855,
+  "merged_from": [
+   "el-grande-americano",
+   "ludwig-kaiser"
+  ],
+  "name": "Ludwig Kaiser",
+  "reason": "corpus-decisive",
+  "total_matches": 99
+ },
+ "luke-hawx": {
+  "aliases": [
+   "Luke Hawkins",
+   "Luke Hawx"
+  ],
+  "cagematch_id": 187,
+  "merged_from": [
+   "luke-hawkins",
+   "luke-hawx"
+  ],
+  "name": "Luke Hawx",
+  "reason": "corpus-decisive",
+  "total_matches": 5
+ },
+ "maria": {
+  "aliases": [
+   "Maria",
+   "Maria Kanellis"
+  ],
+  "cagematch_id": 1848,
+  "merged_from": [
+   "maria",
+   "maria-kanellis"
+  ],
+  "name": "Maria",
+  "reason": "corpus-decisive",
+  "total_matches": 92
+ },
+ "matt-striker": {
+  "aliases": [
+   "Matt Martel",
+   "Matt Striker"
+  ],
+  "cagematch_id": 1359,
+  "merged_from": [
+   "matt-martel",
+   "matt-striker"
+  ],
+  "name": "Matt Striker",
+  "reason": "corpus-decisive",
+  "total_matches": 25
+ },
+ "matthew-busch": {
+  "aliases": [
+   "Matthew Justice",
+   "Mike Stevens"
+  ],
+  "cagematch_id": 5681,
+  "merged_from": [
+   "matthew-justice",
+   "mike-stevens"
+  ],
+  "name": "Matthew Busch",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "michael-shane": {
+  "aliases": [
+   "Matt Bentley",
+   "Michael Shane"
+  ],
+  "cagematch_id": 66,
+  "merged_from": [
+   "matt-bentley",
+   "michael-shane"
+  ],
+  "name": "Michael Shane",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "michael-tarver": {
+  "aliases": [
+   "Michael Tarver",
+   "Tyrone Jones"
+  ],
+  "cagematch_id": 5730,
+  "merged_from": [
+   "michael-tarver",
+   "tyrone-jones"
+  ],
+  "name": "Michael Tarver",
+  "reason": "corpus-decisive",
+  "total_matches": 9
+ },
+ "michin": {
+  "aliases": [
+   "Mia Yim",
+   "Michin",
+   "Reckoning"
+  ],
+  "cagematch_id": 9679,
+  "merged_from": [
+   "michin",
+   "reckoning"
+  ],
+  "name": "Michin",
+  "reason": "corpus-decisive",
+  "total_matches": 63
+ },
+ "mick-foley": {
+  "aliases": [
+   "Cactus Jack",
+   "Mankind",
+   "Mick Foley"
+  ],
+  "cagematch_id": 6,
+  "merged_from": [
+   "mankind",
+   "mick-foley"
+  ],
+  "name": "Mick Foley",
+  "reason": "corpus-decisive",
+  "total_matches": 18
+ },
+ "mike-kruel": {
+  "aliases": [
+   "Michael W. Kruel",
+   "Mike Kruel"
+  ],
+  "cagematch_id": 1159,
+  "merged_from": [
+   "michael-w-kruel",
+   "mike-kruel"
+  ],
+  "name": "Mike Kruel",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "mikey": {
+  "aliases": [
+   "Mike Mondo",
+   "Mikey"
+  ],
+  "cagematch_id": 364,
+  "merged_from": [
+   "mike-mondo",
+   "mikey"
+  ],
+  "name": "Mikey",
+  "reason": "corpus-decisive",
+  "total_matches": 31
+ },
+ "miss-jackie": {
+  "aliases": [
+   "Jackie Gayda",
+   "Miss Jackie"
+  ],
+  "cagematch_id": 102,
+  "merged_from": [
+   "jackie-gayda",
+   "miss-jackie"
+  ],
+  "name": "Miss Jackie",
+  "reason": "corpus-decisive",
+  "total_matches": 13
+ },
+ "nash-carter": {
+  "aliases": [
+   "Nash Carter",
+   "Zachary Wentz"
+  ],
+  "cagematch_id": 16824,
+  "merged_from": [
+   "nash-carter",
+   "zachary-wentz"
+  ],
+  "name": "Nash Carter",
+  "reason": "full-history",
+  "total_matches": 3
+ },
+ "natalya": {
+  "aliases": [
+   "Natalya",
+   "Nattie",
+   "Nattie Neidhart"
+  ],
+  "cagematch_id": 2048,
+  "merged_from": [
+   "natalya",
+   "nattie-neidhart"
+  ],
+  "name": "Natalya",
+  "reason": "protected",
+  "total_matches": 455
+ },
+ "neville": {
+  "aliases": [
+   "Adrian Neville",
+   "Neville"
+  ],
+  "cagematch_id": 3497,
+  "merged_from": [
+   "adrian-neville",
+   "neville"
+  ],
+  "name": "Neville",
+  "reason": "corpus-decisive",
+  "total_matches": 103
+ },
+ "nunzio": {
+  "aliases": [
+   "Little Guido",
+   "Nunzio"
+  ],
+  "cagematch_id": 342,
+  "merged_from": [
+   "little-guido",
+   "nunzio"
+  ],
+  "name": "Nunzio",
+  "reason": "corpus-decisive",
+  "total_matches": 68
+ },
+ "oney-lorcan": {
+  "aliases": [
+   "Oney Lorcan",
+   "The Carolina Panther"
+  ],
+  "cagematch_id": 8069,
+  "merged_from": [
+   "oney-lorcan",
+   "the-carolina-panther"
+  ],
+  "name": "Oney Lorcan",
+  "reason": "corpus-decisive",
+  "total_matches": 7
+ },
+ "paul-london": {
+  "aliases": [
+   "Paul London"
+  ],
+  "cagematch_id": 972,
+  "merged_from": [
+   "el-gran-luchadore",
+   "paul-london"
+  ],
+  "name": "Paul London",
+  "reason": "corpus-decisive",
+  "total_matches": 118
+ },
+ "pete-dunne": {
+  "aliases": [
+   "Butch",
+   "Pete Dunne",
+   "Rayo Americano"
+  ],
+  "cagematch_id": 10529,
+  "merged_from": [
+   "pete-dunne",
+   "rayo-americano"
+  ],
+  "name": "Pete Dunne",
+  "reason": "protected",
+  "total_matches": 88
+ },
+ "pocket-rocket": {
+  "aliases": [
+   "Pocket Rocket",
+   "Short Sleeve Sampson"
+  ],
+  "cagematch_id": 2799,
+  "merged_from": [
+   "pocket-rocket",
+   "short-sleeve-sampson"
+  ],
+  "name": "Pocket Rocket",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "primo": {
+  "aliases": [
+   "Diego",
+   "Primo",
+   "Primo Colon"
+  ],
+  "cagematch_id": 1860,
+  "merged_from": [
+   "primo",
+   "primo-colon"
+  ],
+  "name": "Primo",
+  "reason": "full-history",
+  "total_matches": 219
+ },
+ "ricardo-rodriguez": {
+  "aliases": [
+   "El Local",
+   "Ricardo Rodriguez"
+  ],
+  "cagematch_id": 5368,
+  "merged_from": [
+   "el-local",
+   "ricardo-rodriguez"
+  ],
+  "name": "Ricardo Rodriguez",
+  "reason": "corpus-decisive",
+  "total_matches": 14
+ },
+ "road-warrior-animal": {
+  "aliases": [
+   "Animal",
+   "Road Warrior Animal",
+   "The Road Warrior"
+  ],
+  "cagematch_id": 509,
+  "merged_from": [
+   "animal",
+   "road-warrior-animal",
+   "the-road-warrior"
+  ],
+  "name": "Road Warrior Animal",
+  "reason": "corpus-decisive",
+  "total_matches": 27
+ },
+ "rob-conway": {
+  "aliases": [
+   "Conquistador Uno",
+   "Rob Conway",
+   "Robert Conway"
+  ],
+  "cagematch_id": 22,
+  "merged_from": [
+   "conquistador-uno",
+   "rob-conway",
+   "robert-conway"
+  ],
+  "name": "Rob Conway",
+  "reason": "corpus-decisive",
+  "total_matches": 91
+ },
+ "rob-eckos": {
+  "aliases": [
+   "Mr. Stone",
+   "Rob Eckos"
+  ],
+  "cagematch_id": 1743,
+  "merged_from": [
+   "mr-stone",
+   "rob-eckos"
+  ],
+  "name": "Rob Eckos",
+  "reason": "corpus-decisive",
+  "total_matches": 3
+ },
+ "robbie-mcallister": {
+  "aliases": [
+   "Robbie",
+   "Robbie McAllister"
+  ],
+  "cagematch_id": 1115,
+  "merged_from": [
+   "robbie",
+   "robbie-mcallister"
+  ],
+  "name": "Robbie McAllister",
+  "reason": "corpus-decisive",
+  "total_matches": 33
+ },
+ "rodney-mack": {
+  "aliases": [
+   "Redd Dogg",
+   "Rodney Mack"
+  ],
+  "cagematch_id": 514,
+  "merged_from": [
+   "redd-dogg",
+   "rodney-mack"
+  ],
+  "name": "Rodney Mack",
+  "reason": "corpus-decisive",
+  "total_matches": 20
+ },
+ "rory-mcallister": {
+  "aliases": [
+   "Rory",
+   "Rory McAllister"
+  ],
+  "cagematch_id": 1116,
+  "merged_from": [
+   "rory",
+   "rory-mcallister"
+  ],
+  "name": "Rory McAllister",
+  "reason": "corpus-decisive",
+  "total_matches": 32
+ },
+ "rosey": {
+  "aliases": [
+   "Kimo",
+   "Matt Anoai",
+   "Rosey"
+  ],
+  "cagematch_id": 424,
+  "merged_from": [
+   "kimo",
+   "matt-anoai",
+   "rosey"
+  ],
+  "name": "Rosey",
+  "reason": "corpus-decisive",
+  "total_matches": 65
+ },
+ "rusev": {
+  "aliases": [
+   "Alexander Rusev",
+   "Rusev"
+  ],
+  "cagematch_id": 10610,
+  "merged_from": [
+   "alexander-rusev",
+   "rusev"
+  ],
+  "name": "Rusev",
+  "reason": "corpus-decisive",
+  "total_matches": 266
+ },
+ "ryan-braddock": {
+  "aliases": [
+   "Bradley Jay",
+   "Jay Bradley",
+   "Ryan Braddock"
+  ],
+  "cagematch_id": 302,
+  "merged_from": [
+   "bradley-jay",
+   "jay-bradley",
+   "ryan-braddock"
+  ],
+  "name": "Ryan Braddock",
+  "reason": "corpus-decisive",
+  "total_matches": 8
+ },
+ "santino-marella": {
+  "aliases": [
+   "Boris Alexiev",
+   "Santina Marella",
+   "Santino Marella"
+  ],
+  "cagematch_id": 3689,
+  "merged_from": [
+   "boris-alexiev",
+   "santino-marella"
+  ],
+  "name": "Santino Marella",
+  "reason": "corpus-decisive",
+  "total_matches": 238
+ },
+ "sensai": {
+  "aliases": [
+   "Sensai",
+   "Shantelle"
+  ],
+  "cagematch_id": 3229,
+  "merged_from": [
+   "sensai",
+   "shantelle"
+  ],
+  "name": "Sensai",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "shad": {
+  "aliases": [
+   "Shad",
+   "Shad Gaspard"
+  ],
+  "cagematch_id": 1113,
+  "merged_from": [
+   "shad",
+   "shad-gaspard"
+  ],
+  "name": "Shad",
+  "reason": "corpus-decisive",
+  "total_matches": 76
+ },
+ "shaniqua": {
+  "aliases": [
+   "Linda Miles",
+   "Shaniqua"
+  ],
+  "cagematch_id": 867,
+  "merged_from": [
+   "linda-miles",
+   "shaniqua"
+  ],
+  "name": "Shaniqua",
+  "reason": "full-history",
+  "total_matches": 4
+ },
+ "sheamus": {
+  "aliases": [
+   "King Sheamus",
+   "Sheamus",
+   "Sheamus O'Shaunessy"
+  ],
+  "cagematch_id": 2641,
+  "merged_from": [
+   "king-sheamus",
+   "sheamus"
+  ],
+  "name": "Sheamus",
+  "reason": "corpus-decisive",
+  "total_matches": 793
+ },
+ "shinsuke-nakamura": {
+  "aliases": [
+   "King Nakamura",
+   "Shinsuke Nakamura"
+  ],
+  "cagematch_id": 56,
+  "merged_from": [
+   "king-nakamura",
+   "shinsuke-nakamura"
+  ],
+  "name": "Shinsuke Nakamura",
+  "reason": "corpus-decisive",
+  "total_matches": 232
+ },
+ "simon-dean": {
+  "aliases": [
+   "Nova",
+   "Simon Dean"
+  ],
+  "cagematch_id": 192,
+  "merged_from": [
+   "nova",
+   "simon-dean"
+  ],
+  "name": "Simon Dean",
+  "reason": "corpus-decisive",
+  "total_matches": 40
+ },
+ "sin-cara": {
+  "aliases": [
+   "Hunico"
+  ],
+  "cagematch_id": 3669,
+  "merged_from": [
+   "hunico",
+   "sin-cara"
+  ],
+  "name": "Sin Cara",
+  "reason": "corpus-decisive",
+  "total_matches": 243
+ },
+ "snitsky": {
+  "aliases": [
+   "Gene Snitsky",
+   "Snitsky"
+  ],
+  "cagematch_id": 1168,
+  "merged_from": [
+   "gene-snitsky",
+   "snitsky"
+  ],
+  "name": "Snitsky",
+  "reason": "full-history",
+  "total_matches": 80
+ },
+ "stacy-keibler": {
+  "aliases": [
+   "Stacy Keibler",
+   "Super Stacy"
+  ],
+  "cagematch_id": 606,
+  "merged_from": [
+   "stacy-keibler",
+   "super-stacy"
+  ],
+  "name": "Stacy Keibler",
+  "reason": "corpus-decisive",
+  "total_matches": 40
+ },
+ "sylvain-grenier": {
+  "aliases": [
+   "Sylvain Grenier",
+   "Sylvan",
+   "Sylvan Grenier"
+  ],
+  "cagematch_id": 82,
+  "merged_from": [
+   "sylvain-grenier",
+   "sylvan-grenier"
+  ],
+  "name": "Sylvain Grenier",
+  "reason": "corpus-decisive",
+  "total_matches": 94
+ },
+ "sylvester-lefort": {
+  "aliases": [
+   "Sylvester Lefort",
+   "Tom LaRuffa"
+  ],
+  "cagematch_id": 6276,
+  "merged_from": [
+   "sylvester-lefort",
+   "tom-laruffa"
+  ],
+  "name": "Sylvester Lefort",
+  "reason": "corpus-decisive",
+  "total_matches": 3
+ },
+ "t-bar": {
+  "aliases": [
+   "Dijak",
+   "Dominik Dijakovic",
+   "T-BAR"
+  ],
+  "cagematch_id": 14174,
+  "merged_from": [
+   "dijak",
+   "dominik-dijakovic"
+  ],
+  "name": "T-BAR",
+  "reason": "corpus-decisive",
+  "total_matches": 37
+ },
+ "the-brooklyn-brawler": {
+  "aliases": [
+   "Kim Chee",
+   "The Brooklyn Brawler"
+  ],
+  "cagematch_id": 874,
+  "merged_from": [
+   "doink",
+   "kim-chee",
+   "the-brooklyn-brawler"
+  ],
+  "name": "The Brooklyn Brawler",
+  "reason": "full-history",
+  "total_matches": 11
+ },
+ "tj-perkins": {
+  "aliases": [
+   "TJ Perkins",
+   "TJP"
+  ],
+  "cagematch_id": 847,
+  "merged_from": [
+   "tj-perkins",
+   "tjp"
+  ],
+  "name": "TJ Perkins",
+  "reason": "corpus-decisive",
+  "total_matches": 30
+ },
+ "tommaso-ciampa": {
+  "aliases": [
+   "Ciampa",
+   "Tommaso Ciampa"
+  ],
+  "cagematch_id": 3593,
+  "merged_from": [
+   "ciampa",
+   "tommaso-ciampa"
+  ],
+  "name": "Tommaso Ciampa",
+  "reason": "corpus-decisive",
+  "total_matches": 90
+ },
+ "tonga-loa": {
+  "aliases": [
+   "Camacho",
+   "Tonga Loa"
+  ],
+  "cagematch_id": 7828,
+  "merged_from": [
+   "camacho",
+   "tonga-loa"
+  ],
+  "name": "Tonga Loa",
+  "reason": "override",
+  "total_matches": 20
+ },
+ "trent-barreta": {
+  "aliases": [
+   "Greg Cardona",
+   "Trent Barreta"
+  ],
+  "cagematch_id": 2963,
+  "merged_from": [
+   "greg-cardona",
+   "trent-barreta"
+  ],
+  "name": "Trent Barreta",
+  "reason": "corpus-decisive",
+  "total_matches": 33
+ },
+ "tye-dillinger": {
+  "aliases": [
+   "Gavin Spears",
+   "Shawn Spears",
+   "Tye Dillinger"
+  ],
+  "cagematch_id": 3190,
+  "merged_from": [
+   "gavin-spears",
+   "shawn-spears",
+   "tye-dillinger"
+  ],
+  "name": "Tye Dillinger",
+  "reason": "corpus-decisive",
+  "total_matches": 55
+ },
+ "tyler-bate": {
+  "aliases": [
+   "Bravo Americano",
+   "Tyler Bate"
+  ],
+  "cagematch_id": 5386,
+  "merged_from": [
+   "bravo-americano",
+   "tyler-bate"
+  ],
+  "name": "Tyler Bate",
+  "reason": "protected",
+  "total_matches": 32
+ },
+ "tyler-rust": {
+  "aliases": [
+   "Russ Taylor",
+   "Ryan Taylor"
+  ],
+  "cagematch_id": 4830,
+  "merged_from": [
+   "russ-taylor",
+   "ryan-taylor"
+  ],
+  "name": "Tyler Rust",
+  "reason": "full-history",
+  "total_matches": 2
+ },
+ "umaga": {
+  "aliases": [
+   "Ekmo",
+   "Jamal",
+   "Umaga"
+  ],
+  "cagematch_id": 1087,
+  "merged_from": [
+   "ekmo",
+   "umaga"
+  ],
+  "name": "Umaga",
+  "reason": "corpus-decisive",
+  "total_matches": 140
+ },
+ "val-venis": {
+  "aliases": [
+   "Chief Morley",
+   "The Big Valbowski",
+   "Val Venis"
+  ],
+  "cagematch_id": 588,
+  "merged_from": [
+   "chief-morley",
+   "the-big-valbowski",
+   "val-venis"
+  ],
+  "name": "Val Venis",
+  "reason": "corpus-decisive",
+  "total_matches": 95
+ },
+ "vladimir-kozlov": {
+  "aliases": [
+   "Oleg Prudius",
+   "Vladimir Kozlov"
+  ],
+  "cagematch_id": 2817,
+  "merged_from": [
+   "oleg-prudius",
+   "vladimir-kozlov"
+  ],
+  "name": "Vladimir Kozlov",
+  "reason": "corpus-decisive",
+  "total_matches": 81
+ },
+ "von-wagner": {
+  "aliases": [
+   "Cal Bloom",
+   "Von Wagner"
+  ],
+  "cagematch_id": 21860,
+  "merged_from": [
+   "cal-bloom",
+   "von-wagner"
+  ],
+  "name": "Von Wagner",
+  "reason": "corpus-decisive",
+  "total_matches": 4
+ },
+ "wade-barrett": {
+  "aliases": [
+   "Bad News Barrett",
+   "King Barrett",
+   "Lawrence Knight",
+   "Stu Sanders",
+   "Wade Barrett"
+  ],
+  "cagematch_id": 2849,
+  "merged_from": [
+   "lawrence-knight",
+   "stu-sanders",
+   "wade-barrett"
+  ],
+  "name": "Wade Barrett",
+  "reason": "corpus-decisive",
+  "total_matches": 280
+ },
+ "wendy-choo": {
+  "aliases": [
+   "Mei Ying",
+   "Wendy Choo"
+  ],
+  "cagematch_id": 18190,
+  "merged_from": [
+   "mei-ying",
+   "wendy-choo"
+  ],
+  "name": "Wendy Choo",
+  "reason": "corpus-decisive",
+  "total_matches": 3
+ },
+ "wesley-blake": {
+  "aliases": [
+   "Blake",
+   "Wesley Blake"
+  ],
+  "cagematch_id": 14786,
+  "merged_from": [
+   "blake",
+   "wesley-blake"
+  ],
+  "name": "Wesley Blake",
+  "reason": "full-history",
+  "total_matches": 8
+ },
+ "will-hobbs": {
+  "aliases": [
+   "Royce Keys",
+   "Will Hobbs"
+  ],
+  "cagematch_id": 12277,
+  "merged_from": [
+   "royce-keys",
+   "will-hobbs"
+  ],
+  "name": "Will Hobbs",
+  "reason": "protected",
+  "total_matches": 9
+ },
+ "xavier-woods": {
+  "aliases": [
+   "King Woods",
+   "Xavier Woods"
+  ],
+  "cagematch_id": 4955,
+  "merged_from": [
+   "king-woods",
+   "xavier-woods"
+  ],
+  "name": "Xavier Woods",
+  "reason": "corpus-decisive",
+  "total_matches": 305
+ },
+ "xyon-quinn": {
+  "aliases": [
+   "Daniel Vidot",
+   "Xyon Quinn"
+  ],
+  "cagematch_id": 21211,
+  "merged_from": [
+   "daniel-vidot",
+   "xyon-quinn"
+  ],
+  "name": "Xyon Quinn",
+  "reason": "corpus-decisive",
+  "total_matches": 4
+ },
+ "zack-ryder": {
+  "aliases": [
+   "Brett Major",
+   "Brett Majors",
+   "Brett Matthews",
+   "Matt Cardona",
+   "Zack Ryder"
+  ],
+  "cagematch_id": 2750,
+  "merged_from": [
+   "brett-majors",
+   "brett-matthews",
+   "matt-cardona",
+   "zack-ryder"
+  ],
+  "name": "Zack Ryder",
+  "reason": "corpus-decisive",
+  "total_matches": 282
+ },
+ "zelina-vega": {
+  "aliases": [
+   "Queen Zelina",
+   "Zelina",
+   "Zelina Vega"
+  ],
+  "cagematch_id": 10147,
+  "merged_from": [
+   "zelina",
+   "zelina-vega"
+  ],
+  "name": "Zelina Vega",
+  "reason": "corpus-decisive",
+  "total_matches": 98
+ }
+}

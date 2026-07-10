@@ -6338,14 +6338,24 @@
     if (!BUNDLE) return;
 
     if (BUNDLE.wrestlers) {
+      // A merged wrestler answers to every name he worked under: Bradshaw is
+      // also "John Bradshaw Layfield" and "JBL", Gunther is also "WALTER".
+      // wrestlers_by_name already maps each of those to the merged slug, so
+      // invert it to get the aliases and fold them into the haystack. Without
+      // this, merging a ring name out of the roster makes it unsearchable.
+      const aliasesOf = {};
+      for (const [name, slug] of Object.entries(BUNDLE.wrestlers_by_name || {})) {
+        (aliasesOf[slug] || (aliasesOf[slug] = [])).push(name);
+      }
       for (const w of Object.values(BUNDLE.wrestlers)) {
+        const names = aliasesOf[w.slug] || [w.name];
         searchWrestlers.push({
           slug: w.slug,
           name: w.name,
           total: w.total_matches || 0,
           ppv: w.ppv_appearances || 0,
           years: w.active_years || null,
-          hay: String(w.name || '').toLowerCase(),
+          hay: names.join(' ').toLowerCase(),
         });
       }
     }
