@@ -206,3 +206,54 @@ and `events` is recoverable exactly from the bundle's event metadata plus the
 match shards. Before changing anything, `apply_merge` rebuilds the index with
 the *shipped* canon and asserts it reproduces the shipped index exactly. If the
 reconstruction were wrong, every number downstream would shift silently.
+
+---
+
+# fetch_event_pages.py -> backfill_event_pages.py
+
+```
+uv run --with requests python cagematch-pipeline/fetch_event_pages.py
+uv run --with beautifulsoup4 --with requests python cagematch-pipeline/backfill_event_pages.py [--dry-run]
+```
+
+Once `fill_locations` stamps a `cagematch_nr` onto the 858 events that were not
+sourced from Cagematch, their Cagematch event pages can finally be read. Nobody
+ever fetched them, so the SmackDownHotel third of the corpus carried no match
+durations, no attendance, no TV data and no commentary at all.
+
+`fetch_event_pages` pulls one page per event through Firecrawl (a plain
+`requests.get` hits Cagematch's 307 redirect loop) into `.firecrawl/cm-events/`,
+skipping anything already on disk so the run is resumable, and writing a page
+only if it actually looks like an event page. Firecrawl serves the English
+rendering, so `tv_network` comes back `UPN`, not the German `PPV Sender` the
+untargeted bulk scrape left behind.
+
+`backfill_event_pages` parses each cached page with the same
+`src.cagematch_scraper.build_event_from_html` the live scraper uses, and fills:
+
+| where | fields | rule |
+|---|---|---|
+| bundle events | attendance, tv_network, tv_rating, broadcast_type, commentary, venue | fill when absent |
+| match shards | duration_seconds, match_guide_rating | fill when absent |
+
+City, state, country and dates are left to `fill_locations`; the event page
+renders foreign place names in German.
+
+## The match join
+
+Within the event, by normkeyed and sorted team members, never by match order
+(SmackDownHotel does not always agree with the page's order). It is
+`fill_match_ratings`'s key minus the date, since the event nr already pins the
+night. About 84% of SmackDownHotel matches join. The rest are 24/7-title
+backstage skits and `a jobber` placeholders Cagematch never lists as matches,
+multi-way matches the two sources group into different teams, and a few tag
+partners spelled differently across sources. A miss costs a duration; it never
+lands one on the wrong match.
+
+## The gate
+
+Where a shard match already has a rating (from the date-keyed matchguide join)
+and the page carries one too, they must agree within 0.30. They are the same
+Cagematch number seen at two scrape times. More than 2% disagreeing means the
+within-event join is wrong, and the run aborts before writing. Idempotent:
+fill-when-absent means a second run changes nothing.
