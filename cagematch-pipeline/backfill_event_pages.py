@@ -26,8 +26,10 @@ value is absent. city/state/country and dates are deliberately left alone:
 fill_locations owns those, and the event page renders foreign place names in
 German (`Saudi-Arabien`).
 
-**Match fields** (duration_seconds, match_guide_rating) are written into the
-shards, joined *within the event* by normkeyed, sorted team members. This is the
+**Match fields** (duration_seconds, match_guide_rating, and match_type /
+stipulation / title_at_stake, which name the gimmick and the belt on the line)
+are written into the shards, joined *within the event* by normkeyed, sorted team
+members. This is the
 match_key from fill_match_ratings.py minus the date, because the event nr already
 pins the night. Match order is not used as a key: SmackDownHotel does not always
 list matches in the same order the page does. A multi-way match whose sides the
@@ -203,6 +205,16 @@ def main() -> None:
                 m["match_guide_rating"] = hit["match_guide_rating"]
                 m_fill["+ match_guide_rating"] += 1
                 touched_shards.add(p)
+            # match_type carries the stipulation (Hardcore, Casket, No Holds
+            # Barred) and names the title on the line; SmackDownHotel left it
+            # blank on 81% of its matches, so a SmackDownHotel match reads
+            # "Match" with no title or gimmick. Fill it, the stipulation and the
+            # title from the page, only where the shipped value is absent.
+            for f in ("match_type", "stipulation", "title_at_stake"):
+                if not m.get(f) and hit.get(f):
+                    m[f] = hit[f]
+                    m_fill[f"+ {f}"] += 1
+                    touched_shards.add(p)
 
     # --- report ---------------------------------------------------------------
     print(f"\ntargets {len(targets)}, pages parsed {len(parsed)}")
