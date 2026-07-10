@@ -535,7 +535,6 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    margin-left: auto;
     background: var(--surface);
     border: 1px solid var(--border-strong);
     padding: 4px 9px;
@@ -1650,11 +1649,20 @@
   .match-card:hover { border-color: var(--border-strong); }
 
   .match-header-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
-    flex-wrap: wrap;
+  }
+  /* Three zones so the Details toggle sits centered on every card, no matter how
+     many tags the left side carries; actions stay right, description stays left. */
+  .header-left { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+  .header-center { display: flex; justify-content: center; }
+  .header-right { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+  @media (max-width: 640px) {
+    .match-header-row { grid-template-columns: 1fr auto; }
+    .header-center { grid-column: 1 / -1; justify-content: flex-start; order: 3; }
   }
   .m-number {
     font-family: var(--font-mono);
@@ -1892,7 +1900,6 @@
 
   /* Match details dropdown */
   .details-toggle {
-    margin-left: auto;
     background: transparent;
     border: 1px solid var(--border);
     padding: 3px 9px;
@@ -5262,8 +5269,17 @@
     // The show's logo lives in the modal header, so it is not repeated on every
     // match row here. The saved-matches and search views, which show a match out
     // of its show's context, carry their own badge (see renderSaved).
-    const titleTag = m.title_at_stake ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
-    const stipTag = m.stipulation ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
+    // Suppress a tag whose text the match_type already carries: a "WWE Hardcore
+    // Title Match" needs no "WWE Hardcore Title" belt tag beside it, nor a
+    // "Hardcore" stipulation tag. Normalise championship->title so a "... Title
+    // Match" type also absorbs a "... Championship" tag.
+    const norm = (s) => String(s || '').toLowerCase()
+      .replace(/championship/g, 'title').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+    const typeNorm = norm(type);
+    const titleTag = (m.title_at_stake && !typeNorm.includes(norm(m.title_at_stake)))
+      ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
+    const stipTag = (m.stipulation && !typeNorm.includes(norm(m.stipulation)))
+      ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
     // Rating is NOT a spoiler: surfaced unconditionally so spoiler-hidden users
     // can still triage which matches are worth watching.
     // A 9.1 from 12 voters is not a 9.1, so the vote count rides the tooltip.
@@ -5293,12 +5309,13 @@
     return `
       <div class="match-card"${canSave ? ` data-match-id="${esc(String(m.id))}"` : ''}>
         <div class="match-header-row">
-          <span class="m-number">M${order}</span>
-          <span class="m-type">${esc(type)}</span>
-          ${titleTag}${stipTag}${ratingTag}${wonTag}
-          ${watchChip}
-          ${detailsToggle}
-          ${saveBtn}
+          <span class="header-left">
+            <span class="m-number">M${order}</span>
+            <span class="m-type">${esc(type)}</span>
+            ${titleTag}${stipTag}${ratingTag}${wonTag}
+          </span>
+          <span class="header-center">${detailsToggle}</span>
+          <span class="header-right">${watchChip}${saveBtn}</span>
         </div>
         ${renderMatchBody(m, airDate, sourceSlug)}
         ${renderMatchFooter(m)}
