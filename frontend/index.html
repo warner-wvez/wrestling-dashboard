@@ -3046,22 +3046,46 @@
     color: var(--ink-dim);
     letter-spacing: 0.02em;
   }
-  .titles-board { max-width: 780px; }
+  .titles-board { max-width: 820px; }
+  .title-entry { border-bottom: 1px solid var(--border); }
   .title-row {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
-    padding: 14px 2px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 14px; width: 100%;
+    padding: 12px 2px; background: none; border: none;
+    text-align: left; font: inherit; color: inherit;
   }
-  .title-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .title-name {
-    font-family: var(--font-sans); font-weight: 700; font-size: 15px;
-    color: var(--ink); text-decoration: none;
-  }
-  .title-name:hover { color: var(--red); }
+  .title-row.expandable { cursor: pointer; }
+  .title-row.expandable:hover .title-name { color: var(--red); }
+  .title-belt { width: 52px; height: auto; flex: none; }
+  .title-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+  .title-name { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--ink); }
   .title-holder { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim); }
   .title-champ-link { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--border-strong); }
   .title-champ-link:hover { color: var(--red); }
   .title-since { color: var(--ink-dim); }
   .title-row .m-rating { flex: none; }
+  .title-chev {
+    flex: none; width: 7px; height: 7px; margin-left: 2px;
+    border-right: 1.5px solid var(--ink-dim); border-bottom: 1.5px solid var(--ink-dim);
+    transform: rotate(45deg); transition: transform 160ms;
+  }
+  .title-row[aria-expanded="true"] .title-chev { transform: rotate(-135deg); }
+  .title-reigns { padding: 2px 2px 16px 66px; }
+  .title-reigns-head {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-dim); margin: 4px 0 8px;
+  }
+  .reign-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    padding: 6px 0; border-bottom: 1px dashed var(--border-strong); font-size: 13px;
+  }
+  .reign-who { font-family: var(--font-sans); font-weight: 600; }
+  .reign-span { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); white-space: nowrap; }
+  .title-reign-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim); padding: 6px 0; }
+  .title-src {
+    display: inline-block; margin-top: 10px; font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--border);
+  }
+  .title-src:hover { color: var(--red); }
   .video-toolbar { margin-bottom: 22px; }
   .video-filters { display: flex; gap: 8px; flex-wrap: wrap; }
   .video-note {
@@ -3734,19 +3758,38 @@
       : `<span>${esc(c.name)}</span>`).join(' & ');
     return t.team_name ? `${esc(t.team_name)} <span class="title-team">(${links})</span>` : links;
   }
+  function reignDate(iso) {
+    const [y, m] = String(iso).split('-').map(Number);
+    return `${TITLE_MONTHS[(m || 1) - 1]} ${y}`;
+  }
+  // The reign list is a spoiler like any result, so with spoilers off it collapses
+  // to a count and no names ever reach the DOM.
+  function titleReignsHTML(t) {
+    const reigns = t.reigns || [];
+    if (!spoilers) {
+      return `<div class="title-reign-note">Turn spoilers on to see the ${reigns.length} recorded reign${reigns.length === 1 ? '' : 's'}.</div>`;
+    }
+    return reigns.map(r => {
+      const who = (r.champions || []).map(c => c.slug
+        ? `<a class="title-champ-link" href="#wrestler/${esc(c.slug)}">${esc(c.name)}</a>`
+        : `<span>${esc(c.name)}</span>`).join(' & ') || '<span>Vacant</span>';
+      const span = `${reignDate(r.start)} &ndash; ${r.end ? reignDate(r.end) : 'present'}`;
+      return `<div class="reign-row"><span class="reign-who">${who}</span><span class="reign-span">${span}</span></div>`;
+    }).join('');
+  }
   async function renderTitles() {
     const container = el('titles-content');
     if (!container) return;
     if (!TITLES_BOARD) {
       container.innerHTML = '<div class="status">Loading titles...</div>';
-      await loadTitlesBoard();
+      await Promise.all([loadTitlesBoard(), loadBelts()]);
     }
     const board = TITLES_BOARD || [];
     if (!board.length) {
       container.innerHTML = '<div class="status">No title data available.</div>';
       return;
     }
-    container.innerHTML = board.map(t => {
+    container.innerHTML = board.map((t, i) => {
       const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
       const rating = t.rating != null
         ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
@@ -3757,15 +3800,46 @@
       const holder = spoilers
         ? `held by ${titleChampHTML(t)}${since}`
         : `<span class="report-hidden">Champion hidden while spoilers are off</span>`;
-      return `
-        <div class="title-row">
+      const belt = t.belt
+        ? `<img class="title-belt" src="belts/${esc(t.belt)}.webp" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
+        : `<span class="title-belt"></span>`;
+      const main = `${belt}
           <span class="title-main">
-            <a class="title-name" href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.title)}</a>
+            <span class="title-name">${esc(t.title)}</span>
             <span class="title-holder">${holder}</span>
           </span>
-          ${rating}
+          ${rating}`;
+      const n = (t.reigns || []).length;
+      if (!n) {
+        return `<div class="title-entry"><div class="title-row">${main}</div></div>`;
+      }
+      return `
+        <div class="title-entry">
+          <button class="title-row expandable" type="button" data-toggle-title="${i}" aria-expanded="false">
+            ${main}<span class="title-chev" aria-hidden="true"></span>
+          </button>
+          <div class="title-reigns" id="reigns-${i}" hidden>
+            <div class="title-reigns-head">Title history &middot; ${n} reign${n === 1 ? '' : 's'} in the corpus</div>
+            ${titleReignsHTML(t)}
+            <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
+          </div>
         </div>`;
     }).join('');
+    // One delegated toggle for the whole board; survives spoiler re-renders because
+    // the container element persists. Links inside a row navigate, they do not toggle.
+    if (!container.dataset.wired) {
+      container.dataset.wired = '1';
+      container.addEventListener('click', (e) => {
+        if (e.target.closest('a')) return;
+        const btn = e.target.closest('[data-toggle-title]');
+        if (!btn) return;
+        const panel = document.getElementById('reigns-' + btn.dataset.toggleTitle);
+        if (!panel) return;
+        const wasHidden = panel.hidden;
+        panel.hidden = !wasHidden;
+        btn.setAttribute('aria-expanded', wasHidden ? 'true' : 'false');
+      });
+    }
   }
 
   // SDH-sourced wrestler profiles (bio, moves, themes, alignment). Same graceful

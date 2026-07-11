@@ -21,14 +21,17 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from src.roster_aliases import normkey  # noqa: E402
 from src.ship_guard import atomic_write_text  # noqa: E402
+from fill_belts import belt_for, norm as belt_norm  # noqa: E402  (one belt-name mapper, not two)
 
 OUT = Path(__file__).resolve().parent / "out"
 TAG = r'<script id="wrestling-data" type="application/json">(.*?)</script>'
@@ -49,6 +52,33 @@ def main() -> None:
     def slug_for(name):
         return by_name.get(name) or by_norm.get(normkey(name))
 
+    # A belt's whole lineage. The corpus keys reigns under many names as a title is
+    # renamed, so the reigns are gathered and merged, but by a *lineage* key, not
+    # the belt key: the belt key is deliberately coarse (NXT and main-roster tag
+    # titles share one belt image) and would fuse distinct lineages. The lineage
+    # key is the name with only the promotion prefix stripped, so WWF and WWE
+    # Intercontinental unify while NXT Tag Team stays apart from WWE Tag Team.
+    def lineage_key(name):
+        n = re.sub(r"\b(wwf|wwe|undisputed)\b", " ", belt_norm(name))
+        return re.sub(r"\s+", " ", n).strip()
+
+    reigns_by_lineage = defaultdict(list)
+    for tkey, reigns in bundle["title_reigns"].items():
+        reigns_by_lineage[lineage_key(tkey)].extend(reigns)
+    for lk, reigns in reigns_by_lineage.items():
+        seen, merged = set(), []
+        for r in sorted(reigns, key=lambda r: r["start"], reverse=True):
+            sig = (r["start"], tuple(r.get("champion_names") or []))
+            if sig in seen:                          # same reign under two title names
+                continue
+            seen.add(sig)
+            merged.append({
+                "champions": [{"name": n, "slug": slug_for(n)} for n in (r.get("champion_names") or [])],
+                "start": r["start"],
+                "end": r.get("end"),
+            })
+        reigns_by_lineage[lk] = merged
+
     board, linked, unlinked = [], 0, 0
     for t in titles:
         if not t["champions"]:                       # retired lineage (INACTIVE)
@@ -63,6 +93,7 @@ def main() -> None:
                 unlinked += 1
         board.append({
             "title": t["title"],
+            "belt": belt_for(t["title"]),
             "champions": champs,
             "team_name": t["team_name"],
             "since": t["since"],
@@ -70,6 +101,7 @@ def main() -> None:
             "rating": t["rating"],
             "votes": t["votes"],
             "url": TITLE_URL.format(t["cagematch_title_nr"]),
+            "reigns": reigns_by_lineage.get(lineage_key(t["title"]), []),
         })
 
     board.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
