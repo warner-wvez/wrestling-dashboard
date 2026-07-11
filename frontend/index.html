@@ -3050,11 +3050,9 @@
   .title-entry { border-bottom: 1px solid var(--border); }
   .title-row {
     display: flex; align-items: center; gap: 14px; width: 100%;
-    padding: 12px 2px; background: none; border: none;
-    text-align: left; font: inherit; color: inherit;
+    padding: 12px 2px; text-decoration: none; color: inherit;
   }
-  .title-row.expandable { cursor: pointer; }
-  .title-row.expandable:hover .title-name { color: var(--red); }
+  .title-row:hover .title-name { color: var(--red); }
   .title-belt { width: 52px; height: auto; flex: none; }
   .title-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
   .title-name { font-family: var(--font-sans); font-weight: 700; font-size: 15px; color: var(--ink); }
@@ -3063,26 +3061,58 @@
   .title-champ-link:hover { color: var(--red); }
   .title-since { color: var(--ink-dim); }
   .title-row .m-rating { flex: none; }
-  .title-chev {
-    flex: none; width: 7px; height: 7px; margin-left: 2px;
-    border-right: 1.5px solid var(--ink-dim); border-bottom: 1.5px solid var(--ink-dim);
-    transform: rotate(45deg); transition: transform 160ms;
+  .title-go { flex: none; font-size: 22px; color: var(--ink-faint); line-height: 1; }
+  .title-row:hover .title-go { color: var(--red); }
+
+  /* ---- One belt's timeline page ---------------------------------------- */
+  .title-page { max-width: 720px; }
+  .tp-back {
+    display: inline-block; margin-bottom: 18px; font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.08em; color: var(--ink-dim); text-decoration: none;
   }
-  .title-row[aria-expanded="true"] .title-chev { transform: rotate(-135deg); }
-  .title-reigns { padding: 2px 2px 16px 66px; }
-  .title-reigns-head {
-    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--ink-dim); margin: 4px 0 8px;
+  .tp-back:hover { color: var(--red); }
+  .tp-head { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+  .tp-belt { width: 130px; height: auto; flex: none; }
+  .tp-name { font-family: var(--font-sans); font-weight: 900; font-size: 26px; letter-spacing: -0.02em; }
+  .tp-sub {
+    display: flex; align-items: center; gap: 10px; margin-top: 8px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim);
   }
-  .reign-row {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
-    padding: 6px 0; border-bottom: 1px dashed var(--border-strong); font-size: 13px;
+  .title-modes { display: inline-flex; border: 1px solid var(--ink); margin-bottom: 16px; }
+  .tmode {
+    appearance: none; border: 0; border-right: 1px solid var(--ink); background: transparent;
+    cursor: pointer; font-family: var(--font-sans); font-size: 12px; font-weight: 700;
+    color: var(--ink-dim); padding: 9px 14px; white-space: nowrap;
   }
-  .reign-who { font-family: var(--font-sans); font-weight: 600; }
-  .reign-span { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); white-space: nowrap; }
-  .title-reign-note { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim); padding: 6px 0; }
+  .tmode:last-child { border-right: 0; }
+  .tmode.active { background: var(--ink); color: var(--surface); }
+  .tp-state {
+    font-family: var(--font-mono); font-size: 13px; color: var(--ink); margin-bottom: 18px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--border);
+  }
+  .tp-timeline { margin-bottom: 18px; }
+  .tp-reign { display: flex; gap: 14px; }
+  .tp-rail { flex: none; width: 12px; position: relative; }
+  .tp-rail::before {
+    content: ''; position: absolute; left: 5px; top: 0; bottom: 0; width: 1px; background: var(--border-strong);
+  }
+  .tp-reign:first-child .tp-rail::before { top: 10px; }
+  .tp-reign:last-child .tp-rail::before { bottom: calc(100% - 10px); }
+  .tp-dot {
+    position: absolute; left: 2px; top: 8px; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--surface); border: 1.5px solid var(--ink-dim);
+  }
+  .tp-reign.current .tp-dot { background: var(--red); border-color: var(--red); }
+  .tp-reign-body {
+    flex: 1; display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    padding: 4px 0 12px; min-width: 0;
+  }
+  .tp-reign-who { font-family: var(--font-sans); font-weight: 600; font-size: 14px; }
+  .tp-reign.current .tp-reign-who { color: var(--red); }
+  .tp-reign-span { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); white-space: nowrap; }
+  .tp-more { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim); padding: 6px 0 6px 26px; }
   .title-src {
-    display: inline-block; margin-top: 10px; font-family: var(--font-mono); font-size: 11px;
+    display: inline-block; margin-top: 6px; font-family: var(--font-mono); font-size: 11px;
     color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--border);
   }
   .title-src:hover { color: var(--red); }
@@ -3397,6 +3427,10 @@
     <p class="video-sub">Active WWE championships, sorted by how the lineage is rated. The current holder shows with spoilers on.</p>
   </div>
   <div id="titles-content" class="titles-board"></div>
+</section>
+
+<section id="view-title" class="view" hidden>
+  <div id="title-page-content"></div>
 </section>
 
 <section id="view-wrestler" class="view" hidden>
@@ -3762,21 +3796,12 @@
     const [y, m] = String(iso).split('-').map(Number);
     return `${TITLE_MONTHS[(m || 1) - 1]} ${y}`;
   }
-  // The reign list is a spoiler like any result, so with spoilers off it collapses
-  // to a count and no names ever reach the DOM.
-  function titleReignsHTML(t) {
-    const reigns = t.reigns || [];
-    if (!spoilers) {
-      return `<div class="title-reign-note">Turn spoilers on to see the ${reigns.length} recorded reign${reigns.length === 1 ? '' : 's'}.</div>`;
-    }
-    return reigns.map(r => {
-      const who = (r.champions || []).map(c => c.slug
-        ? `<a class="title-champ-link" href="#wrestler/${esc(c.slug)}">${esc(c.name)}</a>`
-        : `<span>${esc(c.name)}</span>`).join(' & ') || '<span>Vacant</span>';
-      const span = `${reignDate(r.start)} &ndash; ${r.end ? reignDate(r.end) : 'present'}`;
-      return `<div class="reign-row"><span class="reign-who">${who}</span><span class="reign-span">${span}</span></div>`;
-    }).join('');
-  }
+  const titleSlug = (t) => jsSlugify(t.title);
+  const titleBySlug = (slug) => (TITLES_BOARD || []).find(t => titleSlug(t) === slug) || null;
+
+  // The board: every active belt, its image, current holder (spoiler-gated) and
+  // rating. A row now opens the belt's own timeline page rather than dropping a
+  // messy inline list.
   async function renderTitles() {
     const container = el('titles-content');
     if (!container) return;
@@ -3789,7 +3814,7 @@
       container.innerHTML = '<div class="status">No title data available.</div>';
       return;
     }
-    container.innerHTML = board.map((t, i) => {
+    container.innerHTML = board.map(t => {
       const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
       const rating = t.rating != null
         ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
@@ -3803,41 +3828,102 @@
       const belt = t.belt
         ? `<img class="title-belt" src="belts/${esc(t.belt)}.webp" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
         : `<span class="title-belt"></span>`;
-      const main = `${belt}
-          <span class="title-main">
-            <span class="title-name">${esc(t.title)}</span>
-            <span class="title-holder">${holder}</span>
-          </span>
-          ${rating}`;
-      const n = (t.reigns || []).length;
-      if (!n) {
-        return `<div class="title-entry"><div class="title-row">${main}</div></div>`;
-      }
       return `
         <div class="title-entry">
-          <button class="title-row expandable" type="button" data-toggle-title="${i}" aria-expanded="false">
-            ${main}<span class="title-chev" aria-hidden="true"></span>
-          </button>
-          <div class="title-reigns" id="reigns-${i}" hidden>
-            <div class="title-reigns-head">Title history &middot; ${n} reign${n === 1 ? '' : 's'} in the corpus</div>
-            ${titleReignsHTML(t)}
-            <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
-          </div>
+          <a class="title-row" href="#title/${esc(titleSlug(t))}">
+            ${belt}
+            <span class="title-main">
+              <span class="title-name">${esc(t.title)}</span>
+              <span class="title-holder">${holder}</span>
+            </span>
+            ${rating}
+            <span class="title-go" aria-hidden="true">&rsaquo;</span>
+          </a>
         </div>`;
     }).join('');
-    // One delegated toggle for the whole board; survives spoiler re-renders because
-    // the container element persists. Links inside a row navigate, they do not toggle.
+  }
+
+  // ---- One belt's timeline page ------------------------------------------
+  // Like the roster's time toggle: "As of your date" shows who held the belt at
+  // the point you have watched to, and only the reigns up to there, so it never
+  // spoils; "All-time" opens the whole lineage up to the current champion.
+  let titleMode = 'time';   // 'time' | 'all'
+
+  function reignWhoHTML(r) {
+    return (r.champions || []).map(c => c.slug
+      ? `<a class="title-champ-link" href="#wrestler/${esc(c.slug)}">${esc(c.name)}</a>`
+      : `<span>${esc(c.name)}</span>`).join(' & ') || '<span>Vacant</span>';
+  }
+  function reignTimelineRow(r, isCurrent) {
+    const span = `${reignDate(r.start)} &ndash; ${r.end ? reignDate(r.end) : 'present'}`;
+    return `<div class="tp-reign${isCurrent ? ' current' : ''}">
+        <span class="tp-rail"><span class="tp-dot"></span></span>
+        <span class="tp-reign-body"><span class="tp-reign-who">${reignWhoHTML(r)}</span><span class="tp-reign-span">${span}</span></span>
+      </div>`;
+  }
+  function titlePageHTML(t) {
+    const reigns = t.reigns || [];
+    const watchISO = rosterAnchorISO();
+    const rating = t.rating != null
+      ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>` : '';
+    const belt = t.belt ? `<img class="tp-belt" src="belts/${esc(t.belt)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
+
+    let stateLine, timeline;
+    if (titleMode === 'time') {
+      const cur = reigns.find(r => r.start <= watchISO && (!r.end || r.end >= watchISO));
+      const upTo = reigns.filter(r => r.start <= watchISO);   // never past where you have watched
+      stateLine = cur
+        ? `As of <strong>${esc(fmtTitleSince(watchISO))}</strong> &middot; held by ${reignWhoHTML(cur)}`
+        : `Not yet established as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
+      const earliest = reigns[reigns.length - 1];
+      timeline = upTo.length
+        ? upTo.map(r => reignTimelineRow(r, r === cur)).join('') +
+          (reigns.length > upTo.length ? `<div class="tp-more">${reigns.length - upTo.length} later reign${reigns.length - upTo.length === 1 ? '' : 's'} hidden &mdash; keep watching, or switch to All-time.</div>` : '')
+        : `<div class="tp-more">${earliest ? `The corpus's first reign here begins ${reignDate(earliest.start)}. Keep watching, or switch to All-time.` : 'No reign recorded in the corpus.'}</div>`;
+    } else {
+      const cur = reigns.find(r => !r.end) || reigns[0];
+      stateLine = cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reign recorded in the corpus.';
+      timeline = reigns.map(r => reignTimelineRow(r, r === cur)).join('') || `<div class="tp-more">No reign in the corpus.</div>`;
+    }
+    return `
+      <div class="title-page">
+        <a class="tp-back" href="#titles">&larr; All titles</a>
+        <div class="tp-head">
+          ${belt}
+          <div class="tp-headtext">
+            <h1 class="tp-name">${esc(t.title)}</h1>
+            <div class="tp-sub">${rating}<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} in the corpus</span></div>
+          </div>
+        </div>
+        <div class="title-modes" role="tablist">
+          <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab">As of your date</button>
+          <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab">All-time</button>
+        </div>
+        <div class="tp-state">${stateLine}</div>
+        <div class="tp-timeline">${timeline}</div>
+        <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
+      </div>`;
+  }
+  function renderTitlePage(slug) {
+    const container = el('title-page-content');
+    if (!container) return;
+    const paint = () => {
+      const t = titleBySlug(slug);
+      container.innerHTML = t ? titlePageHTML(t) : '<div class="status">Title not found.</div>';
+    };
+    if (!TITLES_BOARD || !BELTS) {
+      container.innerHTML = '<div class="status">Loading title...</div>';
+      Promise.all([loadTitlesBoard(), loadBelts()]).then(paint);
+    } else {
+      paint();
+    }
     if (!container.dataset.wired) {
       container.dataset.wired = '1';
       container.addEventListener('click', (e) => {
-        if (e.target.closest('a')) return;
-        const btn = e.target.closest('[data-toggle-title]');
+        const btn = e.target.closest('[data-tmode]');
         if (!btn) return;
-        const panel = document.getElementById('reigns-' + btn.dataset.toggleTitle);
-        if (!panel) return;
-        const wasHidden = panel.hidden;
-        panel.hidden = !wasHidden;
-        btn.setAttribute('aria-expanded', wasHidden ? 'true' : 'false');
+        titleMode = btn.dataset.tmode;
+        renderTitlePage(window.location.hash.slice('#title/'.length));
       });
     }
   }
@@ -6802,6 +6888,12 @@
       if (v) v.hidden = false;
       markNav('video');
       renderVideo();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    } else if (hash.startsWith('#title/')) {
+      const v = document.getElementById('view-title');
+      if (v) v.hidden = false;
+      markNav('titles');
+      renderTitlePage(hash.slice('#title/'.length));
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else if (hash === '#titles') {
       const v = document.getElementById('view-titles');
