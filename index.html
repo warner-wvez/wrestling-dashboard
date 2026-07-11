@@ -1845,6 +1845,15 @@
     position: absolute; inset: 0; width: 100%; height: 100%;
     object-fit: cover; object-position: top center;
   }
+  /* The belt hangs off the bottom of a champion's headshot, wider than the box so
+     its shape reads. The headshot box clips its own image, so has-belt lifts the
+     clip to let the belt spill out. */
+  .mc-av.has-belt { overflow: visible; }
+  .mc-av-belt {
+    position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%);
+    width: 150%; height: auto; max-width: none; pointer-events: none; z-index: 3;
+    filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.5));
+  }
   .mc-av-lg { width: 48px; height: 48px; }
   .mc-av-md { width: 38px; height: 38px; }
   .mc-av-sm { width: 28px; height: 28px; }
@@ -1856,6 +1865,15 @@
   /* Tag / multi-team: a small tile rides just before each name, inline. Each
      [tile][name] is one inline-flex unit, so a long tag team wraps as whole
      units (the tile never orphans from its name) and stays vertically centered. */
+  /* The inline 2-on-2 / 1-on-1 team lays its avatars, names, "&", champ pill and
+     belt out as one flex line that wraps toward its own side, so a longer team
+     never strands its badge on a lopsided second line. */
+  .team-names.mc-inline {
+    display: inline-flex; flex-wrap: wrap; align-items: center; gap: 3px 6px;
+    vertical-align: middle;
+  }
+  .team.left .team-names.mc-inline { justify-content: flex-end; }
+  .team.right .team-names.mc-inline { justify-content: flex-start; }
   .mc-pair { display: inline-flex; align-items: center; vertical-align: middle; }
   .team-names .mc-av-sm { margin: 0 7px 0 0; }
   .team-names.mc-solo .champ-badge { margin-left: 0; }
@@ -3674,6 +3692,22 @@
   }
   const tournamentsFor = (id) => (TOURNEYS && id != null && TOURNEYS[String(id)]) || null;
 
+  // Belt images keyed by title name (from cagematch-pipeline/fill_belts.py). Used
+  // to stamp the belt on a defending champion's headshot and to illustrate the
+  // Titles view. A title with no image (foreign guest titles) maps to nothing.
+  let BELTS = null;
+  let beltsPromise = null;
+  function loadBelts() {
+    if (!beltsPromise) {
+      beltsPromise = fetch('shards/belts.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { BELTS = map; return map; });
+    }
+    return beltsPromise;
+  }
+  const beltFor = (title) => (BELTS && title && BELTS[title]) || null;
+
   // The Titles view: active championships with their current holder and the
   // Cagematch prestige rating, loaded once from its own sidecar. The holder is a
   // spoiler and is written into the DOM only with spoilers on (see renderTitles).
@@ -4954,6 +4988,7 @@
         loadPromos(),  // the promos shelf renders inline too
         loadFeuds(),   // and the storylines shelf
         loadTournaments(),  // and the tournaments shelf
+        loadBelts(),   // and the belt on a champion's headshot
       ]);
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
@@ -5444,12 +5479,21 @@
   // no initials bleed through. On a card a wrestler with no headshot shows no
   // tile at all (the tile removes itself when the image 404s), just the name,
   // never an initials stand-in.
-  function wrestlerAvatar(slug, name, size) {
-    return `<span class="mc-av mc-av-${size || 'sm'}"><img class="mc-av-img" alt="" loading="lazy" src="roster-img/${esc(slug)}.webp" onerror="this.closest('.mc-av').remove()"></span>`;
+  function wrestlerAvatar(slug, name, size, belt) {
+    // A defending champion carries their belt on the lower corner of the headshot.
+    const beltEl = belt
+      ? `<img class="mc-av-belt" src="belts/${esc(belt)}.webp" alt="" loading="lazy" onerror="this.remove()">`
+      : '';
+    return `<span class="mc-av mc-av-${size || 'sm'}${belt ? ' has-belt' : ''}"><img class="mc-av-img" alt="" loading="lazy" src="roster-img/${esc(slug)}.webp" onerror="this.closest('.mc-av').remove()">${beltEl}</span>`;
   }
 
-  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null, sourceSlug = null, faceoff = false, forceStack = false) {
+  function renderTeam(t, side, cls = '', airDate = null, titleAtStake = null, sourceSlug = null, faceoff = false, forceStack = false, beltKey = null) {
     const rawNames = (t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean);
+    // The belt rides the defending champion's headshot (the team that entered as
+    // champion of the belt on the line), on its first member so a tag team shows
+    // it once, not twice.
+    const belt = (t.was_champion_entering && beltKey) ? beltKey : null;
+    const beltFor_ = (i) => (i === 0 ? belt : null);
     const plainNames = rawNames.map(String).join(' & ');
     const slugFor = (n) => BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
     const linkOf = (n, slug) => {
@@ -5476,6 +5520,9 @@
         champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
       }
     }
+    // When the belt itself is on the headshot, the red "Champ" pill is redundant
+    // and only adds width that wraps the line; the belt already says champion.
+    if (belt) champ = '';
     const metaBits = [];
     if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
     if (t.team_name && t.participants && t.participants.length > 1 &&
@@ -5487,29 +5534,29 @@
     if (stack) {
       // One [photo] name per row; each row reserves the photo slot so the names
       // line up whether or not a wrestler has a headshot.
-      const rows = rawNames.map(n => {
+      const rows = rawNames.map((n, i) => {
         const slug = slugFor(n);
-        const inner = slug ? `${wrestlerAvatar(slug, n, 'md')}${linkOf(n, slug)}` : esc(n);
+        const inner = slug ? `${wrestlerAvatar(slug, n, 'md', beltFor_(i))}${linkOf(n, slug)}` : esc(n);
         return `<span class="mc-row">${inner}</span>`;
       }).join('');
       const badgeRow = champ ? `<span class="mc-row mc-row-badge">${champ}</span>` : '';
       return `<div class="team ${side} ${cls}"><span class="team-names mc-stack">${rows}${badgeRow}</span>${metaRow}</div>`;
     }
 
-    const linkedNames = rawNames.map(n => {
+    const linkedNames = rawNames.map((n, i) => {
       const slug = slugFor(n);
       if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text
       const link = linkOf(n, slug);
-      return solo ? link : `<span class="mc-pair">${wrestlerAvatar(slug, n, 'sm')}${link}</span>`;
+      return solo ? link : `<span class="mc-pair">${wrestlerAvatar(slug, n, 'sm', beltFor_(i))}${link}</span>`;
     }).join(' &amp; ');
     if (solo) {
       const slug = slugFor(rawNames[0]);
-      const av = slug ? wrestlerAvatar(slug, rawNames[0], 'lg') : '';
+      const av = slug ? wrestlerAvatar(slug, rawNames[0], 'lg', belt) : '';
       // Headshot on the inner side (toward the VS); name on the outer side.
       const inner = side === 'left' ? `${linkedNames}${champ}${av}` : `${av}${linkedNames}${champ}`;
       return `<div class="team ${side} ${cls}"><span class="team-names mc-solo">${inner}</span>${metaRow}</div>`;
     }
-    return `<div class="team ${side} ${cls}"><span class="team-names">${linkedNames}${champ}</span>${metaRow}</div>`;
+    return `<div class="team ${side} ${cls}"><span class="team-names mc-inline">${linkedNames}${champ}</span>${metaRow}</div>`;
   }
 
   function shouldSwapTeams(m) {
@@ -5520,6 +5567,7 @@
     const teams = m.teams || [];
     if (!teams.length) return `<div class="match-body"><em style="color:var(--ink-faint);">No details</em></div>`;
     const titleAtStake = m.title_at_stake || null;
+    const beltKey = beltFor(titleAtStake);
 
     // Battle royals / Royal Rumbles cram dozens of names into a single team and
     // collapse the inline two-column rendering into an unreadable wall. Switch
@@ -5531,9 +5579,12 @@
 
     if (teams.length === 2) {
       const [a, b] = shouldSwapTeams(m) ? [teams[1], teams[0]] : teams;
-      // If either side has 3+ wrestlers, stack both sides vertically so the
-      // headshots don't cram (a 4-man side wrapping inline is an unreadable mess).
-      const bigTeam = teams.some(t => (t.participants || []).length >= 3);
+      // If either side is a team (2+ wrestlers), stack both sides vertically, one
+      // headshot per row. A tag team laid out inline crams its avatars and names
+      // and strands the champ pill on a lopsided second line; stacking gives every
+      // multi-person match one clean, symmetric format. Only a true 1-on-1 keeps
+      // the headshots-flank-the-VS tale of the tape.
+      const bigTeam = teams.some(t => (t.participants || []).length >= 2);
       const anyOutcome = (o) => teams.some(t => t.match_outcome === o);
       const noResult = anyOutcome('no-contest') || anyOutcome('draw') || (a.was_winner !== true && b.was_winner !== true);
       // The winner side is only ever expressed in the DOM when spoilers are on,
@@ -5547,12 +5598,12 @@
         : '';
       return `
         <div class="match-body">
-          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake, sourceSlug, true, bigTeam)}
+          ${renderTeam(a, 'left', leftCls, airDate, titleAtStake, sourceSlug, true, bigTeam, beltKey)}
           <div class="vs-cell">
             <span class="vs-text">VS</span>
             ${defText}
           </div>
-          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake, sourceSlug, true, bigTeam)}
+          ${renderTeam(b, 'right', rightCls, airDate, titleAtStake, sourceSlug, true, bigTeam, beltKey)}
         </div>`;
     }
 
@@ -5562,8 +5613,8 @@
       // Winner/loser styling only when spoilers are on, so the result is absent
       // from the DOM otherwise.
       const cls = !spoilers ? '' : (t.was_winner === true ? 'winner' : (anyWinner ? 'loser' : ''));
-      parts.push(renderTeam(t, 'left', cls, airDate, titleAtStake, sourceSlug));
-      if (i < teams.length - 1) parts.push('<div class="multi-divider">vs</div>');
+      parts.push(renderTeam(t, 'left', cls, airDate, titleAtStake, sourceSlug, false, false, beltKey));
+      if (i <teams.length - 1) parts.push('<div class="multi-divider">vs</div>');
     });
     return `<div class="match-body multi">${parts.join('')}</div>`;
   }
