@@ -73,6 +73,18 @@
     margin: 0 auto;
     padding: 24px 32px 80px;
   }
+  /* Breadcrumb bar: one line under the header, aligned to the content by the body
+     padding, telling you where you are and giving one tap back up each level. */
+  .crumbs {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 7px;
+    margin: -6px 0 20px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+  }
+  .crumbs[hidden] { display: none; }
+  .crumb { color: var(--ink-dim); text-decoration: none; }
+  .crumb:hover { color: var(--red); }
+  .crumb-current { color: var(--ink); font-weight: 600; }
+  .crumb-sep { color: var(--ink-faint); }
 
   /* =============================================================
      HEADER
@@ -3265,6 +3277,7 @@
   .promo-row { align-items: flex-start; }
   .promo-main { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
   .promo-people { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .promo-quote { font-family: var(--font-sans); font-size: 12.5px; font-style: italic; color: var(--ink-dim); }
   .promo-row .m-rating { flex: none; }
   @media (max-width: 720px) {
     .moments-block { padding: 4px 14px 20px; }
@@ -3296,6 +3309,8 @@
     </button>
   </div>
 </header>
+
+<nav id="breadcrumbs" class="crumbs" aria-label="Breadcrumb" hidden></nav>
 
 <section id="view-calendar" class="view">
 
@@ -3887,7 +3902,6 @@
     }
     return `
       <div class="title-page">
-        <a class="tp-back" href="#titles">&larr; All titles</a>
         <div class="tp-head">
           ${belt}
           <div class="tp-headtext">
@@ -3909,6 +3923,7 @@
     if (!container) return;
     const paint = () => {
       const t = titleBySlug(slug);
+      if (t) setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: t.title }]);
       container.innerHTML = t ? titlePageHTML(t) : '<div class="status">Title not found.</div>';
     };
     if (!TITLES_BOARD || !BELTS) {
@@ -5429,11 +5444,16 @@
           const rating = p.rating != null
             ? `<span class="m-rating" title="Cagematch promo rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${p.rating.toFixed(1)}</span></span>`
             : '';
+          // Who cut the promo is not a spoiler and leads the row; the line itself
+          // is what happened, so it is only written into the DOM with spoilers on.
+          const quote = spoilers
+            ? `<span class="promo-quote">${esc(p.title)}</span>`
+            : '';
           return `
           <a class="moment-row promo-row" href="${esc(p.url)}" target="_blank" rel="noopener">
             <span class="promo-main">
-              <span class="mo-label">${esc(p.title)}</span>
-              <span class="promo-people">${esc((p.workers || []).join(', '))}</span>
+              <span class="mo-label">${esc((p.workers || []).join(', ')) || 'Promo'}</span>
+              ${quote}
             </span>
             ${rating}
           </a>`;
@@ -6838,6 +6858,24 @@
   // ------------------------------------------------------------------
   // Hash routing
   // ------------------------------------------------------------------
+  // One breadcrumb bar under the header, set by the router per view. The trail is
+  // [{label, hash?}]; the last crumb is the current page and never a link. Home /
+  // the calendar hides it, since there is nowhere above home to go.
+  function setCrumbs(trail) {
+    const bar = document.getElementById('breadcrumbs');
+    if (!bar) return;
+    if (!trail || !trail.length) { bar.hidden = true; bar.innerHTML = ''; return; }
+    bar.hidden = false;
+    bar.innerHTML = trail.map((c, i) => {
+      const sep = i > 0 ? '<span class="crumb-sep" aria-hidden="true">&rsaquo;</span>' : '';
+      const node = (i === trail.length - 1 || !c.hash)
+        ? `<span class="crumb-current">${esc(c.label)}</span>`
+        : `<a class="crumb" href="${esc(c.hash)}">${esc(c.label)}</a>`;
+      return sep + node;
+    }).join('');
+  }
+  const CRUMB_HOME = { label: 'Calendar', hash: '#calendar' };
+
   function route() {
     let hash = window.location.hash;
     // Old per-feature hashes now live together under My List.
@@ -6861,16 +6899,19 @@
       const slug = hash.slice('#wrestler/'.length);
       const v = document.getElementById('view-wrestler');
       if (v) v.hidden = false;
+      const w = BUNDLE && BUNDLE.wrestlers && BUNDLE.wrestlers[decodeURIComponent(slug)];
+      setCrumbs([CRUMB_HOME, { label: 'Roster', hash: '#roster' }, { label: (w && w.name) || decodeURIComponent(slug) }]);
       renderWrestler(slug);
     } else if (hash.startsWith('#event/') || hash.startsWith('#day/')) {
       const v = document.getElementById('view-calendar');
       if (v) v.hidden = false;
       markNav('calendar');
-      openFromHash(hash);
+      openFromHash(hash);   // a modal over the view; leave the crumb bar as it was
     } else if (hash === '#roster') {
       const v = document.getElementById('view-roster');
       if (v) v.hidden = false;
       markNav('roster');
+      setCrumbs([CRUMB_HOME, { label: 'Roster' }]);
       renderRoster();
       // Browser scroll restoration may otherwise leave the user mid-roster
       // when arriving from a wrestler profile (different content height,
@@ -6880,6 +6921,7 @@
       const v = document.getElementById('view-mylist');
       if (v) v.hidden = false;
       markNav('mylist');
+      setCrumbs([CRUMB_HOME, { label: 'My List' }]);
       renderWatched();   // Watched history + progress
       renderSaved();     // Saved matches
       window.scrollTo({ top: 0, behavior: 'auto' });
@@ -6887,24 +6929,30 @@
       const v = document.getElementById('view-video');
       if (v) v.hidden = false;
       markNav('video');
+      setCrumbs([CRUMB_HOME, { label: 'Video Library' }]);
       renderVideo();
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else if (hash.startsWith('#title/')) {
+      const slug = hash.slice('#title/'.length);
       const v = document.getElementById('view-title');
       if (v) v.hidden = false;
       markNav('titles');
-      renderTitlePage(hash.slice('#title/'.length));
+      const t = titleBySlug(slug);
+      setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: (t && t.title) || 'Title' }]);
+      renderTitlePage(slug);
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else if (hash === '#titles') {
       const v = document.getElementById('view-titles');
       if (v) v.hidden = false;
       markNav('titles');
+      setCrumbs([CRUMB_HOME, { label: 'Titles' }]);
       renderTitles();
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else {
       const v = document.getElementById('view-calendar');
       if (v) v.hidden = false;
       markNav('calendar');
+      setCrumbs(null);   // home is the root
     }
   }
 
