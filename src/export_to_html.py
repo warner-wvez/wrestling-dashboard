@@ -401,8 +401,70 @@ def _get_component_titles(raw: str | None) -> list[str]:
     return out
 
 
+# The World / Heavyweight singles family and the main WWE/F Championship under
+# its bare renames. These are NOT prefix-collapsed (see _title_lineage_key): the
+# big-gold World Heavyweight (2002-2013), the white strap revived in 2023 and the
+# main title's many names sit in DISJOINT eras, so dropping the promotion prefix
+# would fuse them into one chain spanning the gaps between them.
+_WORLD_SINGLES_EXACT = {'wwe', 'wwf', 'undisputed wwe', 'wwe world', 'wwf world'}
+
+
+def _is_world_singles(n: str) -> bool:
+    """True for a normalized title in the world/heavyweight singles swamp."""
+    if 'tag' in n or 'women' in n or 'divas' in n:
+        return False
+    if 'light heavyweight' in n or 'junior' in n or 'cruiserweight' in n:
+        return False
+    if ('world' in n and 'heavyweight' in n) or ('heavyweight' in n and ('wwe' in n or 'wwf' in n)):
+        return True
+    return n in _WORLD_SINGLES_EXACT
+
+
+def _title_lineage_key(title: str) -> str:
+    """Collapse the promotion-prefix spellings of one belt to a single lineage.
+
+    The corpus tags a belt WWF, WWE and bare across its life ("WWF
+    Intercontinental Title", "WWE Intercontinental Title", "Intercontinental
+    Title"). build_title_reigns groups by this key so all three walk as ONE reign
+    chain instead of three overlapping ones, each dangling its own open reign.
+    Same idea as lineage_key in cagematch-pipeline/fill_titles.py.
+
+    The world/heavyweight singles family is deliberately left as identity (see
+    _is_world_singles): untangling WWE's own renames there is a separate problem,
+    and a naive prefix strip would fabricate reigns across the eras' gaps.
+    """
+    n = re.sub(r'[^a-z0-9 ]', ' ', title.lower())
+    n = re.sub(r'\b(championship|title|the|of)\b', ' ', n)
+    n = re.sub(r'\s+', ' ', n).strip()
+    if _is_world_singles(n):
+        return 'world::' + n
+    return 'belt::' + re.sub(r'\s+', ' ',
+                             re.sub(r'\b(wwf|wwe|undisputed)\b', ' ', n)).strip()
+
+
 def _same_champions(a: list[str], b: list[str]) -> bool:
     return set(a) == set(b)
+
+
+def _pick_singles_champion(participants: list, appearances: Counter, incumbents) -> list:
+    """Collapse a singles belt's winning team to its one real champion.
+
+    A singles title is held by exactly one wrestler, but a title match's winning
+    team is sometimes recorded with several participants: a valet or stablemates
+    folded in (Gunther with Imperium), a handicap match (Sami Zayn with the Artist
+    Collective), or a multi-belt match where each winner takes a DIFFERENT belt
+    (Beth Phoenix + Santino Marella winning the Women's and IC titles in one
+    intergender tag). The champion is the participant who actually wrestles for
+    THIS belt, i.e. the one with the most appearances in the lineage's title
+    matches; a valet or the other belt's winner has almost none. Ties prefer the
+    incumbent (so a defense is not misread as a new champion), then break by name
+    for determinism.
+    """
+    parts = [p for p in participants if p]
+    if len(parts) <= 1:
+        return list(parts)
+    inc = incumbents or ()
+    return [min(parts, key=lambda p: (-appearances.get(p, 0), 0 if p in inc else 1, p))]
 
 
 def build_title_reigns(events: dict) -> dict[str, list[dict]]:
@@ -428,6 +490,17 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         all listed belts" via per-component reign-chain comparison.
     """
     timelines: dict[str, list[dict]] = defaultdict(list)
+    # Per lineage, tally each raw spelling (count, latest air_date) so the merged
+    # chain can be named after its most current spelling: WWF/WWE/bare
+    # Intercontinental collapse to one chain displayed as "WWE Intercontinental
+    # Title", the name still in use.
+    spelling_stats: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(lambda: [0, '']))
+    # Per lineage, how often each wrestler appears in its title matches. A singles
+    # belt has one holder, so when a title match's winning team lists several
+    # people this disambiguates the real champion (the one who wrestles for the
+    # belt) from a valet, handicap partner, or the winner of the OTHER belt in a
+    # multi-belt match. See _pick_singles_champion.
+    lineage_appearances: dict[str, Counter] = defaultdict(Counter)
     for eid_str, ev in events.items():
         air_date = ev.get('air_date')
         if not air_date:
@@ -435,21 +508,44 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         eid = int(eid_str)
         for match in ev.get('matches', []):
             for title in _get_component_titles(match.get('title_at_stake')):
-                timelines[title].append({
+                lk = _title_lineage_key(title)
+                timelines[lk].append({
                     'air_date': air_date,
                     'event_id': eid,
                     'match_order': match.get('match_order') or 0,
                     'teams': match.get('teams', []),
                 })
+                st = spelling_stats[lk][title]
+                st[0] += 1
+                if air_date > st[1]:
+                    st[1] = air_date
+                for t in match.get('teams', []):
+                    for p in t.get('participants', []):
+                        if p:
+                            lineage_appearances[lk][p] += 1
 
-    for title in timelines:
-        timelines[title].sort(key=lambda m: (m['air_date'], m['event_id'], m['match_order']))
+    # Canonical display name per lineage: the spelling that carries the most
+    # matches, tie-broken by most recent match then name. The dominant name is
+    # stable and unsurprising (an active belt still reads under its modern name,
+    # since that spelling owns the most matches) and avoids latching onto a
+    # short-lived late rename the way "most recent spelling" would.
+    canon_name: dict[str, str] = {
+        lk: max(spellings.items(), key=lambda kv: (kv[1][0], kv[1][1], kv[0]))[0]
+        for lk, spellings in spelling_stats.items()
+    }
+
+    for lk in timelines:
+        timelines[lk].sort(key=lambda m: (m['air_date'], m['event_id'], m['match_order']))
 
     reigns_by_title: dict[str, list[dict]] = {}
-    for title, matches in timelines.items():
+    for lk, matches in timelines.items():
         reigns: list[dict] = []
         current: dict | None = None
         first = True
+        # A tag title legitimately has 2+ holders; a singles title has exactly
+        # one, so a multi-person winning team there needs disambiguating.
+        is_singles = 'Tag' not in canon_name[lk]
+        appearances = lineage_appearances[lk]
         for m in matches:
             teams = m['teams']
             champ_team = next((t for t in teams if t.get('was_champion_entering')), None)
@@ -457,8 +553,11 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
 
             if first:
                 if champ_team and champ_team.get('participants'):
+                    seed = list(champ_team['participants'])
+                    if is_singles:
+                        seed = _pick_singles_champion(seed, appearances, None)
                     current = {
-                        'champion_names': list(champ_team['participants']),
+                        'champion_names': seed,
                         'start': m['air_date'],
                         'end': None,
                         'start_event_id': m['event_id'],
@@ -482,6 +581,10 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                 continue
 
             new_champs = list(winner['participants'])
+            if is_singles:
+                new_champs = _pick_singles_champion(
+                    new_champs, appearances,
+                    current['champion_names'] if current else None)
             if current is None or not _same_champions(current['champion_names'], new_champs):
                 if current is not None:
                     current['end'] = m['air_date']
@@ -498,7 +601,7 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
 
         if current is not None:
             reigns.append(current)
-        reigns_by_title[title] = reigns
+        reigns_by_title[canon_name[lk]] = reigns
 
     for title, reigns in reigns_by_title.items():
         for i in range(len(reigns) - 1):
