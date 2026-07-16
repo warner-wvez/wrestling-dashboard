@@ -13,7 +13,10 @@
 //    event.waitUntil so the refresh survives the response being returned.
 //
 // Bump CACHE on data or schema changes to retire old entries wholesale.
-const CACHE = 'wrestling-dashboard-v6';
+// v7: the match shards changed (multi-man sides un-fused), and shards are served
+// cache-first, so a returning visitor would otherwise keep the old teams until a
+// background refresh landed on some later load.
+const CACHE = 'wrestling-dashboard-v7';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
