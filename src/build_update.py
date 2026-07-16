@@ -54,23 +54,69 @@ WRESTLEMANIA_BY_YEAR = {
 }
 
 
+def _inline_bundle(src: Path):
+    """The <script id="wrestling-data"> payload of a built page, or None."""
+    if not src.exists():
+        return None
+    m = re.search(r'<script id="wrestling-data"[^>]*>(.*?)</script>',
+                  src.read_text(encoding="utf-8"), re.S)
+    if not m:
+        return None
+    return json.loads(m.group(1).replace('<\\/', '</'))
+
+
+def _attach_shard_matches(core: dict):
+    """Re-attach shards/matches-<era>.json onto a sharded core, inverting
+    split_core_and_shards. Returns the full bundle, or None if shards/ is empty.
+
+    Hard-fails on a shard that does not cover the core rather than quietly
+    building an event with no matches: a silently emptied card would erase real
+    corpus and still report success."""
+    by_id: dict[str, list] = {}
+    for f in sorted((ROOT / "shards").glob("matches-*.json")):
+        by_id.update(json.loads(f.read_text(encoding="utf-8")))
+    if not by_id:
+        return None
+    events = core.get("events") or {}
+    missing = [eid for eid, ev in events.items()
+               if str(ev.get("id", eid)) not in by_id]
+    if missing:
+        raise RuntimeError(
+            f"shards/ is missing {len(missing)} of {len(events)} events "
+            f"(e.g. {missing[:5]}); refusing to rebuild from a partial corpus")
+    for eid, ev in events.items():
+        ev["matches"] = by_id[str(ev.get("id", eid))]
+    core.pop("search_matches", None)     # derived; rebuilt by split_core_and_shards
+    return core
+
+
 def load_existing():
     """Load the prior FULL bundle (events still carrying their matches) so the
-    indexes can recompute. index.html is now the sharded core (no match arrays),
-    so prefer the single-file dist build, which stays fully inline; fall back to
-    index.html for the first sharded build (when it is still the full bundle)."""
-    for src in (ROOT / "dist" / "wrestling-dashboard.html", ROOT / "index.html"):
-        if not src.exists():
-            continue
-        m = re.search(r'<script id="wrestling-data"[^>]*>(.*?)</script>',
-                      src.read_text(encoding="utf-8"), re.S)
-        if not m:
-            continue
-        data = json.loads(m.group(1).replace('<\\/', '</'))
+    indexes can recompute.
+
+    index.html + shards/ is the deployed truth and therefore the source: the
+    inline core carries no match arrays, so the shards are re-attached to make it
+    whole. dist/ is only a fallback.
+
+    dist/ used to be preferred, which was a trap. It is a build artifact that can
+    lag index.html, and it silently did: 0646d1f rebuilt index.html and shards/
+    but not dist/, leaving dist/ two commits stale (79 titles / 1366 wrestlers vs
+    63 / 1209) while both files still reported the same generated_at. Loading it
+    reverted that commit's fix and reported a successful rebuild."""
+    core = _inline_bundle(ROOT / "index.html")
+    if core:
+        evs = core.get("events") or {}
+        if evs and any("matches" in e for e in evs.values()):
+            return core                     # pre-shard build: already whole
+        full = _attach_shard_matches(core)
+        if full:
+            return full
+    data = _inline_bundle(ROOT / "dist" / "wrestling-dashboard.html")
+    if data:
         evs = data.get("events") or {}
-        if evs and any("matches" in e for e in evs.values()):   # a full bundle
+        if evs and any("matches" in e for e in evs.values()):
             return data
-    raise RuntimeError("no full inline bundle found in dist/ or index.html")
+    raise RuntimeError("no full bundle found in index.html + shards/ or dist/")
 
 
 def _outcome(was_winner, finish, nodecision):
