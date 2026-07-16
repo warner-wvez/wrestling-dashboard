@@ -22,14 +22,14 @@ I became a wrestling fan this past year by watching full shows chronologically s
 
 ## Current coverage
 
-- 2001 to 2026 (3,053 events, 19,610 matches, 410 PPV/PLE events, 1,729 wrestlers)
+- 2001 to 2026 (3,046 events, 19,521 matches, 410 PPV/PLE events, 1,211 wrestlers)
 - Every Raw and SmackDown episode across the full range, plus NXT TakeOver and NXT premium events, the Saudi Arabia specials, WWE Evolution, Tribute to the Troops, and the modern Premium Live Event slate
 - 2026 is the current year and is therefore partial (covered through the most recent shows at build time)
 
 ## What's in the corpus
 
 - **Raw**: 1,319 episodes
-- **SmackDown**: 1,324 episodes
+- **SmackDown**: 1,317 episodes
 - **PPV / PLE**: 410 events (includes NXT premium events, Saudi shows, Evolution, Tribute specials, and the present-day PLE calendar)
 - **Years**: 2001 through 2026
 - Match detail richness varies by source era: the 2001-2019 base carries full descriptive text (about 21% with community Match Guide ratings), Wikipedia PPVs carry exact durations, and the present-day weekly shows are results-focused (no durations or ratings by design)
@@ -96,6 +96,12 @@ Not affiliated with WWE. This is a fan-made companion tool that points people at
 - The present-day weekly shows carry no match durations or community ratings (the curated source is results-only). This is intentional; durations for those shows are an optional later enrichment.
 - Masked rotating gimmicks (the "Americano" luchador characters) are kept as their own roster entries rather than merged into the wrestler under the mask, since the character is played by different people. This is deliberate.
 - Title reigns are not yet name-canonicalized: a 2019 reign under an old ring name is still filed under that name rather than the merged current one.
+- A retrospective's clips are stored as that show's card, because the source lists them that way. They no longer reach the title lineage (`CLIP_SHOWS` in `src/export_to_html.py`), but the event page still presents them as matches that happened that night rather than as replays.
+- A belt keeps its last champion forever. Reigns have no end when the belt is retired or unified, so a dead title still reads as held: the WCW and ECW world titles, the Hardcore and European titles, and the Divas title all still have a "current" champion.
+- Multi-man matches are stored as two teams, so a Triple Threat renders as a handicap match ("Steve Austin vs Kane & The Undertaker" is three individuals, not one against two).
+- A few tag teams are in the roster as if they were people (`#DIY`, `Fraxiom`, `The Usos`, `Imperium`, `The Street Profits`), each with a win/loss record of its own.
+- 19 Raw episodes carry their taping date as the air date and are labelled `live-broadcast` anyway, so they land in the wrong calendar week (the Tribute To The Troops shows are taped in early December and air at Christmas).
+- The first Raw of the corpus is missing. Raw aired January 1, 2001 but was taped December 29, 2000, and the source files taped shows under the taping date, so the 2001 boundary dropped it.
 - A small number of complex multi-way / battle-royal cards from the weekly source have best-effort team grouping (flagged low-confidence internally).
 - Pre-2016 SmackDown air dates in the historical base use a tape-plus-2 estimate (right calendar week, not always the exact air night).
 - Multi-episode-per-date tournaments in the historical base (Cruiserweight Classic, Mae Young Classic, UK Championship Tournament, Worlds Collide 2019) are not yet consolidated, because the historical SQLite schema enforces UNIQUE (air_date, show_type).
