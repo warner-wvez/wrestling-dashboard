@@ -377,6 +377,9 @@ _BELT_RE = re.compile(r'^(.*?\b(?:Championships?|Titles?))(?=\s|$)', re.I)
 TITLE_ALIASES = {
     "WWF Championship Title": "WWF World Heavyweight Title",
     "ECW Heavyweight Title":  "ECW World Heavyweight Title",
+    # A source typo, one letter, that forked a live belt into a second lineage
+    # with one champion who then never lost it. Not fixable by rule.
+    "WWE Women's Tag Tean Title": "WWE Women's Tag Team Title",
 }
 
 
@@ -389,6 +392,11 @@ def _normalize_title_part(part: str) -> str | None:
     s = re.sub(r'\bRAW\b', 'Raw', s)                       # WWE RAW / WWE Raw: same belt
     s = re.sub(r'\bChampionships$', 'Titles', s)
     s = re.sub(r'\bChampionship$', 'Title', s).strip()
+    # The sources are inconsistent about the apostrophe and WWE never is, so
+    # "WWE Womens Tag Team Title" is not a second belt. Left alone, one dropped
+    # apostrophe forks a lineage: the fork inherits a single champion, and with
+    # no later change to end the reign that champion holds it forever.
+    s = re.sub(r"\bWomens\b", "Women's", s)
     s = TITLE_ALIASES.get(s, s)
     return s or None
 
