@@ -5920,12 +5920,30 @@
   // ------------------------------------------------------------------
   // Title-reign lookup (Phase 1b)
   // ------------------------------------------------------------------
-  function titlesHeldOn(name, date) {
+  // A reign is [start, end): `start` is the night the belt was won, `end` the
+  // night it was lost (null = still held). Two different questions get asked of
+  // that data, and they disagree on the boundary nights:
+  //
+  //   'entering' - who held it walking INTO the show on `date`. A belt won that
+  //                same night has not been won yet, so it must not count: the
+  //                reign only starts because someone wins a match on this card,
+  //                and counting it puts a Champ badge on the winner of a match
+  //                the user has not watched. A belt lost that night still counts,
+  //                because they carried it to the ring.
+  //   'through'  - who held it once `date` has been fully watched. A belt won
+  //                that night HAS been seen, so it counts; one lost that night
+  //                does not. This is what the as-of roster asks, and it matches
+  //                asOfRecordFor(), which accumulates with `iso <= T`.
+  //
+  // 'entering' is the default because it is the direction that fails closed:
+  // a missed badge is a cosmetic gap, a badge that fails open is a spoiler.
+  function titlesHeldOn(name, date, boundary = 'entering') {
     if (!name || !date || !BUNDLE || !BUNDLE.wrestler_reigns_by_date) return [];
     const intervals = BUNDLE.wrestler_reigns_by_date[name] || [];
-    return intervals
-      .filter(iv => iv.start <= date && (iv.end === null || iv.end > date))
-      .map(iv => iv.title);
+    const held = boundary === 'through'
+      ? iv => iv.start <= date && (iv.end === null || iv.end > date)
+      : iv => iv.start < date && (iv.end === null || iv.end >= date);
+    return intervals.filter(held).map(iv => iv.title);
   }
 
   // ------------------------------------------------------------------
@@ -6034,7 +6052,13 @@
     const asOf = asOfEl ? asOfEl.dataset.asofDate : null;
     const dateEl = anchor.closest('[data-event-date]');
     const ctxDate = asOf || (dateEl ? dateEl.dataset.eventDate : null);
-    const heldTitles = ctxDate ? titlesHeldOn(w.name, ctxDate) : [];
+    // The as-of roster asks "holding now", where `asOf` is a date the user has
+    // already watched through. Hovering a name on a show card asks "held at this
+    // time", where the show has NOT been watched yet, so a belt won tonight has
+    // to stay hidden.
+    const heldTitles = ctxDate
+      ? titlesHeldOn(w.name, ctxDate, asOf ? 'through' : 'entering')
+      : [];
     const yr = w.active_years[0] === w.active_years[1]
       ? String(w.active_years[0])
       : `${w.active_years[0]}-${w.active_years[1]}`;
