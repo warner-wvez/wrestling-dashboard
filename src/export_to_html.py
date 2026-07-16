@@ -426,6 +426,46 @@ CLIP_SHOWS = {
 }
 
 
+# How long a belt may go unseen before the corpus stops claiming someone holds
+# it. A reign ends when the next title change happens, so the LAST reign of a
+# belt has nothing to end it and runs forever: left alone the corpus insists Rob
+# Van Dam has held the Hardcore Title for 24 years, The Rock still has the WCW
+# World Heavyweight Title, and ECW still crowns a champion. Those reigns then
+# badge their holder as champion on every card for the rest of time.
+#
+# Retirement is not recorded anywhere, so the belt's own last title match stands
+# in for it: we simply stop claiming a belt exists once the corpus stops showing
+# it being defended. The gap is where the data separates itself. Ordering every
+# open lineage by how long since its last title match leaves a clean break: the
+# quietest live belt is 398 days (TNA World, a crossover defended rarely) and
+# the noisiest dead one is 602 (Crown Jewel, annual and last seen 2024). 550
+# sits in that gap and leaves room for a belt defended once a year plus the few
+# weeks the corpus habitually lags reality.
+#
+# Deliberately NOT cagematch's INACTIVE flag, though cm_titles.json carries one.
+# It keys by title name, and WWE reuses names: the World Heavyweight and World
+# Tag Team titles were both revived years after the originals retired, so the
+# derived lineage holds the old belt and its modern namesake together and the
+# flag would end Roman Reigns' current reign. Last-seen gets those right for
+# free, because the revival's matches keep the lineage live.
+_TITLE_UNSEEN_GRACE_DAYS = 550
+
+
+def _close_reign_at_retirement(reigns: list[dict], matches: list[dict],
+                               corpus_end: str) -> None:
+    """End a still-open final reign at the belt's last title match, when the
+    corpus has not seen the belt in a long time. Mutates `reigns` in place."""
+    final = reigns[-1]
+    if final.get('end') is not None:
+        return
+    last_seen = matches[-1]                      # matches are sorted by air_date
+    gap = (datetime.fromisoformat(corpus_end) - datetime.fromisoformat(last_seen['air_date'])).days
+    if gap <= _TITLE_UNSEEN_GRACE_DAYS:
+        return                                   # still being defended: genuinely current
+    final['end'] = last_seen['air_date']
+    final['end_event_id'] = last_seen['event_id']
+
+
 def _looks_like_a_title_match(match: dict) -> bool:
     """Did a belt actually ride on this match? True when the source marked a
     champion entering, or says a belt changed hands."""
@@ -642,6 +682,11 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
     for lk in timelines:
         timelines[lk].sort(key=lambda m: (m['air_date'], m['event_id'], m['match_order']))
 
+    # How far the corpus reaches, to judge which belts have gone quiet against.
+    # Taken from the events rather than today's clock so a rebuild is
+    # reproducible and an older corpus stays self-consistent.
+    corpus_end = max((ev.get('air_date') or '' for ev in events.values()), default='')
+
     reigns_by_title: dict[str, list[dict]] = {}
     for lk, matches in timelines.items():
         reigns: list[dict] = []
@@ -706,6 +751,8 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
 
         if current is not None:
             reigns.append(current)
+        if reigns:
+            _close_reign_at_retirement(reigns, matches, corpus_end)
         reigns_by_title[canon_name[lk]] = reigns
 
     for title, reigns in reigns_by_title.items():
