@@ -393,6 +393,31 @@ def _normalize_title_part(part: str) -> str | None:
     return s or None
 
 
+# Shows whose card is a highlight reel, not a night of wrestling. Cagematch
+# lists the clips a retrospective aired as that show's matches, complete with
+# their original "TITLE CHANGE !!!" markers, so the reign walk re-crowns the
+# winner years later: the Year In Review Special replayed WrestleMania X-Seven
+# on 2001-12-31 and left Steve Austin holding the WWF Title for the next 25
+# years, and the Benoit tribute replayed his career (the 2004 Royal Rumble, a
+# 90s WCW match, a 1990 New Japan title change) onto one Raw in 2007.
+#
+# Curated by id rather than detected, because neither signal is safe alone.
+# Title patterns catch real shows: WrestleMania 25 is subtitled "The 25th
+# Anniversary Of WrestleMania" and Raw #759 is a 15th Anniversary show, and both
+# are real cards with real title changes. Replay detection misses clips whose
+# original predates the corpus or carries no duration to match on. Each id below
+# was confirmed by reading its card.
+#
+# Only the reign walk skips these. The clips still show on the event page: they
+# did air that night, and dropping them would empty the card.
+CLIP_SHOWS = {
+    221: "WWF RAW #449 - Year In Review Special (2001-12-31), 10/10 replays",
+    471: "WWE RAW #604 - Year In Review Special (2004-12-20), 6/6 replays",
+    770: "WWE Monday Night RAW #735 - Chris Benoit Tribute (2007-06-25)",
+    831: "WWE SmackDown #436 - The Greatest Matches Of 2007 (2007-12-28)",
+}
+
+
 def _looks_like_a_title_match(match: dict) -> bool:
     """Did a belt actually ride on this match? True when the source marked a
     champion entering, or says a belt changed hands."""
@@ -576,6 +601,8 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         if not air_date:
             continue
         eid = int(eid_str)
+        if eid in CLIP_SHOWS:      # a replayed title change is not a title change
+            continue
         for match in ev.get('matches', []):
             for title in _get_component_titles(match.get('title_at_stake'), match):
                 lk = _title_lineage_key(title)
