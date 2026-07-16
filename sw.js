@@ -31,9 +31,12 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== location.origin) return;
 
   // Only manage the app shell + match shards; let everything else hit the network.
-  const isShard = url.pathname.includes('/shards/matches-')
-    || url.pathname.endsWith('/shards/media.json')
-    || url.pathname.endsWith('/shards/profiles.json');
+  // Every shard, not a list of them. The old whitelist named matches-*, media
+  // and profiles, and then the app grew belts, titles, promos, feuds and
+  // tournaments shards that it never learned about, so the Titles view and the
+  // promo/feud/tournament shelves fetched from a network that is not there and
+  // failed offline, against the promise at the top of this file.
+  const isShard = url.pathname.includes('/shards/');
   const isShell = url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
   if (!isShard && !isShell) return;
 
