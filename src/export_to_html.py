@@ -146,7 +146,7 @@ def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[
             # Same normalization as the reigns page: real belts only (no
             # stipulation blurbs, contendership matches, or match-type
             # decoration), Championship/Title spellings unified.
-            belts_at_stake = _get_component_titles(match.get("title_at_stake"))
+            belts_at_stake = _get_component_titles(match.get("title_at_stake"), match)
             match_order = match.get("match_order")
             is_main = max_order is not None and match_order == max_order
             raw_desc = match.get("raw_description") or ""
@@ -353,6 +353,17 @@ _TITLE_FILTER_PATTERNS = (
     re.compile(r'Qualif', re.I),
 )
 
+# Contendership detection against the MATCH TYPE (see _drop_contendership_parts).
+# Deliberately much narrower than _TITLE_FILTER_PATTERNS above, which is safe
+# only against a belt string: run that set over a match type and 'Qualif' matches
+# "No Disqualification", while 'Battle Royal' and 'Tournament' throw away real
+# title wins (a vacant belt is legitimately decided by both).
+_CONTENDERSHIP_RE = re.compile(r'\bcontender(?:ship|s)?\b', re.I)
+# The marker as it trails the belt it points at: "<belt> #1 Contendership Match",
+# "<belt> # 1 Contender ...", "<belt> Number One Contenders ...".
+_TRAILING_CONTENDER_RE = re.compile(
+    r'^\s*(?:#\s*\d+\s*|no\.?\s*\d+\s*|number\s+one\s+)?contender(?:ship|s)?\b', re.I)
+
 # Scrapers store the belt name plus whatever decorated the line: a quoted
 # stipulation blurb, the match type ("... Championship Steel Cage Match"), or
 # both. Everything from a quote pair is stipulation, never belt.
@@ -382,7 +393,60 @@ def _normalize_title_part(part: str) -> str | None:
     return s or None
 
 
-def _get_component_titles(raw: str | None) -> list[str]:
+def _looks_like_a_title_match(match: dict) -> bool:
+    """Did a belt actually ride on this match? True when the source marked a
+    champion entering, or says a belt changed hands."""
+    if 'TITLE CHANGE' in (match.get('raw_description') or '').upper():
+        return True
+    return any(t.get('was_champion_entering') for t in match.get('teams') or [])
+
+
+def _drop_contendership_parts(parts: list[str], match: dict) -> list[str]:
+    """Drop the belts a contendership match only *points at*.
+
+    Cagematch renders "WWF World Tag Team Title #1 Contendership Match" and links
+    the belt's title page from that line, so _extract_titles_at_stake records the
+    belt as at stake. It is not: a contendership match awards a title SHOT, and
+    the belt never moves. Left alone, build_title_reigns crowns the winner, which
+    invents reigns, truncates the real champion's, and (because a reign starts the
+    night it is won) badges the winner of a match nobody has watched yet.
+
+    _TITLE_FILTER_PATTERNS already means to catch this, but it only ever sees
+    title_at_stake ("WWF World Tag Team Title"), which does not carry the marker.
+    The marker lives in the match type, so the decision has to be made here.
+
+    Per component, because the two can be mixed: "WWE Intercontinental Title /
+    World Heavyweight Title #1 Contendership Match" really did put the IC belt on
+    the line while awarding a World title shot. A component survives only when the
+    marker does not trail it AND the match behaves like a title match, so a
+    contendership battle royal naming two belts keeps neither.
+    """
+    match_type = match.get('match_type') or ''
+    if not _CONTENDERSHIP_RE.search(match_type):
+        return parts                  # ordinary title match: leave it alone
+    hay = match_type.lower()
+    kept: list[str] = []
+    for part in parts:
+        probe = re.sub(r'\s+', ' ', part).strip()
+        if _CONTENDERSHIP_RE.search(probe):
+            continue                  # the belt string itself carries the marker
+        i = hay.find(probe.lower())
+        if i < 0:
+            continue                  # marker-first phrasing ("#1 Contender (WWE
+            #                           Championship)"): belt not locatable, so it
+            #                           can only be the thing being contended for
+        if _TRAILING_CONTENDER_RE.match(match_type[i + len(probe):]):
+            continue                  # "<belt> #1 Contendership ...": the prize
+        kept.append(part)
+    # A survivor is only credible if a belt truly rode on the match. Without that
+    # corroboration the leading belt of a multi-belt contendership match would be
+    # crowned off a battle royal nobody defended anything in.
+    if kept and not _looks_like_a_title_match(match):
+        return []
+    return kept
+
+
+def _get_component_titles(raw: str | None, match: dict | None = None) -> list[str]:
     if not raw:
         return []
     rem = re.sub(r'\s+', ' ', _QUOTED_STIP_RE.sub(' ', raw)).strip()
@@ -391,13 +455,19 @@ def _get_component_titles(raw: str | None) -> list[str]:
     for p in _TITLE_FILTER_PATTERNS:
         if p.search(rem):
             return []
-    out: list[str] = []
+    # Split first, decide contendership on the raw spellings (they are what appear
+    # verbatim in the match type), and only then normalize the survivors.
+    parts: list[str] = []
     for chunk in rem.split(' / '):
         # Unification matches join two belts with "vs.": both are at stake.
-        for part in re.split(r'\s+vs\.?\s+', chunk):
-            s = _normalize_title_part(part)
-            if s:
-                out.append(s)
+        parts.extend(re.split(r'\s+vs\.?\s+', chunk))
+    if match is not None:
+        parts = _drop_contendership_parts(parts, match)
+    out: list[str] = []
+    for part in parts:
+        s = _normalize_title_part(part)
+        if s:
+            out.append(s)
     return out
 
 
@@ -507,7 +577,7 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
             continue
         eid = int(eid_str)
         for match in ev.get('matches', []):
-            for title in _get_component_titles(match.get('title_at_stake')):
+            for title in _get_component_titles(match.get('title_at_stake'), match):
                 lk = _title_lineage_key(title)
                 timelines[lk].append({
                     'air_date': air_date,
