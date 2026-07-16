@@ -5480,9 +5480,19 @@
       <div class="moments-block">
         <div class="moments-head">Storylines around this show</div>
         ${active.map(f => {
-          const span = f.start === f.end
-            ? fmtFeudMonth(f.start)
-            : `${fmtFeudMonth(f.start)} &ndash; ${fmtFeudMonth(f.end)}`;
+          // A feud only lands on this shelf when it is running during `month`,
+          // so f.end is always this month or later: printing the span tells you
+          // when the storyline wraps before you have watched it ("Batista vs.
+          // Mark Henry, Dec 2005 - Jul 2006" on a Dec 2005 show is seven months
+          // of future). The shelf is about what is running now, so with spoilers
+          // off it only reaches backwards.
+          const span = spoilers
+            ? (f.start === f.end
+                ? fmtFeudMonth(f.start)
+                : `${fmtFeudMonth(f.start)} &ndash; ${fmtFeudMonth(f.end)}`)
+            : (f.start === month
+                ? `Starts ${fmtFeudMonth(f.start)}`
+                : `Since ${fmtFeudMonth(f.start)}`);
           const votes = f.votes ? ` from ${f.votes} vote${f.votes === 1 ? '' : 's'}` : '';
           const rating = f.rating != null
             ? `<span class="m-rating" title="Cagematch feud rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${f.rating.toFixed(1)}</span></span>`
