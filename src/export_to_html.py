@@ -426,6 +426,116 @@ CLIP_SHOWS = {
 }
 
 
+# A match type that declares how many SIDES it has. Cagematch writes a triple
+# threat as "A defeats B and C", the parser splits on the verb, and everything
+# right of it lands in one team, so three individuals become one man against two.
+# The landing page's first main event has read "Steve Austin vs Kane & The
+# Undertaker" ever since: a handicap match that never happened.
+_MATCH_SIDES = (
+    (re.compile(r'\btriple threat\b', re.I), 3),
+    (re.compile(r'\bfatal (?:four|4)[- ]way\b', re.I), 4),
+    (re.compile(r'\bfatal (?:five|5)[- ]way\b', re.I), 5),
+    (re.compile(r'\bfour[- ]way\b', re.I), 4),
+    (re.compile(r'\bthree[- ]way\b', re.I), 3),
+    (re.compile(r'\bsix[- ]pack challenge\b', re.I), 6),
+)
+
+
+def _declared_sides(match_type: str | None) -> int | None:
+    for pattern, n in _MATCH_SIDES:
+        if pattern.search(match_type or ''):
+            return n
+    return None
+
+
+def _is_fused_side(team: dict) -> bool:
+    """True when a team's name is just its members listed, which is what the
+    parser produces when it fuses two sides ("Kane & The Undertaker").
+
+    A real team is named, not listed: "The Dudley Boyz" whose members are Bubba
+    Ray and D-Von is a tag team and must never be cut into singles, even when it
+    turns up in a match the side arithmetic says is one-per-side."""
+    names = [p for p in (team.get('participants') or []) if p]
+    if len(names) < 2:
+        return False
+    label = re.sub(r'\s+', ' ', (team.get('team_name') or '')).strip().lower()
+    return label in {' & '.join(names).lower(), ' and '.join(names).lower()}
+
+
+def _champion_among(names: list[str], raw: str) -> str | None:
+    """Which of these people does the result text mark with (c)? Cagematch puts
+    it straight after the champion ("Kane defeats Raven (c) and The Big Show"),
+    so a fused side can be un-fused without inventing a second champion. None
+    when it is not attributable, which includes the (c) sitting on a team name
+    rather than a person."""
+    hits = [n for n in names if re.search(re.escape(n) + r'\s*\(c\)', raw or '')]
+    return hits[0] if len(hits) == 1 else None
+
+
+def split_fused_multiman_sides(events: dict) -> int:
+    """Un-fuse the sides of a multi-man match, in place. Returns how many.
+
+    Only the unambiguous shape is touched: the type declares N sides, the match
+    has fewer, the people divide evenly into one-per-side, and every oversized
+    team is a fused side rather than a named team. Anything else is left alone,
+    because the alternative is cutting up a real tag team or manufacturing a
+    second champion.
+    """
+    fixed = 0
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            want = _declared_sides(match.get('match_type'))
+            teams = match.get('teams') or []
+            if not want or len(teams) >= want:
+                continue
+            people = [p for t in teams for p in (t.get('participants') or []) if p]
+            if len(people) != want:            # one per side only; tag sides are
+                continue                       # ambiguous about who pairs with whom
+            oversized = [t for t in teams if len([p for p in (t.get('participants') or []) if p]) > 1]
+            if not all(_is_fused_side(t) for t in oversized):
+                continue
+            # Only one side can win a three-way, so a fused WINNER is not a fused
+            # side at all: the type is mislabelled, or the result is. Splitting
+            # would hand the match two winners.
+            if any(t.get('was_winner') for t in oversized):
+                continue
+            raw = match.get('raw_description') or ''
+            champ_of = {}
+            ok = True
+            for t in oversized:
+                if not t.get('was_champion_entering'):
+                    continue
+                names = [p for p in (t.get('participants') or []) if p]
+                who = _champion_among(names, raw)
+                if who is None:                # cannot say which one holds it
+                    ok = False
+                    break
+                champ_of[id(t)] = who
+            if not ok:
+                continue
+
+            out: list[dict] = []
+            for t in teams:
+                names = [p for p in (t.get('participants') or []) if p]
+                if len(names) < 2:
+                    out.append(t)
+                    continue
+                champ = champ_of.get(id(t))
+                for n in names:
+                    side = dict(t)
+                    side['team_name'] = n
+                    side['participants'] = [n]
+                    # The belt belongs to one of them, not to both halves of a
+                    # side the parser invented.
+                    side['was_champion_entering'] = (n == champ) if t.get('was_champion_entering') else False
+                    out.append(side)
+            for i, t in enumerate(out, 1):
+                t['team_number'] = i
+            match['teams'] = out
+            fixed += 1
+    return fixed
+
+
 # How long a belt may go unseen before the corpus stops claiming someone holds
 # it. A reign ends when the next title change happens, so the LAST reign of a
 # belt has nothing to end it and runs forever: left alone the corpus insists Rob

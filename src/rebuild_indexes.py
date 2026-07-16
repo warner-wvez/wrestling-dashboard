@@ -26,7 +26,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 from src.build_update import ROOT, load_existing                        # noqa: E402
 from src.export_to_html import (                                        # noqa: E402
     build_title_reigns, build_wrestler_reigns_by_date, build_wrestlers_index,
-    inject, write_sharded)
+    inject, split_fused_multiman_sides, write_sharded)
 from src.roster_aliases import (                                        # noqa: E402
     CURATED, build_canon_map, load_roster_snapshot, save_roster_snapshot,
     scrape_roster)
@@ -98,6 +98,12 @@ def main():
     aliased = sum(1 for n in name_counts if canon[n] != n)
     print(f"  {len(name_counts)} distinct names -> {len({canon[n] for n in name_counts})} "
           f"canonical wrestlers ({aliased} names merged)", flush=True)
+
+    # Un-fuse multi-man sides before anything reads the teams: the reign walk
+    # takes the champion from them, the wrestler index counts rivals and tag
+    # partners from them, and write_sharded ships them to the card.
+    unfused = split_fused_multiman_sides(events)
+    print(f"  un-fused multi-man sides: {unfused} matches", flush=True)
 
     print("Recomputing wrestler index + title reigns...", flush=True)
     old_wrestlers = len(data.get("wrestlers") or {})
