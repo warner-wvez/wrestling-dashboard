@@ -54,7 +54,14 @@ CURATED = {
     "TJ Wilson": "Tyson Kidd",
     # --- 2001-2010 era renames ---
     "Bradshaw": "JBL",
+    # Both spellings, because normkey drops quoted nicknames and the two sources
+    # disagree about whether "Bradshaw" is one. The official billing quotes it
+    # ('John "Bradshaw" Layfield' -> johnlayfield, nickname stripped like
+    # '"Stone Cold" Steve Austin' -> steveaustin), but Cagematch prints it bare,
+    # so the corpus keys as johnbradshawlayfield. The quoted entry alone never
+    # matched a single match and left him split from Bradshaw for 152 matches.
     'John "Bradshaw" Layfield': "JBL",
+    "John Bradshaw Layfield": "JBL",
     "K-Kwik": "R-Truth",
     "Ron Killings": "R-Truth",
     "Albert": "A-Train",
@@ -147,6 +154,7 @@ CURATED = {
     "Dabba-Kato": "Commander Azeez",
     "Reginald": "Reggie",
     "T-BAR": "Dijak",
+    "Dominik Dijakovic": "Dijak",
     "Slapjack": "Shane Thorne",
     "Queen Zelina": "Zelina Vega",
     "Shotzi Blackheart": "Shotzi",
@@ -205,7 +213,23 @@ CURATED = {
 PROTECTED = {
     "Triple H", "Tyson Kidd", "Natalya", "Tyler Bate", "Pete Dunne",
     "Will Hobbs",
+    # The rotating "...Americano" luchadors are a storyline in which several
+    # wrestlers appear as the same masked character, so the mask is its own
+    # identity and must not fold into whoever is under it this month. Protecting
+    # only the wrestlers (Tyler Bate, Pete Dunne) is not enough: it stops the
+    # wrestler being renamed to the mask, not the mask being renamed to the
+    # wrestler, and the roster page encodes exactly that direction. Without
+    # these, a rebuild merges El Grande Americano into Ludwig Kaiser, Bravo
+    # Americano into Tyler Bate, and Rayo Americano into Pete Dunne.
+    # One entry per identity: normkey drops quoted nicknames, so
+    # '"Original" El Grande Americano' is the same key as "El Grande Americano"
+    # and listing both would leave protected_by_key's winner up to set iteration
+    # order (and crown the quoted spelling). See
+    # test_protected_has_no_duplicate_identity_keys.
+    "El Grande Americano", "Bravo Americano", "Rayo Americano",
+    "Bruto Americano", "Julio Americano",
 }
+
 
 
 _QUOTED_NICK_RE = re.compile(r'["“”][^"“”]*["“”]')
@@ -227,6 +251,25 @@ def normkey(name):
     # An all-symbol name ('"???"') would key to '' and collide with every
     # other all-symbol name; keep its symbols as its identity instead.
     return key or re.sub(r"\s+", "", n)
+
+
+# Re-spell a name the corpus gets wrong more often than right.
+#
+# Display is chosen by usage, which is right nearly always, and inherits the
+# source's typos when it is not: Cagematch prints the Right To Censor character
+# as "The Good Father" 10 times and "The Goodfather" (the actual name) 7, so the
+# typo wins the vote and lands on the roster. CURATED cannot fix that, because
+# both spellings are one identity to normkey, and CURATED only ever answers "who
+# is this", never "how is it spelled".
+#
+# Keyed by normkey, so an entry may only re-spell a name, never re-identify it
+# (test_display_spelling_never_changes_identity enforces exactly that). Reach for
+# this only when the source is wrong, not to overrule a ring name you happen to
+# like less: a wrestler billed under a name they really used stays labelled by
+# usage.
+DISPLAY_SPELLING = {
+    normkey("The Goodfather"): "The Goodfather",
+}
 
 
 def scrape_roster(html=None):
@@ -295,11 +338,49 @@ def build_canon_map(name_counts, roster_pairs=None, curated=None):
     for n, c in name_counts.items():
         groups[normkey(n)][n] += c
 
-    out = {}
+    # Pass 1: WHO is this. The curated table and the roster page answer identity
+    # only; the target they name is a merge key, not necessarily what we call the
+    # person.
+    identity = {}
     for n in name_counts:
         k = normkey(n)
-        out[n] = (protected_by_key.get(k) or canonical_by_key.get(k)
-                  or groups[k].most_common(1)[0][0])
+        identity[n] = (protected_by_key.get(k) or canonical_by_key.get(k)
+                       or groups[k].most_common(1)[0][0])
+
+    # Pass 2: WHAT do we call them. The display is the ring name the corpus
+    # actually used most for that person, not whichever spelling the curated
+    # table happened to point at. Those are different questions, and conflating
+    # them shipped names nobody is ever billed under: CURATED said to call the
+    # APA/Layfield wrestler "JBL", a string that appears in zero matches, and to
+    # call T-BAR (31 matches) "Dijak" (5).
+    #
+    # A PROTECTED identity keeps its declared name: it is protected precisely
+    # because the sources try to rename it, so frequency is not the authority
+    # there. Everyone else is labelled by usage, which also makes it impossible
+    # for the roster to show a name that never appears on a card.
+    members = defaultdict(list)
+    for n, ident in identity.items():
+        members[ident].append(n)
+
+    out = {}
+    for ident, names in members.items():
+        if normkey(ident) in protected_by_key:
+            display = ident
+        else:
+            # Most-used spelling wins. On a tie, defer to the declared identity:
+            # usage has no opinion there, and the sources do know which name is
+            # current (a rename the corpus has barely seen yet ties at low counts,
+            # and WALTER must not out-rank Gunther on a coin flip). Name breaks
+            # the remaining ties so a rebuild is deterministic rather than
+            # dict-order dependent.
+            display = max(names, key=lambda n: (name_counts.get(n, 0),
+                                                normkey(n) == normkey(ident), n))
+            # Usage picked the winning spelling; correct it if the corpus spells
+            # that name wrong more often than right. Identity is already settled
+            # above, so this can only change how the name reads.
+            display = DISPLAY_SPELLING.get(normkey(display), display)
+        for n in names:
+            out[n] = display
     return out
 
 

@@ -49,16 +49,31 @@ def resolve_roster_pairs():
 
 
 def bundle_derived_aliases(data):
-    """Alias pairs already merged in the shipped bundle (name -> canonical
-    display name). Keeps existing merges alive even with no roster source.
-    Pairs that CURATED now speaks about are dropped so a curated rename can
-    re-point an old merge without leaving a two-step chain behind."""
+    """Alias pairs already merged in the shipped bundle (name -> the name of the
+    wrestler it merged into). Keeps existing merges alive even with no roster
+    source.
+
+    A pair whose target CURATED renames again is re-pointed at the final name,
+    not dropped. build_canon_map applies its map once rather than transitively,
+    so "Rudy Rude" -> "Robert Roode" alongside CURATED's "Robert Roode" ->
+    "Bobby Roode" would strand Rudy Rude one hop short; dropping the pair instead
+    orphaned him out of the merge entirely, which is worse.
+
+    This used to be masked. The bundle's canonical was whatever CURATED pointed
+    at, and those targets are final (test_curated_table_has_no_two_step_chains),
+    so the target was almost never itself a CURATED key. Now that a wrestler is
+    displayed under their most-used ring name, the canonical IS a corpus name and
+    CURATED keys are corpus names, so the two collide constantly: the first
+    rebuild displayed him as "Robert Roode", the second saw that name in CURATED
+    and un-merged Rudy Rude. Rebuilds have to be idempotent or the roster rots a
+    name at a time."""
     wrestlers = data.get("wrestlers") or {}
     out = {}
     for name, slug in (data.get("wrestlers_by_name") or {}).items():
         canonical = wrestlers.get(slug, {}).get("name")
-        if canonical and canonical != name and name not in CURATED and canonical not in CURATED:
-            out[name] = canonical
+        if not canonical or canonical == name or name in CURATED:
+            continue
+        out[name] = CURATED.get(canonical, canonical)   # follow one hop; targets are final
     return out
 
 
