@@ -659,6 +659,8 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                     'event_id': eid,
                     'match_order': match.get('match_order') or 0,
                     'teams': match.get('teams', []),
+                    # carried for the stand-in check when reconciling (c) markers
+                    'raw_description': match.get('raw_description') or '',
                 })
                 st = spelling_stats[lk][title]
                 st[0] += 1
@@ -715,6 +717,64 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                         'pre_corpus': True,
                     }
                 first = False
+
+            # The (c) marker is the source stating who walked in holding the
+            # belt. When it names someone other than the reign we are tracking,
+            # a title change happened that the corpus never recorded, and the
+            # walk has to take the source's word for it: it cannot see a card it
+            # does not have.
+            #
+            # Without this the belt appears never to have left, and the two
+            # halves of the incumbent's reign fuse across the gap. The Miz beat
+            # Wade Barrett for the Intercontinental Title at WrestleMania 29 and
+            # lost it back the next night, but only the second match is in the
+            # corpus, so the walk read "Barrett defeats The Miz (c)" as Barrett
+            # retaining and gave him one unbroken reign from December to June,
+            # swallowing Miz's reign whole. Same shape wherever a belt changed
+            # hands on a card we do not carry, or was vacated and awarded off
+            # television (Naomi's SmackDown Women's Title, Kevin Owens' United
+            # States Title).
+            #
+            # The inserted reign is pre_corpus: its end is observed here, but its
+            # start is not knowable, so `start` is a floor and not a real date.
+            # A multi-man title match is stored as two teams, so the (c) side can
+            # carry the champion AND a challenger: Payback 2013's triple threat
+            # reads "Curtis Axel defeats The Miz and Wade Barrett (c)", with Miz
+            # and Barrett sharing a team. The marker is therefore only evidence
+            # of a change we missed when it names NOBODY we think holds the belt.
+            # Asking _pick_singles_champion to choose here instead would let it
+            # pick Miz off appearance counts and invent a reign for him.
+            # Two more ways the marker lies, both rare and both detectable:
+            #
+            #   champion vs champion. No Mercy 2002 reads "Triple H (c)
+            #   [Heavyweight] defeats Kane (c) [Intercontinental]": both sides
+            #   are (c), for different belts, and champ_team just takes the first
+            #   it finds, so on the Intercontinental chain it hands back the
+            #   HEAVYWEIGHT champion. 22 matches in the corpus. Ambiguous, so
+            #   the marker is no evidence here at all.
+            #
+            #   a champion who sent a stand-in. "The Undertaker defeats Orlando
+            #   Jordan [Replacement for John Bradshaw Layfield] (w/ JBL) (c)":
+            #   the belt is JBL's and the (c) landed on the replacement. 4
+            #   matches.
+            multi_champ = sum(1 for t in teams if t.get('was_champion_entering')) > 1
+            stand_in = '[replacement for' in (m.get('raw_description') or '').lower()
+            if current is not None and champ_team is not None and not multi_champ and not stand_in:
+                entering = [p for p in (champ_team.get('participants') or []) if p]
+                if entering and not (set(current['champion_names']) & set(entering)):
+                    named = _pick_singles_champion(entering, appearances, None) \
+                        if is_singles else entering
+                    current['end'] = m['air_date']
+                    current['end_event_id'] = m['event_id']
+                    reigns.append(current)
+                    current = {
+                        'champion_names': named,
+                        'start': m['air_date'],
+                        'end': None,
+                        'start_event_id': m['event_id'],
+                        'end_event_id': None,
+                        'pre_corpus': True,
+                    }
 
             if winner is None or not winner.get('participants'):
                 continue
