@@ -2103,6 +2103,16 @@
     letter-spacing: 0.01em;
     padding: 4px 0 2px;
   }
+  .profile-asof {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+    letter-spacing: 0.01em;
+    background: var(--surface-soft);
+    border-left: 2px solid var(--accent, #C8102E);
+    padding: 9px 14px;
+    margin: 4px 0 20px;
+  }
 
   /* Spoilers off: baseline */
   body:not(.spoilers-on) .team.winner .team-names,
@@ -6640,6 +6650,51 @@
     const f = yr(from), t = /present/i.test(to || '') ? 'now' : yr(to);
     return f && t ? `${f}–${t}` : (f || t || '');
   }
+  // ------------------------------------------------------------------
+  // Watch-position-aware profiles
+  // ------------------------------------------------------------------
+  // A wrestler's page is a spoiler surface: a theme change, a ring-name change,
+  // a face/heel turn, a title win, all narrate the future to someone watching in
+  // order. So the profile is shown AS OF where the viewer is, and reveals the
+  // rest only when spoilers are on. `cutoff` below is that position as a
+  // timestamp: Infinity with spoilers on (show everything), the furthest of the
+  // watched frontier and the show they arrived from otherwise, or -Infinity when
+  // they have watched nothing and arrived from nowhere (show only the timeless
+  // bio).
+  function profTs(s) {
+    if (!s || /present|now/i.test(s)) return null;   // ongoing / unknown end
+    const t = Date.parse(s);
+    return Number.isNaN(t) ? null : t;
+  }
+  function watchFrontierTs() {
+    let max = -Infinity;
+    if (typeof watched !== 'undefined' && watched && BUNDLE && BUNDLE.events) {
+      for (const id of watched.keys()) {
+        const ev = BUNDLE.events[String(id)];
+        if (!ev || !ev.air_date) continue;
+        const t = Date.parse(ev.air_date + 'T12:00:00Z');
+        if (!Number.isNaN(t) && t > max) max = t;
+      }
+    }
+    return max;
+  }
+  // Era label for a dated entry, never revealing that it runs past the cutoff:
+  // an era still current at the viewer's position reads "since 2001", not
+  // "2001–now", so the fact that it is still their theme in the future stays
+  // hidden.
+  function profEraAsOf(from, to, cutoff) {
+    if (cutoff === Infinity) return profEra(from, to);
+    const fromYr = (String(from || '').match(/(\d{4})/) || [])[1] || '';
+    const toTs = profTs(to);
+    if (toTs == null || toTs > cutoff) return fromYr ? `since ${fromYr}` : '';
+    return profEra(from, to);
+  }
+  // Keep a dated entry only if it had started by the cutoff. Undated entries
+  // (no parseable start) are treated as always-known.
+  function startedBy(entry, cutoff) {
+    const t = profTs(entry.from);
+    return t == null || t <= cutoff;
+  }
   function bioSectionHtml(prof) {
     const cells = [];
     const add = (label, val) => { if (val) cells.push(`<div class="bio-cell"><div class="bio-label">${label}</div><div class="bio-value">${esc(val)}</div></div>`); };
@@ -6663,35 +6718,43 @@
     if (sig.length) inner += `<div class="bio-label" style="margin:16px 0 6px">Signature moves</div><div class="kv-list">${sig.map((m) => row(m, false)).join('')}</div>`;
     return profSection('Finishers &amp; Signature Moves', inner);
   }
-  function themesSectionHtml(prof) {
-    const th = prof.themes || [];
-    if (!th.length) return '';
-    const rows = th.map((t) => `<div class="kv-row"><span class="kv-name">${esc(t.title)}</span>${t.artist ? `<span class="kv-desc">${esc(t.artist)}</span>` : ''}<span class="kv-era">${esc(profEra(t.from, t.to))}</span></div>`).join('');
+  function themesSectionHtml(prof, cutoff) {
+    const th = (prof.themes || []).filter((t) => startedBy(t, cutoff));
+    if (!(prof.themes || []).length) return '';
+    if (!th.length) return profSection('Theme Songs', futureHint('theme'));
+    const rows = th.map((t) => `<div class="kv-row"><span class="kv-name">${esc(t.title)}</span>${t.artist ? `<span class="kv-desc">${esc(t.artist)}</span>` : ''}<span class="kv-era">${esc(profEraAsOf(t.from, t.to, cutoff))}</span></div>`).join('');
     return profSection('Theme Songs', `<div class="kv-list">${rows}</div>`);
   }
-  function alignmentSectionHtml(prof, spoilersOn) {
-    const al = prof.alignment_history || [];
-    if (!al.length) return '';
-    // Turn descriptions narrate future storylines, so gate them like title history.
-    if (!spoilersOn) return profSection('Face / Heel Turns', `<div class="profile-hint">Character turns stay hidden while spoilers are off. Turn spoilers on to see them.</div>`);
+  function alignmentSectionHtml(prof, cutoff) {
+    const al = (prof.alignment_history || []).filter((a) => startedBy(a, cutoff));
+    if (!(prof.alignment_history || []).length) return '';
+    if (!al.length) return profSection('Face / Heel Turns', futureHint('turn'));
     const rows = al.map((a) => {
       const cls = /heel/i.test(a.alignment) ? 'heel' : /face/i.test(a.alignment) ? 'face' : '';
-      return `<div class="kv-row"><span class="align-badge ${cls}">${esc(a.alignment)}</span>${a.details ? `<span class="kv-desc">${esc(a.details)}</span>` : ''}<span class="kv-era">${esc(profEra(a.from, a.to))}</span></div>`;
+      // The turn narrative can describe a future angle even for a turn that has
+      // already happened, so the details stay behind the reveal; the fact of the
+      // turn and when it happened is part of what the viewer has watched.
+      const details = cutoff === Infinity && a.details ? `<span class="kv-desc">${esc(a.details)}</span>` : '';
+      return `<div class="kv-row"><span class="align-badge ${cls}">${esc(a.alignment)}</span>${details}<span class="kv-era">${esc(profEraAsOf(a.from, a.to, cutoff))}</span></div>`;
     }).join('');
     return profSection('Face / Heel Turns', `<div class="kv-list">${rows}</div>`);
   }
-  function ringNamesSectionHtml(prof) {
-    const rn = prof.ring_names || [];
-    if (!rn.length) return '';
+  function ringNamesSectionHtml(prof, cutoff) {
+    const rn = (prof.ring_names || []).filter((r) => startedBy(r, cutoff));
+    if (!(prof.ring_names || []).length) return '';
+    if (!rn.length) return profSection('Ring Names &amp; Gimmicks', futureHint('name'));
     const rows = rn.map((r) => {
-      const dates = (r.from || r.to)
-        ? `<span class="gimmick-era">(${esc(r.from || '?')}${r.to ? ' - ' + esc(r.to) : ''})</span>` : '';
+      const era = profEraAsOf(r.from, r.to, cutoff);
+      const dates = era ? `<span class="gimmick-era">(${esc(era)})</span>` : '';
       const img = r.img
         ? `<img class="gimmick-img" alt="" loading="lazy" src="${esc(r.img)}" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'gimmick-ph'}))">`
         : `<span class="gimmick-ph"></span>`;
       return `<div class="gimmick-row">${img}<span class="gimmick-txt"><span class="gimmick-name">${esc(r.name)}</span>${dates}</span></div>`;
     }).join('');
     return profSection('Ring Names &amp; Gimmicks', `<div class="gimmick-list">${rows}</div>`);
+  }
+  function futureHint(kind) {
+    return `<div class="profile-hint">No ${kind} changes yet at where you're watching. Turn spoilers on to see what's ahead.</div>`;
   }
   function profSourceHtml(prof) {
     return prof.source_url ? `<div class="profile-source">Profile data from <a href="${esc(prof.source_url)}" target="_blank" rel="noopener">The SmackDown Hotel</a></div>` : '';
@@ -6727,9 +6790,21 @@
     const heroEra = arrivalDate ? eraImageFor(slug, arrivalDate) : null;
     const heroImg = heroEra ? esc(heroEra) : heroDefault;
 
-    const yr = w.active_years[0] === w.active_years[1]
+    // How far to reveal: everything with spoilers on, otherwise up to the
+    // furthest of the watched frontier and the show this profile was opened
+    // from. -Infinity means nothing to place them at yet, so only the timeless
+    // bio shows.
+    const arrivalTs = arrivalDate ? Date.parse(arrivalDate + 'T12:00:00Z') : -Infinity;
+    const cutoff = spoilers ? Infinity : Math.max(watchFrontierTs(), arrivalTs);
+    const cutoffYr = Number.isFinite(cutoff) ? new Date(cutoff).getUTCFullYear() : null;
+
+    // Career span: the debut year is not a spoiler, but the year it ended is, so
+    // with spoilers off the span runs only to where the viewer is.
+    const endYr = spoilers ? w.active_years[1]
+      : (cutoffYr != null ? Math.min(w.active_years[1], Math.max(w.active_years[0], cutoffYr)) : w.active_years[0]);
+    const yr = w.active_years[0] === endYr
       ? String(w.active_years[0])
-      : `${w.active_years[0]} - ${w.active_years[1]}`;
+      : `${w.active_years[0]} - ${endYr}`;
 
     // Win/loss, win %, draws and no-contests are aggregate outcomes: for a
     // chronological viewer they spoil the future, so they are only rendered when
@@ -6747,60 +6822,110 @@
     const recordHint = spoilers
       ? ''
       : `<div class="profile-hint">Win/loss record stays hidden while spoilers are off. Turn spoilers on to see it.</div>`;
-    const titleHistoryHtmlGated = spoilers
-      ? null
-      : `<div class="profile-hint">Title history stays hidden while spoilers are off. Turn spoilers on to see it.</div>`;
-
-    const titleHtml = w.title_wins && w.title_wins.length
-      ? `<div class="title-list">${w.title_wins.map(([t, cnt], i) =>
+    // Title history, as of the watch position: a belt the viewer has watched
+    // this wrestler win is part of their story, but a reign ahead of them is a
+    // spoiler. With spoilers on, the all-time counts from the index; otherwise
+    // the reigns whose win the viewer has reached, counted per belt.
+    let titleEntries;
+    if (spoilers) {
+      titleEntries = (w.title_wins || []).map(([t, cnt]) => [t, cnt]);
+    } else {
+      // Reigns are filed under the era name that held the belt, which for a
+      // merged wrestler is several names (Bradshaw and John Bradshaw Layfield
+      // both resolve to this profile and each hold some of his reigns), so
+      // gather every alias that points at this slug and union them, deduped by
+      // belt and start date.
+      const reignsIdx = BUNDLE.wrestler_reigns_by_date || {};
+      const aliasNames = BUNDLE.wrestlers_by_name
+        ? Object.keys(BUNDLE.wrestlers_by_name).filter((n) => BUNDLE.wrestlers_by_name[n] === slug)
+        : [w.name];
+      if (!aliasNames.length) aliasNames.push(w.name);
+      const seen = new Set();
+      const counts = new Map();
+      for (const nm of aliasNames) {
+        for (const r of (reignsIdx[nm] || [])) {
+          const k = r.title + '|' + r.start;
+          if (seen.has(k)) continue;
+          seen.add(k);
+          if (Date.parse(r.start + 'T12:00:00Z') > cutoff) continue;
+          counts.set(r.title, (counts.get(r.title) || 0) + 1);
+        }
+      }
+      titleEntries = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    }
+    const titleHistoryHtml = titleEntries.length
+      ? `<div class="title-list">${titleEntries.map(([t, cnt], i) =>
           `<div class="title-row${i === 0 ? ' sig' : ''}">
             <span class="title-name">${esc(t)}</span>
             <span class="title-count">x${cnt}</span>
           </div>`).join('')}</div>`
-      : '<div class="roster-no-results">No title wins recorded.</div>';
+      : (spoilers
+        ? '<div class="roster-no-results">No title wins recorded.</div>'
+        : `<div class="profile-hint">No title wins yet at where you're watching. Turn spoilers on to see them.</div>`);
 
-    const rivalHtml = w.top_rivalries && w.top_rivalries.length
-      ? `<div class="rivalry-list">${w.top_rivalries.map(([oSlug, oName, cnt]) =>
-          `<div class="rivalry-row">
-            <button class="wrestler-link" data-slug="${esc(oSlug)}">${esc(oName)}</button>
-            <span class="rv-count">${cnt} matches</span>
-          </div>`).join('')}</div>`
-      : '<div class="roster-no-results">No rivalry data.</div>';
+    // Rivalries and tag partners are all-time tallies with no per-match dates in
+    // the index, so they cannot be recomputed as-of the watch position without
+    // scanning every era shard, and shown whole they list rivals and allies the
+    // viewer has not reached yet (a 2002 nWo feud on a 2001 page). Gated behind
+    // the reveal, like the win/loss record.
+    const rivalHtml = !spoilers
+      ? `<div class="profile-hint">Rivalries reveal feuds you haven't reached. Turn spoilers on to see them.</div>`
+      : (w.top_rivalries && w.top_rivalries.length
+        ? `<div class="rivalry-list">${w.top_rivalries.map(([oSlug, oName, cnt]) =>
+            `<div class="rivalry-row">
+              <button class="wrestler-link" data-slug="${esc(oSlug)}">${esc(oName)}</button>
+              <span class="rv-count">${cnt} matches</span>
+            </div>`).join('')}</div>`
+        : '<div class="roster-no-results">No rivalry data.</div>');
 
-    const partnerHtml = w.top_tag_partners && w.top_tag_partners.length
-      ? `<div class="partner-list">${w.top_tag_partners.map(([pSlug, pName, cnt]) =>
-          `<div class="partner-row">
-            <button class="wrestler-link" data-slug="${esc(pSlug)}">${esc(pName)}</button>
-            <span class="pn-count">${cnt} matches</span>
-          </div>`).join('')}</div>`
-      : '<div class="roster-no-results">No tag partner data.</div>';
+    const partnerHtml = !spoilers
+      ? `<div class="profile-hint">Tag partners reveal alliances you haven't reached. Turn spoilers on to see them.</div>`
+      : (w.top_tag_partners && w.top_tag_partners.length
+        ? `<div class="partner-list">${w.top_tag_partners.map(([pSlug, pName, cnt]) =>
+            `<div class="partner-row">
+              <button class="wrestler-link" data-slug="${esc(pSlug)}">${esc(pName)}</button>
+              <span class="pn-count">${cnt} matches</span>
+            </div>`).join('')}</div>`
+        : '<div class="roster-no-results">No tag partner data.</div>');
 
+    // The signature (longest) match is a single dated match; show it only once
+    // the viewer has reached it, otherwise it points at a show in their future.
     let longestHtml = '<div class="roster-no-results">No duration data.</div>';
     if (w.longest_match) {
       const lm = w.longest_match;
-      longestHtml = `
-        <div class="signature-match">
-          <div class="sm-duration">● ${fmtDuration(lm.duration_seconds)}</div>
-          <div>
-            <button class="sm-event-link" data-event-id="${lm.event_id}">${esc(lm.event_name || lm.event_date)}</button>
-            <span style="color:var(--ink-faint);font-family:var(--font-mono);font-size:11px;margin-left:8px;">${esc(lm.event_date)}</span>
-          </div>
-          ${spoilers && lm.description ? `<div class="sm-desc">${esc(lm.description.slice(0, 220))}${lm.description.length > 220 ? '…' : ''}</div>` : ''}
-        </div>`;
+      const lmTs = lm.event_date ? Date.parse(lm.event_date + 'T12:00:00Z') : -Infinity;
+      if (lmTs > cutoff) {
+        longestHtml = `<div class="profile-hint">Your longest match so far is ahead of where you're watching. Turn spoilers on to see it.</div>`;
+      } else {
+        longestHtml = `
+          <div class="signature-match">
+            <div class="sm-duration">● ${fmtDuration(lm.duration_seconds)}</div>
+            <div>
+              <button class="sm-event-link" data-event-id="${lm.event_id}">${esc(lm.event_name || lm.event_date)}</button>
+              <span style="color:var(--ink-faint);font-family:var(--font-mono);font-size:11px;margin-left:8px;">${esc(lm.event_date)}</span>
+            </div>
+            ${spoilers && lm.description ? `<div class="sm-desc">${esc(lm.description.slice(0, 220))}${lm.description.length > 220 ? '…' : ''}</div>` : ''}
+          </div>`;
+      }
     }
 
+    // Recent events, but only the ones the viewer has reached: a future show on
+    // the page is both a spoiler that it happened and a tell of who is on it.
     let recentHtml = '<div class="roster-no-results">No events.</div>';
     if (w.recent_event_ids && w.recent_event_ids.length) {
       const rows = w.recent_event_ids.map(eid => {
         const ev = BUNDLE.events[String(eid)];
         if (!ev) return '';
+        if (ev.air_date && Date.parse(ev.air_date + 'T12:00:00Z') > cutoff) return '';
         const evTitle = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
         return `<div class="recent-event-row">
           <button class="recent-event-link" data-event-id="${eid}">${esc(evTitle)}</button>
           <span class="re-date">${esc(ev.air_date)}</span>
         </div>`;
       }).filter(Boolean).join('');
-      if (rows) recentHtml = `<div class="recent-events-list">${rows}</div>`;
+      recentHtml = rows
+        ? `<div class="recent-events-list">${rows}</div>`
+        : `<div class="roster-no-results">No shows yet at where you're watching.</div>`;
     }
 
     container.innerHTML = `
@@ -6818,8 +6943,14 @@
         </div>
       </div>
 
+      ${spoilers
+        ? ''
+        : `<div class="profile-asof">${Number.isFinite(cutoff)
+            ? `Shown as of where you're watching, ${MONTHS[new Date(cutoff).getUTCMonth()]} ${new Date(cutoff).getUTCFullYear()}. Turn on spoilers for the full career.`
+            : `Shown spoiler-free. Mark shows watched, or turn on spoilers, to see this wrestler's career fill in.`}</div>`}
+
       ${prof ? bioSectionHtml(prof) : ''}
-      ${prof ? ringNamesSectionHtml(prof) : ''}
+      ${prof ? ringNamesSectionHtml(prof, cutoff) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Career Record</div>
@@ -6835,14 +6966,14 @@
       </div>
 
       ${prof ? movesSectionHtml(prof) : ''}
-      ${prof ? themesSectionHtml(prof) : ''}
+      ${prof ? themesSectionHtml(prof, cutoff) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Title History</div>
-        ${titleHistoryHtmlGated || titleHtml}
+        ${titleHistoryHtml}
       </div>
 
-      ${prof ? alignmentSectionHtml(prof, spoilers) : ''}
+      ${prof ? alignmentSectionHtml(prof, cutoff) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Biggest Rivalries</div>
