@@ -97,13 +97,9 @@ Not affiliated with WWE. This is a fan-made companion tool that points people at
 - Masked rotating gimmicks (the "Americano" luchador characters) are kept as their own roster entries rather than merged into the wrestler under the mask, since the character is played by different people. This is deliberate.
 - Title reigns are not yet name-canonicalized: a 2019 reign under an old ring name is still filed under that name rather than the merged current one.
 - A retrospective's clips are stored as that show's card, because the source lists them that way. They no longer reach the title lineage (`CLIP_SHOWS` in `src/export_to_html.py`), but the event page still presents them as matches that happened that night rather than as replays.
-- A belt keeps its last champion forever. Reigns have no end when the belt is retired or unified, so a dead title still reads as held: the WCW and ECW world titles, the Hardcore and European titles, and the Divas title all still have a "current" champion.
-- Multi-man matches are stored as two teams, so a Triple Threat renders as a handicap match ("Steve Austin vs Kane & The Undertaker" is three individuals, not one against two).
-- A few tag teams are in the roster as if they were people (`#DIY`, `Fraxiom`, `The Usos`, `Imperium`, `The Street Profits`), each with a win/loss record of its own.
-- 19 Raw episodes carry their taping date as the air date and are labelled `live-broadcast` anyway, so they land in the wrong calendar week (the Tribute To The Troops shows are taped in early December and air at Christmas).
-- The first Raw of the corpus is missing. Raw aired January 1, 2001 but was taped December 29, 2000, and the source files taped shows under the taping date, so the 2001 boundary dropped it.
 - A small number of complex multi-way / battle-royal cards from the weekly source have best-effort team grouping (flagged low-confidence internally).
 - Pre-2016 SmackDown air dates in the historical base use a tape-plus-2 estimate (right calendar week, not always the exact air night).
+- Five 2002-2003 SmackDown episodes share a number with the following week (#125, #134, #177, #205, #207): two different shows a week apart, not a duplicate. The air dates are correct (era-accurate Thursdays), so only the number is wrong, but WWE never numbered SmackDown on-air and the episode databases disagree about the count in this window, so there is no ground truth to correct to. Left as-is rather than guessed. (The one Raw number that WAS verifiable, 2024-01-08 mislabelled #1698, is corrected to #1598 in `src/fix_episode_numbers.py`.)
 - Multi-episode-per-date tournaments in the historical base (Cruiserweight Classic, Mae Young Classic, UK Championship Tournament, Worlds Collide 2019) are not yet consolidated, because the historical SQLite schema enforces UNIQUE (air_date, show_type).
 - Timestamp display uses the browser local timezone.
 
