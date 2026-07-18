@@ -185,6 +185,12 @@ CURATED = {
     "Chavo Guerrero Classic": "Chavo Guerrero Sr",
     "Buh Buh Ray Dudley": "Bubba Ray Dudley",
     "Terri": "Terri Runnels",
+    # A three-mask "Los Americanos (El Grande Americano, Bravo & Rayo
+    # Americano)" leaves the middle mask bare: the shared-surname lend is
+    # two-person only, so "Bravo" cannot borrow "Americano" there.
+    "Bravo": "Bravo Americano",
+    # The 2026 curation pass on thesmackdownhotel.com re-typed her surname.
+    "Shotzi Blackeart": "Shotzi",
     # --- scraper prose glued onto a participant name (result-method text) ---
     "Matt Hardy by TKO": "Matt Hardy",
     "Jeff Hardy by TKO": "Jeff Hardy",
@@ -381,6 +387,38 @@ def build_canon_map(name_counts, roster_pairs=None, curated=None):
             display = DISPLAY_SPELLING.get(normkey(display), display)
         for n in names:
             out[n] = display
+    return out
+
+
+def bundle_derived_aliases(data):
+    """Alias pairs already merged in the shipped bundle (name -> the name of the
+    wrestler it merged into). Keeps existing merges alive even with no roster
+    source. Every index rebuild (rebuild_indexes AND build_update) must feed
+    these back into build_canon_map, or the cagematch identity resolution
+    (Mankind -> Mick Foley and 163+ others, applied once by
+    cagematch-pipeline/apply_merge.py) silently un-merges.
+
+    A pair whose target CURATED renames again is re-pointed at the final name,
+    not dropped. build_canon_map applies its map once rather than transitively,
+    so "Rudy Rude" -> "Robert Roode" alongside CURATED's "Robert Roode" ->
+    "Bobby Roode" would strand Rudy Rude one hop short; dropping the pair instead
+    orphaned him out of the merge entirely, which is worse.
+
+    This used to be masked. The bundle's canonical was whatever CURATED pointed
+    at, and those targets are final (test_curated_table_has_no_two_step_chains),
+    so the target was almost never itself a CURATED key. Now that a wrestler is
+    displayed under their most-used ring name, the canonical IS a corpus name and
+    CURATED keys are corpus names, so the two collide constantly: the first
+    rebuild displayed him as "Robert Roode", the second saw that name in CURATED
+    and un-merged Rudy Rude. Rebuilds have to be idempotent or the roster rots a
+    name at a time."""
+    wrestlers = data.get("wrestlers") or {}
+    out = {}
+    for name, slug in (data.get("wrestlers_by_name") or {}).items():
+        canonical = wrestlers.get(slug, {}).get("name")
+        if not canonical or canonical == name or name in CURATED:
+            continue
+        out[name] = CURATED.get(canonical, canonical)   # follow one hop; targets are final
     return out
 
 
