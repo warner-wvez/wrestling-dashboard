@@ -107,9 +107,16 @@ def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[
     """
     canon = canon or (lambda n: n)
 
+    # A group label that leaked into the participant list ("The Usos" beside Jey
+    # and Jimmy) must not become a wrestler. Derived from the corpus, so every
+    # caller of build_wrestlers_index gets the exclusion without threading it
+    # through; the frontend already renders a non-indexed name as plain text, so
+    # a bare group label still shows on the card, just without a fake profile.
+    group_labels = collect_group_labels(events)
+
     def parts_of(team):
         return [canon(p) for p in team.get("participants", [])
-                if p and not is_placeholder_name(p)]
+                if p and not is_placeholder_name(p) and _label_key(p) not in group_labels]
 
     w_appearances: dict[str, list[tuple[str, int]]] = defaultdict(list)
     w_wins: Counter = Counter()
@@ -470,6 +477,102 @@ def _champion_among(names: list[str], raw: str) -> str | None:
     rather than a person."""
     hits = [n for n in names if re.search(re.escape(n) + r'\s*\(c\)', raw or '')]
     return hits[0] if len(hits) == 1 else None
+
+
+# A stable/tag-team name that the modern (SmackDown Hotel) source writes as
+# "[[The Usos]] ([[Jey Uso]] and [[Jimmy Uso]])" and the parser flattened into
+# the participant list AS WELL AS its members, so the group label became a
+# roster entry with its own win/loss record: The Usos, #DIY, Imperium, and
+# ~17 others show up in the roster as if they were people.
+_GROUP_LABEL_KEY = re.compile(r'[^a-z0-9]')
+
+
+def _label_key(name: str) -> str:
+    """Identity key for a group label: lowercase, drop a leading 'the', keep
+    only a-z0-9, so 'The New Day' and 'New Day' are one label."""
+    s = re.sub(r'^the\s+', '', (name or '').strip().lower())
+    return _GROUP_LABEL_KEY.sub('', s)
+
+
+# [[Otis (wrestler)|Otis]] -> [[Otis]]: normalize each wikilink to its display
+# form so the ) inside a disambiguation does not break the member capture.
+_WIKILINK_NORM = re.compile(r'\[\[(?:[^\]|]*\|)?([^\]]*)\]\]')
+_LABEL_PAREN = re.compile(r'\[\[([^\]]*)\]\]\s*\(([^)]*)\)')
+_WIKILINK_INNER = re.compile(r'\[\[([^\]]*)\]\]')
+
+
+def _expanded_members(raw: str):
+    """Yield (label, [members]) for every '[[Label]] (m1 and m2 ...)' in the raw,
+    with wikilinks normalized so a disambiguation paren does not truncate it.
+    Skips accompaniment '(w/ ...)'."""
+    norm = _WIKILINK_NORM.sub(lambda m: '[[' + m.group(1) + ']]', raw or '')
+    for m in _LABEL_PAREN.finditer(norm):
+        inside = m.group(2)
+        if re.match(r'^\s*w\s*/|^\s*with\b', inside, re.I):
+            continue
+        members = [x.strip() for x in _WIKILINK_INNER.findall(inside)]
+        if len(members) >= 2:
+            yield m.group(1).strip(), members
+
+
+def collect_group_labels(events: dict) -> set[str]:
+    """The identity keys of every stable/tag-team name the corpus expands into
+    real wrestlers.
+
+    A name qualifies only when it is written '[[L]] (M1 and M2 ...)' AND every
+    Mi is itself a competitor (a name that wrestles somewhere). That competitor
+    test is what rejects the brand/title descriptor the same markup produces,
+    "[[Cody Rhodes]] ([[SmackDown]]'s [[Undisputed WWE Champion]])", where the
+    parenthetical is a brand and a belt, not members. Verified against the
+    corpus: every name this returns is a group, no individual with a real match
+    count is caught."""
+    competitors = set()
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            for t in match.get('teams') or []:
+                for p in t.get('participants') or []:
+                    if p:
+                        competitors.add(p)
+    labels: set[str] = set()
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            for label, members in _expanded_members(match.get('raw_description') or ''):
+                if all(mem in competitors for mem in members):
+                    labels.add(_label_key(label))
+    return labels
+
+
+def strip_phantom_group_labels(events: dict, labels: set[str] | None = None) -> int:
+    """Drop a group label from a team when its members are standing right beside
+    it, in place. "[Roman Reigns, The Usos, Jey Uso, Jimmy Uso]" -> drop The Usos.
+
+    Only removes the label when >=2 of its expanded members are co-participants,
+    so a team represented ONLY by its group name (a gauntlet entry the source
+    never expanded) keeps it; that bare label is instead kept out of the roster
+    by build_wrestlers_index. Returns how many teams were trimmed."""
+    if labels is None:
+        labels = collect_group_labels(events)
+    trimmed = 0
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            expansions = {label: members
+                          for label, members in _expanded_members(match.get('raw_description') or '')}
+            if not expansions:
+                continue
+            for t in match.get('teams') or []:
+                parts = [p for p in (t.get('participants') or []) if p]
+                pset = set(parts)
+                drop = set()
+                for p in parts:
+                    if _label_key(p) not in labels:
+                        continue
+                    members = expansions.get(p) or []
+                    if sum(1 for mem in members if mem in pset and mem != p) >= 2:
+                        drop.add(p)
+                if drop:
+                    t['participants'] = [p for p in parts if p not in drop]
+                    trimmed += 1
+    return trimmed
 
 
 def split_fused_multiman_sides(events: dict) -> int:
