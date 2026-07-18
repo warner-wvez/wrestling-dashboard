@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WVEZ Wrestling</title>
+<!-- Inline so it costs no request and works offline. Without it every load 404s
+     on /favicon.ico, which was the only error in the console. -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%230A0A0A'/><text x='16' y='23' font-family='system-ui,-apple-system,sans-serif' font-size='19' font-weight='700' fill='%23FFFFFF' text-anchor='middle'>W</text></svg>">
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4263,12 +4266,18 @@
     // The main event closes the show: the highest match order.
     const me = matches.reduce((a, b) => ((b.match_order || 0) > (a.match_order || 0) ? b : a));
     const teams = (me.teams || []).filter(t => (t.participants || []).length || t.team_name);
-    const small = teams.length === 2 && teams.every(t => (t.participants || []).length <= 3);
-    if (!small) return;   // battle royals / multi-ways would swamp the billboard
+    // Two or three sides: a triple threat is a main event, not a battle royal,
+    // and it used to slip through only because the parser fused its three sides
+    // into two and the billboard billed it as a handicap match. A Rumble field
+    // would still swamp the slot, so anything wider stays out.
+    const small = teams.length >= 2 && teams.length <= 3
+      && teams.every(t => (t.participants || []).length <= 3);
+    if (!small) return;
     slot.innerHTML =
       `<span class="hero-me-label">Main event</span>` +
-      `<span class="hero-me-teams">${heroMainEventTeam(teams[0])}` +
-      `<span class="hero-me-vs">vs</span>${heroMainEventTeam(teams[1])}</span>`;
+      `<span class="hero-me-teams">` +
+      teams.map(heroMainEventTeam).join('<span class="hero-me-vs">vs</span>') +
+      `</span>`;
     slot.hidden = false;
   }
 
@@ -5480,9 +5489,19 @@
       <div class="moments-block">
         <div class="moments-head">Storylines around this show</div>
         ${active.map(f => {
-          const span = f.start === f.end
-            ? fmtFeudMonth(f.start)
-            : `${fmtFeudMonth(f.start)} &ndash; ${fmtFeudMonth(f.end)}`;
+          // A feud only lands on this shelf when it is running during `month`,
+          // so f.end is always this month or later: printing the span tells you
+          // when the storyline wraps before you have watched it ("Batista vs.
+          // Mark Henry, Dec 2005 - Jul 2006" on a Dec 2005 show is seven months
+          // of future). The shelf is about what is running now, so with spoilers
+          // off it only reaches backwards.
+          const span = spoilers
+            ? (f.start === f.end
+                ? fmtFeudMonth(f.start)
+                : `${fmtFeudMonth(f.start)} &ndash; ${fmtFeudMonth(f.end)}`)
+            : (f.start === month
+                ? `Starts ${fmtFeudMonth(f.start)}`
+                : `Since ${fmtFeudMonth(f.start)}`);
           const votes = f.votes ? ` from ${f.votes} vote${f.votes === 1 ? '' : 's'}` : '';
           const rating = f.rating != null
             ? `<span class="m-rating" title="Cagematch feud rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${f.rating.toFixed(1)}</span></span>`
@@ -5920,12 +5939,30 @@
   // ------------------------------------------------------------------
   // Title-reign lookup (Phase 1b)
   // ------------------------------------------------------------------
-  function titlesHeldOn(name, date) {
+  // A reign is [start, end): `start` is the night the belt was won, `end` the
+  // night it was lost (null = still held). Two different questions get asked of
+  // that data, and they disagree on the boundary nights:
+  //
+  //   'entering' - who held it walking INTO the show on `date`. A belt won that
+  //                same night has not been won yet, so it must not count: the
+  //                reign only starts because someone wins a match on this card,
+  //                and counting it puts a Champ badge on the winner of a match
+  //                the user has not watched. A belt lost that night still counts,
+  //                because they carried it to the ring.
+  //   'through'  - who held it once `date` has been fully watched. A belt won
+  //                that night HAS been seen, so it counts; one lost that night
+  //                does not. This is what the as-of roster asks, and it matches
+  //                asOfRecordFor(), which accumulates with `iso <= T`.
+  //
+  // 'entering' is the default because it is the direction that fails closed:
+  // a missed badge is a cosmetic gap, a badge that fails open is a spoiler.
+  function titlesHeldOn(name, date, boundary = 'entering') {
     if (!name || !date || !BUNDLE || !BUNDLE.wrestler_reigns_by_date) return [];
     const intervals = BUNDLE.wrestler_reigns_by_date[name] || [];
-    return intervals
-      .filter(iv => iv.start <= date && (iv.end === null || iv.end > date))
-      .map(iv => iv.title);
+    const held = boundary === 'through'
+      ? iv => iv.start <= date && (iv.end === null || iv.end > date)
+      : iv => iv.start < date && (iv.end === null || iv.end >= date);
+    return intervals.filter(held).map(iv => iv.title);
   }
 
   // ------------------------------------------------------------------
@@ -6034,7 +6071,13 @@
     const asOf = asOfEl ? asOfEl.dataset.asofDate : null;
     const dateEl = anchor.closest('[data-event-date]');
     const ctxDate = asOf || (dateEl ? dateEl.dataset.eventDate : null);
-    const heldTitles = ctxDate ? titlesHeldOn(w.name, ctxDate) : [];
+    // The as-of roster asks "holding now", where `asOf` is a date the user has
+    // already watched through. Hovering a name on a show card asks "held at this
+    // time", where the show has NOT been watched yet, so a belt won tonight has
+    // to stay hidden.
+    const heldTitles = ctxDate
+      ? titlesHeldOn(w.name, ctxDate, asOf ? 'through' : 'entering')
+      : [];
     const yr = w.active_years[0] === w.active_years[1]
       ? String(w.active_years[0])
       : `${w.active_years[0]}-${w.active_years[1]}`;

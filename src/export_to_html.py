@@ -146,7 +146,7 @@ def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[
             # Same normalization as the reigns page: real belts only (no
             # stipulation blurbs, contendership matches, or match-type
             # decoration), Championship/Title spellings unified.
-            belts_at_stake = _get_component_titles(match.get("title_at_stake"))
+            belts_at_stake = _get_component_titles(match.get("title_at_stake"), match)
             match_order = match.get("match_order")
             is_main = max_order is not None and match_order == max_order
             raw_desc = match.get("raw_description") or ""
@@ -353,6 +353,17 @@ _TITLE_FILTER_PATTERNS = (
     re.compile(r'Qualif', re.I),
 )
 
+# Contendership detection against the MATCH TYPE (see _drop_contendership_parts).
+# Deliberately much narrower than _TITLE_FILTER_PATTERNS above, which is safe
+# only against a belt string: run that set over a match type and 'Qualif' matches
+# "No Disqualification", while 'Battle Royal' and 'Tournament' throw away real
+# title wins (a vacant belt is legitimately decided by both).
+_CONTENDERSHIP_RE = re.compile(r'\bcontender(?:ship|s)?\b', re.I)
+# The marker as it trails the belt it points at: "<belt> #1 Contendership Match",
+# "<belt> # 1 Contender ...", "<belt> Number One Contenders ...".
+_TRAILING_CONTENDER_RE = re.compile(
+    r'^\s*(?:#\s*\d+\s*|no\.?\s*\d+\s*|number\s+one\s+)?contender(?:ship|s)?\b', re.I)
+
 # Scrapers store the belt name plus whatever decorated the line: a quoted
 # stipulation blurb, the match type ("... Championship Steel Cage Match"), or
 # both. Everything from a quote pair is stipulation, never belt.
@@ -366,6 +377,9 @@ _BELT_RE = re.compile(r'^(.*?\b(?:Championships?|Titles?))(?=\s|$)', re.I)
 TITLE_ALIASES = {
     "WWF Championship Title": "WWF World Heavyweight Title",
     "ECW Heavyweight Title":  "ECW World Heavyweight Title",
+    # A source typo, one letter, that forked a live belt into a second lineage
+    # with one champion who then never lost it. Not fixable by rule.
+    "WWE Women's Tag Tean Title": "WWE Women's Tag Team Title",
 }
 
 
@@ -378,11 +392,244 @@ def _normalize_title_part(part: str) -> str | None:
     s = re.sub(r'\bRAW\b', 'Raw', s)                       # WWE RAW / WWE Raw: same belt
     s = re.sub(r'\bChampionships$', 'Titles', s)
     s = re.sub(r'\bChampionship$', 'Title', s).strip()
+    # The sources are inconsistent about the apostrophe and WWE never is, so
+    # "WWE Womens Tag Team Title" is not a second belt. Left alone, one dropped
+    # apostrophe forks a lineage: the fork inherits a single champion, and with
+    # no later change to end the reign that champion holds it forever.
+    s = re.sub(r"\bWomens\b", "Women's", s)
     s = TITLE_ALIASES.get(s, s)
     return s or None
 
 
-def _get_component_titles(raw: str | None) -> list[str]:
+# Shows whose card is a highlight reel, not a night of wrestling. Cagematch
+# lists the clips a retrospective aired as that show's matches, complete with
+# their original "TITLE CHANGE !!!" markers, so the reign walk re-crowns the
+# winner years later: the Year In Review Special replayed WrestleMania X-Seven
+# on 2001-12-31 and left Steve Austin holding the WWF Title for the next 25
+# years, and the Benoit tribute replayed his career (the 2004 Royal Rumble, a
+# 90s WCW match, a 1990 New Japan title change) onto one Raw in 2007.
+#
+# Curated by id rather than detected, because neither signal is safe alone.
+# Title patterns catch real shows: WrestleMania 25 is subtitled "The 25th
+# Anniversary Of WrestleMania" and Raw #759 is a 15th Anniversary show, and both
+# are real cards with real title changes. Replay detection misses clips whose
+# original predates the corpus or carries no duration to match on. Each id below
+# was confirmed by reading its card.
+#
+# Only the reign walk skips these. The clips still show on the event page: they
+# did air that night, and dropping them would empty the card.
+CLIP_SHOWS = {
+    221: "WWF RAW #449 - Year In Review Special (2001-12-31), 10/10 replays",
+    471: "WWE RAW #604 - Year In Review Special (2004-12-20), 6/6 replays",
+    770: "WWE Monday Night RAW #735 - Chris Benoit Tribute (2007-06-25)",
+    831: "WWE SmackDown #436 - The Greatest Matches Of 2007 (2007-12-28)",
+}
+
+
+# A match type that declares how many SIDES it has. Cagematch writes a triple
+# threat as "A defeats B and C", the parser splits on the verb, and everything
+# right of it lands in one team, so three individuals become one man against two.
+# The landing page's first main event has read "Steve Austin vs Kane & The
+# Undertaker" ever since: a handicap match that never happened.
+_MATCH_SIDES = (
+    (re.compile(r'\btriple threat\b', re.I), 3),
+    (re.compile(r'\bfatal (?:four|4)[- ]way\b', re.I), 4),
+    (re.compile(r'\bfatal (?:five|5)[- ]way\b', re.I), 5),
+    (re.compile(r'\bfour[- ]way\b', re.I), 4),
+    (re.compile(r'\bthree[- ]way\b', re.I), 3),
+    (re.compile(r'\bsix[- ]pack challenge\b', re.I), 6),
+)
+
+
+def _declared_sides(match_type: str | None) -> int | None:
+    for pattern, n in _MATCH_SIDES:
+        if pattern.search(match_type or ''):
+            return n
+    return None
+
+
+def _is_fused_side(team: dict) -> bool:
+    """True when a team's name is just its members listed, which is what the
+    parser produces when it fuses two sides ("Kane & The Undertaker").
+
+    A real team is named, not listed: "The Dudley Boyz" whose members are Bubba
+    Ray and D-Von is a tag team and must never be cut into singles, even when it
+    turns up in a match the side arithmetic says is one-per-side."""
+    names = [p for p in (team.get('participants') or []) if p]
+    if len(names) < 2:
+        return False
+    label = re.sub(r'\s+', ' ', (team.get('team_name') or '')).strip().lower()
+    return label in {' & '.join(names).lower(), ' and '.join(names).lower()}
+
+
+def _champion_among(names: list[str], raw: str) -> str | None:
+    """Which of these people does the result text mark with (c)? Cagematch puts
+    it straight after the champion ("Kane defeats Raven (c) and The Big Show"),
+    so a fused side can be un-fused without inventing a second champion. None
+    when it is not attributable, which includes the (c) sitting on a team name
+    rather than a person."""
+    hits = [n for n in names if re.search(re.escape(n) + r'\s*\(c\)', raw or '')]
+    return hits[0] if len(hits) == 1 else None
+
+
+def split_fused_multiman_sides(events: dict) -> int:
+    """Un-fuse the sides of a multi-man match, in place. Returns how many.
+
+    Only the unambiguous shape is touched: the type declares N sides, the match
+    has fewer, the people divide evenly into one-per-side, and every oversized
+    team is a fused side rather than a named team. Anything else is left alone,
+    because the alternative is cutting up a real tag team or manufacturing a
+    second champion.
+    """
+    fixed = 0
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            want = _declared_sides(match.get('match_type'))
+            teams = match.get('teams') or []
+            if not want or len(teams) >= want:
+                continue
+            people = [p for t in teams for p in (t.get('participants') or []) if p]
+            if len(people) != want:            # one per side only; tag sides are
+                continue                       # ambiguous about who pairs with whom
+            oversized = [t for t in teams if len([p for p in (t.get('participants') or []) if p]) > 1]
+            if not all(_is_fused_side(t) for t in oversized):
+                continue
+            # Only one side can win a three-way, so a fused WINNER is not a fused
+            # side at all: the type is mislabelled, or the result is. Splitting
+            # would hand the match two winners.
+            if any(t.get('was_winner') for t in oversized):
+                continue
+            raw = match.get('raw_description') or ''
+            champ_of = {}
+            ok = True
+            for t in oversized:
+                if not t.get('was_champion_entering'):
+                    continue
+                names = [p for p in (t.get('participants') or []) if p]
+                who = _champion_among(names, raw)
+                if who is None:                # cannot say which one holds it
+                    ok = False
+                    break
+                champ_of[id(t)] = who
+            if not ok:
+                continue
+
+            out: list[dict] = []
+            for t in teams:
+                names = [p for p in (t.get('participants') or []) if p]
+                if len(names) < 2:
+                    out.append(t)
+                    continue
+                champ = champ_of.get(id(t))
+                for n in names:
+                    side = dict(t)
+                    side['team_name'] = n
+                    side['participants'] = [n]
+                    # The belt belongs to one of them, not to both halves of a
+                    # side the parser invented.
+                    side['was_champion_entering'] = (n == champ) if t.get('was_champion_entering') else False
+                    out.append(side)
+            for i, t in enumerate(out, 1):
+                t['team_number'] = i
+            match['teams'] = out
+            fixed += 1
+    return fixed
+
+
+# How long a belt may go unseen before the corpus stops claiming someone holds
+# it. A reign ends when the next title change happens, so the LAST reign of a
+# belt has nothing to end it and runs forever: left alone the corpus insists Rob
+# Van Dam has held the Hardcore Title for 24 years, The Rock still has the WCW
+# World Heavyweight Title, and ECW still crowns a champion. Those reigns then
+# badge their holder as champion on every card for the rest of time.
+#
+# Retirement is not recorded anywhere, so the belt's own last title match stands
+# in for it: we simply stop claiming a belt exists once the corpus stops showing
+# it being defended. The gap is where the data separates itself. Ordering every
+# open lineage by how long since its last title match leaves a clean break: the
+# quietest live belt is 398 days (TNA World, a crossover defended rarely) and
+# the noisiest dead one is 602 (Crown Jewel, annual and last seen 2024). 550
+# sits in that gap and leaves room for a belt defended once a year plus the few
+# weeks the corpus habitually lags reality.
+#
+# Deliberately NOT cagematch's INACTIVE flag, though cm_titles.json carries one.
+# It keys by title name, and WWE reuses names: the World Heavyweight and World
+# Tag Team titles were both revived years after the originals retired, so the
+# derived lineage holds the old belt and its modern namesake together and the
+# flag would end Roman Reigns' current reign. Last-seen gets those right for
+# free, because the revival's matches keep the lineage live.
+_TITLE_UNSEEN_GRACE_DAYS = 550
+
+
+def _close_reign_at_retirement(reigns: list[dict], matches: list[dict],
+                               corpus_end: str) -> None:
+    """End a still-open final reign at the belt's last title match, when the
+    corpus has not seen the belt in a long time. Mutates `reigns` in place."""
+    final = reigns[-1]
+    if final.get('end') is not None:
+        return
+    last_seen = matches[-1]                      # matches are sorted by air_date
+    gap = (datetime.fromisoformat(corpus_end) - datetime.fromisoformat(last_seen['air_date'])).days
+    if gap <= _TITLE_UNSEEN_GRACE_DAYS:
+        return                                   # still being defended: genuinely current
+    final['end'] = last_seen['air_date']
+    final['end_event_id'] = last_seen['event_id']
+
+
+def _looks_like_a_title_match(match: dict) -> bool:
+    """Did a belt actually ride on this match? True when the source marked a
+    champion entering, or says a belt changed hands."""
+    if 'TITLE CHANGE' in (match.get('raw_description') or '').upper():
+        return True
+    return any(t.get('was_champion_entering') for t in match.get('teams') or [])
+
+
+def _drop_contendership_parts(parts: list[str], match: dict) -> list[str]:
+    """Drop the belts a contendership match only *points at*.
+
+    Cagematch renders "WWF World Tag Team Title #1 Contendership Match" and links
+    the belt's title page from that line, so _extract_titles_at_stake records the
+    belt as at stake. It is not: a contendership match awards a title SHOT, and
+    the belt never moves. Left alone, build_title_reigns crowns the winner, which
+    invents reigns, truncates the real champion's, and (because a reign starts the
+    night it is won) badges the winner of a match nobody has watched yet.
+
+    _TITLE_FILTER_PATTERNS already means to catch this, but it only ever sees
+    title_at_stake ("WWF World Tag Team Title"), which does not carry the marker.
+    The marker lives in the match type, so the decision has to be made here.
+
+    Per component, because the two can be mixed: "WWE Intercontinental Title /
+    World Heavyweight Title #1 Contendership Match" really did put the IC belt on
+    the line while awarding a World title shot. A component survives only when the
+    marker does not trail it AND the match behaves like a title match, so a
+    contendership battle royal naming two belts keeps neither.
+    """
+    match_type = match.get('match_type') or ''
+    if not _CONTENDERSHIP_RE.search(match_type):
+        return parts                  # ordinary title match: leave it alone
+    hay = match_type.lower()
+    kept: list[str] = []
+    for part in parts:
+        probe = re.sub(r'\s+', ' ', part).strip()
+        if _CONTENDERSHIP_RE.search(probe):
+            continue                  # the belt string itself carries the marker
+        i = hay.find(probe.lower())
+        if i < 0:
+            continue                  # marker-first phrasing ("#1 Contender (WWE
+            #                           Championship)"): belt not locatable, so it
+            #                           can only be the thing being contended for
+        if _TRAILING_CONTENDER_RE.match(match_type[i + len(probe):]):
+            continue                  # "<belt> #1 Contendership ...": the prize
+        kept.append(part)
+    # A survivor is only credible if a belt truly rode on the match. Without that
+    # corroboration the leading belt of a multi-belt contendership match would be
+    # crowned off a battle royal nobody defended anything in.
+    if kept and not _looks_like_a_title_match(match):
+        return []
+    return kept
+
+
+def _get_component_titles(raw: str | None, match: dict | None = None) -> list[str]:
     if not raw:
         return []
     rem = re.sub(r'\s+', ' ', _QUOTED_STIP_RE.sub(' ', raw)).strip()
@@ -391,13 +638,19 @@ def _get_component_titles(raw: str | None) -> list[str]:
     for p in _TITLE_FILTER_PATTERNS:
         if p.search(rem):
             return []
-    out: list[str] = []
+    # Split first, decide contendership on the raw spellings (they are what appear
+    # verbatim in the match type), and only then normalize the survivors.
+    parts: list[str] = []
     for chunk in rem.split(' / '):
         # Unification matches join two belts with "vs.": both are at stake.
-        for part in re.split(r'\s+vs\.?\s+', chunk):
-            s = _normalize_title_part(part)
-            if s:
-                out.append(s)
+        parts.extend(re.split(r'\s+vs\.?\s+', chunk))
+    if match is not None:
+        parts = _drop_contendership_parts(parts, match)
+    out: list[str] = []
+    for part in parts:
+        s = _normalize_title_part(part)
+        if s:
+            out.append(s)
     return out
 
 
@@ -506,14 +759,18 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         if not air_date:
             continue
         eid = int(eid_str)
+        if eid in CLIP_SHOWS:      # a replayed title change is not a title change
+            continue
         for match in ev.get('matches', []):
-            for title in _get_component_titles(match.get('title_at_stake')):
+            for title in _get_component_titles(match.get('title_at_stake'), match):
                 lk = _title_lineage_key(title)
                 timelines[lk].append({
                     'air_date': air_date,
                     'event_id': eid,
                     'match_order': match.get('match_order') or 0,
                     'teams': match.get('teams', []),
+                    # carried for the stand-in check when reconciling (c) markers
+                    'raw_description': match.get('raw_description') or '',
                 })
                 st = spelling_stats[lk][title]
                 st[0] += 1
@@ -536,6 +793,11 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
 
     for lk in timelines:
         timelines[lk].sort(key=lambda m: (m['air_date'], m['event_id'], m['match_order']))
+
+    # How far the corpus reaches, to judge which belts have gone quiet against.
+    # Taken from the events rather than today's clock so a rebuild is
+    # reproducible and an older corpus stays self-consistent.
+    corpus_end = max((ev.get('air_date') or '' for ev in events.values()), default='')
 
     reigns_by_title: dict[str, list[dict]] = {}
     for lk, matches in timelines.items():
@@ -565,6 +827,64 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                         'pre_corpus': True,
                     }
                 first = False
+
+            # The (c) marker is the source stating who walked in holding the
+            # belt. When it names someone other than the reign we are tracking,
+            # a title change happened that the corpus never recorded, and the
+            # walk has to take the source's word for it: it cannot see a card it
+            # does not have.
+            #
+            # Without this the belt appears never to have left, and the two
+            # halves of the incumbent's reign fuse across the gap. The Miz beat
+            # Wade Barrett for the Intercontinental Title at WrestleMania 29 and
+            # lost it back the next night, but only the second match is in the
+            # corpus, so the walk read "Barrett defeats The Miz (c)" as Barrett
+            # retaining and gave him one unbroken reign from December to June,
+            # swallowing Miz's reign whole. Same shape wherever a belt changed
+            # hands on a card we do not carry, or was vacated and awarded off
+            # television (Naomi's SmackDown Women's Title, Kevin Owens' United
+            # States Title).
+            #
+            # The inserted reign is pre_corpus: its end is observed here, but its
+            # start is not knowable, so `start` is a floor and not a real date.
+            # A multi-man title match is stored as two teams, so the (c) side can
+            # carry the champion AND a challenger: Payback 2013's triple threat
+            # reads "Curtis Axel defeats The Miz and Wade Barrett (c)", with Miz
+            # and Barrett sharing a team. The marker is therefore only evidence
+            # of a change we missed when it names NOBODY we think holds the belt.
+            # Asking _pick_singles_champion to choose here instead would let it
+            # pick Miz off appearance counts and invent a reign for him.
+            # Two more ways the marker lies, both rare and both detectable:
+            #
+            #   champion vs champion. No Mercy 2002 reads "Triple H (c)
+            #   [Heavyweight] defeats Kane (c) [Intercontinental]": both sides
+            #   are (c), for different belts, and champ_team just takes the first
+            #   it finds, so on the Intercontinental chain it hands back the
+            #   HEAVYWEIGHT champion. 22 matches in the corpus. Ambiguous, so
+            #   the marker is no evidence here at all.
+            #
+            #   a champion who sent a stand-in. "The Undertaker defeats Orlando
+            #   Jordan [Replacement for John Bradshaw Layfield] (w/ JBL) (c)":
+            #   the belt is JBL's and the (c) landed on the replacement. 4
+            #   matches.
+            multi_champ = sum(1 for t in teams if t.get('was_champion_entering')) > 1
+            stand_in = '[replacement for' in (m.get('raw_description') or '').lower()
+            if current is not None and champ_team is not None and not multi_champ and not stand_in:
+                entering = [p for p in (champ_team.get('participants') or []) if p]
+                if entering and not (set(current['champion_names']) & set(entering)):
+                    named = _pick_singles_champion(entering, appearances, None) \
+                        if is_singles else entering
+                    current['end'] = m['air_date']
+                    current['end_event_id'] = m['event_id']
+                    reigns.append(current)
+                    current = {
+                        'champion_names': named,
+                        'start': m['air_date'],
+                        'end': None,
+                        'start_event_id': m['event_id'],
+                        'end_event_id': None,
+                        'pre_corpus': True,
+                    }
 
             if winner is None or not winner.get('participants'):
                 continue
@@ -601,6 +921,8 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
 
         if current is not None:
             reigns.append(current)
+        if reigns:
+            _close_reign_at_retirement(reigns, matches, corpus_end)
         reigns_by_title[canon_name[lk]] = reigns
 
     for title, reigns in reigns_by_title.items():

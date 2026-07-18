@@ -13,7 +13,11 @@
 //    event.waitUntil so the refresh survives the response being returned.
 //
 // Bump CACHE on data or schema changes to retire old entries wholesale.
-const CACHE = 'wrestling-dashboard-v6';
+// v7: the match shards changed (multi-man sides un-fused), and shards are served
+// cache-first, so a returning visitor would otherwise keep the old teams until a
+// background refresh landed on some later load.
+// v8: matches-2001 gained the January 1 2001 Raw (#397), previously missing.
+const CACHE = 'wrestling-dashboard-v8';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
@@ -31,9 +35,12 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== location.origin) return;
 
   // Only manage the app shell + match shards; let everything else hit the network.
-  const isShard = url.pathname.includes('/shards/matches-')
-    || url.pathname.endsWith('/shards/media.json')
-    || url.pathname.endsWith('/shards/profiles.json');
+  // Every shard, not a list of them. The old whitelist named matches-*, media
+  // and profiles, and then the app grew belts, titles, promos, feuds and
+  // tournaments shards that it never learned about, so the Titles view and the
+  // promo/feud/tournament shelves fetched from a network that is not there and
+  // failed offline, against the promise at the top of this file.
+  const isShard = url.pathname.includes('/shards/');
   const isShell = url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
   if (!isShard && !isShell) return;
 

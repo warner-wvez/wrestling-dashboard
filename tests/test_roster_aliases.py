@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.roster_aliases import (  # noqa: E402
-    CURATED, PROTECTED, build_canon_map, load_roster_snapshot, normkey,
+    CURATED, DISPLAY_SPELLING, PROTECTED, build_canon_map, load_roster_snapshot, normkey,
     save_roster_snapshot)
 
 
@@ -74,6 +74,83 @@ def test_spelling_variant_group_uses_dominant_form():
                             roster_pairs=[])
     assert canon["The Big Show"] == "Big Show"
     assert canon["Big Show"] == "Big Show"
+
+
+def test_display_is_the_most_used_ring_name_not_the_curated_target():
+    # Curated declares identity ("these are one human"), usage picks the label.
+    # The real case: the corpus bills him "Bradshaw" 102 times and "John
+    # Bradshaw Layfield" 152, and CURATED points both at "JBL", a string that
+    # appears in ZERO matches. Naming the roster entry after the merge target
+    # listed a superstar under a name he is never billed under.
+    canon = build_canon_map({"Bradshaw": 102, "John Bradshaw Layfield": 152},
+                            roster_pairs=[],
+                            curated={"Bradshaw": "JBL",
+                                     "John Bradshaw Layfield": "JBL"})
+    assert canon["Bradshaw"] == "John Bradshaw Layfield"
+    assert canon["John Bradshaw Layfield"] == "John Bradshaw Layfield"
+
+
+def test_a_merge_target_with_no_matches_is_never_displayed():
+    canon = build_canon_map({"T-BAR": 29, "Dijak": 5, "Dominik Dijakovic": 1},
+                            roster_pairs=[],
+                            curated={"T-BAR": "Dijak", "Dominik Dijakovic": "Dijak"})
+    # All three are one human...
+    assert len({canon["T-BAR"], canon["Dijak"], canon["Dominik Dijakovic"]}) == 1
+    # ...labelled by usage, so the 5-match spelling does not win.
+    assert canon["Dijak"] == "T-BAR"
+
+
+def test_tie_defers_to_the_declared_identity():
+    # Usage has no opinion at equal counts, but the sources know which name is
+    # current. A rename the corpus has barely seen must not lose to the old name
+    # on a coin flip.
+    canon = build_canon_map(counts("WALTER", "Gunther"),
+                            roster_pairs=[("walter", "Gunther")])
+    assert canon["WALTER"] == "Gunther"
+
+
+def test_protected_identity_keeps_its_name_against_usage():
+    # PROTECTED exists because the sources try to rename these; frequency is not
+    # the authority there. The masks are protected so a rotating gimmick played
+    # by several wrestlers never folds into whoever is under it.
+    canon = build_canon_map({"Bravo Americano": 8, "Tyler Bate": 40},
+                            roster_pairs=[("tyler-bate", "Bravo Americano")])
+    assert canon["Tyler Bate"] == "Tyler Bate"
+    assert canon["Bravo Americano"] == "Bravo Americano"
+
+
+def test_display_spelling_corrects_a_dominant_source_typo():
+    # Cagematch prints "The Good Father" (10) more than "The Goodfather" (7), so
+    # usage alone crowns the typo. The override re-spells the winner without
+    # touching who it is.
+    canon = build_canon_map({"The Good Father": 10, "The Goodfather": 7},
+                            roster_pairs=[])
+    assert canon["The Good Father"] == "The Goodfather"
+    assert canon["The Goodfather"] == "The Goodfather"
+
+
+def test_display_spelling_never_changes_identity():
+    # An override may re-spell a name, never re-identify it. If a value keys to
+    # something else, it would silently move the person into another group.
+    for key, spelling in DISPLAY_SPELLING.items():
+        assert normkey(spelling) == key, (
+            f"DISPLAY_SPELLING[{key!r}] = {spelling!r} keys to "
+            f"{normkey(spelling)!r}; a spelling override must not re-identify")
+
+
+def test_protected_has_no_duplicate_identity_keys():
+    # build_canon_map does {normkey(p): p for p in PROTECTED}. PROTECTED is a
+    # set, so two entries sharing a key make the winner depend on iteration
+    # order and the displayed name non-deterministic across rebuilds. normkey
+    # drops quoted nicknames, which makes this easy to trip:
+    # '"Original" El Grande Americano' and "El Grande Americano" are one key.
+    seen = {}
+    for p in PROTECTED:
+        k = normkey(p)
+        assert k not in seen, (
+            f"PROTECTED holds {p!r} and {seen[k]!r}, which share identity key "
+            f"{k!r}; keep one, or the display depends on set ordering")
+        seen[k] = p
 
 
 def test_curated_table_has_no_two_step_chains():
