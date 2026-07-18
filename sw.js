@@ -18,7 +18,9 @@
 // background refresh landed on some later load.
 // v8: matches-2001 gained the January 1 2001 Raw (#397), previously missing.
 // v9: modern shards changed (phantom group labels un-fused from participants).
-const CACHE = 'wrestling-dashboard-v9';
+// v10: corpus refresh ingested new shows through July 2026, and the present-day
+// shards re-parsed clean against the source site's rewritten match lines.
+const CACHE = 'wrestling-dashboard-v10';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
