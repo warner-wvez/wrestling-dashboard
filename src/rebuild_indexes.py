@@ -26,7 +26,8 @@ if str(_PROJECT_ROOT) not in sys.path:
 from src.build_update import ROOT, load_existing                        # noqa: E402
 from src.export_to_html import (                                        # noqa: E402
     build_title_reigns, build_wrestler_reigns_by_date, build_wrestlers_index,
-    inject, split_fused_multiman_sides, write_sharded)
+    inject, split_fused_multiman_sides, strip_phantom_group_labels,
+    write_sharded)
 from src.roster_aliases import (                                        # noqa: E402
     CURATED, build_canon_map, load_roster_snapshot, save_roster_snapshot,
     scrape_roster)
@@ -104,6 +105,8 @@ def main():
     # partners from them, and write_sharded ships them to the card.
     unfused = split_fused_multiman_sides(events)
     print(f"  un-fused multi-man sides: {unfused} matches", flush=True)
+    trimmed = strip_phantom_group_labels(events)
+    print(f"  trimmed phantom group labels: {trimmed} teams", flush=True)
 
     print("Recomputing wrestler index + title reigns...", flush=True)
     old_wrestlers = len(data.get("wrestlers") or {})
