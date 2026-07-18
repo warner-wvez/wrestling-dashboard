@@ -5581,8 +5581,12 @@
     const ratingTag = m.match_guide_rating != null
       ? `<span class="m-rating" title="Cagematch Match Guide rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${m.match_guide_rating.toFixed(1)}</span></span>`
       : '';
+    // Source label reads "Observer", not "WON": to a new fan the Wrestling
+    // Observer Newsletter's initials look like the past tense of "win", i.e. a
+    // result, on a card that is meant to be spoiler-safe. The stars are the
+    // value; the tooltip carries the full attribution.
     const wonTag = m.won_rating
-      ? `<span class="m-won" title="Wrestling Observer star rating (Dave Meltzer)"><span class="won-src">WON</span><span class="won-val">${esc(m.won_rating)}</span></span>`
+      ? `<span class="m-won" title="Wrestling Observer star rating (Dave Meltzer)"><span class="won-src">Observer</span><span class="won-val">${esc(m.won_rating)}</span></span>`
       : '';
     const hasDetails = Boolean(m.raw_description) || m.match_guide_rating != null || Boolean(m.won_rating);
     const detailsToggle = hasDetails
