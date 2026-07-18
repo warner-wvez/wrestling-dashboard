@@ -88,10 +88,22 @@ def belt_for(title: str):
     if has("united kingdom") or re.search(r"\buk\b", n): return "united-kingdom"
     if has("tag"): return "tag-team"
 
-    # World Heavyweight: white strap (2023+, revived / undisputed) vs big gold.
+    # World Heavyweight, four eras sharing the same words: WCW's big gold; the
+    # 2002-2013 big gold; the 2001-2002 WWF/Undisputed and 2013-2016 unified
+    # runs that lived under the WWE Championship's leather; and the white strap
+    # revived in 2023. The bare name is ambiguous ACROSS eras ("World
+    # Heavyweight Championship" is both big gold and the revival), so ambiguous
+    # names get a date-split entry and the frontend resolves it per match or
+    # reign date. Nothing sits near the cutoff: big gold retired 2013, the
+    # 2013-2016 lineage died 2016, the revival began 2023.
     if has("world heavyweight"):
-        if has("undisputed") or has("wwe"): return "world-heavyweight-modern"
-        return "world-heavyweight-classic"
+        if has("wcw"): return "world-heavyweight-classic"
+        if has("wwf") and not has("undisputed"): return "wwe-championship"
+        if has("undisputed") or has("wwe"):
+            return {"cutoff": "2020-01-01", "before": "wwe-championship",
+                    "after": "world-heavyweight-modern"}
+        return {"cutoff": "2020-01-01", "before": "world-heavyweight-classic",
+                "after": "world-heavyweight-modern"}
     if has("wcw") and has("world"): return "world-heavyweight-classic"
 
     # The main WWE/F Championship, under all its names.
@@ -118,12 +130,16 @@ def main() -> None:
         if key is None:
             unmapped.append(name)
             continue
-        if key not in have:
-            missing_img.add(key)
+        # A date-split entry references two images; both must exist.
+        keys = [key["before"], key["after"]] if isinstance(key, dict) else [key]
+        absent = [k for k in keys if k not in have]
+        if absent:
+            missing_img.update(absent)
             continue
         mapping[name] = key
 
-    by_key = Counter(mapping.values())
+    by_key = Counter(k for v in mapping.values()
+                     for k in ([v["before"], v["after"]] if isinstance(v, dict) else [v]))
     print(f"titles seen: {len(names)}   mapped: {len(mapping)}   unmapped: {len(unmapped)}")
     print("belt keys used:")
     for k, c in by_key.most_common():

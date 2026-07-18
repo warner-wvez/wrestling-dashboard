@@ -91,9 +91,14 @@ def main() -> None:
                 linked += 1
             else:
                 unlinked += 1
+        belt = belt_for(t["title"])
+        if isinstance(belt, dict):
+            # The board lists ACTIVE titles, so a date-split belt always
+            # resolves to its current design here.
+            belt = belt["after"]
         board.append({
             "title": t["title"],
-            "belt": belt_for(t["title"]),
+            "belt": belt,
             "champions": champs,
             "team_name": t["team_name"],
             "since": t["since"],
