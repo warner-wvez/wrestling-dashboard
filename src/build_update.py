@@ -35,7 +35,7 @@ if str(ROOT) not in sys.path:
 
 from src.export_to_html import (  # noqa: E402
     build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date,
-    inject, write_sharded)
+    inject, split_fused_multiman_sides, strip_phantom_group_labels, write_sharded)
 from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E402
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
@@ -436,6 +436,15 @@ def main():
     aliased = sum(1 for n in name_counts if canon[n] != n)
     print(f"  {len(name_counts)} distinct names -> {len({canon[n] for n in name_counts})} "
           f"canonical wrestlers ({aliased} names merged)", flush=True)
+
+    # Normalize the re-fetched present-day teams before any index reads them, the
+    # same as rebuild_indexes: un-fuse multi-man sides so a triple threat is not a
+    # handicap match, and drop phantom group labels so a stable is not a roster
+    # person. Without this a refresh silently regresses both for every new show.
+    unfused = split_fused_multiman_sides(events)
+    trimmed = strip_phantom_group_labels(events)
+    print(f"  un-fused multi-man sides: {unfused} matches; "
+          f"trimmed phantom group labels: {trimmed} teams", flush=True)
 
     print("Recomputing wrestler index + title reigns...", flush=True)
     title_reigns = build_title_reigns(events)
