@@ -16,7 +16,8 @@
 // v7: the match shards changed (multi-man sides un-fused), and shards are served
 // cache-first, so a returning visitor would otherwise keep the old teams until a
 // background refresh landed on some later load.
-const CACHE = 'wrestling-dashboard-v7';
+// v8: matches-2001 gained the January 1 2001 Raw (#397), previously missing.
+const CACHE = 'wrestling-dashboard-v8';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
