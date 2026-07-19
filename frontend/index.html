@@ -3071,7 +3071,22 @@
     color: var(--ink-dim);
     letter-spacing: 0.02em;
   }
-  .titles-board { max-width: 820px; }
+  .titles-board { max-width: 1120px; }
+  .titles-note {
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-dim);
+    padding: 10px 0 14px; border-bottom: 1px solid var(--border); margin-bottom: 6px;
+  }
+  .titles-group { margin-bottom: 26px; }
+  .titles-group-label {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 400;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim);
+    padding: 14px 0 4px; border-bottom: 2px solid var(--ink); margin-bottom: 2px;
+  }
+  .titles-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    column-gap: 40px;
+  }
+  @media (max-width: 560px) { .titles-grid { grid-template-columns: 1fr; } }
   .title-entry { border-bottom: 1px solid var(--border); }
   .title-row {
     display: flex; align-items: center; gap: 14px; width: 100%;
@@ -3090,7 +3105,39 @@
   .title-row:hover .title-go { color: var(--red); }
 
   /* ---- One belt's timeline page ---------------------------------------- */
-  .title-page { max-width: 720px; }
+  .title-page { max-width: 1080px; }
+  .tp-body { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; align-items: start; }
+  @media (max-width: 880px) { .tp-body { grid-template-columns: 1fr; gap: 24px; } }
+  .tp-chapter {
+    display: flex; align-items: center; gap: 10px;
+    margin: 14px 0 10px; padding: 8px 0 8px 26px;
+    border-top: 2px solid var(--ink); border-bottom: 1px solid var(--border);
+  }
+  .tp-timeline .tp-chapter:first-child { margin-top: 0; }
+  .tp-chapter-belt { width: 44px; height: auto; flex: none; }
+  .tp-chapter-label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink);
+  }
+  .tp-chapter-span { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); margin-left: auto; }
+  .tp-aside { border-top: 2px solid var(--ink); padding-top: 12px; }
+  .tp-aside-label {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 400;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim);
+    margin-bottom: 12px;
+  }
+  .tp-design { margin-bottom: 16px; }
+  .tp-design-img { display: block; width: 100%; max-width: 230px; height: auto; }
+  .tp-design-cap { display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; }
+  .tp-design-name { font-family: var(--font-sans); font-size: 12px; font-weight: 700; }
+  .tp-design-span { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .tp-facts { border-top: 1px solid var(--border); margin-top: 4px; }
+  .tp-fact {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .tp-fact-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); }
+  .tp-fact-value { font-family: var(--font-sans); font-size: 12.5px; font-weight: 700; }
   .tp-back {
     display: inline-block; margin-bottom: 18px; font-family: var(--font-mono);
     font-size: 11px; letter-spacing: 0.08em; color: var(--ink-dim); text-decoration: none;
@@ -3452,7 +3499,7 @@
 <section id="view-titles" class="view" hidden>
   <div class="video-view-header">
     <h2>Titles</h2>
-    <p class="video-sub">Active WWE championships, sorted by how the lineage is rated. The current holder shows with spoilers on.</p>
+    <p class="video-sub">Every championship the corpus carries: world titles first, retired lineages at the bottom. The current holder shows with spoilers on.</p>
   </div>
   <div id="titles-content" class="titles-board"></div>
 </section>
@@ -3802,16 +3849,23 @@
   };
 
   // The Titles view: active championships with their current holder and the
-  // Cagematch prestige rating, loaded once from its own sidecar. The holder is a
-  // spoiler and is written into the DOM only with spoilers on (see renderTitles).
+  // Cagematch prestige rating, plus the retired lineages the corpus carries,
+  // loaded once from one sidecar. The holder is a spoiler and is written into
+  // the DOM only with spoilers on (see renderTitles).
   let TITLES_BOARD = null;
+  let TITLES_RETIRED = null;
   let titlesBoardPromise = null;
   function loadTitlesBoard() {
     if (!titlesBoardPromise) {
       titlesBoardPromise = fetch('shards/titles.json')
         .then(r => (r.ok ? r.json() : []))
         .catch(() => [])
-        .then(list => { TITLES_BOARD = list; return list; });
+        .then(data => {
+          // Legacy shape was a bare active list; current is {active, retired}.
+          TITLES_BOARD = Array.isArray(data) ? data : (data.active || []);
+          TITLES_RETIRED = Array.isArray(data) ? [] : (data.retired || []);
+          return TITLES_BOARD;
+        });
     }
     return titlesBoardPromise;
   }
@@ -3833,11 +3887,52 @@
     return `${TITLE_MONTHS[(m || 1) - 1]} ${y}`;
   }
   const titleSlug = (t) => jsSlugify(t.title);
-  const titleBySlug = (slug) => (TITLES_BOARD || []).find(t => titleSlug(t) === slug) || null;
+  const titleBySlug = (slug) =>
+    (TITLES_BOARD || []).find(t => titleSlug(t) === slug)
+    || (TITLES_RETIRED || []).find(t => titleSlug(t) === slug) || null;
 
-  // The board: every active belt, its image, current holder (spoiler-gated) and
-  // rating. A row now opens the belt's own timeline page rather than dropping a
-  // messy inline list.
+  // The board groups belts by what they mean, not by rating alone: world
+  // titles first, then midcard, tag, NXT, specialty, with the Cagematch rating
+  // kept as a stat on the row. Rating-sorted flat, the NXT Championship
+  // out-ranked both world titles, which reads as noise to a new fan and as
+  // wrong to an old one. Below the active groups, a retired shelf keeps the
+  // lineages the corpus carries (Hardcore, European, big gold) reachable.
+  const TITLE_TIERS = [
+    { key: 'world', label: 'World Championships' },
+    { key: 'midcard', label: 'Intercontinental & United States' },
+    { key: 'tag', label: 'Tag Team' },
+    { key: 'nxt', label: 'NXT' },
+    { key: 'dev', label: 'Specialty & Development' },
+  ];
+  function titleTier(t) {
+    const n = t.title;
+    if (/^WWE NXT/i.test(n)) return 'nxt';
+    if (/evolve|speed|\bID\b/i.test(n)) return 'dev';
+    if (/tag team/i.test(n)) return 'tag';
+    if (/undisputed|world/i.test(n) || n === "WWE Women's Championship") return 'world';
+    return 'midcard';
+  }
+  function titleRowHTML(t, sub) {
+    const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
+    const rating = t.rating != null
+      ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
+      : '';
+    const belt = t.belt
+      ? `<img class="title-belt" src="belts/${esc(t.belt)}.webp" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
+      : `<span class="title-belt"></span>`;
+    return `
+      <div class="title-entry">
+        <a class="title-row" href="#title/${esc(titleSlug(t))}">
+          ${belt}
+          <span class="title-main">
+            <span class="title-name">${esc(t.title)}</span>
+            <span class="title-holder">${sub}</span>
+          </span>
+          ${rating}
+          <span class="title-go" aria-hidden="true">&rsaquo;</span>
+        </a>
+      </div>`;
+  }
   async function renderTitles() {
     const container = el('titles-content');
     if (!container) return;
@@ -3850,33 +3945,42 @@
       container.innerHTML = '<div class="status">No title data available.</div>';
       return;
     }
-    container.innerHTML = board.map(t => {
-      const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
-      const rating = t.rating != null
-        ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
-        : '';
-      const since = t.since
-        ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.days_held ? `, ${t.days_held} days` : ''}</span>`
-        : '';
-      const holder = spoilers
-        ? `held by ${titleChampHTML(t)}${since}`
-        : `<span class="report-hidden">Champion hidden while spoilers are off</span>`;
-      const belt = t.belt
-        ? `<img class="title-belt" src="belts/${esc(t.belt)}.webp" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`
-        : `<span class="title-belt"></span>`;
+    // One spoiler note for the whole board, not one per row: with spoilers off
+    // every row instead shows spoiler-safe lineage facts.
+    const banner = spoilers ? '' : `
+      <div class="titles-note">Champions are hidden while spoilers are off. Rows show each belt's recorded lineage instead.</div>`;
+    const activeRow = (t) => {
+      if (spoilers) {
+        const since = t.since
+          ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.days_held ? `, ${t.days_held} days` : ''}</span>`
+          : '';
+        return titleRowHTML(t, `held by ${titleChampHTML(t)}${since}`);
+      }
+      const reigns = (t.reigns || []).length;
+      const first = reigns ? t.reigns[reigns - 1].start.slice(0, 4) : null;
+      return titleRowHTML(t, first
+        ? `${reigns} reign${reigns === 1 ? '' : 's'} recorded &middot; since ${esc(first)}`
+        : 'Lineage on the belt page');
+    };
+    const groups = TITLE_TIERS.map(tier => {
+      const rows = board.filter(t => titleTier(t) === tier.key);
+      if (!rows.length) return '';
       return `
-        <div class="title-entry">
-          <a class="title-row" href="#title/${esc(titleSlug(t))}">
-            ${belt}
-            <span class="title-main">
-              <span class="title-name">${esc(t.title)}</span>
-              <span class="title-holder">${holder}</span>
-            </span>
-            ${rating}
-            <span class="title-go" aria-hidden="true">&rsaquo;</span>
-          </a>
-        </div>`;
+        <section class="titles-group">
+          <h2 class="titles-group-label">${esc(tier.label)}</h2>
+          <div class="titles-grid">${rows.map(activeRow).join('')}</div>
+        </section>`;
     }).join('');
+    const retired = (TITLES_RETIRED || []).length ? `
+      <section class="titles-group">
+        <h2 class="titles-group-label">Retired &amp; Historic</h2>
+        <div class="titles-grid">${TITLES_RETIRED.map(t => {
+          const span = t.years ? `${esc(t.years[0])}&ndash;${esc(t.years[1])}` : '';
+          const reigns = (t.reigns || []).length;
+          return titleRowHTML(t, `${span} &middot; ${reigns} reign${reigns === 1 ? '' : 's'} recorded`);
+        }).join('')}</div>
+      </section>` : '';
+    container.innerHTML = banner + groups + retired;
   }
 
   // ---- One belt's timeline page ------------------------------------------
@@ -3897,12 +4001,64 @@
         <span class="tp-reign-body"><span class="tp-reign-who">${reignWhoHTML(r)}</span><span class="tp-reign-span">${span}</span></span>
       </div>`;
   }
+  // A lineage that outlived its physical belt gets chaptered by design: reigns
+  // carry the belt key that existed for them (stamped by fill_titles), so the
+  // World Heavyweight page shows Sami Zayn's era under the white strap and
+  // Batista's under big gold, never the reverse.
+  const BELT_DESIGN_LABELS = {
+    'world-heavyweight-classic': 'Big Gold',
+    'world-heavyweight-modern': '2023 revival',
+    'wwe-championship': 'WWE Championship',
+  };
+  function beltEras(reigns) {
+    // One entry per distinct physical belt with its overall first-to-last
+    // span, in order of first appearance. The 2001 InVasion stretch swaps
+    // designs reign to reign; the aside wants "this belt existed 2001-2013",
+    // not every swap.
+    const by = new Map();
+    for (let i = reigns.length - 1; i >= 0; i--) {   // stored newest-first
+      const r = reigns[i];
+      const b = r.belt || null;
+      const to = (r.end || '').slice(0, 4) || 'present';
+      if (!by.has(b)) by.set(b, { belt: b, from: r.start.slice(0, 4), to });
+      else by.get(b).to = to;
+    }
+    return [...by.values()];
+  }
+  function tpChapterHTML(belt, from, to) {
+    const label = BELT_DESIGN_LABELS[belt] || 'The belt';
+    const img = belt ? `<img class="tp-chapter-belt" src="belts/${esc(belt)}.webp" alt="" loading="lazy" onerror="this.remove()">` : '';
+    return `<div class="tp-chapter">${img}<span class="tp-chapter-label">${esc(label)}</span><span class="tp-chapter-span">${esc(from)}&ndash;${esc(to)}</span></div>`;
+  }
+  function timelineWithChapters(rows, cur, chaptered) {
+    // rows render newest-first; a chapter header opens each design's stretch.
+    const out = [];
+    let prevBelt;
+    rows.forEach((r, i) => {
+      const b = r.belt || null;
+      if (chaptered && (i === 0 || b !== prevBelt)) {
+        // Span of THIS consecutive stretch only: the same physical belt can
+        // return later in an interleaved lineage.
+        let j = i;
+        while (j < rows.length && (rows[j].belt || null) === b) j++;
+        const from = rows[j - 1].start.slice(0, 4);
+        const to = (rows[i].end || '').slice(0, 4) || 'present';
+        out.push(tpChapterHTML(b, from, to));
+      }
+      prevBelt = b;
+      out.push(reignTimelineRow(r, r === cur));
+    });
+    return out.join('');
+  }
   function titlePageHTML(t) {
     const reigns = t.reigns || [];
     const watchISO = rosterAnchorISO();
+    const retired = !!t.years;
     const rating = t.rating != null
       ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>` : '';
-    const belt = t.belt ? `<img class="tp-belt" src="belts/${esc(t.belt)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
+    const eras = beltEras(reigns);
+    const chaptered = new Set(eras.map(e => e.belt)).size > 1;
+    const headBelt = t.belt ? `<img class="tp-belt" src="belts/${esc(t.belt)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
 
     let stateLine, timeline;
     if (titleMode === 'time') {
@@ -3913,30 +4069,62 @@
         : `Not yet established as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
       const earliest = reigns[reigns.length - 1];
       timeline = upTo.length
-        ? upTo.map(r => reignTimelineRow(r, r === cur)).join('') +
+        ? timelineWithChapters(upTo, cur, chaptered) +
           (reigns.length > upTo.length ? `<div class="tp-more">${reigns.length - upTo.length} later reign${reigns.length - upTo.length === 1 ? '' : 's'} hidden &mdash; keep watching, or switch to All-time.</div>` : '')
         : `<div class="tp-more">${earliest ? `The corpus's first reign here begins ${reignDate(earliest.start)}. Keep watching, or switch to All-time.` : 'No reign recorded in the corpus.'}</div>`;
     } else {
-      const cur = reigns.find(r => !r.end) || reigns[0];
-      stateLine = cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reign recorded in the corpus.';
-      timeline = reigns.map(r => reignTimelineRow(r, r === cur)).join('') || `<div class="tp-more">No reign in the corpus.</div>`;
+      const cur = retired ? null : (reigns.find(r => !r.end) || reigns[0]);
+      stateLine = retired
+        ? `Retired &middot; last active ${esc(t.years[1])}`
+        : (cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reign recorded in the corpus.');
+      timeline = timelineWithChapters(reigns, cur, chaptered) || `<div class="tp-more">No reign in the corpus.</div>`;
     }
+
+    // Spoiler-safe design panel: belt art by era plus lineage facts. This is
+    // what a fresh visitor sees instead of a blank page, and it fills the
+    // right side on wide screens.
+    const span = reigns.length
+      ? `${reigns[reigns.length - 1].start.slice(0, 4)}&ndash;${retired ? esc(t.years[1]) : ((reigns[0].end || '').slice(0, 4) || 'present')}`
+      : '';
+    const aside = `
+      <aside class="tp-aside">
+        <h2 class="tp-aside-label">The belt${eras.length > 1 ? 's' : ''}</h2>
+        ${eras.map(e => `
+          <div class="tp-design">
+            ${e.belt ? `<img class="tp-design-img" src="belts/${esc(e.belt)}.webp" alt="" loading="lazy" onerror="this.remove()">` : ''}
+            <div class="tp-design-cap">
+              ${BELT_DESIGN_LABELS[e.belt] ? `<span class="tp-design-name">${esc(BELT_DESIGN_LABELS[e.belt])}</span>` : ''}
+              <span class="tp-design-span">${esc(e.from)}&ndash;${esc(e.to)}</span>
+            </div>
+          </div>`).join('')}
+        <div class="tp-facts">
+          <div class="tp-fact"><span class="tp-fact-label">Recorded reigns</span><span class="tp-fact-value">${reigns.length}</span></div>
+          ${span ? `<div class="tp-fact"><span class="tp-fact-label">In the corpus</span><span class="tp-fact-value">${span}</span></div>` : ''}
+          ${retired ? `<div class="tp-fact"><span class="tp-fact-label">Status</span><span class="tp-fact-value">Retired</span></div>` : ''}
+        </div>
+        <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
+      </aside>`;
+
     return `
       <div class="title-page">
         <div class="tp-head">
-          ${belt}
+          ${headBelt}
           <div class="tp-headtext">
             <h1 class="tp-name">${esc(t.title)}</h1>
-            <div class="tp-sub">${rating}<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} in the corpus</span></div>
+            <div class="tp-sub">${rating}<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} in the corpus</span>${retired ? `<span>Retired</span>` : ''}</div>
           </div>
         </div>
-        <div class="title-modes" role="tablist">
-          <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab">As of your date</button>
-          <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab">All-time</button>
+        <div class="tp-body">
+          <div class="tp-main">
+            <div class="title-modes" role="tablist">
+              <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab">As of your date</button>
+              <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab">All-time</button>
+            </div>
+            <div class="tp-state">${stateLine}</div>
+            <div class="tp-timeline">${timeline}</div>
+          </div>
+          ${aside}
         </div>
-        <div class="tp-state">${stateLine}</div>
-        <div class="tp-timeline">${timeline}</div>
-        <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
       </div>`;
   }
   function renderTitlePage(slug) {

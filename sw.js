@@ -20,7 +20,9 @@
 // v9: modern shards changed (phantom group labels un-fused from participants).
 // v10: corpus refresh ingested new shows through July 2026, and the present-day
 // shards re-parsed clean against the source site's rewritten match lines.
-const CACHE = 'wrestling-dashboard-v10';
+// v11: titles.json changed shape ({active, retired}, per-reign belt stamps)
+// and the Mysterio/Veer typo strays merged into their real entries.
+const CACHE = 'wrestling-dashboard-v11';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

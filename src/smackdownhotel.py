@@ -50,6 +50,7 @@ SHARED_SURNAME = {
     "Bella": {"Nikki", "Brie"},
     "Singh": {"Sunil", "Samir"},
     "Americano": {"Bravo", "Rayo", "Bruto", "Julio"},
+    "Mysterio": {"Rey", "Dominik"},
 }
 
 # Team names that themselves contain a separator, written 'Team (a & b)'. The
