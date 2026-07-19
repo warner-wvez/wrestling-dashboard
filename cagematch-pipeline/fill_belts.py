@@ -41,13 +41,24 @@ def norm(title: str) -> str:
 
 def belt_for(title: str):
     """Return a belt key for a title name, or None. Order is specific -> general."""
+    # A winner-takes-all combo line ("Intercontinental Title / WWE Women's
+    # Title") shows the FIRST belt on the line; keyword order otherwise picks
+    # an arbitrary component. Spaced separator only: "24/7" is one belt.
+    if " / " in title:
+        return belt_for(title.split(" / ")[0])
+
     n = norm(title)
     has = lambda *w: all(x in n for x in w)  # noqa: E731
 
     # Promotions whose belts are not in the HAR: a WWE-wrestler's guest defence
-    # of an AAA / TNA / NJPW title should show no belt, not a WWE one. WCW and
-    # ECW stay, since their belts were extracted.
+    # of an AAA / TNA / NJPW title should show no belt, not a WWE one. ECW
+    # stays, and so does WCW's big gold; WCW's US and tag belts were never
+    # extracted, and a 2001 InVasion match must not wear a 2020 WWE design.
     if re.search(r"\b(aaa|tna|iwgp|roh|njpw|impact|gcw|nwa)\b", n):
+        return None
+    if has("wcw"):
+        if has("heavyweight") or (has("world") and not has("tag")):
+            return "world-heavyweight-classic"
         return None
 
     # Distinctive single-name belts first.
@@ -67,17 +78,30 @@ def belt_for(title: str):
         if has("uk") and has("tag"): return "uk-tag"
         if has("women") or has("womens"): return "nxt-womens"
         if has("uk"): return "united-kingdom"
-        if has("tag"): return "tag-team"
+        if has("tag"): return "nxt-tag"
         return "nxt"
 
-    # Women's branch (before generic, same reason).
+    # Women's branch (before generic, same reason). The women's world titles
+    # changed physical belts across eras like the men's did: the classic
+    # 2001-2010 strap, the 2016-2023 brand belts, and the two 2023 designs.
+    # Art in hand covers classic + both 2023 designs; the Raw-lineage red
+    # (2016-2023) maps to the Women's World design that continued it, and the
+    # SmackDown-lineage (2016-2023) to the WWE Women's design.
     if has("women") or has("womens") or has("divas"):
         if has("tag"): return "womens-tag"
         if has("intercontinental"): return "womens-intercontinental"
         if has("speed"): return "womens-speed"
         if has("evolve"): return "womens-evolve"
         if has("divas"): return "divas"
-        return "womens"
+        if has("world") or has("raw"):
+            # "WWF World Women's Title" is the CLASSIC belt in 2001-2009
+            # billing; "Raw Women's" / "Women's World" only exist from 2016 on.
+            return {"cutoff": "2016-01-01", "before": "womens",
+                    "after": "womens-world"}
+        if has("smackdown"): return "womens-modern"
+        if has("united states") or re.search(r"\bus\b", n): return "womens-united-states"
+        return {"cutoff": "2016-01-01", "before": "womens",
+                "after": "womens-modern"}
 
     if has("cruiserweight"): return "cruiserweight"
     if has("speed"): return "speed"
@@ -86,7 +110,16 @@ def belt_for(title: str):
     if has("united states") or re.search(r"\bus\b", n): return "united-states"
     if has("universal"): return "universal"
     if has("united kingdom") or re.search(r"\buk\b", n): return "united-kingdom"
-    if has("tag"): return "tag-team"
+    # Men's tag: the 2024 revival straps have their own art; the 2016-2024
+    # Raw/SmackDown brand belts were never captured, so those stay on the
+    # 2002-2010 design (closest in hand) rather than wearing 2024 art early.
+    if has("tag"):
+        if has("raw") or has("smackdown"): return "tag-team"
+        if has("world"):
+            return {"cutoff": "2020-01-01", "before": "tag-team",
+                    "after": "tag-team-world"}
+        return {"cutoff": "2020-01-01", "before": "tag-team",
+                "after": "tag-team-modern"}
 
     # World Heavyweight, four eras sharing the same words: WCW's big gold; the
     # 2002-2013 big gold; the 2001-2002 WWF/Undisputed and 2013-2016 unified
