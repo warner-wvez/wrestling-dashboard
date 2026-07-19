@@ -32,10 +32,22 @@ DEFAULT_HAR = Path.home() / "Downloads" / "www.wwe.com.har"
 WIDTH = 240   # display is 48-120px; 240 covers retina with headroom
 
 # belt key -> the source file basename (sans the --<hash> wwe.com appends).
+#
+# TRAP: wwe.com file basenames LIE, and the same basename holds different belts
+# on different pages. "WWE_Heavyweight" is their Belt_Retired render of BIG
+# GOLD (shipping it as the WWE Championship put big gold on every Undisputed
+# champion, found 2026-07-18), and "WWE_World_Championship" is the 2023 World
+# Heavyweight belt in one capture but the WOMEN'S UNITED STATES belt in a
+# titlehistory capture. Never map by filename alone: open the page's HTML in
+# the HAR and pair each /titlehistory/<slug> link with its image, then eyeball
+# the decoded image before committing. Do NOT re-run this wholesale against a
+# new HAR without re-verifying every source below against that HAR's pages.
 SOURCE = {
-    "wwe-championship": "WWE_Heavyweight",
+    # Current Undisputed WWE Championship render; wwe.com's own og:image for
+    # /titlehistory/wwe-championship (belts.har capture, 2026-07-18).
+    "wwe-championship": "TITLE_04192023gd_0062_Fin",
     "world-heavyweight-classic": "WCW_Heavyweight",       # the big gold belt, WCW + WWE 2002-2013
-    "world-heavyweight-modern": "WWE_World_Championship",  # the white strap, 2023+
+    "world-heavyweight-modern": "WWE_World_Championship",  # the 2023 revival (www.wwe.com.har capture ONLY, see TRAP)
     "universal": "Universal_Championship_SD",
     "intercontinental": "_Intercontinental_Title_Belts_1920x1080_updated",
     "united-states": "WWE_US_Championship",
