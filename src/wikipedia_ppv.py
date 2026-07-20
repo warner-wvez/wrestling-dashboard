@@ -223,6 +223,17 @@ def parse_stip(stip):
     return mtype, title, special
 
 
+# A parenthetical after a name is not always a member list: champion-vs-champion
+# billing tags each side with a brand or the belt it holds ("[[Nia Jax]]
+# ([[SmackDown]])", "[[Liv Morgan]] ([[Raw]]'s [[Women's World Champion]])").
+# Expanding those would put "SmackDown" on a card as a competitor and, worse,
+# let the group-label pass mistake the wrestler herself for a stable. A paren
+# whose every wikilink is a brand or a Champion(ship) is a descriptor to drop.
+BRAND_OR_TITLE_RE = re.compile(
+    r"^(?:Raw|SmackDown|NXT(?:\s+UK)?|205\s+Live|Main\s+Event|ECW|WCW|WWE|WWF)$"
+    r"|Champion", re.I)
+
+
 def parse_side(side):
     side = strip_refs(side).strip()
     champ = bool(re.search(r"\(c\)", side))
@@ -249,7 +260,11 @@ def parse_side(side):
                     break
             j += 1
         inner_links = links_in(side[tm.end():j])
-        if inner_links:
+        if inner_links and all(BRAND_OR_TITLE_RE.search(x) for x in inner_links):
+            # Brand/belt descriptor: cut the paren so the leading wikilink alone
+            # is the side, and no brand ever becomes a participant.
+            side = side[:tm.end() - 1] + side[j + 1:]
+        elif inner_links:
             team_name = links_in(tm.group(1))[0]
             participants = inner_links
     if not participants:

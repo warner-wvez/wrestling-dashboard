@@ -37,9 +37,25 @@ BASE = "https://www.thesmackdownhotel.com/events-results/wwe/{show}-{year}"
 # 'Edge Mysterio'). Single-token surnames only (the lend takes the partner's
 # last word). Add a surname only after confirming BOTH members appear as bare
 # first names in the corpus.
-SHARED_SURNAME = frozenset({
-    "Uso", "Hardy", "Steiner", "Dudley", "Bella", "Singh",
-})
+# Partners often share a surname written once ('Jimmy & Jey Uso'); the lend in
+# split_members gives it back ONLY to a listed sibling first name. Keying the
+# surname alone fabricated people the moment a mononym tagged with a family
+# member: 2026's champions "Paige & Brie Bella" minted a "Paige Bella" who has
+# never existed. When in doubt, do not lend.
+SHARED_SURNAME = {
+    "Uso": {"Jimmy", "Jey"},
+    "Hardy": {"Matt", "Jeff"},
+    "Steiner": {"Rick", "Scott"},
+    "Dudley": {"Bubba Ray", "Buh Buh Ray", "D-Von", "Spike"},
+    "Bella": {"Nikki", "Brie"},
+    "Singh": {"Sunil", "Samir"},
+    "Americano": {"Bravo", "Rayo", "Bruto", "Julio"},
+}
+
+# Team names that themselves contain a separator, written 'Team (a & b)'. The
+# shape is identical to an ally standing beside a labeled team ("Buddy Murphy
+# & AOP (Akam & Rezar)"), so structure cannot tell them apart; name them.
+COMPOUND_TEAM_KEYS = {"fire & desire", "fire and desire"}
 
 MONTHS = {m: i for i, m in enumerate(
     ["january", "february", "march", "april", "may", "june", "july", "august",
@@ -49,7 +65,8 @@ DATE_RE = re.compile(
     re.I)
 MULTIWAY_RE = re.compile(
     r"triple threat|fatal|four[- ]way|three[- ]way|gauntlet|battle royal|"
-    r"royal rumble|elimination chamber|money in the bank|war ?games|gambit", re.I)
+    r"royal rumble|elimination chamber|money in the bank|war ?games|gambit|"
+    r"turmoil", re.I)
 STIP_KEYS = ("hell in a cell", "tlc", "tables, ladders", "ladder", "tables", "steel cage",
              "cage", "last man standing", "no disqualification", "no dq", "street fight",
              "submission", "iron man", "i quit", "first blood", "casket", "hardcore",
@@ -129,23 +146,26 @@ def split_members(s):
     # is not. When in doubt, do not lend.
     if len(members) == 2:
         for i in range(len(members) - 1):
-            if (members[i] and " " not in members[i]
-                    and members[i + 1].count(" ") == 1
-                    and members[i + 1].split()[-1] in SHARED_SURNAME):
-                members[i] = members[i] + " " + members[i + 1].split()[-1]
+            surname = members[i + 1].split()[-1] if members[i + 1] else ""
+            if members[i] in SHARED_SURNAME.get(surname, ()):
+                members[i] = members[i] + " " + surname
     return members
 
 
 def strip_result_tail(s):
     """Drop trailing result prose the source appends to the last name in a side:
     '... ends in a No Contest', '; X retains the title', 'via Count-out', 'to win
-    the title', 'after interference', and battle-royal elimination narrative
-    ('<entrants>. X eliminates Y'). Keeps the wrestler/team, drops the narrative
-    so it never becomes part of a participant name. The elimination cut is
-    period-anchored and lookahead-guarded so initials like 'C.M. Punk' survive."""
+    the title', 'after interference', battle-royal elimination narrative
+    ('<entrants>. X eliminates Y'), and a 2-out-of-3-falls chronicle
+    ('Bayley [2-1]. 0-1: Bayley pins Valkyria; ...'). Keeps the wrestler/team,
+    drops the narrative so it never becomes part of a participant name. The
+    elimination cut is period-anchored and lookahead-guarded so initials like
+    'C.M. Punk' survive."""
+    s = re.split(r"\.\s*\d+\s*-\s*\d+\s*[:(]", s, maxsplit=1)[0]
     s = re.split(r"\.\s+[^.]*\beliminat", s, maxsplit=1, flags=re.I)[0]
     return re.split(
-        r"\s+ends in\b|;\s|\s+via\s+|\s+to\s+(?:win|retain|capture|become|advance|earn)\b|\s+after\s+",
+        r"\s+ends in\b|;\s|\s+via\s+|\s+to\s+(?:win|retain|capture|become|advance|earn)\b|\s+after\s+"
+        r"|\s+in\s+\d+'|,?\s+who\s+wins?\b",
         s, maxsplit=1, flags=re.I)[0].strip()
 
 
@@ -169,6 +189,19 @@ def split_teams_top(s):
     return [p.strip() for p in out if p.strip()]
 
 
+def _paren_balanced(s):
+    """True when every '(' closes and no ')' appears unopened."""
+    depth = 0
+    for c in s:
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth < 0:
+                return False
+    return depth == 0
+
+
 def parse_side(s):
     s = s.strip()
     s = re.sub(r"\[[^\]]*\]", " ", s)          # drop score annotations like [2-1]
@@ -187,7 +220,16 @@ def parse_side(s):
         s = note.group(1).strip()
     team_name, participants = None, []
     tm = re.match(r"^(.+?)\s*\((.*)\)\s*$", s)            # "Team (a & b)", nesting ok
-    if tm and re.search(r"&|\band\b|,", tm.group(2)):
+    # The label path only applies to ONE labeled team, so the label part must
+    # not itself be an alliance ("Buddy Murphy & AOP (Akam & Rezar)" would
+    # swallow the ally), and the inner group must not be CROSSED, as it is when
+    # two labeled teams share the side ("The Street Profits (A & B) & The
+    # Viking Raiders (C & D)" -> inner "A & B) & The Viking Raiders (C & D").
+    # Either way the depth-0 member split below expands each sub-team correctly.
+    if (tm and re.search(r"&|\band\b|,", tm.group(2))
+            and (tm.group(1).strip().lower() in COMPOUND_TEAM_KEYS
+                 or not re.search(r"\s&\s|\band\b|,", tm.group(1)))
+            and _paren_balanced(tm.group(2))):
         team_name = tm.group(1).strip()
         participants = split_members(tm.group(2))
     else:
@@ -199,7 +241,9 @@ def parse_side(s):
 def parse_descriptor(desc):
     if not desc:
         return None, None, None
-    title = desc if re.search(r"championship|title", desc, re.I) and "contender" not in desc.lower() else None
+    # "conten?der" also catches the source's "#1 Conteder" typo, which would
+    # otherwise put a contendership prize on a card as a belt truly at stake.
+    title = desc if re.search(r"championship|title", desc, re.I) and not re.search(r"conten?der", desc, re.I) else None
     low = desc.lower()
     stip = next((k for k in STIP_KEYS if k in low), None)
     mtype = desc if not title else None
@@ -207,38 +251,94 @@ def parse_descriptor(desc):
 
 
 def parse_match(li_html, order):
+    # The curated pages hang structured extras off a <strong> label (sometimes
+    # plain text on older pages). Each must go BEFORE the descriptor pick and
+    # the blanket tag-strip below: the label's payload otherwise bleeds into a
+    # participant name, and on a li with no descriptor the label's own <strong>
+    # would be mistaken for one.
+    #
+    # "(Special referee: X)": the referee is not a participant.
+    li_html = re.sub(r"\(\s*(?:<strong>\s*)?Special\s+referee\s*:?\s*(?:</strong>\s*)?:?[^)]*\)",
+                     " ", li_html, flags=re.I | re.S)
+    # Trailing "- Survivor(s): X" or ". <strong>Survivor:</strong> X": the
+    # survivors already stand in the winning side. The labelled form cuts on any
+    # preceding punctuation; the plain-text form keeps the dash requirement so a
+    # sentence merely containing the word never triggers it.
+    li_html = re.sub(r"[-–—.]?\s*<strong>\s*Survivors?:\s*</strong>.*$",
+                     " ", li_html, flags=re.I | re.S)
+    li_html = re.sub(r"[-–—]\s*Survivors?:\s.*$", " ", li_html, flags=re.I | re.S)
+
     sm = re.search(r"<strong>(.*?)</strong>", li_html, re.S)
     desc = strip_tags(sm.group(1)).rstrip(":").strip() if sm else None
-    text = strip_tags(re.sub(r"<strong>.*?</strong>", "", li_html, flags=re.S))
+    body = li_html[sm.end():] if sm else li_html
+    # "<desc>: Winner</strong> X. <strong>Participants:</strong> A, B, ...":
+    # the curated battle-royal format. X won over the rest of the field; without
+    # this split the winner recap fuses into the first entrant's name
+    # ("Asuka. Asuka").
+    winner = None
+    pm = re.search(r"<strong>\s*Participants?:\s*</strong>", body, flags=re.I)
+    if pm:
+        # The head may carry its own result prose ("Becky Lynch, who wins the
+        # vacant title."): keep the name, drop the clause.
+        head = re.sub(r"[.\s]+$", "", strip_tags(body[:pm.start()]).strip())
+        head = strip_result_tail(head)
+        if head and len(head) <= 80:
+            winner = head
+        body = body[pm.end():]
+
+    text = strip_tags(re.sub(r"<strong>.*?</strong>", "", body, flags=re.S))
+    # "Damian Priest &/or Dominik Mysterio": both were in the match; read the
+    # slash as a plain '&' so the pair splits instead of fusing into one name.
+    text = re.sub(r"\s*&\s*/\s*or\s+", " & ", text)
     if not text:
         return None
     # Skip scraped page comments that leak in as <li> items ("... &middot; 3
-    # months ago", "pending moderation").
-    if re.search(r"&middot;|\b\d+\s+(?:month|year|week|day)s?\s+ago\b|pending moderation",
+    # months ago", "pending moderation", a bare "Comment" heading).
+    if re.search(r"&middot;|\b\d+\s+(?:month|year|week|day)s?\s+ago\b|pending moderation"
+                 r"|^\s*comments?\s*$",
                  text, re.I):
+        return None
+    # The newest pages also render their whole comment widget as <li>s ("2
+    # Comments", "Login This site", "Facebook", "Newest Best", "1 Up 0 Down").
+    # None of those look like a match: a real line has a result verb, a "vs",
+    # or a <strong> descriptor/Winner block. Require one.
+    if (winner is None and desc is None
+            and not re.search(r"\s(?:defeat[sz]?|defeas|def\.|vs\.?)\s", text, re.I)):
         return None
     title, mtype, stip = parse_descriptor(desc)
     multiway = bool(MULTIWAY_RE.search((desc or "") + " " + text))
 
-    # Match "defeats"/"defeat", the typo "defeatz", and the abbreviation "def.";
-    # any unsplit result otherwise fuses both teams into one fake participant.
-    halves = re.split(r"\s+(?:defeat[sz]?|def\.)\s+", text, maxsplit=1, flags=re.I)
     teams, result_method, finish, conf = [], None, None, "high"
-    if len(halves) == 2:
-        win, lose = halves
-        fm = re.search(r"\s+(?:via|by)\s+(.+)$", lose, re.I)
-        if fm:
-            finish = fm.group(1).strip(); lose = lose[:fm.start()].strip()
-        om = re.search(r"\s+to\s+(?:win|retain|capture|become).*$", lose, re.I)
-        if om:
-            lose = lose[:om.start()].strip()
+    if winner is not None:
+        # Every entrant is their own side, like any multi-way; the winner is
+        # named among the entrants, so keep a single copy as the winning side.
+        entrants = [e for e in split_teams_top(strip_result_tail(text))
+                    if e.lower() != winner.lower()]
         result_method = "defeated"
-        sides = [(win, True, "win")]
-        losers = split_teams_top(lose) if multiway else [lose]
-        sides += [(l, False, "loss") for l in losers]
+        sides = [(winner, True, "win")] + [(e, False, "loss") for e in entrants]
     else:
-        sides = [(s, None, None) for s in re.split(r"\s+vs\.?\s+", text, flags=re.I)]
-        result_method = "no-decision"; conf = "low"
+        # Match "defeats"/"defeat", the typos "defeatz"/"defeas", and the
+        # abbreviation "def."; any unsplit result otherwise fuses both teams
+        # into one fake participant.
+        halves = re.split(r"\s+(?:defeat[sz]?|defeas|def\.)\s+", text, maxsplit=1, flags=re.I)
+        if len(halves) == 2:
+            win, lose = halves
+            fm = re.search(r"\s+(?:via|by)\s+(.+)$", lose, re.I)
+            if fm:
+                finish = fm.group(1).strip(); lose = lose[:fm.start()].strip()
+            om = re.search(r"\s+to\s+(?:win|retain|capture|become).*$", lose, re.I)
+            if om:
+                lose = lose[:om.start()].strip()
+            result_method = "defeated"
+            sides = [(win, True, "win")]
+            # Strip the narrative tail BEFORE splitting teams: an elimination
+            # chronicle (" ... . Fraxiom eliminate X; ...") holds ' and 's that
+            # would otherwise mis-split the field at paren depth 0.
+            losers = split_teams_top(strip_result_tail(lose)) if multiway else [lose]
+            sides += [(l, False, "loss") for l in losers]
+        else:
+            sides = [(s, None, None) for s in re.split(r"\s+vs\.?\s+", text, flags=re.I)]
+            result_method = "no-decision"; conf = "low"
 
     for side, won, outcome in sides:
         t = parse_side(strip_result_tail(side))

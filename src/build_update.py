@@ -40,8 +40,8 @@ from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E40
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
 from src.roster_aliases import (                                        # noqa: E402
-    SNAPSHOT_PATH, build_canon_map, load_roster_snapshot, save_roster_snapshot,
-    scrape_roster)
+    CURATED, SNAPSHOT_PATH, build_canon_map, bundle_derived_aliases,
+    load_roster_snapshot, save_roster_snapshot, scrape_roster)
 
 START_YEAR, END_YEAR = 2020, 2026
 PPV_LIST_PAGE = "List of WWE pay-per-view and livestreaming supercards"
@@ -432,7 +432,16 @@ def main():
             sys.exit(1)
         print(f"  roster scrape failed ({exc}); using committed snapshot "
               f"({len(roster_pairs)} pairs)", flush=True)
-    canon = build_canon_map(name_counts, roster_pairs=roster_pairs)
+    # Keep every merge already shipped in the bundle alive, exactly like
+    # rebuild_indexes: the cagematch identity resolution (Mankind -> Mick Foley,
+    # Adrian Neville -> Neville, 163+ renames) lives only in the shipped
+    # wrestlers_by_name, and rebuilding from roster + CURATED alone silently
+    # un-merges all of it on every refresh.
+    derived = bundle_derived_aliases(data)
+    curated = {**derived, **CURATED}
+    print(f"  curated aliases: {len(CURATED)} + {len(derived)} recovered from bundle",
+          flush=True)
+    canon = build_canon_map(name_counts, roster_pairs=roster_pairs, curated=curated)
     aliased = sum(1 for n in name_counts if canon[n] != n)
     print(f"  {len(name_counts)} distinct names -> {len({canon[n] for n in name_counts})} "
           f"canonical wrestlers ({aliased} names merged)", flush=True)

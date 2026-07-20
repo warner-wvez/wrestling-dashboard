@@ -3791,7 +3791,15 @@
     }
     return beltsPromise;
   }
-  const beltFor = (title) => (BELTS && title && BELTS[title]) || null;
+  // A belts.json value is usually a key; for a title name whose physical belt
+  // changed design while keeping the same name (big gold vs the 2023 white
+  // strap), it is {cutoff, before, after} and the match date picks the design
+  // that actually existed. No date defaults to the current design.
+  const beltFor = (title, dateISO) => {
+    const v = (BELTS && title && BELTS[title]) || null;
+    if (!v || typeof v === 'string') return v;
+    return ((dateISO || '9999') < v.cutoff) ? v.before : v.after;
+  };
 
   // The Titles view: active championships with their current holder and the
   // Cagematch prestige rating, loaded once from its own sidecar. The holder is a
@@ -5779,7 +5787,7 @@
     const teams = m.teams || [];
     if (!teams.length) return `<div class="match-body"><em style="color:var(--ink-faint);">No details</em></div>`;
     const titleAtStake = m.title_at_stake || null;
-    const beltKey = beltFor(titleAtStake);
+    const beltKey = beltFor(titleAtStake, airDate);
 
     // Battle royals / Royal Rumbles cram dozens of names into a single team and
     // collapse the inline two-column rendering into an unreadable wall. Switch

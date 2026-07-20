@@ -29,6 +29,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from src.fandom_scraper import _canonicalize_name  # noqa: E402
 from src.ship_guard import atomic_write_text       # noqa: E402
+from src.wikipedia_ppv import BRAND_OR_TITLE_RE    # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -504,14 +505,17 @@ _WIKILINK_INNER = re.compile(r'\[\[([^\]]*)\]\]')
 def _expanded_members(raw: str):
     """Yield (label, [members]) for every '[[Label]] (m1 and m2 ...)' in the raw,
     with wikilinks normalized so a disambiguation paren does not truncate it.
-    Skips accompaniment '(w/ ...)'."""
+    Skips accompaniment '(w/ ...)' and brand/belt descriptors ("[[Liv Morgan]]
+    ([[Raw]]'s [[Women's World Champion]])"): those parentheticals describe the
+    named wrestler, and treating them as members would brand a real person a
+    group label."""
     norm = _WIKILINK_NORM.sub(lambda m: '[[' + m.group(1) + ']]', raw or '')
     for m in _LABEL_PAREN.finditer(norm):
         inside = m.group(2)
         if re.match(r'^\s*w\s*/|^\s*with\b', inside, re.I):
             continue
         members = [x.strip() for x in _WIKILINK_INNER.findall(inside)]
-        if len(members) >= 2:
+        if len(members) >= 2 and not all(BRAND_OR_TITLE_RE.search(x) for x in members):
             yield m.group(1).strip(), members
 
 
