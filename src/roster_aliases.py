@@ -191,6 +191,16 @@ CURATED = {
     "Bravo": "Bravo Americano",
     # The 2026 curation pass on thesmackdownhotel.com re-typed her surname.
     "Shotzi Blackeart": "Shotzi",
+    # "The Mysterios (Rey & Dominik Mysterio)" tag-era billing and its typo'd
+    # variants. Every bare "Rey" in the corpus is Rey Mysterio (verified: all
+    # 23 appearances are Mysterios tag matches); "Rey Fenix" is never billed
+    # bare. The old corpus's "Rey Misteryo" and "Veer Metalik" were never
+    # masks, they were these typos wearing a lent surname.
+    "Rey": "Rey Mysterio",
+    "Dominick Mysterio": "Dominik Mysterio",
+    "Domink Mysterio": "Dominik Mysterio",
+    "Domink Misteryo": "Dominik Mysterio",
+    "Veer Mahan": "Veer Mahaan",
     # --- scraper prose glued onto a participant name (result-method text) ---
     "Matt Hardy by TKO": "Matt Hardy",
     "Jeff Hardy by TKO": "Jeff Hardy",

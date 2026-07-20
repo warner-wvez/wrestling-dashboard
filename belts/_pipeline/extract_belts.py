@@ -32,16 +32,42 @@ DEFAULT_HAR = Path.home() / "Downloads" / "www.wwe.com.har"
 WIDTH = 240   # display is 48-120px; 240 covers retina with headroom
 
 # belt key -> the source file basename (sans the --<hash> wwe.com appends).
+#
+# TRAP: wwe.com file basenames LIE, and the same basename holds different belts
+# on different pages. "WWE_Heavyweight" is their Belt_Retired render of BIG
+# GOLD (shipping it as the WWE Championship put big gold on every Undisputed
+# champion, found 2026-07-18), and "WWE_World_Championship" is the 2023 World
+# Heavyweight belt in one capture but the WOMEN'S UNITED STATES belt in a
+# titlehistory capture. Never map by filename alone: open the page's HTML in
+# the HAR and pair each /titlehistory/<slug> link with its image, then eyeball
+# the decoded image before committing. Do NOT re-run this wholesale against a
+# new HAR without re-verifying every source below against that HAR's pages.
 SOURCE = {
-    "wwe-championship": "WWE_Heavyweight",
+    # Current Undisputed WWE Championship render; wwe.com's own og:image for
+    # /titlehistory/wwe-championship (belts.har capture, 2026-07-18).
+    "wwe-championship": "TITLE_04192023gd_0062_Fin",
     "world-heavyweight-classic": "WCW_Heavyweight",       # the big gold belt, WCW + WWE 2002-2013
-    "world-heavyweight-modern": "WWE_World_Championship",  # the white strap, 2023+
+    "world-heavyweight-modern": "WWE_World_Championship",  # the 2023 revival (www.wwe.com.har capture ONLY, see TRAP)
     "universal": "Universal_Championship_SD",
     "intercontinental": "_Intercontinental_Title_Belts_1920x1080_updated",
     "united-states": "WWE_US_Championship",
     "tag-team": "WWE_World_Tag_Team_Championship",
     "divas": "Divas_Championship",
     "womens": "Womens_Champion",
+    # 2023 women's world-title designs, from belts.har (titlehistory capture,
+    # 2026-07-18): the 04/21/2023 shoot is the Women's World Championship, the
+    # 04/19/2023 _0036 shot the WWE Women's Championship.
+    "womens-world": "TITLE_04212023gd_0006_Fin",
+    "womens-modern": "TITLE_04192023gd_0036_Fin",
+    # In belts.har the basename "WWE_World_Championship" is the WOMEN'S UNITED
+    # STATES belt; in www.wwe.com.har the same basename is the 2023 World
+    # Heavyweight belt (world-heavyweight-modern above). One basename, two
+    # belts: these two keys must never be extracted from the same HAR.
+    "womens-united-states": "WWE_World_Championship",
+    # 2024 tag revival straps, same capture: 03282024 is the World Tag Team
+    # belt (raw-tag-team page), 03212024 the WWE Tag Team belt.
+    "tag-team-world": "TITLES_03282024gd_0349_cropped_Fin_revisedA",
+    "tag-team-modern": "TITLES_03212024gd_0025_crop_Fin_%282%29",
     "womens-tag": "Womens_Tag_Team_Championship1",
     "womens-intercontinental": "WWE_Womens_IC_Champion",
     "womens-speed": "WWE_Womens_Speed_Championship",
@@ -61,6 +87,7 @@ SOURCE = {
     "nxt-womens": "NXT_Womens_Champion",
     "nxt-north-american": "NXT_North_American_Championship",
     "nxt-womens-north-american": "NXTWomansNorthAmericanTitle_06042024ak_0246_cropped",
+    "nxt-tag": "NXT_Tag_Team",
     "nxt-cruiserweight": "NXT_Cruiserweight_Championship",
     "nxt-uk-womens": "NXTUK_womens_Championship",
 }

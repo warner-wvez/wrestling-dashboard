@@ -62,12 +62,24 @@ def main() -> None:
         n = re.sub(r"\b(wwf|wwe|undisputed)\b", " ", belt_norm(name))
         return re.sub(r"\s+", " ", n).strip()
 
+    # Each reign is stamped with the belt DESIGN that existed for it, resolved
+    # from its source corpus name plus its start date (a date-split belt_for
+    # entry picks a side). Batista's reign under "World Heavyweight Title" gets
+    # big gold; CM Punk's 2026 reign under the same words gets the white strap.
+    # The frontend chapters a lineage's timeline on these stamps.
+    def belt_key_for(tkey, start):
+        b = belt_for(tkey)
+        if isinstance(b, dict):
+            return b["before"] if (start or "9999") < b["cutoff"] else b["after"]
+        return b
+
     reigns_by_lineage = defaultdict(list)
     for tkey, reigns in bundle["title_reigns"].items():
-        reigns_by_lineage[lineage_key(tkey)].extend(reigns)
-    for lk, reigns in reigns_by_lineage.items():
+        for r in reigns:
+            reigns_by_lineage[lineage_key(tkey)].append((tkey, r))
+    for lk, tagged in reigns_by_lineage.items():
         seen, merged = set(), []
-        for r in sorted(reigns, key=lambda r: r["start"], reverse=True):
+        for tkey, r in sorted(tagged, key=lambda x: x[1]["start"], reverse=True):
             sig = (r["start"], tuple(r.get("champion_names") or []))
             if sig in seen:                          # same reign under two title names
                 continue
@@ -76,8 +88,43 @@ def main() -> None:
                 "champions": [{"name": n, "slug": slug_for(n)} for n in (r.get("champion_names") or [])],
                 "start": r["start"],
                 "end": r.get("end"),
+                "belt": belt_key_for(tkey, r["start"]),
             })
         reigns_by_lineage[lk] = merged
+
+    # Retired lineages get their own shelf: everything the corpus actually saw
+    # (Hardcore, European, the Divas belt) instead of vanishing the moment WWE
+    # retired the strap. An entry qualifies when the corpus carries at least
+    # one reign for it. A retired page whose lineage fuses with an ACTIVE
+    # title (Cagematch keeps big gold and the 2023 revival as separate pages,
+    # the corpus derives one lineage) is skipped: its reigns already live on
+    # the active title's page, chaptered by belt design.
+    active_keys = {lineage_key(t["title"]) for t in titles if t["champions"]}
+    retired, seen_retired = [], set()
+    for t in titles:
+        if t["champions"]:
+            continue
+        lk = lineage_key(t["title"])
+        if lk in active_keys or lk in seen_retired:
+            continue
+        reigns = reigns_by_lineage.get(lk, [])
+        if not reigns:
+            continue
+        seen_retired.add(lk)
+        last_end = reigns[0].get("end") or reigns[0]["start"]
+        belt = belt_for(t["title"])
+        if isinstance(belt, dict):
+            belt = belt["before"] if last_end < belt["cutoff"] else belt["after"]
+        retired.append({
+            "title": t["title"],
+            "belt": belt,
+            "years": [reigns[-1]["start"][:4], last_end[:4]],
+            "rating": t["rating"],
+            "votes": t["votes"],
+            "url": TITLE_URL.format(t["cagematch_title_nr"]),
+            "reigns": reigns,
+        })
+    retired.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
 
     board, linked, unlinked = [], 0, 0
     for t in titles:
@@ -111,18 +158,22 @@ def main() -> None:
 
     board.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
 
-    print(f"active titles on the board: {len(board)}")
+    print(f"active titles on the board: {len(board)}   retired on the shelf: {len(retired)}")
     print(f"champion links: {linked} resolved, {unlinked} plain text (NXT/EVOLVE/ID off-corpus)")
     print("top belts:")
     for t in board[:8]:
         who = ", ".join(c["name"] for c in t["champions"])
         print(f"  {t['rating']}  {t['title'][:38]:38} {who}")
+    print("retired shelf:")
+    for t in retired[:10]:
+        print(f"  {t['rating']}  {t['title'][:38]:38} {t['years'][0]}-{t['years'][1]}  {len(t['reigns'])} reigns")
 
     if dry:
         print("\n--dry-run: nothing written")
         return
     atomic_write_text(ROOT / "shards" / "titles.json",
-                      json.dumps(board, ensure_ascii=False, separators=(",", ":")))
+                      json.dumps({"active": board, "retired": retired},
+                                 ensure_ascii=False, separators=(",", ":")))
     print("\nwrote shards/titles.json")
 
 
