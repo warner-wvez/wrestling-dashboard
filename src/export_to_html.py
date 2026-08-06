@@ -372,6 +372,28 @@ _CONTENDERSHIP_RE = re.compile(r'\bcontender(?:ship|s)?\b', re.I)
 _TRAILING_CONTENDER_RE = re.compile(
     r'^\s*(?:#\s*\d+\s*|no\.?\s*\d+\s*|number\s+one\s+)?contender(?:ship|s)?\b', re.I)
 
+# A bracket stage that cannot move a belt, read off the MATCH TYPE. A vacant
+# belt is legitimately decided by a tournament, so the FINAL is deliberately
+# absent here: only the rounds leading to it are filtered. Without this the
+# revived United States Title lineage was seeded by "Chris Benoit defeats Rhyno"
+# in a first-round match (Eddie Guerrero won that tournament), the SmackDown Tag
+# Team Titles by a first-round match (Heath Slater and Rhyno won them), and the
+# Women's Tag Team Titles by an Elimination Chamber qualifier (Sasha Banks and
+# Bayley won them).
+#
+# Spelled out rather than reusing _TITLE_FILTER_PATTERNS' 'Qualif', which
+# also matches "No Disqualification". Both alternatives here need a word
+# boundary that "Disqualification" cannot provide.
+_NON_FINAL_STAGE_RE = re.compile(
+    r'\b(?:first\s+round|round\s*(?:of\s+)?\d+|quarter\s*-?\s*finals?|'
+    r'semi\s*-?\s*finals?|qualifying|qualifiers?)\b', re.I)
+# A best-of-N series is ONE title match played over several nights. The belt
+# moves when the series is decided, not on each night, but every night carries
+# the belt in its match type plus the running score ("John Cena [1] defeats
+# Booker T (c) [0]"), which read as four title changes in seven weeks. Only the
+# decider carries the source's TITLE CHANGE marker, so that is what we require.
+_SERIES_MATCH_RE = re.compile(r'\bbest\s+of\s+\w+\s+series\b', re.I)
+
 # Scrapers store the belt name plus whatever decorated the line: a quoted
 # stipulation blurb, the match type ("... Championship Steel Cage Match"), or
 # both. Everything from a quote pair is stipulation, never belt.
@@ -681,6 +703,53 @@ def _close_reign_at_retirement(reigns: list[dict], matches: list[dict],
         return                                   # still being defended: genuinely current
     final['end'] = last_seen['air_date']
     final['end_event_id'] = last_seen['event_id']
+    final['closed_at_retirement'] = True
+
+
+def _is_lineage_era_break(prev: dict, nxt: dict, holders: list[str], canon_fn) -> bool:
+    """Did the belt go quiet long enough between these two title matches to have
+    been retired, and then revived under the same name?
+
+    _close_reign_at_retirement handles a belt that goes quiet and STAYS quiet,
+    because only the corpus's end can judge that one. It cannot help when WWE
+    brings the name back: the revival's matches keep the lineage live, so the
+    dead belt's last champion never stops holding it and the walk fuses the two
+    eras into one reign spanning the gap. That is how the Hart Dynasty held the
+    World Tag Team Titles for fourteen years (retired 2010, name revived 2024),
+    Randy Orton held Big Gold for nine and a half (unified away at TLC 2013,
+    name revived 2023), and Hornswoggle held the Cruiserweight Title for nine
+    (retired 2007, revived by the 2016 Cruiserweight Classic).
+
+    Same threshold and same reasoning as _close_reign_at_retirement: the gap
+    between the quietest live belt and the noisiest dead one is where the data
+    separates itself, so a belt unseen for longer than that is treated as having
+    been retired and something new wearing its name.
+
+    A long silence alone is not enough, because the corpus's coverage is uneven
+    and a live belt can simply go unrecorded. Pete Dunne held the United Kingdom
+    Championship for 685 straight days with a twenty-month hole in the middle of
+    it, because almost no NXT UK is carried. What separates a hole from a
+    retirement is who walks in on the far side: the same champion means the belt
+    plainly never died, so `holders` (the reign in progress) vetoes the break.
+    Nobody, or somebody new, means the lineage really did restart.
+    """
+    gap = (datetime.fromisoformat(nxt['air_date'])
+           - datetime.fromisoformat(prev['air_date'])).days
+    if gap <= _TITLE_UNSEEN_GRACE_DAYS:
+        return False
+    entering = [p for t in nxt.get('teams') or []
+                if t.get('was_champion_entering')
+                for p in t.get('participants') or [] if p]
+    return not (holders and _champions_overlap(holders, entering, canon_fn))
+
+
+def _as_canon_fn(canon):
+    """Accept a dict, a callable, or None; always return a callable."""
+    if canon is None:
+        return lambda n: n
+    if callable(canon):
+        return canon
+    return lambda n: canon.get(n, n)
 
 
 def _looks_like_a_title_match(match: dict) -> bool:
@@ -802,8 +871,29 @@ def _title_lineage_key(title: str) -> str:
                              re.sub(r'\b(wwf|wwe|undisputed)\b', ' ', n)).strip()
 
 
-def _same_champions(a: list[str], b: list[str]) -> bool:
-    return set(a) == set(b)
+def _same_champions(a: list[str], b: list[str], canon=None) -> bool:
+    """Is this the same champion, however the source spelled them this week?
+
+    The corpus flips between spellings of one wrestler inside a single reign,
+    and a raw set comparison reads every flip as a title change. Seth Rollins
+    won the revived World Heavyweight Championship in May 2023 and held it to
+    WrestleMania XL, but alternating 'Seth Rollins' and 'Seth "Freakin"
+    Rollins' cut that into four reigns. Big Show's 2012 reign became three on
+    the word "The". The Dudleys lost and regained the tag titles in February
+    2001 by being respelled from Buh Buh Ray to Bubba Ray, and La Resistance
+    did the same in 2004 on Rob versus Robert Conway.
+
+    Compared canonically, stored verbatim: a reign keeps the name it was won
+    under, so King Booker's World Heavyweight reign still reads King Booker
+    rather than being flattened to Booker T.
+    """
+    fn = _as_canon_fn(canon)
+    return {fn(n) for n in a} == {fn(n) for n in b}
+
+
+def _champions_overlap(a: list[str], b: list[str], canon=None) -> bool:
+    fn = _as_canon_fn(canon)
+    return bool({fn(n) for n in a} & {fn(n) for n in b})
 
 
 def _pick_singles_champion(participants: list, appearances: Counter, incumbents) -> list:
@@ -827,8 +917,13 @@ def _pick_singles_champion(participants: list, appearances: Counter, incumbents)
     return [min(parts, key=lambda p: (-appearances.get(p, 0), 0 if p in inc else 1, p))]
 
 
-def build_title_reigns(events: dict) -> dict[str, list[dict]]:
+def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
     """Walk all title matches in chronological order and build per-title reign timelines.
+
+    `canon` maps a source spelling to that wrestler's canonical name (a dict or
+    a callable; the same map build_wrestlers_index takes). It is used only to
+    decide whether the champion CHANGED, never to rewrite what is stored, so a
+    reign keeps the ring name it was won under. See _same_champions.
 
     Reign shape:
         champion_names: list[str] (singles = 1 entry, tag = 2+)
@@ -839,6 +934,9 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         start_event_id: int
         end_event_id: int | None
         pre_corpus: bool
+        closed_at_retirement: bool, present only when set. The reign was ended
+               by the belt going quiet rather than by losing it, so the chain is
+               allowed to have a gap after it (see _split_lineage_eras).
 
     Limitations:
       * No vacancy detection: belts are assumed continuously held until the next
@@ -849,6 +947,7 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         marked was_champion_entering=True, attribution falls out of "winner takes
         all listed belts" via per-component reign-chain comparison.
     """
+    canon_fn = _as_canon_fn(canon)
     timelines: dict[str, list[dict]] = defaultdict(list)
     # Per lineage, tally each raw spelling (count, latest air_date) so the merged
     # chain can be named after its most current spelling: WWF/WWE/bare
@@ -869,7 +968,17 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         if eid in CLIP_SHOWS:      # a replayed title change is not a title change
             continue
         for match in ev.get('matches', []):
-            for title in _get_component_titles(match.get('title_at_stake'), match):
+            components = _get_component_titles(match.get('title_at_stake'), match)
+            match_type = match.get('match_type') or ''
+            raw = match.get('raw_description') or ''
+            # A bracket round or a mid-series night never moves a belt. Dropped
+            # here rather than in _get_component_titles so the match still shows
+            # on the event page carrying the belt it was fought under.
+            if _NON_FINAL_STAGE_RE.search(match_type):
+                components = []
+            elif _SERIES_MATCH_RE.search(match_type) and 'TITLE CHANGE' not in raw.upper():
+                components = []
+            for title in components:
                 lk = _title_lineage_key(title)
                 timelines[lk].append({
                     'air_date': air_date,
@@ -877,7 +986,13 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                     'match_order': match.get('match_order') or 0,
                     'teams': match.get('teams', []),
                     # carried for the stand-in check when reconciling (c) markers
-                    'raw_description': match.get('raw_description') or '',
+                    'raw_description': raw,
+                    # Did the source say a belt changed hands, and can that claim
+                    # be pinned to THIS belt? On a composite stake it cannot: the
+                    # marker may belong to the other belt on the line.
+                    'title_change': 'TITLE CHANGE' in raw.upper(),
+                    'composite_stake': len(components) > 1,
+                    'component_count': len(components),
                 })
                 st = spelling_stats[lk][title]
                 st[0] += 1
@@ -915,10 +1030,25 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
         # one, so a multi-person winning team there needs disambiguating.
         is_singles = 'Tag' not in canon_name[lk]
         appearances = lineage_appearances[lk]
+        prev: dict | None = None
         for m in matches:
             teams = m['teams']
             champ_team = next((t for t in teams if t.get('was_champion_entering')), None)
             winner = next((t for t in teams if t.get('was_winner')), None)
+
+            # A revived name is a different belt. End the dead belt's last reign
+            # at its own final match and start the revival's chain fresh, rather
+            # than letting a retired champion hold the new belt across the gap.
+            if prev is not None and _is_lineage_era_break(
+                    prev, m, current['champion_names'] if current else [], canon_fn):
+                if current is not None:
+                    current['end'] = prev['air_date']
+                    current['end_event_id'] = prev['event_id']
+                    current['closed_at_retirement'] = True
+                    reigns.append(current)
+                    current = None
+                first = True
+            prev = m
 
             if first:
                 if champ_team and champ_team.get('participants'):
@@ -978,7 +1108,8 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
             stand_in = '[replacement for' in (m.get('raw_description') or '').lower()
             if current is not None and champ_team is not None and not multi_champ and not stand_in:
                 entering = [p for p in (champ_team.get('participants') or []) if p]
-                if entering and not (set(current['champion_names']) & set(entering)):
+                if entering and not _champions_overlap(
+                        current['champion_names'], entering, canon_fn):
                     named = _pick_singles_champion(entering, appearances, None) \
                         if is_singles else entering
                     current['end'] = m['air_date']
@@ -995,10 +1126,56 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
 
             if winner is None or not winner.get('participants'):
                 continue
+            winner_names = [p for p in winner.get('participants') or [] if p]
             # Champion retains on a challenger's DQ/countout win: no reign change.
-            if (winner.get('match_outcome') in ('dq-win', 'countout-win')
-                    and not winner.get('was_champion_entering')):
-                continue
+            #
+            # Asked of THIS belt's tracked champion, not of the match-level (c)
+            # flag, because on a composite stake the flag can be true for the
+            # other belt's champion. The night after WrestleMania 35 reads "Kofi
+            # Kingston (c) [WWE] defeats Seth Rollins (c) [Universal] by DQ":
+            # Kofi is a champion, so the flag said retain, and the Universal
+            # chain crowned him. Kofi Kingston has never been Universal Champion.
+            if winner.get('match_outcome') in ('dq-win', 'countout-win'):
+                holds_this_belt = (
+                    _champions_overlap(current['champion_names'], winner_names, canon_fn)
+                    if current is not None
+                    else bool(winner.get('was_champion_entering')))
+                if not holds_this_belt:
+                    continue
+            # A singles belt is held by one wrestler and does not change hands on
+            # a multi-man win. The source has fused a held-up finish, a handicap
+            # match or a tornado tag into one winning side, and
+            # _pick_singles_champion would pick one of them off appearance counts
+            # and crown him. Raw 2004-11-29 reads "Chris Benoit and Edge defeat
+            # Triple H (c)": both men pinned Triple H at once, so the title was
+            # held up and he regained it in the Elimination Chamber, but the walk
+            # gave Edge a two-month World Heavyweight reign two and a half years
+            # before his first.
+            #
+            # An explicit TITLE CHANGE marker overrides, but only when it can be
+            # pinned to this belt. On a composite stake it cannot: Raw 2006-05-15
+            # is a three-on-two handicap tagged "WWE Heavyweight Title /
+            # Intercontinental Title" whose marker belongs to the
+            # Intercontinental half, and reading it as evidence for the other
+            # half took the WWE Championship off John Cena and gave it to
+            # Triple H for a month.
+            # The exception is a clean winners-take-all swap: as many winners as
+            # there are belts on the line, and as many champions defending. Then
+            # the marker maps one belt to one winner and nothing is ambiguous.
+            # SummerSlam 2008's mixed tag is the shape: Beth Phoenix and Santino
+            # Marella beat Kofi Kingston and Mickie James and each left with one
+            # of the two belts. The 2006 handicap match fails it on the count,
+            # three winners against two belts, which is exactly why its marker
+            # could not be trusted.
+            if is_singles and len(winner_names) > 1:
+                n_belts = m.get('component_count') or 1
+                defending = sum(1 for t in teams if t.get('was_champion_entering')
+                                for p in (t.get('participants') or []) if p)
+                clean_swap = (m.get('title_change') and m.get('composite_stake')
+                              and len(winner_names) == n_belts == defending)
+                unambiguous = m.get('title_change') and not m.get('composite_stake')
+                if not (unambiguous or clean_swap):
+                    continue
             # Mid-chain match with no champion in it: a mislabeled contender
             # match (scrapers sometimes store the belt a match is qualifying
             # FOR as title_at_stake). The belt cannot change hands in a match
@@ -1012,7 +1189,8 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                 new_champs = _pick_singles_champion(
                     new_champs, appearances,
                     current['champion_names'] if current else None)
-            if current is None or not _same_champions(current['champion_names'], new_champs):
+            if current is None or not _same_champions(
+                    current['champion_names'], new_champs, canon_fn):
                 if current is not None:
                     current['end'] = m['air_date']
                     current['end_event_id'] = m['event_id']
@@ -1043,7 +1221,10 @@ def build_title_reigns(events: dict) -> dict[str, list[dict]]:
                 raise AssertionError(
                     f"title_reigns: reigns out of order for {title!r} at indices {i},{i+1}: {r} then {n}"
                 )
-            if r['end'] != n['start']:
+            # A retired belt whose name was later revived leaves a real gap in
+            # the chain: nobody held it in between, because it did not exist.
+            # Every other break is a bug.
+            if r['end'] != n['start'] and not r.get('closed_at_retirement'):
                 raise AssertionError(
                     f"title_reigns: reign chain broken for {title!r} at indices {i},{i+1}: "
                     f"end={r['end']} != next.start={n['start']}"
