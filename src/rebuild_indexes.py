@@ -81,7 +81,9 @@ def main():
 
     print("Recomputing wrestler index + title reigns...", flush=True)
     old_wrestlers = len(data.get("wrestlers") or {})
-    title_reigns = build_title_reigns(events)
+    # The reign walk takes the alias map too, so a champion the source respells
+    # mid-reign is not read as a title change (see _same_champions).
+    title_reigns = build_title_reigns(events, canon=lambda n: canon.get(n, n))
     wrestlers, wrestlers_by_name = build_wrestlers_index(
         events, canon=lambda n: canon.get(n, n), title_reigns=title_reigns)
     wrbd = build_wrestler_reigns_by_date(title_reigns)

@@ -24,7 +24,14 @@
 // the Mysterio/Veer typo strays merged into their real entries, and
 // belts/wwe-championship.webp was replaced (it was big gold, not the WWE
 // Championship, so every Undisputed champion wore the wrong belt).
-const CACHE = 'wrestling-dashboard-v11';
+// v12: the reign walk gained three guards, so title_reigns and titles.json both
+// changed. Fabricated reigns are gone (Triple H's 2006 WWE Championship, Edge's
+// 2004 World Heavyweight, Kofi Kingston's Universal, five wrong inaugural
+// champions), champions respelled mid-reign no longer read as title changes, and
+// a retired belt's last champion no longer holds its revived namesake for years.
+// Shards are served cache-first, so without this bump a returning visitor keeps
+// the old champions board indefinitely.
+const CACHE = 'wrestling-dashboard-v12';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
