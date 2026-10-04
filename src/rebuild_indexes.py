@@ -51,7 +51,12 @@ def resolve_roster_pairs():
 
 def main():
     print("Loading existing full bundle...", flush=True)
-    data = load_existing()
+    rebuild(load_existing())
+
+
+def rebuild(data):
+    """Recompute every derived index from a full bundle and write all artifacts.
+    Split out of main so a migration can patch events and then rebuild."""
     events = data["events"]
 
     name_counts = collections.Counter(
