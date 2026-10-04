@@ -72,6 +72,10 @@
 "Bianca Belair"
 ],
 [
+"big-cass",
+"Big Cass"
+],
+[
 "big-e",
 "Big E"
 ],
@@ -98,10 +102,6 @@
 [
 "brie-bella",
 "Brie Bella"
-],
-[
-"brock-lesnar",
-"Brock Lesnar"
 ],
 [
 "bron-breakker-bronson-rechsteiner",
@@ -174,6 +174,10 @@
 [
 "raul-mendoza",
 "Cruz Del Toro"
+],
+[
+"santana",
+"Cruz Montana"
 ],
 [
 "cutler-james",
@@ -258,6 +262,10 @@
 [
 "walter",
 "Gunther"
+],
+[
+"haku",
+"Haku"
 ],
 [
 "hank-walker",
@@ -472,10 +480,6 @@
 "Michin"
 ],
 [
-"mickie-james",
-"Mickie James"
-],
-[
 "mike-rome",
 "Mike Rome"
 ],
@@ -688,6 +692,10 @@
 "Shinsuke Nakamura"
 ],
 [
+"dani-sekelsky",
+"Skylar Raye"
+],
+[
 "sol-ruca",
 "Sol Ruca"
 ],
@@ -706,10 +714,6 @@
 [
 "tama-tonga",
 "Tama Tonga"
-],
-[
-"tamina",
-"Tamina"
 ],
 [
 "tank-ledger",
@@ -808,12 +812,12 @@
 "Becky Lynch"
 ],
 [
-"tyler-bate",
-"Bravo Americano"
+"big-cass",
+"Big Cass"
 ],
 [
-"brock-lesnar",
-"Brock Lesnar"
+"tyler-bate",
+"Bravo Americano"
 ],
 [
 "bron-breakker-bronson-rechsteiner",
@@ -856,20 +860,8 @@
 "El Grande Americano"
 ],
 [
-"erik",
-"Erik"
-],
-[
 "ethan-page",
 "Ethan Page"
-],
-[
-"grayson-waller",
-"Grayson Waller"
-],
-[
-"ivar-hanson",
-"Ivar"
 ],
 [
 "ivy-nile",
@@ -946,10 +938,6 @@
 [
 "naomi",
 "Naomi"
-],
-[
-"natalya",
-"Nattie"
 ],
 [
 "oba-femi",
@@ -1040,6 +1028,10 @@
 "Blake Monroe"
 ],
 [
+"brie-bella",
+"Brie Bella"
+],
+[
 "candice-lerae",
 "Candice LeRae"
 ],
@@ -1080,6 +1072,10 @@
 "Elton Prince"
 ],
 [
+"erik",
+"Erik"
+],
+[
 "fallon-henley-tesha-price",
 "Fallon Henley"
 ],
@@ -1096,8 +1092,16 @@
 "Gunther"
 ],
 [
+"haku",
+"Haku"
+],
+[
 "ilja-dragunov",
 "Ilja Dragunov"
+],
+[
+"ivar-hanson",
+"Ivar"
 ],
 [
 "jacy-jayne",
@@ -1170,6 +1174,14 @@
 [
 "nick-aldis-magnus",
 "Nick Aldis"
+],
+[
+"nikki-bella",
+"Nikki Bella"
+],
+[
+"paige",
+"Paige"
 ],
 [
 "piper-niven",
@@ -1268,6 +1280,10 @@
 "Charlie Dempsey"
 ],
 [
+"santana",
+"Cruz Montana"
+],
+[
 "cutler-james",
 "Cutler James"
 ],
@@ -1290,6 +1306,10 @@
 [
 "emily-agard",
 "Emily Agard"
+],
+[
+"grayson-waller",
+"Grayson Waller"
 ],
 [
 "hank-walker",
@@ -1438,6 +1458,10 @@
 [
 "shiloh-hill",
 "Shiloh Hill"
+],
+[
+"dani-sekelsky",
+"Skylar Raye"
 ],
 [
 "tank-ledger",
@@ -1592,6 +1616,10 @@
 "Adriana Rizzo"
 ],
 [
+"meghan-walker",
+"Alix Brooks"
+],
+[
 "airica-demia",
 "Anya Rune"
 ],
@@ -1656,24 +1684,12 @@
 "Jax Presley"
 ],
 [
-"cyrus",
-"Kai Kavari"
-],
-[
 "kale-dixon",
 "Kale Dixon"
 ],
 [
 "anthony-luke",
 "Kam Hendrix"
-],
-[
-"karmen-petrovic",
-"Karmen Petrovic"
-],
-[
-"meghan-walker",
-"Kylee Quinn"
 ],
 [
 "layla-diggs",
@@ -1736,6 +1752,10 @@
 "Sloane Jacobs"
 ],
 [
+"thea-hail",
+"Thea Hail"
+],
+[
 "timothy-thatcher",
 "Timothy Thatcher"
 ],
@@ -1748,12 +1768,8 @@
 "Vanta The Unknown"
 ],
 [
-"fallyn-grey",
-"Veronica Haven"
-],
-[
 "aaron-fara",
-"Viktor Zakov"
+"Viktor Zanov"
 ],
 [
 "karen-q",
@@ -1774,6 +1790,10 @@
 [
 "ahmed-essam",
 "Ahmed Essam"
+],
+[
+"meghan-walker",
+"Alix Brooks"
 ],
 [
 "alyssa-daniele",
@@ -1824,10 +1844,6 @@
 "Jacari Ball"
 ],
 [
-"meghan-walker",
-"Kylee Quinn"
-],
-[
 "marie-malenko",
 "Lacey Simon"
 ],
@@ -1856,10 +1872,6 @@
 "Nicholas Panicali"
 ],
 [
-"nikki-blackheart",
-"Reina Volc\u00e1n"
-],
-[
 "sam-holloway",
 "Sam Holloway"
 ],
@@ -1884,12 +1896,8 @@
 "Vanta The Unknown"
 ],
 [
-"fallyn-grey",
-"Veronica Haven"
-],
-[
 "aaron-fara",
-"Viktor Zakov"
+"Viktor Zanov"
 ],
 [
 "yayne-harrison",
@@ -1940,6 +1948,10 @@
 "Berto"
 ],
 [
+"big-cass",
+"Big Cass"
+],
+[
 "big-e",
 "Big E"
 ],
@@ -1958,10 +1970,6 @@
 [
 "tyler-bate",
 "Bravo Americano"
-],
-[
-"brock-lesnar",
-"Brock Lesnar"
 ],
 [
 "bron-breakker-bronson-rechsteiner",
@@ -2018,6 +2026,10 @@
 [
 "raul-mendoza",
 "Cruz Del Toro"
+],
+[
+"santana",
+"Cruz Montana"
 ],
 [
 "cutler-james",
@@ -2090,6 +2102,10 @@
 [
 "walter",
 "Gunther"
+],
+[
+"haku",
+"Haku"
 ],
 [
 "hank-walker",
@@ -2588,10 +2604,6 @@
 "Michin"
 ],
 [
-"mickie-james",
-"Mickie James"
-],
-[
 "bayley-humphrey",
 "Myka Lockwood"
 ],
@@ -2644,16 +2656,16 @@
 "Sarah Schreiber"
 ],
 [
+"dani-sekelsky",
+"Skylar Raye"
+],
+[
 "sol-ruca",
 "Sol Ruca"
 ],
 [
 "stephanie-vaquer",
 "Stephanie Vaquer"
-],
-[
-"tamina",
-"Tamina"
 ],
 [
 "tatum-paxley",
@@ -2800,6 +2812,14 @@
 "Nikkita Lyons"
 ],
 [
+"dominik-mysterio",
+"Dominik Mysterio"
+],
+[
+"jordan-omogbehin",
+"Omos"
+],
+[
 "fallon-henley-tesha-price",
 "Fallon Henley"
 ],
@@ -2928,10 +2948,6 @@
 "Sloane Jacobs"
 ],
 [
-"fallyn-grey",
-"Veronica Haven"
-],
-[
 "kit-wilson",
 "Kit Wilson"
 ],
@@ -2954,6 +2970,14 @@
 [
 "jariel-rivera",
 "Santi Rivera"
+],
+[
+"myles-borne",
+"Myles Borne"
+],
+[
+"tavion-heights",
+"Tavion Heights"
 ],
 [
 "noam-dar",
@@ -2988,28 +3012,12 @@
 "Rusev"
 ],
 [
-"brie-bella",
-"Brie Bella"
-],
-[
-"paige",
-"Paige"
-],
-[
 "mike-d-vecchio",
 "Dorian Van Dux"
 ],
 [
 "sean-legacy",
 "Sean Legacy"
-],
-[
-"shady-elnahas",
-"Shido Ash"
-],
-[
-"aaron-fara",
-"Viktor Zakov"
 ],
 [
 "angelo-dawkins",
@@ -3080,10 +3088,6 @@
 "Maxxine Dupri"
 ],
 [
-"paul-heyman",
-"Paul Heyman"
-],
-[
 "erik",
 "Erik"
 ],
@@ -3116,14 +3120,6 @@
 "Brie Bella"
 ],
 [
-"brock-lesnar",
-"Brock Lesnar"
-],
-[
-"mickie-james",
-"Mickie James"
-],
-[
 "nikki-bella",
 "Nikki Bella"
 ],
@@ -3132,12 +3128,12 @@
 "Randy Orton"
 ],
 [
-"tamina",
-"Tamina"
-],
-[
 "tyler-breeze",
 "Tyler Breeze"
+],
+[
+"meghan-walker",
+"Alix Brooks"
 ],
 [
 "arianna-grace",
@@ -3148,8 +3144,8 @@
 "Candice LeRae"
 ],
 [
-"meghan-walker",
-"Kylee Quinn"
+"haku",
+"Haku"
 ],
 [
 "lil-yachty",
@@ -3274,6 +3270,10 @@
 [
 "sam-roberts",
 "Sam Roberts"
+],
+[
+"andrea-bazarte",
+"Andrea Bazarte"
 ],
 [
 "cody-rhodes",
@@ -3500,10 +3500,6 @@
 "Molly Holly"
 ],
 [
-"nick-aldis-magnus",
-"Nick Aldis"
-],
-[
 "triple-h",
 "Paul \"Triple H\" Levesque"
 ],
@@ -3530,6 +3526,10 @@
 [
 "shawn-michaels",
 "Shawn Michaels"
+],
+[
+"tamina",
+"Tamina"
 ],
 [
 "tyson-kidd",
