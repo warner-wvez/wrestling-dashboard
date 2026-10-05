@@ -60,7 +60,10 @@
 // McMahon, not Shane) and the Jazz 2003 fragment; Raw #896 and the Best of
 // SmackDown 2006 episode added; 9 more dark matches greyed. Core and match
 // shards and titles changed.
-const CACHE = 'wrestling-dashboard-v21';
+// v22: the 2001-02 Hardcore title history rebuilt: 29 televised 24/7 title
+// changes added to their cards, 5 changes inside matches, and 125 house-show
+// changes (data/offcard-title-changes.json). Match shards and titles changed.
+const CACHE = 'wrestling-dashboard-v22';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
