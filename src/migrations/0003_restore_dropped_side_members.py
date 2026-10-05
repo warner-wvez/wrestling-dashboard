@@ -27,7 +27,9 @@ Safety gates, in order:
      when this was written (400 to 460, measured 2026-10-04 at 442).
 
 Idempotent: once applied, the patched teams match the NEW parser's output, so
-gate 1 skips them and the run reports "already applied".
+gate 1 skips them and the run reports "already applied". Later migrations may
+rework some of those teams again; the run still reports "already applied" as
+long as no team is left in the old parser's shape.
 
 Run from project root:
     uv run --with requests --with beautifulsoup4 src/migrations/0003_restore_dropped_side_members.py [--dry-run]
@@ -158,8 +160,13 @@ def main():
     events = data["events"]
     patches, skipped, already = plan(events)
 
-    if not patches and already in EXPECTED:
-        print(f"already applied ({already} teams carry the fixed sides)")
+    # No team is left in the old parser's shape, so there is nothing to fix.
+    # The carried count only informs: later fixes rework some of these teams
+    # (#43 split fused sides into more teams, 0016 renamed "Brie" to "Brie
+    # Bella"), which drops them from both counts without undoing this one.
+    if not patches:
+        print(f"already applied ({already} teams carry the fixed sides, "
+              f"{len(skipped)} left for review)")
         return
     if len(patches) not in EXPECTED:                              # gate 4
         raise SystemExit(f"ABORT gate 4: {len(patches)} teams to patch, expected "
