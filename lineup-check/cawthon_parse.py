@@ -179,6 +179,21 @@ def parse_ppv_page(page_html):
     return out
 
 
+def parse_events(page_html):
+    """Every dated event on a results year page, house shows included:
+    [{date, head, lines}]. Each event starts at a bold dated header and runs to
+    the next one."""
+    heads = [b for b in _PPV_HEAD_RE.finditer(page_html) if b.group(2).split()[0] in MONTHS]
+    out = []
+    for n, h in enumerate(heads):
+        end = heads[n + 1].start() if n + 1 < len(heads) else len(page_html)
+        month, rest = h.group(2).split(" ", 1)
+        dd, yyyy = rest.replace(",", "").split()
+        out.append({"date": date(int(yyyy), MONTHS[month], int(dd)).isoformat(),
+                    "head": _text(h.group(1)), "lines": _lines(page_html[h.end():end])})
+    return out
+
+
 # ---------- match lines ----------
 
 _MATCH_LIKE_RE = re.compile(r"\b(?:defeated|pinned|fought|won)\b", re.I)
