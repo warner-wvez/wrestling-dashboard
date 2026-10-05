@@ -80,6 +80,10 @@ TITLE_NAMES = {
     "World Tag Team Championship": "World Tag Team Title",
     "ECW World Championship": "ECW World Heavyweight Title",
     "ECW Championship": "ECW World Heavyweight Title",
+    # 2001-02, for the UK PPVs added by migration 0008
+    "WWF Championship": "WWF World Heavyweight Title",
+    "WCW Championship": "WCW World Heavyweight Title",
+    "WCW Tag Team Championship": "WCW World Tag Team Title",
 }
 
 

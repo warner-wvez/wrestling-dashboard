@@ -41,3 +41,9 @@ def test_champion_mark_becomes_a_flag():
     assert (a["participants"], a["was_champion_entering"], a["team_name"]) == (["Layla"], True, "Layla")
     assert "was_champion_entering" not in b
     assert matches[0]["title_at_stake"] == "Unified WWE Divas Title"
+
+
+def test_2001_world_titles_join_their_lineages():
+    # Rebellion 2001 (Wikipedia) names belts the corpus calls otherwise.
+    assert m7.corpus_titles("WWF Championship") == "WWF World Heavyweight Title"
+    assert m7.corpus_titles("WCW Tag Team Championship") == "WCW World Tag Team Title"
