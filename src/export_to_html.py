@@ -974,7 +974,28 @@ def _pick_singles_champion(participants: list, appearances: Counter, incumbents)
     return [min(parts, key=lambda p: (-appearances.get(p, 0), 0 if p in inc else 1, p))]
 
 
-def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
+def _result_for(result, lineage_key):
+    """A match's title_result applies to every belt on it unless it names
+    one: on Raw 2002-05-13's mixed tag, the ruling that Steven Richards kept
+    the Hardcore title must not touch the Women's title Trish won there."""
+    if not result or not result.get('title'):
+        return result
+    return result if _title_lineage_key(result['title']) == lineage_key else None
+
+
+OFFCARD_TITLE_CHANGES = Path(__file__).resolve().parent.parent / "data" / "offcard-title-changes.json"
+
+
+def load_offcard_changes(path=OFFCARD_TITLE_CHANGES) -> list[dict]:
+    """Title changes at shows no card carries (house shows), each listed the
+    same way by two of three published records. Built by
+    lineup-check/offcard_titles.py; empty when the file is absent."""
+    if not path.exists():
+        return []
+    return json.loads(path.read_text(encoding="utf-8")).get("changes") or []
+
+
+def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list[dict]]:
     """Walk all title matches in chronological order and build per-title reign timelines.
 
     `canon` maps a source spelling to that wrestler's canonical name (a dict or
@@ -1055,7 +1076,7 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
                     # Who holds the belt after this match, set by a migration
                     # from a cited source when the teams cannot say (see the
                     # walk below).
-                    'title_result': match.get('title_result'),
+                    'title_result': _result_for(match.get('title_result'), lk),
                 })
                 st = spelling_stats[lk][title]
                 st[0] += 1
@@ -1065,6 +1086,26 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
                     for p in t.get('participants', []):
                         if p:
                             lineage_appearances[lk][p] += 1
+
+    # Title changes at shows no card carries: house shows, mostly the 2001-02
+    # Hardcore title under the 24/7 rule. They join an existing lineage by
+    # date, as a ruling naming the new holder, so a week of house-show swaps no
+    # longer reads as one unbroken reign.
+    for change in (load_offcard_changes() if offcard is None else offcard):
+        lk = _title_lineage_key(change['title'])
+        if lk not in timelines:
+            continue
+        timelines[lk].append({
+            'air_date': change['date'],
+            'event_id': None,
+            'match_order': change.get('order', 0),
+            'teams': [],
+            'raw_description': '',
+            'title_change': True,
+            'composite_stake': False,
+            'component_count': 1,
+            'title_result': {'champions': list(change['champions'])},
+        })
 
     # Canonical display name per lineage: the spelling that carries the most
     # matches, tie-broken by most recent match then name. The dominant name is
@@ -1077,7 +1118,8 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
     }
 
     for lk in timelines:
-        timelines[lk].sort(key=lambda m: (m['air_date'], m['event_id'], m['match_order']))
+        # A house show (no event) sorts before a card on the same date.
+        timelines[lk].sort(key=lambda m: (m['air_date'], m['event_id'] or 0, m['match_order']))
 
     # How far the corpus reaches, to judge which belts have gone quiet against.
     # Taken from the events rather than today's clock so a rebuild is
@@ -1194,22 +1236,29 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
             # Bobby Lashley), or the challenger wins without beating the one
             # man whose belt was at stake (Judgment Day 2007: Lashley pinned
             # Shane, so Vince kept it).
-            ruled = [p for p in ((m.get('title_result') or {}).get('champions') or []) if p]
+            #
+            # "within" lists holders who won and lost the belt inside the match
+            # before the final one (No Way Out 2001: Billy Gunn, then Raven,
+            # both inside Raven's defense against the Big Show). Each is a
+            # reign of its own that starts and ends that night.
+            result = m.get('title_result') or {}
+            ruled = [p for p in (result.get('champions') or []) if p]
             if ruled:
-                if current is None or not _same_champions(
-                        current['champion_names'], ruled, canon_fn):
-                    if current is not None:
-                        current['end'] = m['air_date']
-                        current['end_event_id'] = m['event_id']
-                        reigns.append(current)
-                    current = {
-                        'champion_names': ruled,
-                        'start': m['air_date'],
-                        'end': None,
-                        'start_event_id': m['event_id'],
-                        'end_event_id': None,
-                        'pre_corpus': False,
-                    }
+                for holders in [h for h in (result.get('within') or []) if h] + [ruled]:
+                    if current is None or not _same_champions(
+                            current['champion_names'], holders, canon_fn):
+                        if current is not None:
+                            current['end'] = m['air_date']
+                            current['end_event_id'] = m['event_id']
+                            reigns.append(current)
+                        current = {
+                            'champion_names': list(holders),
+                            'start': m['air_date'],
+                            'end': None,
+                            'start_event_id': m['event_id'],
+                            'end_event_id': None,
+                            'pre_corpus': False,
+                        }
                 continue
 
             if winner is None or not winner.get('participants'):
