@@ -4076,9 +4076,12 @@
     if (titleMode === 'time') {
       const cur = reigns.find(r => r.start <= watchISO && (!r.end || r.end >= watchISO));
       const upTo = reigns.filter(r => r.start <= watchISO);   // never past where you have watched
+      // Between a vacated reign and the next one the belt existed but sat empty.
       stateLine = cur
         ? `As of <strong>${esc(fmtTitleSince(watchISO))}</strong> &middot; held by ${reignWhoHTML(cur)}`
-        : `Not yet established as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
+        : upTo.length
+          ? `${retired && reigns[0].end && watchISO > reigns[0].end ? 'Retired' : 'Vacant'} as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`
+          : `Not yet established as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
       const earliest = reigns[reigns.length - 1];
       timeline = upTo.length
         ? timelineWithChapters(upTo, cur, chaptered) +
