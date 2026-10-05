@@ -723,6 +723,122 @@ def split_fused_multiman_sides(events: dict) -> int:
                 t['team_number'] = i
             match['teams'] = out
             fixed += 1
+    return fixed + split_listed_sides(events)
+
+
+# Cagematch writes every losing side of a multi-man match in one run after the
+# verb, " and " between sides and " & " between partners: "Chris Benoit & Chris
+# Jericho defeat Christian & Edge and The APA ( Bradshaw & Faarooq ) and The
+# Dudley Boyz ( ... )". The parser kept that run as ONE side, so Elimination
+# Chambers, ladder matches, gauntlets and multi-team tag matches drew as a
+# handicap match that never happened (Money in the Bank 2017: four women
+# against Carmella), and with spoilers off the lone side gave away the winner.
+# Every fused wrestler was also listed as everyone else's tag partner.
+_PARTNER_TYPES = re.compile(r'\btag\b|handicap|\bteams?\b|mixed|\btrios\b|\bman\b(?! elimination)', re.I)
+_MULTI_TEAM_TYPES = re.compile(
+    r'triple threat|\w+[- ]way\b|fatal|turmoil|gauntlet|battle royal|rumble|tables, ladders|\btlc\b|'
+    r'elimination|ladder|scramble|four corners|chaos|\bopen\b|challenge|brawl|over the top', re.I)
+_VERB_RE = re.compile(r'\b(?:defeats?|defeated)\b')
+# Fields of 8 or more stay one side: the card draws them as a field.
+_MAX_LISTED_SIDE = 7
+
+
+def _top_level_split(s: str, sep: str = ' and ') -> list[str]:
+    """Split on sep outside parentheses and brackets."""
+    out, depth, cur, i = [], 0, '', 0
+    while i < len(s):
+        ch = s[i]
+        if ch in '([':
+            depth += 1
+        elif ch in ')]':
+            depth -= 1
+        if depth == 0 and s.startswith(sep, i):
+            out.append(cur)
+            cur, i = '', i + len(sep)
+            continue
+        cur += ch
+        i += 1
+    out.append(cur)
+    return [c.strip() for c in out]
+
+
+def _losing_run(raw: str) -> str | None:
+    """The text after the verb, without the time, marker or finish."""
+    m = _VERB_RE.search(raw or '')
+    if not m:
+        return None
+    s = raw[m.end():]
+    s = re.sub(r'\s*-\s*TITLE CHANGE.*$', '', s)
+    s = re.sub(r'\s*\(\d+:\d+\)\s*$', '', s).strip()
+    return re.sub(r'\s+(?:by|via|in|after|when|with|to)\s+(?![^()]*\)).*$', '', s)
+
+
+def _listed_side(chunk: str):
+    """(label, members, accompaniment, holds the belt) for one side's text:
+    "The Dudley Boyz ( Bubba Ray Dudley & D-Von Dudley ) (w/ Spike Dudley )"."""
+    corner = re.findall(r'\(\s*w\s*/\s*([^()]*)\)', chunk)
+    champ = bool(re.search(r'\(c\)|\u00a9', chunk))
+    label = re.sub(r'\(\s*w\s*/[^()]*\)|\(c\)|\u00a9|\[[^\]]*\]', '', chunk)
+    label = re.sub(r'\s+', ' ', label).strip()
+    group = re.match(r'^(.*?)\s*\(\s*(.*?)\s*\)$', label)
+    inner = group.group(2) if group else label
+    members = [x.strip() for x in re.split(r'\s*&\s*|\s*,\s*' if group else r'\s+&\s+', inner) if x.strip()]
+    return label, members, (corner[0].strip() if corner else None), champ
+
+
+def _split_listed_side(match: dict, team: dict) -> list[dict] | None:
+    """The sides a fused losing side really was, read from the match text; None
+    unless the text names exactly the people the side holds."""
+    raw = match.get('raw_description') or ''
+    names = [p for p in (team.get('participants') or []) if p]
+    if '[[' in raw or team.get('was_winner') is True or not 2 <= len(names) <= _MAX_LISTED_SIDE:
+        return None
+    run = _losing_run(raw)
+    chunks = _top_level_split(run) if run else []
+    if len(chunks) < 2:
+        return None
+    sides = [_listed_side(c) for c in chunks]
+    match_type = match.get('match_type') or ''
+    if all(len(s[1]) == 1 for s in sides):
+        if _PARTNER_TYPES.search(match_type):      # "A and B" are partners in a tag match
+            return None
+    elif not _MULTI_TEAM_TYPES.search(match_type):  # an eight-man tag lists partners with "and"
+        return None
+    by_key = {re.sub(r'[^a-z0-9]', '', n.lower()): n for n in names}
+    out = []
+    for label, members, corner, champ in sides:
+        mapped = [by_key.get(re.sub(r'[^a-z0-9]', '', m.lower())) for m in members]
+        if None in mapped:
+            return None
+        side = dict(team)
+        side.update(team_name=label, participants=mapped, accompaniment=corner,
+                    was_champion_entering=bool(team.get('was_champion_entering')) and champ)
+        out.append(side)
+    if sorted(p for s in out for p in s['participants']) != sorted(names):
+        return None
+    return out
+
+
+def split_listed_sides(events: dict) -> int:
+    """Un-fuse losing sides the match text lists one by one, in place. Returns
+    how many sides were split."""
+    fixed = 0
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            teams = match.get('teams') or []
+            out, changed = [], False
+            for t in teams:
+                sides = _split_listed_side(match, t)
+                if sides:
+                    out.extend(sides)
+                    changed = True
+                    fixed += 1
+                else:
+                    out.append(t)
+            if changed:
+                for i, t in enumerate(out, 1):
+                    t['team_number'] = i
+                match['teams'] = out
     return fixed
 
 

@@ -90,3 +90,55 @@ def test_it_is_idempotent():
     ])
     assert split_fused_multiman_sides(ev) == 1
     assert split_fused_multiman_sides(ev) == 0, "a second pass must not re-split"
+
+
+def test_a_ladder_matchs_losers_are_each_their_own_side():
+    """Money in the Bank 2017: Carmella won the women's ladder match. The four
+    she beat were stored as one side, so the card drew a four-on-one handicap
+    match and, with spoilers off, the lone side gave the winner away."""
+    ev = _events("Money In The Bank Ladder Match", [
+        _team(1, ["Carmella"], win=True),
+        _team(2, ["Becky Lynch", "Charlotte Flair", "Natalya", "Tamina"],
+              label="Becky Lynch and Charlotte Flair and Natalya and Tamina"),
+    ], raw="Carmella (w/ James Ellsworth ) defeats Becky Lynch and Charlotte Flair and Natalya and Tamina (8:10)")
+    assert split_fused_multiman_sides(ev) == 1
+    assert [x["team_name"] for x in _teams_of(ev)] == ["Carmella", "Becky Lynch", "Charlotte Flair",
+                                                        "Natalya", "Tamina"]
+
+
+def test_listed_tag_teams_keep_their_names_corners_and_the_belt():
+    """WrestleMania X-Seven, TLC II: Edge and Christian beat the Dudleys, who
+    held the titles, and the Hardys. One side held all four."""
+    ev = _events("WWF World Tag Team Title Tables, Ladders & Chairs Match", [
+        _team(1, ["Christian", "Edge"], win=True),
+        _team(2, ["Bubba Ray Dudley", "D-Von Dudley", "Jeff Hardy", "Matt Hardy"], champ=True,
+              label="The Dudley Boyz ( Bubba Ray Dudley & D-Von Dudley ) and The Hardy Boyz"),
+    ], raw="Christian & Edge defeat The Dudley Boyz ( Bubba Ray Dudley & D-Von Dudley ) (c) (w/ Spike Dudley ) "
+           "and The Hardy Boyz ( Jeff Hardy & Matt Hardy ) (w/ Lita ) (15:50) - TITLE CHANGE !!!")
+    split_fused_multiman_sides(ev)
+    t = _teams_of(ev)
+    assert [x["participants"] for x in t] == [["Christian", "Edge"], ["Bubba Ray Dudley", "D-Von Dudley"],
+                                             ["Jeff Hardy", "Matt Hardy"]]
+    assert [x["was_champion_entering"] for x in t] == [False, True, False]
+    assert [x.get("accompaniment") for x in t[1:]] == ["Spike Dudley", "Lita"]
+
+
+def test_partners_joined_by_and_in_a_tag_match_stay_together():
+    for match_type, raw in [
+        ("Tag Team Match", "Kanyon & Shawn Stasiak defeated Diamond Dallas Page and Shane McMahon"),
+        ("Eight Man Tag Team Match", "Kurt Angle & Shane McMahon & Booker T & Rhyno defeat Chris Jericho and "
+                                     "The APA ( Bradshaw & Faarooq ) & The Rock"),
+    ]:
+        losers = ["Diamond Dallas Page", "Shane McMahon"] if "Page" in raw else \
+            ["Chris Jericho", "Bradshaw", "Faarooq", "The Rock"]
+        ev = _events(match_type, [_team(1, ["A", "B"], win=True), _team(2, losers, label=" and ".join(losers))],
+                     raw=raw)
+        assert split_fused_multiman_sides(ev) == 0, match_type
+
+
+def test_a_side_the_text_does_not_name_exactly_is_left_alone():
+    ev = _events("Money In The Bank Ladder Match", [
+        _team(1, ["Carmella"], win=True),
+        _team(2, ["Becky Lynch", "Natalya"], label="Becky Lynch and Natalya"),
+    ], raw="Carmella defeats Becky Lynch and Charlotte Flair and Natalya")
+    assert split_fused_multiman_sides(ev) == 0
