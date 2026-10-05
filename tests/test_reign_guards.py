@@ -54,7 +54,7 @@ def _ev(eid, date, matches):
 
 def _chain(events, title, canon=None):
     return [(r["start"], r["end"], r["champion_names"])
-            for r in build_title_reigns(events, canon=canon)[title]]
+            for r in build_title_reigns(events, canon=canon, offcard=())[title]]
 
 
 def _champs(events, title, canon=None):
@@ -447,3 +447,67 @@ def test_a_sourced_title_result_names_who_holds_the_belt():
     assert chain[1:] == [("2006-12-03", "2007-04-29", ["Bobby Lashley"]),
                          ("2007-04-29", "2007-06-03", ["Vince McMahon"]),
                          ("2007-06-03", None, ["Bobby Lashley"])], chain
+
+
+def test_title_changes_inside_one_match_are_reigns_of_their_own():
+    """No Way Out 2001: inside Raven's defense against the Big Show, Billy
+    Gunn pinned Raven for the title at 2:27 and Raven pinned Gunn back at 3:28
+    before Show won it at 4:20. The card holds one match; the history holds
+    three changes. title_result's "within" lists the holders before the last.
+    """
+    t = "WWF Hardcore Title"
+    events = {}
+    events.update(_ev(1, "2001-02-08", [
+        _m(1, ["Raven"], ["Hardcore Holly"], "Raven defeats Hardcore Holly (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    nwo = _m(1, ["The Big Show"], ["Raven"], "The Big Show defeats Raven (c) (4:20) - TITLE CHANGE !!!",
+             title=t, champ_side="loser")
+    nwo["title_result"] = {"champions": ["The Big Show"], "within": [["Billy Gunn"], ["Raven"]]}
+    events.update(_ev(2, "2001-02-25", [nwo]))
+    chain = _chain(events, t)
+    assert chain[1:] == [("2001-02-08", "2001-02-25", ["Raven"]),
+                         ("2001-02-25", "2001-02-25", ["Billy Gunn"]),
+                         ("2001-02-25", "2001-02-25", ["Raven"]),
+                         ("2001-02-25", None, ["The Big Show"])], chain
+
+
+def test_a_title_result_for_one_belt_leaves_the_other_belt_alone():
+    """Raw 2002-05-13: Bubba Ray Dudley & Trish Stratus beat Jazz (Women's)
+    and Steven Richards (Hardcore). Trish pinned Jazz and took the Women's
+    title; Richards was never pinned and kept the Hardcore title. The ruling
+    names its belt, so the Women's chain still moves."""
+    hc, wo = "WWE Hardcore Title", "WWE World Women's Title"
+    events = {}
+    events.update(_ev(1, "2002-05-06", [
+        _m(1, ["Steven Richards"], ["Trish Stratus"], "Steven Richards defeats Trish Stratus (c) - TITLE CHANGE !!!",
+           title=hc, champ_side="loser"),
+        _m(2, ["Jazz"], ["Trish Stratus"], "Jazz (c) defeats Trish Stratus", title=wo, champ_side="winner")]))
+    tag = _m(1, ["Bubba Ray Dudley", "Trish Stratus"], ["Jazz", "Steven Richards"],
+             "Bubba Ray Dudley & Trish Stratus defeat Jazz (c) & Steven Richards (c) - TITLE CHANGE !!!",
+             title=f"{wo} / {hc}", champ_side="loser")
+    tag["title_result"] = {"title": hc, "champions": ["Steven Richards"]}
+    events.update(_ev(2, "2002-05-13", [tag]))
+    assert _champs(events, hc)[-1] == ["Steven Richards"], _chain(events, hc)
+    assert _champs(events, wo)[-1] == ["Trish Stratus"], _chain(events, wo)
+
+
+def test_house_show_changes_join_the_chain_by_date():
+    """Raw 2001-01-22 ends with Raven champion; three nights of house shows
+    later (2001-02-03, Greensboro) K-Kwik, Crash Holly and Raven traded it, and
+    Hardcore Holly won it on SmackDown 2001-02-08. No card carries the house
+    show, so the change list does."""
+    t = "WWF Hardcore Title"
+    events = {}
+    events.update(_ev(1, "2001-01-22", [
+        _m(1, ["Raven"], ["Al Snow"], "Raven defeats Al Snow (c) - TITLE CHANGE !!!", title=t, champ_side="loser")]))
+    events.update(_ev(2, "2001-02-08", [
+        _m(1, ["Hardcore Holly"], ["Raven"], "Hardcore Holly defeated Raven (c)", title=t, champ_side="loser")]))
+    house = [{"title": t, "date": "2001-02-03", "order": i, "champions": [c]}
+             for i, c in enumerate(["K-Kwik", "Crash Holly", "Raven"])]
+    chain = [(s, e, c) for s, e, c in
+             [(r["start"], r["end"], r["champion_names"]) for r in build_title_reigns(events, offcard=house)[t]]]
+    assert chain[1:] == [("2001-01-22", "2001-02-03", ["Raven"]),
+                         ("2001-02-03", "2001-02-03", ["K-Kwik"]),
+                         ("2001-02-03", "2001-02-03", ["Crash Holly"]),
+                         ("2001-02-03", "2001-02-08", ["Raven"]),
+                         ("2001-02-08", None, ["Hardcore Holly"])], chain

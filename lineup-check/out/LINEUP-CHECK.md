@@ -15,14 +15,14 @@ Our 1458 Raw, SmackDown and PPV cards compared with Graham Cawthon's thehistoryo
 
 ## For review
 
-520 rows in review.csv; 101 more were ruled by hand ("our card is right") in rulings.csv and are left out.
+515 rows in review.csv; 102 more were ruled by hand ("our card is right") in rulings.csv and are left out.
 
 | Kind | Count | SmackDown Hotel agrees with ours | with Cawthon | split |
 |---|---|---|---|---|
-| unpaired | 185 | 111 | 15 | 59 |
-| missing_match | 158 | 147 | 9 | 2 |
+| unpaired | 199 | 117 | 15 | 67 |
+| missing_match | 144 | 139 | 3 | 2 |
 | result | 72 | 68 | 0 | 4 |
-| different_opponent | 44 | 30 | 1 | 13 |
+| different_opponent | 39 | 28 | 1 | 10 |
 | cawthon_only_name | 29 | 24 | 1 | 4 |
 | extra_name | 28 | 23 | 2 | 3 |
 | dark_but_televised | 2 | 2 | 0 | 0 |

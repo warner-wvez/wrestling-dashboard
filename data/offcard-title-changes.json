@@ -1,0 +1,1866 @@
+{
+ "about": "Title changes at shows no card of ours carries. Each is listed the same way by at least two of: Cawthon's results archive, Wikipedia's List of WWE Hardcore Champions, Solie's Title Histories. Built by lineup-check/offcard_titles.py.",
+ "sources": {
+  "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions",
+  "Solie": "http://web.archive.org/web/2008/http://www.solie.org/titlehistories/whcwwf.html",
+  "Cawthon": "https://thehistoryofwwe.com/"
+ },
+ "changes": [
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-03",
+   "order": 0,
+   "champions": [
+    "K-Kwik"
+   ],
+   "place": "WWF @ Greensboro, NC – Coliseum – February 3, 2001 (8,570)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #54",
+    "Solie"
+   ],
+   "cawthon": "K-Kwick pinned WWF Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-03",
+   "order": 1,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWF @ Greensboro, NC – Coliseum – February 3, 2001 (8,570)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #55",
+    "Solie"
+   ],
+   "cawthon": "Crash Holly pinned WWF Hardcore Champion K-Kwick to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-03",
+   "order": 2,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF @ Greensboro, NC – Coliseum – February 3, 2001 (8,570)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #56",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Crash Holly to win the title after a masked woman interfered"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-04",
+   "order": 0,
+   "champions": [
+    "K-Kwik"
+   ],
+   "place": "WWF @ Columbia, SC – February 4, 2001 (6,845)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #57",
+    "Solie"
+   ],
+   "cawthon": "K-Kwick pinned WWF Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-04",
+   "order": 1,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWF @ Columbia, SC – February 4, 2001 (6,845)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #58",
+    "Solie"
+   ],
+   "cawthon": "Crash Holly pinned WWF Hardcore Champion K-Kwick to win the title after hitting him with a sign"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-04",
+   "order": 2,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF @ Columbia, SC – February 4, 2001 (6,845)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #59",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Crash Holly to win the title after a masked woman interfered"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-10",
+   "order": 0,
+   "champions": [
+    "Hardcore Holly"
+   ],
+   "place": "WWF @ St. Paul, MN – Xcel Energy Center – February 10, 2001 (8,660)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #62",
+    "Solie"
+   ],
+   "cawthon": "Hardcore Holly defeated WWF Hardcore Champion Raven and Steve Blackman by pinning Raven to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-10",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF @ St. Paul, MN – Xcel Energy Center – February 10, 2001 (8,660)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #63",
+    "Solie"
+   ],
+   "cawthon": "Raven defeated WWF Hardcore Champion Hardcore Holly to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-11",
+   "order": 0,
+   "champions": [
+    "Hardcore Holly"
+   ],
+   "place": "WWF @ Boston, MA – FleetCenter – February 11, 2001 (15,493)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #64",
+    "Solie"
+   ],
+   "cawthon": "Hardcore Holly defeated Steve Blackman, Al Snow, and WWF Hardcore Champion Raven to win the hardcore title by pinning Blackman"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-11",
+   "order": 1,
+   "champions": [
+    "Al Snow"
+   ],
+   "place": "WWF @ Boston, MA – FleetCenter – February 11, 2001 (15,493)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #65",
+    "Solie"
+   ],
+   "cawthon": "Al Snow defeated WWF Hardcore Champion Hardcore Holly to win the title after hitting him with Head"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-11",
+   "order": 2,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF @ Boston, MA – FleetCenter – February 11, 2001 (15,493)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #66",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Al Snow to win the title after a masked woman interfered on Raven's behalf"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-17",
+   "order": 0,
+   "champions": [
+    "Steve Blackman"
+   ],
+   "place": "WWF @ Cedar Falls, IA – UNI-Dome – February 17, 2001 (5,493)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #67",
+    "Solie"
+   ],
+   "cawthon": "Steve Blackman pinned WWF Hardcore Champion Raven to win the title after hitting him with a kendo stick"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-17",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF @ Cedar Falls, IA – UNI-Dome – February 17, 2001 (5,493)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #68",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Steve Blackman to win the title with a roll up as Blackman prepared to leave ringside"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-18",
+   "order": 0,
+   "champions": [
+    "Steve Blackman"
+   ],
+   "place": "WWF @ Cape Girardeau, MO – Show Me Center – February 18, 2001 (4,259)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #69"
+   ],
+   "cawthon": "Steve Blackman pinned WWF Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2001-02-18",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF @ Cape Girardeau, MO – Show Me Center – February 18, 2001 (4,259)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #70"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Steve Blackman to win the title after a masked woman interfered"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-06",
+   "order": 0,
+   "champions": [
+    "William Regal"
+   ],
+   "place": "WWF (Raw) @ Salt Lake City, UT – E Center – April 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "WWF European Champion William Regal pinned WWF Hardcore Champion Bubba Ray Dudley to win the title after hitting him with brass knuckles"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-06",
+   "order": 1,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Salt Lake City, UT – E Center – April 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF European & Hardcore Champion William Regal to win the Hardcore title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-06",
+   "order": 2,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF (Raw) @ Salt Lake City, UT – E Center – April 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Goldust to win the title with the DDT"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-06",
+   "order": 3,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Salt Lake City, UT – E Center – April 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Raven to win the title following a powerbomb through a table"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-07",
+   "order": 0,
+   "champions": [
+    "William Regal"
+   ],
+   "place": "WWF (Raw) @ Denver, CO – Coliseum – April 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #101",
+    "Solie"
+   ],
+   "cawthon": "WWF European Champion William Regal pinned WWF Hardcore Champion Bubba Ray Dudley to win the title after hitting him with brass knuckles"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-07",
+   "order": 1,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Denver, CO – Coliseum – April 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #102",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF European & Hardcore Champion William Regal to win the Hardcore title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-07",
+   "order": 2,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF (Raw) @ Denver, CO – Coliseum – April 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #103",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Goldust to win the title with the DDT"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-07",
+   "order": 3,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Denver, CO – Coliseum – April 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #104",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Raven to win the title following a powerbomb through a table"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-12",
+   "order": 0,
+   "champions": [
+    "William Regal"
+   ],
+   "place": "WWF (Raw) @ Amarillo, TX – April 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "William Regal pinned WWF Hardcore Champion Bubba Ray Dudley to win the title after hitting him with brass knuckles"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-12",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWF (Raw) @ Amarillo, TX – April 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "WWF European Champion Spike Dudley pinned WWF Hardcore Champion William Regal to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-12",
+   "order": 2,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Amarillo, TX – April 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF European & Hardcore Champion Spike Dudley to win the Hardcore title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-12",
+   "order": 3,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Amarillo, TX – April 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Goldust to win the title following a powerbomb through a table"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-13",
+   "order": 0,
+   "champions": [
+    "William Regal"
+   ],
+   "place": "WWF (Raw) @ Odessa, TX – Ector County Coliseum – April 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #105",
+    "Solie"
+   ],
+   "cawthon": "William Regal pinned WWF Hardcore Champion Bubba Ray Dudley to win the title after hitting him with brass knuckles"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-13",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWF (Raw) @ Odessa, TX – Ector County Coliseum – April 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #106",
+    "Solie"
+   ],
+   "cawthon": "WWF European Champion Spike Dudley pinned WWF Hardcore Champion William Regal with the Acid Drop to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-13",
+   "order": 2,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Odessa, TX – Ector County Coliseum – April 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #107",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF European & Hardcore Champion Spike Dudley with a DDT to win the Hardcore title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-13",
+   "order": 3,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Odessa, TX – Ector County Coliseum – April 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #108",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Goldust to win the title following a powerbomb through a table"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-14",
+   "order": 0,
+   "champions": [
+    "William Regal"
+   ],
+   "place": "WWF (Raw) @ Abilene, TX – April 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #109",
+    "Solie"
+   ],
+   "cawthon": "William Regal pinned WWF Hardcore Champion Bubba Ray Dudley to win the title after hitting him with brass knuckles"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-14",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWF (Raw) @ Abilene, TX – April 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #110",
+    "Solie"
+   ],
+   "cawthon": "WWF European Champion Spike Dudley pinned WWF Hardcore Champion William Regal to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-14",
+   "order": 2,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Abilene, TX – April 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #111",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF European & Hardcore Champion Spike Dudley with a DDT to win the Hardcore title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-14",
+   "order": 3,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Abilene, TX – April 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #112",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Goldust to win the title following a powerbomb through a table"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-19",
+   "order": 0,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Long Island, NY – Nassau Coliseum – April 19, 2002 (9,000)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #117",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF Hardcore Champion Bubba Ray Dudley to win the title with a bulldog"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-19",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF (Raw) @ Long Island, NY – Nassau Coliseum – April 19, 2002 (9,000)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #118",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Goldust to win the title following the DDT"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-19",
+   "order": 2,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Long Island, NY – Nassau Coliseum – April 19, 2002 (9,000)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #119",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Raven to win the title following a powerbomb through a table"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-20",
+   "order": 0,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Des Moines, IA – Veterans Memorial Auditorium – April 20, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #120",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF Hardcore Champion Bubba Ray Dudley to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-20",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWF (Raw) @ Des Moines, IA – Veterans Memorial Auditorium – April 20, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #121",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWF Hardcore Champion Goldust with the DDT to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-04-20",
+   "order": 2,
+   "champions": [
+    "Bubba Ray Dudley"
+   ],
+   "place": "WWF (Raw) @ Des Moines, IA – Veterans Memorial Auditorium – April 20, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #122",
+    "Solie"
+   ],
+   "cawthon": "Bubba Ray Dudley pinned WWF Hardcore Champion Raven with a powerbomb through a table to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-01",
+   "order": 0,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWF (Raw) @ Cologne, Germany – May 1, 2002 (10,000)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #124",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer defeated WWF Hardcore Champion Steven Richards, Shawn Stasiak, and Justin Credible to win the title by pinning Richards"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-01",
+   "order": 1,
+   "champions": [
+    "Goldust"
+   ],
+   "place": "WWF (Raw) @ Cologne, Germany – May 1, 2002 (10,000)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #125",
+    "Solie"
+   ],
+   "cawthon": "Goldust pinned WWF Hardcore Champion Tommy Dreamer to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-01",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWF (Raw) @ Cologne, Germany – May 1, 2002 (10,000)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #126",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWF Hardcore Champion Goldust to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-02",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWF (Raw) @ Glasgow, Scotland – May 2, 2002 (6,500; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #127",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak defeated WWF Hardcore Champion Steven Richards, Crash Holly, and Justin Credible by pinning Crash with a roll up to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-02",
+   "order": 1,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "WWF (Raw) @ Glasgow, Scotland – May 2, 2002 (6,500; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #128",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWF Hardcore Champion Shawn Stasiak with the superkick to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-02",
+   "order": 2,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWF (Raw) @ Glasgow, Scotland – May 2, 2002 (6,500; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #129",
+    "Solie"
+   ],
+   "cawthon": "Crash Holly pinned WWF Hardcore Champion Justin Credible with a bulldog to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-02",
+   "order": 3,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWF (Raw) @ Glasgow, Scotland – May 2, 2002 (6,500; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #130",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWF Hardcore Champion Crash Holly after a guitar shot to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-02",
+   "order": 4,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWF (Raw) @ Glasgow, Scotland – May 2, 2002 (6,500; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #131",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWF Hardcore Champion Steven Richards with a roll up to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-02",
+   "order": 5,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWF (Raw) @ Glasgow, Scotland – May 2, 2002 (6,500; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #132",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWF Hardcore Champion Shawn Stasiak to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-03",
+   "order": 0,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWF (Raw) @ Birmingham, England – May 3, 2002 (11,927; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #133"
+   ],
+   "cawthon": "Crash Holly defeated WWF Hardcore Champion Steven Richards, Justin Credible, and Shawn Stasiak to win the title"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2002-05-03",
+   "order": 1,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWF (Raw) @ Birmingham, England – May 3, 2002 (11,927; sell out)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #134"
+   ],
+   "cawthon": "Steven Richards pinned WWF Hardcore Champion Crash Holly to win the title after hitting him with a trash can"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-05-25",
+   "order": 0,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Winnipeg, Manitoba – Arena – May 25, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #145",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Steven Richards with the DVD to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-05-25",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ Winnipeg, Manitoba – Arena – May 25, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #146",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Tommy Dreamer with the DDT to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-05-25",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Winnipeg, Manitoba – Arena – May 25, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #147",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Raven with the Stevie Kick to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-05-26",
+   "order": 0,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Red Deer, Alberta – May 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #148",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Steven Richards to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-05-26",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ Red Deer, Alberta – May 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #149",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Tommy Dreamer to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-05-26",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Red Deer, Alberta – May 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #150",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-02",
+   "order": 0,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ New Orleans, LA ï¿½ Arena – June 2, 2002 (4,200)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #153",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Steven Richards with the DVD to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-02",
+   "order": 1,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ New Orleans, LA ï¿½ Arena – June 2, 2002 (4,200)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #154",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Tommy Dreamer with the DDT to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-02",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ New Orleans, LA ï¿½ Arena – June 2, 2002 (4,200)",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #155",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Raven with the Steven Kick to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-22",
+   "order": 0,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ Cincinnati, OH – June 22, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #157",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Bradshaw to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-22",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWE (Raw) @ Cincinnati, OH – June 22, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #158",
+    "Solie"
+   ],
+   "cawthon": "Spike Dudley pinned WWE Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-22",
+   "order": 2,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Cincinnati, OH – June 22, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #159",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Spike Dudley to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-22",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Cincinnati, OH – June 22, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #160",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-28",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Washington DC – MCI Center – June 28, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #161"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Bradshaw to win the title after Steven Richards interfered"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-28",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWE (Raw) @ Washington DC – MCI Center – June 28, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #162"
+   ],
+   "cawthon": "Spike Dudley pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Dudley Dog"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-28",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Washington DC – MCI Center – June 28, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #163"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Spike Dudley to win the title with the Steven Kick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-28",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Washington DC – MCI Center – June 28, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #164"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Steven Richards to win the title with the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-29",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ New York City, NY – Madison Square Garden – June 29, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #165",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Bradshaw to win the title after Steven Richards interfered"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-29",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWE (Raw) @ New York City, NY – Madison Square Garden – June 29, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #166",
+    "Solie"
+   ],
+   "cawthon": "Spike Dudley pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Dudley Dog"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-29",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ New York City, NY – Madison Square Garden – June 29, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #167",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Spike Dudley to win the title with the Steven Kick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-29",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ New York City, NY – Madison Square Garden – June 29, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #168",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Steven Richards to win the title with the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-30",
+   "order": 0,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ Uncasville, CT – Mohegan Sun – June 30, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #169",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Bradshaw to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-30",
+   "order": 1,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWE (Raw) @ Uncasville, CT – Mohegan Sun – June 30, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #170",
+    "Solie"
+   ],
+   "cawthon": "Crash Holly pinned WWE Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-30",
+   "order": 2,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Uncasville, CT – Mohegan Sun – June 30, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #171",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Crash Holly to win the title with the Steven Kick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-06-30",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Uncasville, CT – Mohegan Sun – June 30, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #172",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Steven Richards to win the title with the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-06",
+   "order": 0,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Frederick, MD – Harry Grove Stadium – July 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #173",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Bradshaw to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-06",
+   "order": 1,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWE (Raw) @ Frederick, MD – Harry Grove Stadium – July 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #174",
+    "Solie"
+   ],
+   "cawthon": "Crash Holly pinned WWE Hardcore Champion Steven Richards to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-06",
+   "order": 2,
+   "champions": [
+    "Christopher Nowinski"
+   ],
+   "place": "WWE (Raw) @ Frederick, MD – Harry Grove Stadium – July 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #175",
+    "Solie"
+   ],
+   "cawthon": "Christopher Nowinski pinned WWE Hardcore Champion Crash Holly to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-06",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Frederick, MD – Harry Grove Stadium – July 6, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #176",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Christopher Nowinski to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-07",
+   "order": 0,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Wildwood, NJ – July 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #177",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Bradshaw to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-07",
+   "order": 1,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "WWE (Raw) @ Wildwood, NJ – July 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #178",
+    "Solie"
+   ],
+   "cawthon": "Crash Holly pinned WWE Hardcore Champion Steven Richards to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-07",
+   "order": 2,
+   "champions": [
+    "Christopher Nowinski"
+   ],
+   "place": "WWE (Raw) @ Wildwood, NJ – July 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #179",
+    "Solie"
+   ],
+   "cawthon": "Chris Nowinski pinned WWE Hardcore Champion Crash Holly to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-07",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Wildwood, NJ – July 7, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #180",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Chris Nowinski to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-12",
+   "order": 0,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "WWE (Raw) @ Lakeland, FL – July 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #181",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWE Hardcore Champion Bradshaw to win the title after interfering in Bradshaw's title defense with the Big Show"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-12",
+   "order": 1,
+   "champions": [
+    "Spike Dudley"
+   ],
+   "place": "WWE (Raw) @ Lakeland, FL – July 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #182",
+    "Solie"
+   ],
+   "cawthon": "Spike Dudley pinned WWE Hardcore Champion Justin Credible to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-12",
+   "order": 2,
+   "champions": [
+    "The Big Show"
+   ],
+   "place": "WWE (Raw) @ Lakeland, FL – July 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #183",
+    "Solie"
+   ],
+   "cawthon": "The Big Show pinned WWE Hardcore Champion Spike Dudley to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-12",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Lakeland, FL – July 12, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #184",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion the Big Show to win the title with the Clothesline from Hell, wrapping a cowbell around his arm"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-13",
+   "order": 0,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "WWE (Raw) @ Daytona Beach, FL – Ocean Center – July 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #185",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWE Hardcore Champion Bradshaw to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-13",
+   "order": 1,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Daytona Beach, FL – Ocean Center – July 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #186",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Justin Credible to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-13",
+   "order": 2,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Daytona Beach, FL – Ocean Center – July 13, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #187",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak to win the title following the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-14",
+   "order": 0,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "WWE (Raw) @ Bethlehem, PA – Stabler Arena – July 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #188",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWE Hardcore Champion Bradshaw with the superkick to win the title after Credible interfered in Bradshaw's title bout with Shawn Stasiak"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-14",
+   "order": 1,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Bethlehem, PA – Stabler Arena – July 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #189",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Justin Credible to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-14",
+   "order": 2,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Bethlehem, PA – Stabler Arena – July 14, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #190",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak with the Clothesline from Hell to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-26",
+   "order": 0,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ Houston, TX – Compaq Center – July 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #193",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Bradshaw to win the title after he and Justin Credible interfered during Bradshaw's title defense against Shawn Stasiak"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-26",
+   "order": 1,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "WWE (Raw) @ Houston, TX – Compaq Center – July 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #194",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWE Hardcore Champion Raven to win the title with the superkick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-26",
+   "order": 2,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Houston, TX – Compaq Center – July 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #195",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Justin Credible to win the title with a roll up"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-26",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Houston, TX – Compaq Center – July 26, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #196",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-27",
+   "order": 0,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ San Antonio, TX – Freeman Coliseum – July 27, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #197",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Bradshaw to win the title after he and Justin Credible interfered during Bradshaw's title defense against Shawn Stasiak"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-27",
+   "order": 1,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "WWE (Raw) @ San Antonio, TX – Freeman Coliseum – July 27, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #198",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWE Hardcore Champion Raven to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-27",
+   "order": 2,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ San Antonio, TX – Freeman Coliseum – July 27, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #199",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Justin Credible to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-27",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ San Antonio, TX – Freeman Coliseum – July 27, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #200",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-28",
+   "order": 1,
+   "champions": [
+    "Justin Credible"
+   ],
+   "place": "Columbia, South Carolina",
+   "sources": [
+    "Wikipedia #202",
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Justin Credible pinned WWE Hardcore Champion Eddie Guerrero to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-28",
+   "order": 2,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "Columbia, South Carolina",
+   "sources": [
+    "Wikipedia #203",
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Justin Credible to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-28",
+   "order": 3,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "Columbia, South Carolina",
+   "sources": [
+    "Wikipedia #204",
+    "Cawthon",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak to win the title"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-03",
+   "order": 0,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Miami, FL – American Airlines Arena – August 3, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #208",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Tommy Dreamer to win the title following the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-03",
+   "order": 1,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Miami, FL – American Airlines Arena – August 3, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #209",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Bradshaw to win the title after Justin Credible and Shawn Stasiak interfered"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-04",
+   "order": 0,
+   "champions": [
+    "Bradshaw"
+   ],
+   "place": "WWE (Raw) @ Pittsburgh, PA – Mellon Arena – August 4, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #210",
+    "Solie"
+   ],
+   "cawthon": "Bradshaw pinned WWE Hardcore Champion Tommy Dreamer to win the title at 6:30 following the Clothesline from Hell"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-04",
+   "order": 1,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Pittsburgh, PA – Mellon Arena – August 4, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #211",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Bradshaw to win the title after Justin Credible and Shawn Stasiak interfered at the 30 second mark"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-09",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Kelowna, British Columbia – August 9, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #212",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Tommy Dreamer to win the title after interfering in Dreamer's title defense against Steven Richards"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-09",
+   "order": 1,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Kelowna, British Columbia – August 9, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #213",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Stevie Kick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-09",
+   "order": 2,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Kelowna, British Columbia – August 9, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #214",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Steven Richards to win the title with the DDT"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-10",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Kamloops, British Columbia – August 10, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #215",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Tommy Dreamer to win the title after interfering in Dreamer's title defense against Steven Richards"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-10",
+   "order": 1,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Kamloops, British Columbia – August 10, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #216",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Stevie Kick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-10",
+   "order": 2,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Kamloops, British Columbia – August 10, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #217",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Steven Richards to win the title with the DDT"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-11",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Vancouver, British Columbia – August 11, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #218",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Tommy Dreamer to win the title after interfering in Dreamer's title defense against Steven Richards"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-11",
+   "order": 1,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "WWE (Raw) @ Vancouver, British Columbia – August 11, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #219",
+    "Solie"
+   ],
+   "cawthon": "Steven Richards pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Stevie Kick"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-11",
+   "order": 2,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Vancouver, British Columbia – August 11, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #220",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Steven Richards to win the title after using a Singapore cane as a weapon"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-17",
+   "order": 0,
+   "champions": [
+    "Raven"
+   ],
+   "place": "WWE (Raw) @ Terre Haute, IN – Hullman Center – August 17, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #221",
+    "Solie"
+   ],
+   "cawthon": "Raven pinned WWE Hardcore Champion Tommy Dreamer to win the title with the DDT after interfering in Dreamer's title defense against Shawn Stasiak"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-17",
+   "order": 1,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "WWE (Raw) @ Terre Haute, IN – Hullman Center – August 17, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #222",
+    "Solie"
+   ],
+   "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Raven to win the title with an inverted DDT"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-17",
+   "order": 2,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "WWE (Raw) @ Terre Haute, IN – Hullman Center – August 17, 2002",
+   "sources": [
+    "Cawthon",
+    "Wikipedia #223",
+    "Solie"
+   ],
+   "cawthon": "Tommy Dreamer pinned WWE Hardcore Champion Shawn Stasiak to win the title with the Spicolli Driver"
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-18",
+   "order": 0,
+   "champions": [
+    "Shawn Stasiak"
+   ],
+   "place": "Evansville, Indiana",
+   "sources": [
+    "Wikipedia #224",
+    "Solie"
+   ],
+   "cawthon": null
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-18",
+   "order": 1,
+   "champions": [
+    "Steven Richards"
+   ],
+   "place": "Evansville, Indiana",
+   "sources": [
+    "Wikipedia #225",
+    "Solie"
+   ],
+   "cawthon": null
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-08-18",
+   "order": 2,
+   "champions": [
+    "Tommy Dreamer"
+   ],
+   "place": "Evansville, Indiana",
+   "sources": [
+    "Wikipedia #226",
+    "Solie"
+   ],
+   "cawthon": null
+  }
+ ]
+}
