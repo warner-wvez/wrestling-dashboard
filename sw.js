@@ -35,7 +35,11 @@
 // parser dropped when a partner was named before a stable ("Billy Gunn & The
 // APA"), and two sides that had become their special referee got their real
 // wrestlers back. Four zero-day phantom tag reigns left title_reigns with them.
-const CACHE = 'wrestling-dashboard-v13';
+// v14: 760 2001-2013 dark matches now carry aired: false (greyed, "Not on the
+// broadcast"), 13 wrestlers a stored lineup had lost are back, and 73 junk
+// participant names ("countout", "Jeff Hardy by TKO", "and") are cleaned. The
+// card template changed too, so index.html and every match shard are new.
+const CACHE = 'wrestling-dashboard-v14';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

@@ -1722,6 +1722,12 @@
   }
   .m-tag.title { background: var(--red-soft); color: var(--red-dark); }
   .m-tag.stip { background: var(--blue-soft); color: var(--blue-dark); }
+  /* A match that never aired on this broadcast (a dark match, or a PPV
+     pre-show bout): kept on the card for the record, greyed and labelled so
+     the card matches the footage. Not a spoiler: it says nothing of the result. */
+  .m-tag.not-aired { background: var(--border); color: var(--ink-faint); }
+  .match-card.not-aired { opacity: 0.6; }
+  .match-card.not-aired:hover { opacity: 1; }
 
   /* Match Guide rating badge: visible in both spoiler modes (rating is not a spoiler). */
   .m-rating {
@@ -5591,7 +5597,7 @@
           ${renderWatchRow(d)}
         </div>
         <div class="matches-list">
-          ${(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
+          ${airedFirst(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
         ${renderMoments(d)}
         ${renderPromos(d)}
@@ -5759,6 +5765,12 @@
       </div>`;
   }
 
+  // Matches that aired first, in card order; the ones that never aired on
+  // this broadcast (m.aired === false) follow, so the card reads like the show.
+  function airedFirst(matches) {
+    return [...matches.filter(m => m.aired !== false), ...matches.filter(m => m.aired === false)];
+  }
+
   function renderMatch(m, airDate, sourceSlug = null, eventId = null) {
     const order = String(m.match_order).padStart(2, '0');
     const type = m.match_type || 'Match';
@@ -5776,6 +5788,9 @@
       ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
     const stipTag = (m.stipulation && !typeNorm.includes(norm(m.stipulation)))
       ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
+    const notAired = m.aired === false;
+    const airedTag = notAired
+      ? `<span class="m-tag not-aired">${m.aired_on ? `Aired on ${esc(m.aired_on)}` : 'Not on the broadcast'}</span>` : '';
     // Rating is NOT a spoiler: surfaced unconditionally so spoiler-hidden users
     // can still triage which matches are worth watching.
     // A 9.1 from 12 voters is not a 9.1, so the vote count rides the tooltip.
@@ -5807,12 +5822,12 @@
       ? `<button class="save-btn${isS ? ' active' : ''}" data-save-event="${esc(String(eventId))}" data-save-match="${esc(String(m.id))}" type="button" aria-pressed="${isS ? 'true' : 'false'}" title="${isS ? 'Saved. Click to remove.' : 'Save this match'}"><span class="sv-ribbon" aria-hidden="true"></span><span class="sv-label">${isS ? 'Saved' : 'Save'}</span></button>`
       : '';
     return `
-      <div class="match-card"${canSave ? ` data-match-id="${esc(String(m.id))}"` : ''}>
+      <div class="match-card${notAired ? ' not-aired' : ''}"${canSave ? ` data-match-id="${esc(String(m.id))}"` : ''}>
         <div class="match-header-row">
           <span class="header-left">
             <span class="m-number">M${order}</span>
             <span class="m-type">${esc(type)}</span>
-            ${titleTag}${stipTag}${ratingTag}${wonTag}
+            ${airedTag}${titleTag}${stipTag}${ratingTag}${wonTag}
           </span>
           <span class="header-center">${detailsToggle}</span>
           <span class="header-right">${watchChip}${saveBtn}</span>

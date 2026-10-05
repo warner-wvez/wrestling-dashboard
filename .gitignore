@@ -28,3 +28,10 @@ profiles-pipeline/gimmick-misses.txt
 profiles-pipeline/era-misses.txt
 profiles-pipeline/*.log
 .firecrawl/
+
+# Lineup check: keep the tool + reports, drop the page caches
+lineup-check/cache/
+lineup-check/sdh-cache/
+
+# Local planning docs (specs, plans, handoffs) never get committed
+docs/superpowers/
