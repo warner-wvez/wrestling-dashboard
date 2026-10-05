@@ -59,7 +59,24 @@ def _date(s):
 def reigns(text):
     out = []
     for b in re.split(r"\{\{\s*PWtitlereign", text)[1:]:
-        f = {k.strip(): v for k, v in re.findall(r"\|\s*(\w+)\s*=\s*([^\n]*)", b)}
+        # Citations first: a cite's own "|date=" must not pass for the reign's.
+        b = re.sub(r"<ref[^>]*/>|<ref.*?</ref>", "", b, flags=re.S)
+        # A template on one line runs its fields together ("|champion = X |date
+        # = ..."), so each field ends where the next "|name =" begins.
+        # Only marks at the template's own level count: "{{sortname||Edge|dab=
+        # wrestler}}" has a "|dab=" of its own.
+        depth, level = 0, []
+        for i, ch in enumerate(b):
+            if b.startswith("{{", i) or b.startswith("[[", i):
+                depth += 1
+            elif b.startswith("}}", i) or b.startswith("]]", i):
+                depth -= 1
+            level.append(depth)
+        marks = [mk for mk in re.finditer(r"\|\s*(\w+)\s*=", b) if level[mk.start()] == 0]
+        f = {}
+        for n, mk in enumerate(marks):
+            end = marks[n + 1].start() if n + 1 < len(marks) else len(b)
+            f.setdefault(mk.group(1), b[mk.end():end].split("\n|")[0].strip())
         d = _date(f.get("date", ""))
         if d:
             out.append({"date": d, "champion": _unlink(f.get("champion", "")), "event": _unlink(f.get("event", "")),

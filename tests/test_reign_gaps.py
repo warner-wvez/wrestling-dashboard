@@ -37,7 +37,7 @@ def _ev(eid, date, matches):
 
 
 def _reigns(events, title=TITLE):
-    return build_title_reigns(events)[lineage_name(title, min(e["air_date"] for e in events.values()))]
+    return build_title_reigns(events, offcard=())[lineage_name(title, min(e["air_date"] for e in events.values()))]
 
 
 def test_a_missing_title_change_is_recovered_from_the_champion_marker():

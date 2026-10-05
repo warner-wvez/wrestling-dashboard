@@ -123,7 +123,7 @@ def test_dq_win_does_not_move_the_belt():
         [title_match(1, ["Champ"], ["Challenger"], True, "WWE Title")]))
     events.update(event(2, "2001-02-01", "PPV",
         [title_match(2, ["Challenger"], ["Other"], True, "WWE Title", outcome="dq-win")]))
-    reigns = build_title_reigns(events)[lineage_name("WWE Title", "2001-01-01")]
+    reigns = build_title_reigns(events, offcard=())[lineage_name("WWE Title", "2001-01-01")]
     # Challenger won the belt cleanly in Jan; Other's February DQ win must not
     # start a reign.
     assert [r["champion_names"] for r in reigns][-1] == ["Challenger"]
@@ -136,7 +136,7 @@ def test_belt_cannot_change_hands_without_its_champion():
     # A mislabeled contender match: no team was champion entering.
     events.update(event(2, "2001-02-01", "Raw", [match(2, [
         team(["Corbin"], True), team(["Someone"], False)], title="WWE Title")]))
-    reigns = build_title_reigns(events)[lineage_name("WWE Title", "2001-01-01")]
+    reigns = build_title_reigns(events, offcard=())[lineage_name("WWE Title", "2001-01-01")]
     assert [r["champion_names"] for r in reigns][-1] == ["NewChamp"]
     assert ["Corbin"] not in [r["champion_names"] for r in reigns]
 
@@ -147,7 +147,7 @@ def test_title_wins_derive_from_reigns_when_provided():
         [title_match(1, ["Champ"], ["NewChamp"], True, "WWE Title")]))
     events.update(event(2, "2001-02-01", "Raw", [match(2, [
         team(["Corbin"], True), team(["Someone"], False)], title="WWE Title")]))
-    reigns = build_title_reigns(events)
+    reigns = build_title_reigns(events, offcard=())
     wrestlers, by_name = build_wrestlers_index(events, title_reigns=reigns)
     assert dict(wrestlers[by_name["NewChamp"]]["title_wins"]) == {lineage_name("WWE Title", "2001-01-01"): 1}
     assert wrestlers[by_name["Corbin"]]["title_wins"] == []      # phantom win gone

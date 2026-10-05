@@ -47,7 +47,7 @@ def test_a_belt_the_corpus_stops_seeing_closes_its_final_reign():
     reigns = build_title_reigns(_events([
         (1, "2002-01-07", "WWF Hardcore Title", "Rob Van Dam", "Test", True),
         (2, "2002-08-26", "WWF Hardcore Title", "Rob Van Dam", "Jeff Hardy", False),
-    ]))["WWF Hardcore Title"]
+    ]), offcard=())["WWF Hardcore Title"]
     final = reigns[-1]
     assert final["end"] == "2002-08-26", (
         "a belt last defended in 2002 must not still be held in 2026")
@@ -58,7 +58,7 @@ def test_a_belt_still_being_defended_keeps_an_open_reign():
     reigns = build_title_reigns(_events([
         (1, "2026-01-05", "WWE Title", "Sami Zayn", "Gunther", True),
         (2, "2026-06-20", "WWE Title", "Sami Zayn", "Bron Breakker", False),
-    ]))[lineage_name("WWE Title", "2026-01-05")]
+    ]), offcard=())[lineage_name("WWE Title", "2026-01-05")]
     assert reigns[-1]["end"] is None, (
         "a belt defended a week before the corpus ends is current, not retired")
 
@@ -72,7 +72,7 @@ def test_a_revived_name_is_its_own_lineage_and_stays_live():
         (1, "2002-09-02", "World Heavyweight Title", "Triple H", "Booker T", True),
         (2, "2013-12-15", "World Heavyweight Title", "Randy Orton", "John Cena", True),
         (3, "2026-04-19", "World Heavyweight Title", "Roman Reigns", "Seth Rollins", True),
-    ]))
+    ]), offcard=())
     revival = reigns[lineage_name("World Heavyweight Title", "2026-04-19")]
     original = reigns[lineage_name("World Heavyweight Title", "2002-09-02")]
     assert revival[-1]["end"] is None, "the revival is current and must stay open"

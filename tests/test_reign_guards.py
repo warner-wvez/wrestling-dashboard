@@ -547,3 +547,43 @@ def test_a_ruling_on_a_mapped_belt_overrides_a_co_holders_c_marker():
     events.update(_ev(2, "2010-10-24", [defense]))
     assert _champs(events, t)[-1] == ["Michelle McCool"], _chain(events, t)
     assert ["Layla"] not in _champs(events, t)
+
+
+def test_a_vacancy_ends_the_reign_and_holds_the_belt_empty():
+    """US title, 2005: Booker T's defense against Chris Benoit ended in a
+    double pin on 2005-11-25 and the title was vacated; a contender match during
+    the vacancy crowns nobody, and the series decider on 2006-01-13 fills it."""
+    t = "WWE United States Title"
+    events = {}
+    events.update(_ev(1, "2005-10-21", [
+        _m(1, ["Booker T"], ["Chris Benoit"], "Booker T defeats Chris Benoit (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2005-12-09", [
+        _m(1, ["Randy Orton"], ["Matt Hardy"], "Randy Orton defeats Matt Hardy", title=t)]))
+    events.update(_ev(3, "2006-01-13", [
+        _m(1, ["Booker T"], ["Chris Benoit"], "Booker T [4] defeats Chris Benoit [3] - TITLE CHANGE !!!", title=t)]))
+    vacancy = [{"title": t, "date": "2005-11-25", "vacate": True}]
+    reigns = build_title_reigns(events, offcard=vacancy)[t]
+    assert [(r["start"], r["end"], r["champion_names"]) for r in reigns][1:] == [
+        ("2005-10-21", "2005-11-25", ["Booker T"]),
+        ("2006-01-13", None, ["Booker T"])], reigns
+
+
+def test_a_champions_defense_the_night_he_is_stripped_does_not_recrown_him():
+    """SmackDown 2004-07-08: John Cena defended the US title as "(c)" on the
+    show where Kurt Angle then stripped him. The vacancy sorts ahead of that
+    night's card, so Cena's own (c) must not hand him the belt back."""
+    t = "WWE United States Title"
+    events = {}
+    events.update(_ev(1, "2004-03-14", [
+        _m(1, ["John Cena"], ["The Big Show"], "John Cena defeats The Big Show (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2004-07-08", [
+        _m(1, ["John Cena"], ["Rene Dupree"], "John Cena (c) defeats Rene Dupree", title=t, champ_side="winner")]))
+    events.update(_ev(3, "2004-07-29", [
+        _m(1, ["Booker T"], ["John Cena"], "Booker T defeats John Cena - TITLE CHANGE !!!", title=t)]))
+    vacancy = [{"title": t, "date": "2004-07-08", "vacate": True, "vacated_by": "John Cena"}]
+    reigns = build_title_reigns(events, offcard=vacancy)[t]
+    assert [(r["start"], r["end"], r["champion_names"]) for r in reigns][1:] == [
+        ("2004-03-14", "2004-07-08", ["John Cena"]),
+        ("2004-07-29", None, ["Booker T"])], reigns

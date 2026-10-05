@@ -975,6 +975,10 @@ def _pick_singles_champion(participants: list, appearances: Counter, incumbents)
     return [min(parts, key=lambda p: (-appearances.get(p, 0), 0 if p in inc else 1, p))]
 
 
+# SmackDown Hotel and Cawthon state a change in words, where Cagematch writes
+# "TITLE CHANGE !!!": "AJ Styles defeats Daniel Bryan to win the vacant title".
+_WIN_TITLE_RE = re.compile(
+    r"\bto win the (?:vacant |new )?(?:[\w'\u2019]+ ){0,4}?(?:title|titles|championship|championships)\b", re.I)
 _STAND_IN_RE = re.compile(r"([A-Z][^\[\]()&,]*?)\s*\[Replacement for ([^\]]+)\]")
 
 
@@ -996,13 +1000,19 @@ def _result_for(result, lineage_key, day):
 OFFCARD_TITLE_CHANGES = Path(__file__).resolve().parent.parent / "data" / "offcard-title-changes.json"
 
 
-def load_offcard_changes(path=OFFCARD_TITLE_CHANGES) -> list[dict]:
-    """Title changes at shows no card carries (house shows), each listed the
-    same way by two of three published records. Built by
-    lineup-check/offcard_titles.py; empty when the file is absent."""
-    if not path.exists():
-        return []
-    return json.loads(path.read_text(encoding="utf-8")).get("changes") or []
+TITLE_VACANCIES = Path(__file__).resolve().parent.parent / "data" / "title-vacancies.json"
+
+
+def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES) -> list[dict]:
+    """Title changes no card carries: house-show changes, each listed the same
+    way by two of three published records (lineup-check/offcard_titles.py), and
+    vacancies from the title histories that match who held the belt
+    (lineup-check/title_vacancies.py). Empty when the files are absent."""
+    out = []
+    for f, key in ((path, "changes"), (vacancies, "vacancies")):
+        if f.exists():
+            out += json.loads(f.read_text(encoding="utf-8")).get(key) or []
+    return out
 
 
 def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list[dict]]:
@@ -1084,7 +1094,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                         # Did the source say a belt changed hands, and can that claim
                         # be pinned to THIS belt? On a composite stake it cannot: the
                         # marker may belong to the other belt on the line.
-                        'title_change': 'TITLE CHANGE' in raw.upper(),
+                        'title_change': 'TITLE CHANGE' in raw.upper() or bool(_WIN_TITLE_RE.search(raw)),
                         'composite_stake': len(components) > 1,
                         'component_count': len(components),
                         # Who holds the belt after this match, set by a migration
@@ -1105,8 +1115,12 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
     # Hardcore title under the 24/7 rule. They join an existing lineage by
     # date, as a ruling naming the new holder, so a week of house-show swaps no
     # longer reads as one unbroken reign.
+    # A vacancy (a belt vacated, stripped or relinquished) joins the same way:
+    # the reign ends that day and the belt stays empty until a match fills it.
     for change in (load_offcard_changes() if offcard is None else offcard):
-        lk = _title_lineage_key(change['title'])
+        lk = change.get('lineage') or next(
+            (lin['key'] for lin in lineages_for(change['title'], change['date'])),
+            _title_lineage_key(change['title']))
         if lk not in timelines:
             continue
         timelines[lk].append({
@@ -1118,7 +1132,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             'title_change': True,
             'composite_stake': False,
             'component_count': 1,
-            'title_result': {'champions': list(change['champions'])},
+            'title_result': None if change.get('vacate') else {'champions': list(change['champions'])},
+            'vacate': bool(change.get('vacate')),
+            'vacated_by': change.get('vacated_by') or '',
         })
 
     # Canonical display name per lineage: the spelling that carries the most
@@ -1146,6 +1162,8 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
         reigns: list[dict] = []
         current: dict | None = None
         first = True
+        vacant = False
+        vacated_from = None
         # A tag title legitimately has 2+ holders; a singles title has exactly
         # one, so a multi-person winning team there needs disambiguating.
         is_singles = 'Tag' not in canon_name[lk]
@@ -1169,6 +1187,28 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                     current = None
                 first = True
             prev = m
+
+            # A vacancy from the title history: the reign ends here and the
+            # belt stays empty until a TITLE CHANGE, a (c) or a ruling fills
+            # it, so a contender match in the gap crowns nobody.
+            if m.get('vacate'):
+                if current is not None:
+                    vacated_from = (m['air_date'], list(current['champion_names']))
+                    current['end'] = m['air_date']
+                    current['end_event_id'] = None
+                    current['vacated'] = True
+                    reigns.append(current)
+                    current = None
+                    vacant = True
+                continue
+            # The vacancy sorts ahead of that night's card, but a champion can
+            # defend as "(c)" earlier on the show that strips him (John Cena,
+            # SmackDown 2004-07-08). That defense does not give him the belt
+            # back.
+            if vacant and vacated_from and m['air_date'] == vacated_from[0] and champ_team \
+                    and _champions_overlap(vacated_from[1], champ_team.get('participants') or [], canon_fn) \
+                    and not m.get('title_change'):
+                continue
 
             if first:
                 if champ_team and champ_team.get('participants'):
@@ -1264,6 +1304,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             result = m.get('title_result') or {}
             ruled = [p for p in (result.get('champions') or []) if p]
             if ruled:
+                vacant = False
                 for holders in [h for h in (result.get('within') or []) if h] + [ruled]:
                     if current is None or not _same_champions(
                             current['champion_names'], holders, canon_fn):
@@ -1348,6 +1389,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             # day the belt was given up.
             if current is not None and champ_team is None and not m.get('title_change'):
                 continue
+            if vacant and champ_team is None and not m.get('title_change'):
+                continue
+            vacant = False
 
             # A stand-in wins for the man he replaced. Randy Orton, "[Replacement
             # for Booker T]", won the 2006 US title series decider and then
@@ -1393,7 +1437,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             # A retired belt whose name was later revived leaves a real gap in
             # the chain: nobody held it in between, because it did not exist.
             # Every other break is a bug.
-            if r['end'] != n['start'] and not r.get('closed_at_retirement'):
+            if r['end'] != n['start'] and not r.get('closed_at_retirement') and not r.get('vacated'):
                 raise AssertionError(
                     f"title_reigns: reign chain broken for {title!r} at indices {i},{i+1}: "
                     f"end={r['end']} != next.start={n['start']}"

@@ -1,0 +1,375 @@
+{
+ "about": "Title vacancies from Wikipedia's title histories, kept where the champion the list names is who our history has holding the belt. Built by lineup-check/title_vacancies.py.",
+ "vacancies": [
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "2002-10-20",
+   "vacate": true,
+   "vacated_by": "Triple H",
+   "why": "Unified with Triple H's World Heavyweight Championship; the Intercontinental Championship was deactivated.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "2003-03-24",
+   "order": -1,
+   "champions": [
+    "Chief Morley",
+    "Lance Storm"
+   ],
+   "awarded": true,
+   "why": "Morley awarded himself and Storm the titles.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "2003-03-24",
+   "vacate": true,
+   "vacated_by": "William Regal and Lance Storm",
+   "why": "Vacated due to Regal suffering from a heart parasite and concussion.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "title": "WWE United States Title",
+   "date": "2004-07-08",
+   "vacate": true,
+   "vacated_by": "John Cena",
+   "why": "John Cena was stripped of the title after attacking SmackDown! General Manager Kurt Angle.<br/>Aired on tape delay on July 8, 2004.",
+   "source": "List of WWE United States Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "2004-09-06",
+   "vacate": true,
+   "vacated_by": "Edge",
+   "why": "Vacated due to a groin injury.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2004-12-06",
+   "vacate": true,
+   "vacated_by": "Triple H",
+   "why": "The championship was vacated after a double fall occurred in a triple threat match also involving Chris Benoit and Edge.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "title": "WWE United States Title",
+   "date": "2005-11-25",
+   "vacate": true,
+   "vacated_by": "Booker T",
+   "why": "Vacated when Booker T's title defense against Chris Benoit ended in a double pinfall.<br/>Aired on tape delay on November 25, 2005.",
+   "source": "List of WWE United States Champions"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2006-01-13",
+   "vacate": true,
+   "vacated_by": "Batista",
+   "why": "Batista vacated the title after he was sidelined with a legit triceps injury. Aired on tape delay on January 13, 2006.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "title": "ECW World Heavyweight Title",
+   "date": "2007-06-11",
+   "vacate": true,
+   "vacated_by": "Bobby Lashley",
+   "why": "The championship was vacated due to Bobby Lashley being drafted to the Raw brand.",
+   "source": "List of ECW World Heavyweight Champions"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2007-07-20",
+   "vacate": true,
+   "vacated_by": "Edge",
+   "why": "Edge vacated the title after he was sidelined with a legit pectoral injury. Aired on tape delay on July 20, 2007.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "2007-10-02",
+   "vacate": true,
+   "vacated_by": "John Cena",
+   "why": "The title was vacated after John Cena suffered an injury.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "2007-10-07",
+   "order": -1,
+   "champions": [
+    "Randy Orton"
+   ],
+   "awarded": true,
+   "why": "Orton was originally scheduled to challenge John Cena for the title, but due to Cena vacating it, Orton was awarded the title and had to immediately defend it against Triple H.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2008-05-02",
+   "vacate": true,
+   "vacated_by": "The Undertaker",
+   "why": "SmackDown General Manager Vickie Guerrero stripped The Undertaker of the title for using the Hell's Gate submission hold, which she deemed to be dangerous. Aired on tape delay on May 2, 2008.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "2009-06-09",
+   "vacate": true,
+   "vacated_by": "Batista",
+   "why": "The title was vacated after Batista suffered a torn left bicep.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "lineage": "lineage::divas",
+   "date": "2010-01-04",
+   "vacate": true,
+   "vacated_by": "Melina",
+   "why": "The title was vacated after Melina sustained a torn anterior cruciate ligament.",
+   "source": "List of WWE Divas Champions"
+  },
+  {
+   "title": "WWE United States Title",
+   "date": "2010-05-24",
+   "vacate": true,
+   "vacated_by": "Bret Hart",
+   "why": "Vacated when Bret Hart became the Raw General Manager.",
+   "source": "List of WWE United States Champions"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2011-02-18",
+   "order": -1,
+   "champions": [
+    "Dolph Ziggler"
+   ],
+   "awarded": true,
+   "why": "Awarded the title by SmackDown General Manager Vickie Guerrero. Aired on tape delay on February 18, 2011, the date WWE recognizes for the reign.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2011-02-18",
+   "vacate": true,
+   "vacated_by": "Edge",
+   "why": "Edge was stripped of the title by SmackDown General Manager Vickie Guerrero as a result of using the spear (which had been banned) in a previous match. Aired on tape delay on February 18, 2011.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2002",
+   "date": "2011-04-15",
+   "vacate": true,
+   "vacated_by": "Edge",
+   "why": "Edge relinquished the title when he announced his immediate retirement as a result of being diagnosed with spinal stenosis. Aired on tape delay on April 15, 2011.",
+   "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "2013-09-16",
+   "vacate": true,
+   "vacated_by": "Daniel Bryan",
+   "why": "The title was vacated after a controversial finish when Daniel Bryan defeated Randy Orton to win the title.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "title": "NXT Women's Title",
+   "date": "2014-04-24",
+   "vacate": true,
+   "vacated_by": "Paige",
+   "why": "NXT General Manager John \"Bradshaw\" Layfield stripped Paige of the title when she moved on to the main roster after winning the WWE Divas Championship.",
+   "source": "List of NXT Women's Champions"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "2014-06-09",
+   "vacate": true,
+   "vacated_by": "Daniel Bryan",
+   "why": "Daniel Bryan was stripped of the title due to a neck injury.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "2014-06-30",
+   "vacate": true,
+   "vacated_by": "Bad News Barrett",
+   "why": "Title vacated due to a shoulder injury.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "2015-05-11",
+   "vacate": true,
+   "vacated_by": "Daniel Bryan",
+   "why": "Daniel Bryan was forced to relinquish the title due to a concussion-related injury.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "2015-11-05",
+   "vacate": true,
+   "vacated_by": "Seth Rollins",
+   "why": "The title was vacated after Seth Rollins suffered a torn ACL, MCL, and a damaged meniscus at a live event in Dublin, Ireland.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "lineage": "lineage::universal",
+   "date": "2016-08-22",
+   "vacate": true,
+   "vacated_by": "Finn Bálor",
+   "why": "Vacated due to Finn Bálor suffering a legit shoulder injury during his match at SummerSlam.",
+   "source": "List of WWE Universal Champions"
+  },
+  {
+   "lineage": "lineage::womens-world",
+   "date": "2017-02-21",
+   "vacate": true,
+   "vacated_by": "Naomi",
+   "why": "The championship was vacated when Naomi suffered a knee injury and was unable to defend the title within 30 days.",
+   "source": "List of Women's World Champions (WWE)"
+  },
+  {
+   "title": "NXT Women's Title",
+   "date": "2017-09-06",
+   "vacate": true,
+   "vacated_by": "Asuka",
+   "why": "After suffering a collarbone injury at TakeOver: Brooklyn III, Asuka relinquished the title.<br>Aired on tape delay on September 6, 2017.",
+   "source": "List of NXT Women's Champions"
+  },
+  {
+   "title": "WWE United States Title",
+   "date": "2017-12-26",
+   "vacate": true,
+   "vacated_by": "Dolph Ziggler",
+   "why": "SmackDown General Manager Daniel Bryan ruled that Dolph Ziggler vacated the title after he left the belt in the ring on the December 19 episode of SmackDown.",
+   "source": "List of WWE United States Champions"
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "date": "2018-01-23",
+   "vacate": true,
+   "vacated_by": "Enzo Amore",
+   "why": "Vacated due to Enzo Amore's release from WWE one day after it was confirmed that Amore was under investigation for an alleged sexual assault that was reported to the police in October 2017.",
+   "source": "List of WWE Cruiserweight Champions"
+  },
+  {
+   "lineage": "lineage::universal",
+   "date": "2018-10-22",
+   "vacate": true,
+   "vacated_by": "Roman Reigns",
+   "why": "Vacated after Roman Reigns announced that he had been legitimately diagnosed with a recurrence leukemia.",
+   "source": "List of WWE Universal Champions"
+  },
+  {
+   "title": "NXT Title",
+   "date": "2019-03-20",
+   "vacate": true,
+   "vacated_by": "Tommaso Ciampa",
+   "why": "The title was vacated due to Tommaso Ciampa requiring neck surgery. Aired on tape delay on March 20, 2019.",
+   "source": "List of NXT Champions"
+  },
+  {
+   "lineage": "lineage::smackdown-tag",
+   "date": "2019-04-30",
+   "vacate": true,
+   "vacated_by": "The Hardy Boyz<br />",
+   "why": "The Hardy Boyz (Jeff Hardy and Matt Hardy) vacated the title due to Jeff suffering a knee injury that required surgery.",
+   "source": "List of WWE Tag Team Champions"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "date": "2019-05-15",
+   "vacate": true,
+   "vacated_by": "War Raiders/The Viking Experience/The Viking Raiders<br />",
+   "why": "The Viking Raiders (Ivar and Erik) voluntarily relinquished the title as they were no longer part of NXT. Aired on tape delay on May 15, 2019.",
+   "source": "List of NXT Tag Team Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "2020-05-12",
+   "vacate": true,
+   "vacated_by": "Sami Zayn",
+   "why": "Sami Zayn was stripped of the title after electing to refrain from competing during the COVID-19 pandemic. In storyline, he claimed to still be the champion, and continued to carry around his copy of the belt after he returned in August 2020.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "title": "NXT North American Title",
+   "date": "2020-07-22",
+   "vacate": true,
+   "vacated_by": "Keith Lee",
+   "why": "Keith Lee voluntarily relinquished the title two weeks after winning the NXT Championship in order to focus on defending the latter. This episode aired on tape delay on July 22, 2020.",
+   "source": "List of NXT North American Champions"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "date": "2022-04-08",
+   "vacate": true,
+   "vacated_by": "MSK<br>",
+   "why": "The title was vacated due to Nash Carter's release.",
+   "source": "List of NXT Tag Team Champions"
+  },
+  {
+   "title": "WWE Women's Tag Team Title",
+   "date": "2022-05-20",
+   "vacate": true,
+   "vacated_by": "Naomi and Sasha Banks",
+   "why": "The title was vacated after Naomi and Sasha Banks legitimately walked out of a scheduled appearance on the May 16, 2022, episode of Raw due to claims of mistreatment of the titles and the division as a whole, which led to the duo being suspended indefinitely (they both later left the company).",
+   "source": "List of WWE Women's Tag Team Champions"
+  },
+  {
+   "title": "NXT North American Title",
+   "date": "2022-09-20",
+   "vacate": true,
+   "vacated_by": "Solo Sikoa",
+   "why": "Shawn Michaels ordered Solo Sikoa to vacate the title as he was not originally scheduled to be in the match in which he won the title. It is unknown when the segment was taped.",
+   "source": "List of NXT North American Champions"
+  },
+  {
+   "title": "NXT Women's Title",
+   "date": "2023-05-02",
+   "vacate": true,
+   "vacated_by": "Indi Hartwell",
+   "why": "Indi Hartwell relinquished the title as she was drafted to Raw in the 2023 WWE Draft and also due to a foot injury.",
+   "source": "List of NXT Women's Champions"
+  },
+  {
+   "title": "WWE Women's Tag Team Title",
+   "date": "2023-05-19",
+   "vacate": true,
+   "vacated_by": "Liv Morgan and Raquel Rodriguez",
+   "why": "Liv Morgan and Raquel Rodriguez were forced to relinquish the title after Morgan suffered a legitimate shoulder injury.",
+   "source": "List of WWE Women's Tag Team Champions"
+  },
+  {
+   "lineage": "lineage::womens-world",
+   "date": "2024-04-15",
+   "vacate": true,
+   "vacated_by": "Rhea Ripley",
+   "why": "Rhea Ripley was forced to relinquish the title due to a legitimate shoulder injury.",
+   "source": "List of Women's World Champions (WWE)"
+  },
+  {
+   "lineage": "lineage::womens-world",
+   "date": "2025-08-18",
+   "vacate": true,
+   "vacated_by": "Naomi",
+   "why": "Naomi relinquished the title after she announced her pregnancy.",
+   "source": "List of Women's World Champions (WWE)"
+  },
+  {
+   "lineage": "lineage::world-heavyweight-2023",
+   "date": "2025-10-20",
+   "vacate": true,
+   "vacated_by": "Seth Rollins",
+   "why": "Seth Rollins was stripped of the title due to a shoulder injury at Crown Jewel on October 11. In kayfabe, he was injured by an attack from Bron Breakker and Bronson Reed on the October 13 episode of Raw.",
+   "source": "List of World Heavyweight Champions (WWE)"
+  },
+  {
+   "title": "NXT Title",
+   "date": "2026-01-06",
+   "vacate": true,
+   "vacated_by": "Oba Femi",
+   "why": "After successfully defending the title against Leon Slater, Oba Femi left the NXT Championship belt in the ring, voluntarily relinquishing the title as he moved up to the main roster.",
+   "source": "List of NXT Champions"
+  }
+ ]
+}
