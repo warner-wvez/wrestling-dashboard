@@ -79,7 +79,10 @@
 // v27: result text taken out of 315 side names ("The Big Show by Count Out",
 // "Christian to retain the ...") and a 2018 tag battle royal given its six
 // teams back. Core and match shards changed.
-const CACHE = 'wrestling-dashboard-v27';
+// v28: 226 multi-man sides split back into the sides the match text lists
+// (Elimination Chambers, ladder matches, gauntlets, multi-team tag matches drew
+// as handicap matches). Core and match shards changed.
+const CACHE = 'wrestling-dashboard-v28';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
