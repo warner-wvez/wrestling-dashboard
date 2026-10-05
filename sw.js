@@ -82,7 +82,10 @@
 // v28: 226 multi-man sides split back into the sides the match text lists
 // (Elimination Chambers, ladder matches, gauntlets, multi-team tag matches drew
 // as handicap matches). Core and match shards changed.
-const CACHE = 'wrestling-dashboard-v28';
+// v29: the 24/7 title's full history, 74 reigns to 205 (changes backstage, at
+// ringside, at house shows), and Reggie's 2021-11-08 win credited over Drake
+// Maverick. Core, the 2019 match shard and titles changed.
+const CACHE = 'wrestling-dashboard-v29';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
