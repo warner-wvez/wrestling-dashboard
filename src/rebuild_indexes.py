@@ -26,7 +26,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 from src.build_update import ROOT, load_existing                        # noqa: E402
 from src.export_to_html import (                                        # noqa: E402
     build_title_reigns, build_wrestler_reigns_by_date, build_wrestlers_index,
-    inject, split_fused_multiman_sides, strip_phantom_group_labels,
+    clean_junk_participants, inject, split_fused_multiman_sides, strip_phantom_group_labels,
     write_sharded)
 from src.roster_aliases import (                                        # noqa: E402
     CURATED, build_canon_map, bundle_derived_aliases, load_roster_snapshot,
@@ -79,6 +79,8 @@ def rebuild(data):
     # Un-fuse multi-man sides before anything reads the teams: the reign walk
     # takes the champion from them, the wrestler index counts rivals and tag
     # partners from them, and write_sharded ships them to the card.
+    cleaned = clean_junk_participants(events)
+    print(f"  cleaned junk participant names: {cleaned}", flush=True)
     unfused = split_fused_multiman_sides(events)
     print(f"  un-fused multi-man sides: {unfused} matches", flush=True)
     trimmed = strip_phantom_group_labels(events)
