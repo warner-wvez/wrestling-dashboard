@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from src.roster_aliases import normkey  # noqa: E402
 from src.ship_guard import atomic_write_text  # noqa: E402
 from fill_belts import belt_for, norm as belt_norm  # noqa: E402  (one belt-name mapper, not two)
+from src.title_lineages import LINEAGES  # noqa: E402
 
 OUT = Path(__file__).resolve().parent / "out"
 TAG = r'<script id="wrestling-data" type="application/json">(.*?)</script>'
@@ -73,10 +74,24 @@ def main() -> None:
             return b["before"] if (start or "9999") < b["cutoff"] else b["after"]
         return b
 
+    # A belt the lineage map knows (src/title_lineages.py) joins its Cagematch
+    # page by number: by words, the 1971 and the 2024 World Tag Team titles, or
+    # the 2013-16 WWE World Heavyweight Championship and the 2023 World
+    # Heavyweight Championship, land on one page.
+    nr_of = {lin["name"]: lin["cagematch"] for lin in LINEAGES}
+    mapped_nrs = set(nr_of.values())
+
+    def reign_key(tkey):
+        return f"cm::{nr_of[tkey]}" if tkey in nr_of else lineage_key(tkey)
+
+    def page_key(t):
+        nr = t["cagematch_title_nr"]
+        return f"cm::{nr}" if nr in mapped_nrs else lineage_key(t["title"])
+
     reigns_by_lineage = defaultdict(list)
     for tkey, reigns in bundle["title_reigns"].items():
         for r in reigns:
-            reigns_by_lineage[lineage_key(tkey)].append((tkey, r))
+            reigns_by_lineage[reign_key(tkey)].append((tkey, r))
     for lk, tagged in reigns_by_lineage.items():
         seen, merged = set(), []
         for tkey, r in sorted(tagged, key=lambda x: x[1]["start"], reverse=True):
@@ -99,12 +114,12 @@ def main() -> None:
     # title (Cagematch keeps big gold and the 2023 revival as separate pages,
     # the corpus derives one lineage) is skipped: its reigns already live on
     # the active title's page, chaptered by belt design.
-    active_keys = {lineage_key(t["title"]) for t in titles if t["champions"]}
+    active_keys = {page_key(t) for t in titles if t["champions"]}
     retired, seen_retired = [], set()
     for t in titles:
         if t["champions"]:
             continue
-        lk = lineage_key(t["title"])
+        lk = page_key(t)
         if lk in active_keys or lk in seen_retired:
             continue
         reigns = reigns_by_lineage.get(lk, [])
@@ -153,10 +168,20 @@ def main() -> None:
             "rating": t["rating"],
             "votes": t["votes"],
             "url": TITLE_URL.format(t["cagematch_title_nr"]),
-            "reigns": reigns_by_lineage.get(lineage_key(t["title"]), []),
+            "reigns": reigns_by_lineage.get(page_key(t), []),
         })
 
     board.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
+
+    # Two belts can share a name (the 1956 and 2016 WWE Women's
+    # Championships, WCW's 2001 World Heavyweight Championship and the
+    # 2002-13 one), and the Titles view links a page by its name, so a retired
+    # namesake opened the other belt's page. It carries its years instead.
+    names = Counter(t["title"] for t in board + retired)
+    for t in retired:
+        if names[t["title"]] > 1:
+            a, b = t["years"]
+            t["title"] = f"{t['title']} ({a})" if a == b else f"{t['title']} ({a}-{b})"
 
     print(f"active titles on the board: {len(board)}   retired on the shelf: {len(retired)}")
     print(f"champion links: {linked} resolved, {unlinked} plain text (NXT/EVOLVE/ID off-corpus)")

@@ -29,6 +29,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from src.fandom_scraper import _canonicalize_name  # noqa: E402
 from src.ship_guard import atomic_write_text       # noqa: E402
+from src.title_lineages import BY_KEY as LINEAGE_BY_KEY, lineages_for  # noqa: E402
 from src.wikipedia_ppv import BRAND_OR_TITLE_RE    # noqa: E402
 
 
@@ -982,13 +983,14 @@ def _stand_ins(raw: str | None) -> dict[str, str]:
     return {a.strip(): b.strip() for a, b in _STAND_IN_RE.findall(raw or '')}
 
 
-def _result_for(result, lineage_key):
+def _result_for(result, lineage_key, day):
     """A match's title_result applies to every belt on it unless it names
     one: on Raw 2002-05-13's mixed tag, the ruling that Steven Richards kept
     the Hardcore title must not touch the Women's title Trish won there."""
     if not result or not result.get('title'):
         return result
-    return result if _title_lineage_key(result['title']) == lineage_key else None
+    keys = [lin['key'] for lin in lineages_for(result['title'], day)] or [_title_lineage_key(result['title'])]
+    return result if lineage_key in keys else None
 
 
 OFFCARD_TITLE_CHANGES = Path(__file__).resolve().parent.parent / "data" / "offcard-title-changes.json"
@@ -1067,33 +1069,37 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             elif _SERIES_MATCH_RE.search(match_type) and 'TITLE CHANGE' not in raw.upper():
                 components = []
             for title in components:
-                lk = _title_lineage_key(title)
-                timelines[lk].append({
-                    'air_date': air_date,
-                    'event_id': eid,
-                    'match_order': match.get('match_order') or 0,
-                    'teams': match.get('teams', []),
-                    # carried for the stand-in check when reconciling (c) markers
-                    'raw_description': raw,
-                    # Did the source say a belt changed hands, and can that claim
-                    # be pinned to THIS belt? On a composite stake it cannot: the
-                    # marker may belong to the other belt on the line.
-                    'title_change': 'TITLE CHANGE' in raw.upper(),
-                    'composite_stake': len(components) > 1,
-                    'component_count': len(components),
-                    # Who holds the belt after this match, set by a migration
-                    # from a cited source when the teams cannot say (see the
-                    # walk below).
-                    'title_result': _result_for(match.get('title_result'), lk),
-                })
-                st = spelling_stats[lk][title]
-                st[0] += 1
-                if air_date > st[1]:
-                    st[1] = air_date
-                for t in match.get('teams', []):
-                    for p in t.get('participants', []):
-                        if p:
-                            lineage_appearances[lk][p] += 1
+                # A belt the lineage map knows is keyed by which belt it was on
+                # that date; anything else by its words. One string can move two
+                # belts at once (the unified tag titles of 2009-10).
+                for lk in ([lin['key'] for lin in lineages_for(title, air_date)]
+                           or [_title_lineage_key(title)]):
+                    timelines[lk].append({
+                        'air_date': air_date,
+                        'event_id': eid,
+                        'match_order': match.get('match_order') or 0,
+                        'teams': match.get('teams', []),
+                        # carried for the stand-in check when reconciling (c) markers
+                        'raw_description': raw,
+                        # Did the source say a belt changed hands, and can that claim
+                        # be pinned to THIS belt? On a composite stake it cannot: the
+                        # marker may belong to the other belt on the line.
+                        'title_change': 'TITLE CHANGE' in raw.upper(),
+                        'composite_stake': len(components) > 1,
+                        'component_count': len(components),
+                        # Who holds the belt after this match, set by a migration
+                        # from a cited source when the teams cannot say (see the
+                        # walk below).
+                        'title_result': _result_for(match.get('title_result'), lk, air_date),
+                    })
+                    st = spelling_stats[lk][title]
+                    st[0] += 1
+                    if air_date > st[1]:
+                        st[1] = air_date
+                    for t in match.get('teams', []):
+                        for p in t.get('participants', []):
+                            if p:
+                                lineage_appearances[lk][p] += 1
 
     # Title changes at shows no card carries: house shows, mostly the 2001-02
     # Hardcore title under the 24/7 rule. They join an existing lineage by
@@ -1121,7 +1127,8 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
     # since that spelling owns the most matches) and avoids latching onto a
     # short-lived late rename the way "most recent spelling" would.
     canon_name: dict[str, str] = {
-        lk: max(spellings.items(), key=lambda kv: (kv[1][0], kv[1][1], kv[0]))[0]
+        lk: (LINEAGE_BY_KEY[lk]['name'] if lk in LINEAGE_BY_KEY else
+             max(spellings.items(), key=lambda kv: (kv[1][0], kv[1][1], kv[0]))[0])
         for lk, spellings in spelling_stats.items()
     }
 
@@ -1219,7 +1226,12 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             #   matches.
             multi_champ = sum(1 for t in teams if t.get('was_champion_entering')) > 1
             stand_in = '[replacement for' in (m.get('raw_description') or '').lower()
-            if current is not None and champ_team is not None and not multi_champ and not stand_in:
+            # A sourced ruling settles the belt itself (below); the (c) marker
+            # is no evidence on such a match. LayCool shared the Divas title in
+            # 2010 and Layla defended it as "(c)" while McCool held it.
+            ruled_here = bool((m.get('title_result') or {}).get('champions'))
+            if (current is not None and champ_team is not None and not multi_champ and not stand_in
+                    and not ruled_here):
                 entering = [p for p in (champ_team.get('participants') or []) if p]
                 if entering and not _champions_overlap(
                         current['champion_names'], entering, canon_fn):

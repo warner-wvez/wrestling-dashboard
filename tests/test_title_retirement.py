@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.title_lineages import lineage_name  # noqa: E402
 from src.export_to_html import build_title_reigns  # noqa: E402
 
 CORPUS_END = "2026-06-27"
@@ -57,23 +58,23 @@ def test_a_belt_still_being_defended_keeps_an_open_reign():
     reigns = build_title_reigns(_events([
         (1, "2026-01-05", "WWE Title", "Sami Zayn", "Gunther", True),
         (2, "2026-06-20", "WWE Title", "Sami Zayn", "Bron Breakker", False),
-    ]))["WWE Title"]
+    ]))[lineage_name("WWE Title", "2026-01-05")]
     assert reigns[-1]["end"] is None, (
         "a belt defended a week before the corpus ends is current, not retired")
 
 
-def test_a_revived_name_keeps_the_lineage_live():
+def test_a_revived_name_is_its_own_lineage_and_stays_live():
     # WWE reuses names: the World Heavyweight and World Tag Team titles were both
-    # revived years after the originals retired, so one derived lineage holds the
-    # dead belt and its modern namesake. Cagematch flags the OLD lineage INACTIVE,
-    # and trusting that flag through a name join would end the current champion's
-    # reign. Last-seen has to get this right instead.
+    # revived years after the originals retired. The lineage map files the
+    # 2002-13 belt and its 2023 namesake apart, so the old one closes and the
+    # revival's current champion keeps an open reign.
     reigns = build_title_reigns(_events([
         (1, "2002-09-02", "World Heavyweight Title", "Triple H", "Booker T", True),
         (2, "2013-12-15", "World Heavyweight Title", "Randy Orton", "John Cena", True),
         (3, "2026-04-19", "World Heavyweight Title", "Roman Reigns", "Seth Rollins", True),
-    ]))["World Heavyweight Title"]
-    assert reigns[-1]["end"] is None, "the revival is current and must stay open"
-    assert reigns[-1]["champion_names"] == ["Roman Reigns"]
-    # ...and only the final reign is ever open, however old the lineage is
-    assert [r["end"] for r in reigns[:-1]].count(None) == 0
+    ]))
+    revival = reigns[lineage_name("World Heavyweight Title", "2026-04-19")]
+    original = reigns[lineage_name("World Heavyweight Title", "2002-09-02")]
+    assert revival[-1]["end"] is None, "the revival is current and must stay open"
+    assert revival[-1]["champion_names"] == ["Roman Reigns"]
+    assert [r["end"] for r in original].count(None) == 0

@@ -6,6 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.title_lineages import lineage_name  # noqa: E402
 from src.export_to_html import (  # noqa: E402
     _get_component_titles, build_title_reigns, build_wrestlers_index,
     is_placeholder_name)
@@ -122,7 +123,7 @@ def test_dq_win_does_not_move_the_belt():
         [title_match(1, ["Champ"], ["Challenger"], True, "WWE Title")]))
     events.update(event(2, "2001-02-01", "PPV",
         [title_match(2, ["Challenger"], ["Other"], True, "WWE Title", outcome="dq-win")]))
-    reigns = build_title_reigns(events)["WWE Title"]
+    reigns = build_title_reigns(events)[lineage_name("WWE Title", "2001-01-01")]
     # Challenger won the belt cleanly in Jan; Other's February DQ win must not
     # start a reign.
     assert [r["champion_names"] for r in reigns][-1] == ["Challenger"]
@@ -135,7 +136,7 @@ def test_belt_cannot_change_hands_without_its_champion():
     # A mislabeled contender match: no team was champion entering.
     events.update(event(2, "2001-02-01", "Raw", [match(2, [
         team(["Corbin"], True), team(["Someone"], False)], title="WWE Title")]))
-    reigns = build_title_reigns(events)["WWE Title"]
+    reigns = build_title_reigns(events)[lineage_name("WWE Title", "2001-01-01")]
     assert [r["champion_names"] for r in reigns][-1] == ["NewChamp"]
     assert ["Corbin"] not in [r["champion_names"] for r in reigns]
 
@@ -148,7 +149,7 @@ def test_title_wins_derive_from_reigns_when_provided():
         team(["Corbin"], True), team(["Someone"], False)], title="WWE Title")]))
     reigns = build_title_reigns(events)
     wrestlers, by_name = build_wrestlers_index(events, title_reigns=reigns)
-    assert dict(wrestlers[by_name["NewChamp"]]["title_wins"]) == {"WWE Title": 1}
+    assert dict(wrestlers[by_name["NewChamp"]]["title_wins"]) == {lineage_name("WWE Title", "2001-01-01"): 1}
     assert wrestlers[by_name["Corbin"]]["title_wins"] == []      # phantom win gone
     # Champ held the belt entering the corpus: observing the reign is not a win.
     assert wrestlers[by_name["Champ"]]["title_wins"] == []
