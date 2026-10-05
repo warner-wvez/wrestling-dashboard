@@ -587,3 +587,103 @@ def test_a_champions_defense_the_night_he_is_stripped_does_not_recrown_him():
     assert [(r["start"], r["end"], r["champion_names"]) for r in reigns][1:] == [
         ("2004-03-14", "2004-07-08", ["John Cena"]),
         ("2004-07-29", None, ["Booker T"])], reigns
+
+
+def test_a_no_disqualification_title_match_is_not_a_qualifier():
+    """SmackDown 2001-04-19: Kane and The Undertaker won the WWF tag titles
+    from Edge and Christian in a "No Disqualification Match". The belt filter
+    for qualifiers matched inside "Disqualification" and dropped the belt, so
+    the reign was missing."""
+    t = "WWF World Tag Team Title"
+    events = {}
+    events.update(_ev(1, "2001-04-01", [
+        _m(1, ["Christian", "Edge"], ["Bubba Ray Dudley", "D-Von Dudley"],
+           "Christian & Edge defeat The Dudley Boyz (c) - TITLE CHANGE !!!", title=t, champ_side="loser")]))
+    events.update(_ev(2, "2001-04-19", [
+        _m(1, ["Kane", "The Undertaker"], ["Christian", "Edge"],
+           "Kane & The Undertaker defeated Christian & Edge (w/ Rhyno ) (c) (8:14)",
+           title=f"{t} No Disqualification Match", champ_side="loser")]))
+    assert _champs(events, t)[-1] == ["Kane", "The Undertaker"], _chain(events, t)
+
+
+def test_one_ruling_per_belt_when_a_match_splits_two_belts():
+    """WrestleMania XL: the six-pack ladder match for the undisputed tag
+    titles ended with A-Town Down Under taking the SmackDown belts and The
+    Awesome Truth the Raw belts. Each belt's ruling moves only its own chain,
+    written in Wikipedia's "Championship" spelling."""
+    t = "Undisputed WWE Tag Team Title"
+    m = _m(1, ["Austin Theory", "Grayson Waller"], ["Finn Balor", "Damian Priest"],
+           "A-Town Down Under defeat The Judgment Day (c) ... to win the titles", title=t, champ_side="loser")
+    m["title_result"] = [
+        {"title": "World Tag Team Championship", "champions": ["The Miz", "R-Truth"]},
+        {"title": "WWE Tag Team Championship", "champions": ["Austin Theory", "Grayson Waller"]}]
+    events = _ev(1, "2024-04-06", [m])
+    reigns = build_title_reigns(events, offcard=())
+    assert reigns["WWE World Tag Team Championship"][-1]["champion_names"] == ["The Miz", "R-Truth"]
+    assert reigns["WWE Tag Team Championship"][-1]["champion_names"] == ["Austin Theory", "Grayson Waller"]
+
+
+def test_a_three_man_champion_team_defending_with_any_two_is_one_reign():
+    """The New Day won the Raw tag titles at SummerSlam 2015 as Big E and Kofi
+    Kingston and defended them as Big E and Xavier Woods under the Freebird
+    rule; Wikipedia lists one reign to Roadblock 2016. Each swap of partners
+    read as a title change."""
+    t = "WWE Tag Team Title"
+    new_day = ["Big E", "Kofi Kingston"]
+    events = {}
+    events.update(_ev(1, "2015-08-23", [
+        _m(1, new_day, ["Darren Young", "Titus O'Neil"], "The New Day defeat The Prime Time Players (c) "
+           "- TITLE CHANGE !!!", title=t, champ_side="loser")]))
+    events.update(_ev(2, "2016-03-14", [
+        _m(1, ["Big E", "Xavier Woods"], ["Goldust", "R-Truth"], "The New Day (Big E & Xavier Woods) (c) "
+           "defeat Golden Truth", title=t, champ_side="winner")]))
+    events.update(_ev(3, "2016-04-04", [
+        _m(1, new_day, ["Sheamus", "Rusev"], "The New Day (c) defeat The League Of Nations", title=t,
+           champ_side="winner")]))
+    assert _champs(events, t)[1:] == [new_day], _chain(events, t)
+
+
+def test_a_partner_swap_with_a_title_change_marker_is_still_a_new_reign():
+    """The Freebird merge needs the champions defending with no marker: a
+    marked change between overlapping teams stays a change."""
+    t = "WWE Tag Team Title"
+    events = {}
+    events.update(_ev(1, "2009-06-28", [
+        _m(1, ["Chris Jericho", "Edge"], ["Carlito", "Primo"], "Chris Jericho & Edge defeat Carlito & Primo "
+           "(c) - TITLE CHANGE !!!", title=t, champ_side="loser")]))
+    events.update(_ev(2, "2009-07-26", [
+        _m(1, ["Chris Jericho", "The Big Show"], ["Cody Rhodes", "Ted DiBiase"],
+           "Chris Jericho & The Big Show (c) defeat Cody Rhodes & Ted DiBiase - TITLE CHANGE !!!", title=t,
+           champ_side="winner")]))
+    assert _champs(events, t)[-1] == ["Chris Jericho", "The Big Show"], _chain(events, t)
+
+
+def test_a_tournament_final_named_in_the_belt_string_fills_the_vacant_belt():
+    """SmackDown 2020-06-12: AJ Styles won the vacant Intercontinental title in
+    the final of a tournament, written "WWE Intercontinental Championship
+    Tournament - Final". The earlier rounds move nothing."""
+    events = {}
+    events.update(_ev(1, "2020-05-15", [
+        _m(1, ["AJ Styles"], ["Shinsuke Nakamura"], "AJ Styles defeats Shinsuke Nakamura",
+           title="WWE Intercontinental Championship Tournament - Round 1", match_type="Tournament")]))
+    events.update(_ev(2, "2020-06-12", [
+        _m(1, ["AJ Styles"], ["Daniel Bryan"], "AJ Styles defeats Daniel Bryan to win the vacant title",
+           title="WWE Intercontinental Championship Tournament - Final", match_type="Tournament")]))
+    reigns = build_title_reigns(events, offcard=())["WWE Intercontinental Title"]
+    assert [(r["start"], r["champion_names"]) for r in reigns] == [("2020-06-12", ["AJ Styles"])], reigns
+
+
+def test_a_freebird_defense_with_the_holders_in_the_corner_is_one_reign():
+    """Raw 2006-05-15: the Spirit Squad defended the World tag titles as Johnny
+    and Nicky with Mikey and Mitch at ringside; Kenny and Mikey had won them.
+    Wikipedia lists one Spirit Squad reign, so the corner counts as the team."""
+    t = "World Tag Team Title"
+    events = {}
+    events.update(_ev(1, "2006-04-03", [
+        _m(1, ["Kenny", "Mikey"], ["Kane", "The Big Show"], "The Spirit Squad (Kenny & Mikey) defeat Kane & "
+           "The Big Show (c) - TITLE CHANGE !!!", title=t, champ_side="loser")]))
+    defense = _m(1, ["Johnny", "Nicky"], ["Goldust", "Snitsky"], "The Spirit Squad (Johnny & Nicky) "
+                 "(w/ Mikey & Mitch ) (c) defeat Goldust & Snitsky", title=t, champ_side="winner")
+    defense["teams"][0]["accompaniment"] = "Mikey & Mitch"
+    events.update(_ev(2, "2006-05-15", [defense]))
+    assert _champs(events, t)[1:] == [["Kenny", "Mikey"]], _chain(events, t)

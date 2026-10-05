@@ -42,6 +42,36 @@ showed it pairs the wrong matches in elimination tags, gauntlets and
 multi-man matches. A vote kind can become automatic only after a hand check
 of 20 random rows finds 19 or more right.
 
+## Title histories
+
+The Titles view walks every title match in order and builds each belt's
+reigns. Four tools check that walk against the published histories and feed it
+what no card carries:
+
+    uv run --with requests --with beautifulsoup4 lineup-check/title_audit.py [title ...]
+    uv run --with requests --with beautifulsoup4 lineup-check/title_vacancies.py
+    uv run --with requests --with beautifulsoup4 lineup-check/house_show_titles.py
+    uv run --with requests --with beautifulsoup4 lineup-check/offcard_titles.py
+
+- `title_audit.py` lays each belt's reigns beside its Wikipedia list and prints
+  every stretch where the champions differ (dates are shown, not compared).
+- `title_vacancies.py` writes `data/title-vacancies.json`: vacancies and titles
+  awarded without a match, kept only when the list's outgoing champion is who
+  we have holding the belt.
+- `house_show_titles.py` writes `data/house-show-title-changes.json`: changes
+  at house shows, and reigns WWE recognized without a match, that Wikipedia
+  and a second record (Cawthon, or Duncan and Will's wrestling-titles.com)
+  both list.
+- `offcard_titles.py` writes `data/offcard-title-changes.json`: the Hardcore
+  title's house-show swaps under the 24/7 rule, two of three records agreeing.
+
+As of 2026-10-05 every belt in the lineage map, plus the Intercontinental,
+United States, European, ECW and Women's tag titles, matches its list reign for
+reign. Three do not: the NXT Cruiserweight title (four reigns won on NXT TV or
+a missing Stomping Grounds 2019 match), the 24/7 title (most of its 203 changes
+happened off our cards), and the Hardcore title (Wikipedia lacks two April 2002
+house-show nights that Cawthon and Solie both list).
+
 ## The source's quirks
 
 - A taped show's header carries the taping date, the italic line the air date.

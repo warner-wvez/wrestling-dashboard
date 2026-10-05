@@ -411,12 +411,15 @@ def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[
 # Title reign tracking (Phase 1b)
 # ============================================================================
 
+_TOURNAMENT_FINAL_RE = re.compile(
+    r'^(?!.*contend)(.*?\b(?:Championships?|Titles?))\s+Tournament\s*-?\s*Final$', re.I)
+
 _TITLE_FILTER_PATTERNS = (
     re.compile(r'Contendership', re.I),
     re.compile(r'Contender', re.I),
     re.compile(r'Tournament', re.I),
     re.compile(r'Battle Royal', re.I),
-    re.compile(r'Qualif', re.I),
+    re.compile(r'\bQualif', re.I),         # not "No Disqualification"
 )
 
 # Contendership detection against the MATCH TYPE (see _drop_contendership_parts).
@@ -869,6 +872,11 @@ def _get_component_titles(raw: str | None, match: dict | None = None) -> list[st
     rem = re.sub(r'\s+', ' ', _QUOTED_STIP_RE.sub(' ', raw)).strip()
     if not rem:                       # pure stipulation ("If X wins ..."): no belt at stake
         return []
+    # A tournament's final decides the vacant belt it is named for; its
+    # earlier rounds do not. The Wikipedia lane writes the stage into the belt
+    # string ("WWE Intercontinental Championship Tournament - Final": AJ Styles,
+    # 2020-06-12), and the Tournament filter below threw the final away too.
+    rem = _TOURNAMENT_FINAL_RE.sub(r'\1', rem)
     for p in _TITLE_FILTER_PATTERNS:
         if p.search(rem):
             return []
@@ -954,6 +962,11 @@ def _champions_overlap(a: list[str], b: list[str], canon=None) -> bool:
     return bool({fn(n) for n in a} & {fn(n) for n in b})
 
 
+def _corner(team: dict) -> list[str]:
+    """The names in a side's corner: "Kenny , Mikey & Mitch" -> three."""
+    return [p.strip() for p in re.split(r',|&|\band\b', team.get('accompaniment') or '') if p.strip()]
+
+
 def _pick_singles_champion(participants: list, appearances: Counter, incumbents) -> list:
     """Collapse a singles belt's winning team to its one real champion.
 
@@ -990,7 +1003,12 @@ def _stand_ins(raw: str | None) -> dict[str, str]:
 def _result_for(result, lineage_key, day):
     """A match's title_result applies to every belt on it unless it names
     one: on Raw 2002-05-13's mixed tag, the ruling that Steven Richards kept
-    the Hardcore title must not touch the Women's title Trish won there."""
+    the Hardcore title must not touch the Women's title Trish won there.
+
+    A list holds one ruling per belt, for a match that split two belts
+    between two teams (WrestleMania XL's six-pack ladder match)."""
+    if isinstance(result, list):
+        return next((r for r in (_result_for(x, lineage_key, day) for x in result) if r), None)
     if not result or not result.get('title'):
         return result
     keys = [lin['key'] for lin in lineages_for(result['title'], day)] or [_title_lineage_key(result['title'])]
@@ -1003,13 +1021,20 @@ OFFCARD_TITLE_CHANGES = Path(__file__).resolve().parent.parent / "data" / "offca
 TITLE_VACANCIES = Path(__file__).resolve().parent.parent / "data" / "title-vacancies.json"
 
 
-def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES) -> list[dict]:
-    """Title changes no card carries: house-show changes, each listed the same
-    way by two of three published records (lineup-check/offcard_titles.py), and
-    vacancies from the title histories that match who held the belt
-    (lineup-check/title_vacancies.py). Empty when the files are absent."""
+HOUSE_SHOW_CHANGES = Path(__file__).resolve().parent.parent / "data" / "house-show-title-changes.json"
+
+
+def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES,
+                         house=HOUSE_SHOW_CHANGES) -> list[dict]:
+    """Title changes no card carries: the Hardcore title's house-show swaps,
+    each listed the same way by two of three published records
+    (lineup-check/offcard_titles.py); other belts' house-show changes and
+    reigns WWE recognized without a match, each confirmed by a second record
+    (lineup-check/house_show_titles.py); and vacancies from the title
+    histories that match who held the belt (lineup-check/title_vacancies.py).
+    Empty when the files are absent."""
     out = []
-    for f, key in ((path, "changes"), (vacancies, "vacancies")):
+    for f, key in ((path, "changes"), (house, "changes"), (vacancies, "vacancies")):
         if f.exists():
             out += json.loads(f.read_text(encoding="utf-8")).get(key) or []
     return out
@@ -1037,11 +1062,12 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                allowed to have a gap after it (see _split_lineage_eras).
 
     Limitations:
-      * No vacancy detection: belts are assumed continuously held until the next
-        title change. Real-world vacancies (forfeits, retirements, suspensions)
-        are not modeled; a vacant belt's old reign runs to the match that
-        filled it (a TITLE CHANGE with no champion in it), not to the day it
-        was given up.
+      * Vacancies come only from the title histories (data/title-vacancies.json):
+        a belt given up that no list records as vacant runs its old reign to
+        the match that filled it.
+      * A change no card carries is known only when two published records list
+        it (data/offcard-title-changes.json for the Hardcore title,
+        data/house-show-title-changes.json for the rest).
       * Same-day title changes resolve to end-of-day state in champions_by_date.
       * Champion-vs-champion unification: when a composite match has both teams
         marked was_champion_entering=True, attribution falls out of "winner takes
@@ -1078,12 +1104,18 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                 components = []
             elif _SERIES_MATCH_RE.search(match_type) and 'TITLE CHANGE' not in raw.upper():
                 components = []
+            entered = set()
             for title in components:
                 # A belt the lineage map knows is keyed by which belt it was on
                 # that date; anything else by its words. One string can move two
-                # belts at once (the unified tag titles of 2009-10).
+                # belts at once (the unified tag titles of 2009-10), and two
+                # strings on one match can name the same belt; a match enters a
+                # lineage once, or the walk replays it and invents reigns.
                 for lk in ([lin['key'] for lin in lineages_for(title, air_date)]
                            or [_title_lineage_key(title)]):
+                    if lk in entered:
+                        continue
+                    entered.add(lk)
                     timelines[lk].append({
                         'air_date': air_date,
                         'event_id': eid,
@@ -1273,8 +1305,12 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             if (current is not None and champ_team is not None and not multi_champ and not stand_in
                     and not ruled_here):
                 entering = [p for p in (champ_team.get('participants') or []) if p]
+                # A tag champion's corner counts as the team (the Freebird
+                # rule, below): the Spirit Squad defended as Johnny and Nicky
+                # with Kenny and Mikey, the reign's holders, at ringside.
                 if entering and not _champions_overlap(
-                        current['champion_names'], entering, canon_fn):
+                        current['champion_names'],
+                        entering + ([] if is_singles else _corner(champ_team)), canon_fn):
                     named = _pick_singles_champion(entering, appearances, None) \
                         if is_singles else entering
                     current['end'] = m['air_date']
@@ -1402,6 +1438,19 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                 new_champs = _pick_singles_champion(
                     new_champs, appearances,
                     current['champion_names'] if current else None)
+            # The Freebird rule: a champion team of three defends with any two
+            # of them. The New Day held the Raw tag titles from SummerSlam 2015
+            # to Roadblock 2016 as one reign, defending as Big E and Kofi one
+            # week and Big E and Xavier Woods the next, and each swap read as a
+            # title change. The champions defending, sharing a member with the
+            # reign, with no marker saying the belt moved, is a defense. The
+            # Spirit Squad's five shared one reign, and Johnny and Nicky
+            # defended with Kenny and Mikey, the reign's holders, in their
+            # corner: the corner counts as the team.
+            if (not is_singles and current is not None and winner.get('was_champion_entering')
+                    and not m.get('title_change')
+                    and _champions_overlap(current['champion_names'], new_champs + _corner(winner), canon_fn)):
+                continue
             if current is None or not _same_champions(
                     current['champion_names'], new_champs, canon_fn):
                 if current is not None:

@@ -35,7 +35,8 @@ def fetch(title):
 
 
 def _unlink(s):
-    s = re.sub(r"<ref[^>]*/>|<ref.*?</ref>|<ref[^>]*>.*$", "", s or "", flags=re.S)
+    s = re.sub(r"<!--.*?-->", "", s or "", flags=re.S)
+    s = re.sub(r"<ref[^>]*/>|<ref.*?</ref>|<ref[^>]*>.*$", "", s, flags=re.S)
     s = re.sub(r"\{\{(?:sortname|Sortname)\|([^|}]*)\|([^|}]*)(?:\|[^}]*)?\}\}", r"\1 \2", s)
     s = re.sub(r"\{\{sort\|[^|}]*\|([^}]*)\}\}", r"\1", s)
     s = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]*)\]\]", r"\1", s)
@@ -47,18 +48,45 @@ def _date(s):
     m = re.search(r"\{\{(?:dts|Dts|DTS)\|(\d{4})\|(\d{1,2})\|(\d{1,2})", s or "")
     if m:
         return f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
-    m = re.search(r"\{\{(?:dts|Dts)\|([A-Za-z]+ \d{1,2}, \d{4})", s or "")
-    for fmt in ("%B %d, %Y", "%b %d, %Y"):
+    # "{{dts|April 6, 2024}}", and the shapes editors also leave: no template,
+    # a stray comma ("April 6 ,2024"), none ("October 30 2022"), and a taping
+    # over two days ("March 25–26, 2020", "March 25 or 26, 2020": the first).
+    m = re.search(r"([A-Z][a-z]+)\.? (\d{1,2})(?:\s*(?:\u2013|-|or)\s*\d{1,2})?\s*,?\s*(\d{4})", s or "")
+    for fmt in ("%B %d %Y", "%b %d %Y"):
         try:
-            return datetime.strptime(m.group(1), fmt).date().isoformat() if m else None
+            return datetime.strptime(" ".join(m.groups()), fmt).date().isoformat() if m else None
         except ValueError:
             pass
     return None
 
 
+# Teams a list names without their members anywhere in the entry.
+TEAMS = {"Los Guerreros": "Chavo Guerrero and Eddie Guerrero",
+         "Deuce 'n Domino": "Deuce and Domino"}
+
+
+def _members(raw):
+    """A tag team's members: from "{{small|(A and B)}}" after a team name, or
+    the champion field itself ("A and B", "[[Major Players|Curt Hawkins and
+    Zack Ryder]]"). A Freebird third man ("Logan Paul/Bron Breakker") is a
+    member too."""
+    raw = re.sub(r"<!--.*?-->", "", raw or "", flags=re.S)
+    small = re.search(r"\{\{small\|\((.*?)\)\}\}", raw, re.S)
+    text = _unlink(small.group(1) if small else re.sub(r"<br\s*/?>.*$", "", raw, flags=re.S))
+    # "[[Too Cool]] ([[Rikishi]] and [[Scotty 2 Hotty]])": members in plain parentheses.
+    paren = re.search(r"\(([^()]* and [^()]*)\)\s*$", text)
+    if paren:
+        text = paren.group(1)
+    text = TEAMS.get(text, text)
+    parts = re.split(r",? and |, |/| & ", text)
+    return [p.strip() for p in parts if p.strip()]
+
+
 def reigns(text):
     out = []
-    for b in re.split(r"\{\{\s*PWtitlereign", text)[1:]:
+    # Lists write a reign as {{PWtitlereign or as {{Professional wrestling
+    # title history middle, often both on one page.
+    for b in re.split(r"\{\{\s*(?:PWtitlereign|Professional wrestling title history middle)", text)[1:]:
         # Citations first: a cite's own "|date=" must not pass for the reign's.
         b = re.sub(r"<ref[^>]*/>|<ref.*?</ref>", "", b, flags=re.S)
         # A template on one line runs its fields together ("|champion = X |date
@@ -79,7 +107,8 @@ def reigns(text):
             f.setdefault(mk.group(1), b[mk.end():end].split("\n|")[0].strip())
         d = _date(f.get("date", ""))
         if d:
-            out.append({"date": d, "champion": _unlink(f.get("champion", "")), "event": _unlink(f.get("event", "")),
+            out.append({"date": d, "champion": _unlink(f.get("champion", "")),
+                        "members": _members(f.get("champion", "")), "event": _unlink(f.get("event", "")),
                         "location": _unlink(f.get("location", "")), "notes": _unlink(f.get("notes", ""))})
     return out
 

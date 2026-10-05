@@ -18,6 +18,7 @@ data/*
 !data/sdh-roster-pairs.json
 !data/offcard-title-changes.json
 !data/title-vacancies.json
+!data/house-show-title-changes.json
 
 # Media pipeline: keep the tool + reports, drop the heavy fetch caches
 media-pipeline/cache/
