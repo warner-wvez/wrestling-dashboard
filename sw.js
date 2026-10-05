@@ -63,7 +63,9 @@
 // v22: the 2001-02 Hardcore title history rebuilt: 29 televised 24/7 title
 // changes added to their cards, 5 changes inside matches, and 125 house-show
 // changes (data/offcard-title-changes.json). Match shards and titles changed.
-const CACHE = 'wrestling-dashboard-v22';
+// v23: a stand-in now wins a belt for the man he replaced (Booker T's 2006 US
+// title, the 2018 NXT tag titles), and two garbled match records repaired.
+const CACHE = 'wrestling-dashboard-v23';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

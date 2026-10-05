@@ -511,3 +511,20 @@ def test_house_show_changes_join_the_chain_by_date():
                          ("2001-02-03", "2001-02-03", ["Crash Holly"]),
                          ("2001-02-03", "2001-02-08", ["Raven"]),
                          ("2001-02-08", None, ["Hardcore Holly"])], chain
+
+
+def test_a_stand_in_wins_the_belt_for_the_man_he_replaced():
+    """SmackDown 2006-01-13: Randy Orton, "[Replacement for Booker T]", won the
+    deciding match of the best-of-seven series for the vacant US title. The
+    belt went to Booker T, and Orton's defense a week later was Booker's too."""
+    t = "WWE United States Title"
+    events = {}
+    events.update(_ev(1, "2006-01-13", [
+        _m(1, ["Randy Orton"], ["Chris Benoit"],
+           "Randy Orton [Replacement for Booker T] (w/ Booker T & Sharmell ) [4] defeats Chris Benoit [3] "
+           "(28:05) - TITLE CHANGE !!!", title=t)]))
+    events.update(_ev(2, "2006-01-20", [
+        _m(1, ["Randy Orton"], ["Orlando Jordan"],
+           "Randy Orton [Replacement for Booker T] (c) defeats Orlando Jordan (12:57)", title=t,
+           champ_side="winner")]))
+    assert _champs(events, t) == [["Booker T"]], _chain(events, t)
