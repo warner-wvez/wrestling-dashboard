@@ -974,6 +974,14 @@ def _pick_singles_champion(participants: list, appearances: Counter, incumbents)
     return [min(parts, key=lambda p: (-appearances.get(p, 0), 0 if p in inc else 1, p))]
 
 
+_STAND_IN_RE = re.compile(r"([A-Z][^\[\]()&,]*?)\s*\[Replacement for ([^\]]+)\]")
+
+
+def _stand_ins(raw: str | None) -> dict[str, str]:
+    """{stand-in: the wrestler he replaced} from "X [Replacement for Y]"."""
+    return {a.strip(): b.strip() for a, b in _STAND_IN_RE.findall(raw or '')}
+
+
 def _result_for(result, lineage_key):
     """A match's title_result applies to every belt on it unless it names
     one: on Raw 2002-05-13's mixed tag, the ruling that Steven Richards kept
@@ -1329,7 +1337,11 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             if current is not None and champ_team is None and not m.get('title_change'):
                 continue
 
-            new_champs = list(winner['participants'])
+            # A stand-in wins for the man he replaced. Randy Orton, "[Replacement
+            # for Booker T]", won the 2006 US title series decider and then
+            # defended it; the belt was Booker's both times.
+            stand = _stand_ins(m.get('raw_description'))
+            new_champs = [stand.get(p, p) for p in winner['participants']]
             if is_singles:
                 new_champs = _pick_singles_champion(
                     new_champs, appearances,
