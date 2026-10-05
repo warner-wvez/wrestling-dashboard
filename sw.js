@@ -39,7 +39,9 @@
 // broadcast"), 13 wrestlers a stored lineup had lost are back, and 73 junk
 // participant names ("countout", "Jeff Hardy by TKO", "and") are cleaned. The
 // card template changed too, so index.html and every match shard are new.
-const CACHE = 'wrestling-dashboard-v14';
+// v15: 23 "vs." result sides a hyphen had cut short are whole again (D-Von
+// Dudley, R-Truth, Rated-RKO, The X-Factor), and 9 more dark matches are greyed.
+const CACHE = 'wrestling-dashboard-v15';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

@@ -4,41 +4,28 @@ Our 1404 Raw, SmackDown and PPV cards compared with Graham Cawthon's thehistoryo
 
 ## Applied automatically
 
-- 760 matches marked not on the broadcast: our source labels them dark matches and Cawthon's televised list does not have them.
-- 13 wrestlers put back on a side: our own match text names them, Cawthon lists them, the stored lineup had lost them.
+- 769 matches marked not on the broadcast: our source labels them dark matches and Cawthon's televised list does not have them.
+- 0 wrestlers put back on a side: our own match text names them, Cawthon lists them, the stored lineup had lost them.
 - 1 match marked as aired on Sunday Night Heat.
 
 ### Wrestlers put back
 
 | Event | Match | Name | Our text |
 |---|---|---|---|
-| 166 | 999 | William Regal | Stephanie McMahon-Helmsley & William Regal vs. Trish Stratus & Vince McMahon - No Contest  |
-| 189 | 1173 | Justin Credible | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Lance Storm | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Mike Awesome | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Raven | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Rhyno | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Rob Van Dam | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Tazz | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 189 | 1173 | Tommy Dreamer | Team ECW ( Bubba Ray Dudley , D-Von Dudley , Justin Credible , Lance Storm , Mike Awesome  |
-| 243 | 1692 | X-Pac | Steve Austin & The Big Show vs. The nWo ( Scott Hall & X-Pac ) - No Contest (7:30) |
-| 245 | 1715 | X-Pac | Bradshaw , Ric Flair & Steve Austin vs. The nWo ( Scott Hall , The Big Show & X-Pac ) - No |
-| 1078 | 12285 | R-Truth | John Morrison & R-Truth vs. The Big Show & The Miz - No Contest (0:36) |
-| 1131 | 12661 | R-Truth | Cody Rhodes & Drew McIntyre vs. John Morrison & R-Truth - Double DQ (0:47) |
 
 ## For review
 
 | Kind | Count | SmackDown Hotel agrees with ours | with Cawthon | split |
 |---|---|---|---|---|
-| missing_match | 301 | 172 | 66 | 63 |
-| unpaired | 227 | 106 | 49 | 72 |
-| different_opponent | 181 | 96 | 11 | 74 |
-| result | 177 | 86 | 49 | 42 |
-| missing_show | 157 | 0 | 0 | 157 |
-| extra_name | 143 | 41 | 54 | 48 |
-| unresolved_name | 108 | 0 | 0 | 108 |
-| cawthon_only_name | 86 | 47 | 16 | 23 |
-| dark_but_televised | 31 | 14 | 17 | 0 |
+| missing_match | 300 | 182 | 59 | 59 |
+| unpaired | 230 | 113 | 66 | 51 |
+| missing_show | 156 | 0 | 0 | 156 |
+| result | 154 | 81 | 42 | 31 |
+| different_opponent | 77 | 32 | 8 | 37 |
+| cawthon_only_name | 65 | 40 | 5 | 20 |
+| extra_name | 38 | 23 | 11 | 4 |
+| dark_but_televised | 21 | 13 | 8 | 0 |
+| junk_on_our_card | 1 | 0 | 0 | 1 |
 
 ## Shows Cawthon has that the dashboard does not
 
