@@ -21,7 +21,7 @@ from __future__ import annotations
 import json
 import re
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -172,6 +172,16 @@ def main() -> None:
         })
 
     board.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
+
+    # Two belts can share a name (the 1956 and 2016 WWE Women's
+    # Championships, WCW's 2001 World Heavyweight Championship and the
+    # 2002-13 one), and the Titles view links a page by its name, so a retired
+    # namesake opened the other belt's page. It carries its years instead.
+    names = Counter(t["title"] for t in board + retired)
+    for t in retired:
+        if names[t["title"]] > 1:
+            a, b = t["years"]
+            t["title"] = f"{t['title']} ({a})" if a == b else f"{t['title']} ({a}-{b})"
 
     print(f"active titles on the board: {len(board)}   retired on the shelf: {len(retired)}")
     print(f"champion links: {linked} resolved, {unlinked} plain text (NXT/EVOLVE/ID off-corpus)")
