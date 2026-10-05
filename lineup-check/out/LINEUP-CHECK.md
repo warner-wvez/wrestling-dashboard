@@ -1,10 +1,10 @@
 # Lineup check, 2001 to 2013
 
-Our 1437 Raw, SmackDown and PPV cards compared with Graham Cawthon's thehistoryofwwe.com, run 2026-10-05. SmackDown Hotel votes on weekly shows. Only changes both sources agree on are applied; every vote is a suggestion in review.csv.
+Our 1443 Raw, SmackDown and PPV cards compared with Graham Cawthon's thehistoryofwwe.com, run 2026-10-05. SmackDown Hotel votes on weekly shows. Only changes both sources agree on are applied; every vote is a suggestion in review.csv.
 
 ## Applied automatically
 
-- 780 matches marked not on the broadcast: our source labels them dark matches and Cawthon's televised list does not have them.
+- 783 matches marked not on the broadcast: our source labels them dark matches and Cawthon's televised list does not have them.
 - 0 wrestlers put back on a side: our own match text names them, Cawthon lists them, the stored lineup had lost them.
 - 1 match marked as aired on Sunday Night Heat.
 
@@ -15,16 +15,17 @@ Our 1437 Raw, SmackDown and PPV cards compared with Graham Cawthon's thehistoryo
 
 ## For review
 
+698 rows in review.csv; 2 more were ruled by hand ("our card is right") in rulings.csv and are left out.
+
 | Kind | Count | SmackDown Hotel agrees with ours | with Cawthon | split |
 |---|---|---|---|---|
-| missing_match | 254 | 163 | 33 | 58 |
-| unpaired | 187 | 113 | 15 | 59 |
-| result | 118 | 85 | 7 | 26 |
-| missing_show | 112 | 0 | 0 | 112 |
-| different_opponent | 57 | 35 | 1 | 21 |
-| cawthon_only_name | 50 | 41 | 3 | 6 |
-| extra_name | 33 | 23 | 5 | 5 |
-| possible_second_bout | 25 | 0 | 0 | 25 |
+| unpaired | 189 | 115 | 15 | 59 |
+| missing_match | 173 | 150 | 14 | 9 |
+| missing_show | 106 | 0 | 0 | 106 |
+| result | 94 | 69 | 4 | 21 |
+| different_opponent | 51 | 30 | 1 | 20 |
+| extra_name | 33 | 24 | 4 | 5 |
+| cawthon_only_name | 33 | 26 | 1 | 6 |
 | dark_but_televised | 18 | 10 | 8 | 0 |
 | junk_on_our_card | 1 | 0 | 0 | 1 |
 

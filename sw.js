@@ -50,7 +50,10 @@
 // v18: 8 shows moved to the dates WWE's archive and Wikipedia give (the 2011-12
 // Tuesday SmackDowns, Raw's 2006 and 2007 Thursday airings), the 2005-11-29
 // SmackDown special and the four UK PPVs added.
-const CACHE = 'wrestling-dashboard-v18';
+// v19: 3 same-night Hardcore title swaps added (Raw 2001-01-22 and 2001-09-10,
+// SmackDown 2002-02-28) and 3 more dark matches greyed. Match shards and the
+// title history changed.
+const CACHE = 'wrestling-dashboard-v19';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
