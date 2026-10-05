@@ -93,12 +93,23 @@ def main() -> None:
         for r in reigns:
             reigns_by_lineage[reign_key(tkey)].append((tkey, r))
     for lk, tagged in reigns_by_lineage.items():
-        seen, merged = set(), []
-        for tkey, r in sorted(tagged, key=lambda x: x[1]["start"], reverse=True):
-            sig = (r["start"], tuple(r.get("champion_names") or []))
-            if sig in seen:                          # same reign under two title names
+        # The same reign under two title names collapses to one. A champion
+        # who wins the belt twice in one night keeps both reigns: Randy Orton
+        # at No Mercy 2007, R-Truth on Raw 2019-06-24.
+        def sig(r):
+            return (r["start"], tuple(r.get("champion_names") or []))
+        per_name = defaultdict(lambda: defaultdict(int))
+        for tkey, r in tagged:
+            per_name[sig(r)][tkey] += 1
+        kept, merged = defaultdict(int), []
+        # Newest first, and within one night the last change first, so a night
+        # of 24/7 swaps reads in the same direction as the rest of the list.
+        order = sorted(enumerate(tagged), key=lambda x: (x[1][1]["start"], x[0]), reverse=True)
+        for tkey, r in (t for _, t in order):
+            s = sig(r)
+            if kept[s] >= max(per_name[s].values()):
                 continue
-            seen.add(sig)
+            kept[s] += 1
             merged.append({
                 "champions": [{"name": n, "slug": slug_for(n)} for n in (r.get("champion_names") or [])],
                 "start": r["start"],
