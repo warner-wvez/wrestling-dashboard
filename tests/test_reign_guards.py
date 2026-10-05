@@ -381,3 +381,69 @@ def test_an_active_belt_defended_across_a_normal_gap_stays_one_reign():
     gunther = [c for c in chain if c[2] == ["Gunther"]]
     assert len(gunther) == 1 and gunther[0][1] == "2024-04-06", \
         f"a belt defended all along is one reign: {chain}"
+
+
+# --------------------------------------------------------------------------
+# Vacancies and sourced rulings
+# --------------------------------------------------------------------------
+
+def test_a_vacant_belt_won_mid_chain_starts_the_new_reign_that_night():
+    """Judgment Day 2003: Christian won the reactivated Intercontinental Title
+    in a battle royal with no champion in it, and our source marks it TITLE
+    CHANGE. The walk skipped it as a contender match, so Triple H "held" the
+    belt until Christian first walked out as champion at Insurrextion 2003.
+    """
+    t = "Intercontinental Title"
+    events = {}
+    events.update(_ev(1, "2002-09-01", [
+        _m(1, ["Triple H"], ["Kane"], "Triple H defeats Kane (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2003-05-18", [
+        _m(1, ["Christian"], ["Booker T", "Goldust"],
+           "Christian defeats Booker T and Goldust (12:00) - TITLE CHANGE !!!", title=t)]))
+    events.update(_ev(3, "2003-06-07", [
+        _m(1, ["Christian"], ["Booker T"], "Christian (c) defeats Booker T", title=t,
+           champ_side="winner")]))
+    chain = _chain(events, t)
+    assert chain[1:] == [("2002-09-01", "2003-05-18", ["Triple H"]),
+                         ("2003-05-18", None, ["Christian"])], chain
+
+
+def test_a_contender_match_without_the_marker_still_moves_nothing():
+    t = "Intercontinental Title"
+    events = {}
+    events.update(_ev(1, "2002-09-01", [
+        _m(1, ["Triple H"], ["Kane"], "Triple H defeats Kane (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2002-09-08", [
+        _m(1, ["Rob Van Dam"], ["Chris Jericho"], "Rob Van Dam defeats Chris Jericho", title=t)]))
+    assert _champs(events, t)[-1] == ["Triple H"]
+
+
+def test_a_sourced_title_result_names_who_holds_the_belt():
+    """ECW, 2007. Backlash: Vince McMahon, Shane McMahon and Umaga beat Bobby
+    Lashley and Vince pinned him, but the walk picked Shane off the three-man
+    side. Judgment Day: Lashley beat all three by pinning Shane, so Vince kept
+    the belt, but the walk crowned Lashley. A match can carry the champion
+    after it, from a cited source, and the walk takes it.
+    """
+    t = "ECW World Heavyweight Title"
+    trio = ["Shane McMahon", "Umaga", "Vince McMahon"]
+    events = {}
+    events.update(_ev(1, "2006-12-03", [
+        _m(1, ["Bobby Lashley"], ["The Big Show"],
+           "Bobby Lashley defeats The Big Show (c) - TITLE CHANGE !!!", title=t, champ_side="loser")]))
+    backlash = _m(1, trio, ["Bobby Lashley"], "... defeat Bobby Lashley (c) - TITLE CHANGE !!!",
+                  title=t, champ_side="loser")
+    backlash["title_result"] = {"champions": ["Vince McMahon"], "source": "Wikipedia"}
+    events.update(_ev(2, "2007-04-29", [backlash]))
+    jd = _m(1, ["Bobby Lashley"], trio, "Bobby Lashley defeats ... (c)", title=t, champ_side="loser")
+    jd["title_result"] = {"champions": ["Vince McMahon"], "source": "Wikipedia"}
+    events.update(_ev(3, "2007-05-20", [jd]))
+    events.update(_ev(4, "2007-06-03", [
+        _m(1, ["Bobby Lashley"], ["Mr. McMahon"], "Bobby Lashley defeated Mr. McMahon (c)",
+           title=t, champ_side="loser")]))
+    chain = _chain(events, t, canon={"Mr. McMahon": "Vince McMahon"})
+    assert chain[1:] == [("2006-12-03", "2007-04-29", ["Bobby Lashley"]),
+                         ("2007-04-29", "2007-06-03", ["Vince McMahon"]),
+                         ("2007-06-03", None, ["Bobby Lashley"])], chain

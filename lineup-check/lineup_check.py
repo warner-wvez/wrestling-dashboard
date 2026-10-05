@@ -34,6 +34,29 @@ from cawthon_parse import (looks_like_match, parse_match_line,  # noqa: E402
 from lineup_match import compare_show, group_members  # noqa: E402
 
 CACHE, SDH_CACHE, OUT = HERE / "cache", HERE / "sdh-cache", HERE / "out"
+# Cawthon entries filed under a date that is not the show's air date, ruled by
+# hand from the taping header and the card (2026-10-05): the same taping and
+# the same matches as our show on the real date.
+CAWTHON_DATES = {
+    ("2002-12-28", "Raw"): "2002-12-30",        # Year in Review clip show, Raw #501
+    ("2007-07-21", "SmackDown"): "2007-07-20",  # Laredo taping 07-17, SmackDown #413
+    ("2010-06-03", "SmackDown"): "2010-06-04",  # Dallas taping 06-01, SmackDown #563
+    # Same city and taping as our show, matchups fit 0.8 to 1.0
+    ("2007-03-27", "Raw"): "2007-03-26",        # Raw #722, Rosemont (Chicago)
+    ("2007-06-19", "Raw"): "2007-06-18",        # Raw #734, Richmond
+    ("2008-08-31", "Raw"): "2008-09-01",        # Raw #797, taped Sunday in St. Louis
+    ("2008-08-14", "SmackDown"): "2008-08-15",  # SmackDown #469, Norfolk
+    ("2008-09-04", "SmackDown"): "2008-09-05",  # SmackDown #472, St. Louis
+    ("2008-12-13", "SmackDown"): "2008-12-12",  # SmackDown #486, Bridgeport
+    ("2010-09-23", "SmackDown"): "2010-09-24",  # SmackDown #579, Bloomington
+    ("2012-09-04", "SmackDown"): "2012-09-07",  # SmackDown #681, taped Tuesday in Moline
+    ("2012-11-04", "SmackDown"): "2012-11-02",  # SmackDown #689, Fayetteville
+}
+# Entries on his Raw and SmackDown pages that are not a show of that brand.
+CAWTHON_NOT_SHOWS = {
+    ("2007-12-28", "Raw"): "a replay of Michaels vs Cena from Raw 2007-04-23 in London",
+    ("2011-01-27", "Raw"): "WWE Superstars (Stanford and Matthews calling it), filed with Raw",
+}
 YEARS = range(2001, 2014)
 AUTO_CLASSES = ("not_aired", "aired_heat", "add_wrestler")
 REVIEW_FIELDS = ("class", "vote", "air_date", "show_type", "title", "event_id", "match_id",
@@ -50,6 +73,16 @@ def _unreadable(lines):
 
 def _parsed(lines):
     return [p for p in map(parse_match_line, lines) if p]
+
+
+def settle_conflicts(eps):
+    """A live show whose italic line gives another week's date (Raw 9/4/06 in
+    Atlanta reads "9/11/06") collides with that week's own entry, and the
+    night was compared twice. When a flagged episode's date is already taken
+    by an unflagged one, its header date is the air date."""
+    taken = {e["air_date"] for e in eps if not e["date_conflict"]}
+    return [{**e, "air_date": e["header_date"]} if e["date_conflict"] and e["air_date"] in taken else e
+            for e in eps]
 
 
 def load_sdh():
@@ -81,7 +114,10 @@ def run(bundle):
     rows, seen = [], set()
     for y in YEARS:
         for typ, slug in (("Raw", f"{_org(y)}-raw-{y}"), ("SmackDown", f"{_org(y)}-smackdown-{y}")):
-            for ep in parse_show_page((CACHE / f"{slug}.html").read_text(encoding="utf-8")):
+            for ep in settle_conflicts(parse_show_page((CACHE / f"{slug}.html").read_text(encoding="utf-8"))):
+                if (ep["air_date"], typ) in CAWTHON_NOT_SHOWS:
+                    continue
+                ep = {**ep, "air_date": CAWTHON_DATES.get((ep["air_date"], typ), ep["air_date"])}
                 ev = by_key.get((ep["air_date"], typ))
                 if ev and ev["id"] in CLIP_SHOWS:
                     seen.add(ev["id"])
@@ -233,9 +269,16 @@ def main():
     atomic_write_text(OUT / "auto-fixes.json", json.dumps(fixes, indent=1))
     atomic_write_text(OUT / "review.csv", review_csv(review))
     atomic_write_text(OUT / "LINEUP-CHECK.md", render(rows, shows, fixes, review))
+    hit = {(r["class"], str(r.get("event_id") or ""), str(r.get("match_id") or ""))
+           for r in rows if ruled(r, rulings)}
+    stale = sorted(k for k in rulings if k not in hit)
     print(f"{shows} shows compared; auto: " +
           ", ".join(f"{k}={len(v)}" for k, v in fixes.items()) +
           f"; review rows: {len(review)} ({sum(1 for r in rows if ruled(r, rulings))} ruled in rulings.csv)")
+    if stale:
+        # A ruling whose row no longer appears: the data or the check changed
+        # under it. Drop it from rulings.csv once the change is understood.
+        print(f"rulings that match no row: {stale}")
 
 
 if __name__ == "__main__":

@@ -252,3 +252,12 @@ def test_a_contest_is_never_added_automatically():
     assert [(r["class"], r["vote"]) for r in rows if r["class"] == "missing_match"] == [
         ("missing_match", "add_match")]
     assert lineup_match.CONTEST.search("fought Raven to a no contest") is None
+
+
+def test_a_flagged_date_that_collides_takes_its_header_date():
+    import lineup_check
+    eps = [{"air_date": "2006-09-11", "header_date": "2006-09-04", "date_conflict": True},
+           {"air_date": "2006-09-11", "header_date": "2006-09-11", "date_conflict": False},
+           {"air_date": "2009-07-06", "header_date": "2009-06-29", "date_conflict": True}]
+    assert [e["air_date"] for e in lineup_check.settle_conflicts(eps)] == [
+        "2006-09-04", "2006-09-11", "2009-07-06"]

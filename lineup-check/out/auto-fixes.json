@@ -356,14 +356,14 @@
    "ours": "Batista defeats King Booker (c) by DQ"
   },
   {
+   "event_id": 674,
+   "match_id": 8723,
+   "ours": "Edge (c) defeats John Cena"
+  },
+  {
    "event_id": 675,
    "match_id": 8724,
    "ours": "Henry O. Godwinn defeats Bull Buchanan"
-  },
-  {
-   "event_id": 676,
-   "match_id": 8732,
-   "ours": "Eugene & Jim Duggan defeat Charlie Haas & Viscera"
   },
   {
    "event_id": 676,
@@ -709,6 +709,16 @@
    "event_id": 775,
    "match_id": 9396,
    "ours": "Funaki & Shannon Moore defeat Dave Taylor & Paul Burchill"
+  },
+  {
+   "event_id": 777,
+   "match_id": 9409,
+   "ours": "Sylvan defeats ???"
+  },
+  {
+   "event_id": 777,
+   "match_id": 9414,
+   "ours": "Batista defeats Kane and The Great Khali by DQ"
   },
   {
    "event_id": 778,
@@ -1206,6 +1216,11 @@
    "ours": "Triple H defeats The Great Khali"
   },
   {
+   "event_id": 909,
+   "match_id": 10332,
+   "ours": "Jimmy Wang Yang defeats Go Shiozaki (w/ Tony Atlas )"
+  },
+  {
    "event_id": 910,
    "match_id": 10340,
    "ours": "Evan Bourne defeats John Morrison"
@@ -1294,6 +1309,11 @@
    "event_id": 938,
    "match_id": 10548,
    "ours": "Tommy Dreamer defeats Shelton Benjamin"
+  },
+  {
+   "event_id": 939,
+   "match_id": 10563,
+   "ours": "The Undertaker defeats The Big Show"
   },
   {
    "event_id": 940,
@@ -1971,6 +1991,11 @@
    "ours": "John Cena (c) defeats Edge"
   },
   {
+   "event_id": 1106,
+   "match_id": 12478,
+   "ours": "Chris Masters defeats Dos Caras"
+  },
+  {
    "event_id": 1107,
    "match_id": 12483,
    "ours": "Chris Masters defeats The Dudebusters ( Caylen Croft & Trent Barreta )"
@@ -2169,6 +2194,16 @@
    "event_id": 1138,
    "match_id": 12723,
    "ours": "Randy Orton (c) defeats Sheamus"
+  },
+  {
+   "event_id": 1139,
+   "match_id": 12724,
+   "ours": "Tyler Reks defeats ???"
+  },
+  {
+   "event_id": 1139,
+   "match_id": 12731,
+   "ours": "The Undertaker defeats Kane (c) by DQ"
   },
   {
    "event_id": 1140,
@@ -3689,6 +3724,11 @@
    "event_id": 1364,
    "match_id": 14435,
    "ours": "Sheamus (c) defeats Alberto Del Rio and Randy Orton"
+  },
+  {
+   "event_id": 1366,
+   "match_id": 14450,
+   "ours": "Randy Orton defeats Alberto Del Rio"
   },
   {
    "event_id": 1368,
