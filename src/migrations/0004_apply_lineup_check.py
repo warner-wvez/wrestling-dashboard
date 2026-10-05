@@ -19,7 +19,9 @@ Safety gates, in order:
   1. Every fix is located by event id AND match id, and the match's stored
      raw_description must equal the text the check saw, or the run aborts.
   2. Counts must stay under the ceilings set from the 2026-10-05 run
-     (800 / 4 / 20).
+     (800 / 4 / 20). not_aired was raised to 840 later that day: fixing the
+     parser and the dark-match pairing let about 25 more shows be compared,
+     and every dark match they added was read by hand first.
   3. Idempotent: a fix already in place is skipped, and a second run reports
      "already applied".
 
@@ -43,7 +45,7 @@ FIXES = PROJECT_ROOT / "lineup-check" / "out" / "auto-fixes.json"
 # Upper bounds only: a re-run after other repairs (0005 fixed sides the check
 # had queued as additions) legitimately finds fewer. Gate 1 still pins every
 # fix to its exact match text.
-WINDOWS = {"not_aired": range(0, 801), "aired_heat": range(0, 5), "add_wrestler": range(0, 21)}
+WINDOWS = {"not_aired": range(0, 841), "aired_heat": range(0, 5), "add_wrestler": range(0, 21)}
 HEAT = "Sunday Night Heat"
 
 
