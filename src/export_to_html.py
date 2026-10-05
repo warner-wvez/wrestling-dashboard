@@ -998,7 +998,9 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
     Limitations:
       * No vacancy detection: belts are assumed continuously held until the next
         title change. Real-world vacancies (forfeits, retirements, suspensions)
-        are not modeled.
+        are not modeled; a vacant belt's old reign runs to the match that
+        filled it (a TITLE CHANGE with no champion in it), not to the day it
+        was given up.
       * Same-day title changes resolve to end-of-day state in champions_by_date.
       * Champion-vs-champion unification: when a composite match has both teams
         marked was_champion_entering=True, attribution falls out of "winner takes
@@ -1050,6 +1052,10 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
                     'title_change': 'TITLE CHANGE' in raw.upper(),
                     'composite_stake': len(components) > 1,
                     'component_count': len(components),
+                    # Who holds the belt after this match, set by a migration
+                    # from a cited source when the teams cannot say (see the
+                    # walk below).
+                    'title_result': match.get('title_result'),
                 })
                 st = spelling_stats[lk][title]
                 st[0] += 1
@@ -1181,6 +1187,31 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
                         'pre_corpus': True,
                     }
 
+            # A ruling from a cited source names who holds the belt after this
+            # match, for the shapes the teams cannot express. A handicap side
+            # wins but only one of them pinned the champion (Backlash 2007:
+            # Vince McMahon, not Shane or Umaga, took the ECW title from
+            # Bobby Lashley), or the challenger wins without beating the one
+            # man whose belt was at stake (Judgment Day 2007: Lashley pinned
+            # Shane, so Vince kept it).
+            ruled = [p for p in ((m.get('title_result') or {}).get('champions') or []) if p]
+            if ruled:
+                if current is None or not _same_champions(
+                        current['champion_names'], ruled, canon_fn):
+                    if current is not None:
+                        current['end'] = m['air_date']
+                        current['end_event_id'] = m['event_id']
+                        reigns.append(current)
+                    current = {
+                        'champion_names': ruled,
+                        'start': m['air_date'],
+                        'end': None,
+                        'start_event_id': m['event_id'],
+                        'end_event_id': None,
+                        'pre_corpus': False,
+                    }
+                continue
+
             if winner is None or not winner.get('participants'):
                 continue
             winner_names = [p for p in winner.get('participants') or [] if p]
@@ -1238,7 +1269,15 @@ def build_title_reigns(events: dict, canon=None) -> dict[str, list[dict]]:
             # FOR as title_at_stake). The belt cannot change hands in a match
             # its holder is not part of. current is None still passes so the
             # first observed winner of a never-seen belt starts its chain.
-            if current is not None and champ_team is None:
+            #
+            # Unless the source marks it TITLE CHANGE: then the belt was vacant
+            # and this match filled it (Christian's Intercontinental battle
+            # royal at Judgment Day 2003, Johnny Nitro at Vengeance 2007, The
+            # Great Khali's battle royal in 2007). Skipped, the old champion
+            # "held" it until the new one first walked out wearing it. The walk
+            # still models no vacancy, so the old reign ends here, not on the
+            # day the belt was given up.
+            if current is not None and champ_team is None and not m.get('title_change'):
                 continue
 
             new_champs = list(winner['participants'])
