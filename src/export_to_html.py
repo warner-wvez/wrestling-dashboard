@@ -1143,18 +1143,25 @@ HOUSE_SHOW_CHANGES = Path(__file__).resolve().parent.parent / "data" / "house-sh
 TITLE_247_CHANGES = Path(__file__).resolve().parent.parent / "data" / "247-title-changes.json"
 
 
+OFFSHOW_CHANGES = Path(__file__).resolve().parent.parent / "data" / "offshow-title-changes.json"
+
+
 def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES,
-                         house=HOUSE_SHOW_CHANGES, t247=TITLE_247_CHANGES) -> list[dict]:
+                         house=HOUSE_SHOW_CHANGES, t247=TITLE_247_CHANGES,
+                         offshow=OFFSHOW_CHANGES) -> list[dict]:
     """Title changes no card carries: the Hardcore title's house-show swaps,
     each listed the same way by two of three published records
     (lineup-check/offcard_titles.py); other belts' house-show changes and
     reigns WWE recognized without a match, each confirmed by a second record
     (lineup-check/house_show_titles.py); the 24/7 title's changes outside a
     match, two of three title histories agreeing (lineup-check/title_247.py);
-    and vacancies from the title histories that match who held the belt
+    changes on shows we don't carry and on pay-per-view pre-shows, two of
+    three title histories agreeing (lineup-check/offshow_titles.py); and
+    vacancies from the title histories that match who held the belt
     (lineup-check/title_vacancies.py). Empty when the files are absent."""
     out = []
-    for f, key in ((path, "changes"), (house, "changes"), (t247, "changes"), (vacancies, "vacancies")):
+    for f, key in ((path, "changes"), (house, "changes"), (t247, "changes"), (offshow, "changes"),
+                   (vacancies, "vacancies")):
         if f.exists():
             out += json.loads(f.read_text(encoding="utf-8")).get(key) or []
     return out
@@ -1180,6 +1187,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
         closed_at_retirement: bool, present only when set. The reign was ended
                by the belt going quiet rather than by losing it, so the chain is
                allowed to have a gap after it (see _split_lineage_eras).
+        beside_interim: bool, present only when set. An interim champion was
+               crowned during the reign, which ran on beside his to its own
+               end, so the next reign starts before this one ends.
 
     Limitations:
       * Vacancies come only from the title histories (data/title-vacancies.json):
@@ -1188,7 +1198,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
       * A change no card carries is known only when two published records list
         it (data/offcard-title-changes.json for the Hardcore title,
         data/247-title-changes.json for the 24/7 title,
-        data/house-show-title-changes.json for the rest).
+        data/offshow-title-changes.json for shows we don't carry and
+        pay-per-view pre-shows, data/house-show-title-changes.json for the
+        rest).
       * Same-day title changes resolve to end-of-day state in champions_by_date.
       * Champion-vs-champion unification: when a composite match has both teams
         marked was_champion_entering=True, attribution falls out of "winner takes
@@ -1292,6 +1304,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             'title_result': None if change.get('vacate') else {'champions': list(change['champions'])},
             'vacate': bool(change.get('vacate')),
             'vacated_by': change.get('vacated_by') or '',
+            'previous_holds_until': change.get('previous_holds_until'),
         })
 
     # Canonical display name per lineage: the spelling that carries the most
@@ -1462,6 +1475,11 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             # before the final one (No Way Out 2001: Billy Gunn, then Raven,
             # both inside Raven's defense against the Big Show). Each is a
             # reign of its own that starts and ends that night.
+            #
+            # An interim champion does not end the reign he stands in for.
+            # Santos Escobar was crowned in June 2020 while Jordan Devlin could
+            # not travel, and Devlin stayed champion until Escobar beat him in
+            # April 2021, so Devlin's reign runs on to that day beside his.
             result = m.get('title_result') or {}
             ruled = [p for p in (result.get('champions') or []) if p]
             if ruled:
@@ -1472,6 +1490,10 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                         if current is not None:
                             current['end'] = m['air_date']
                             current['end_event_id'] = m['event_id']
+                            if m.get('previous_holds_until'):
+                                current['end'] = m['previous_holds_until']
+                                current['end_event_id'] = None
+                                current['beside_interim'] = True
                             reigns.append(current)
                         current = {
                             'champion_names': list(holders),
@@ -1610,8 +1632,10 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                 )
             # A retired belt whose name was later revived leaves a real gap in
             # the chain: nobody held it in between, because it did not exist.
+            # A reign held beside an interim champion's overlaps the next one.
             # Every other break is a bug.
-            if r['end'] != n['start'] and not r.get('closed_at_retirement') and not r.get('vacated'):
+            if r['end'] != n['start'] and not r.get('closed_at_retirement') and not r.get('vacated') \
+                    and not (r.get('beside_interim') and r['end'] > n['start']):
                 raise AssertionError(
                     f"title_reigns: reign chain broken for {title!r} at indices {i},{i+1}: "
                     f"end={r['end']} != next.start={n['start']}"

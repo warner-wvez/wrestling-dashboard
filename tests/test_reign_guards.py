@@ -544,6 +544,48 @@ def test_an_off_card_change_on_a_carried_show_sorts_between_its_matches():
                      ["Byron Saxton"], ["Drake Maverick"], ["Reggie"]], chain
 
 
+def test_a_pre_show_change_starts_the_reign_on_its_pay_per_view():
+    """WrestleMania 35, 2019-04-07: Tony Nese beat Buddy Murphy for the
+    Cruiserweight title on the pre-show, which our card leaves off. Without the
+    change list the walk first saw Nese as "(c)" at Money in the Bank six weeks
+    later and started his reign there."""
+    t = "WWE Cruiserweight Title"
+    events = {}
+    events.update(_ev(1, "2018-10-06", [
+        _m(1, ["Buddy Murphy"], ["Cedric Alexander"], "Buddy Murphy defeats Cedric Alexander (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2019-04-07", []))
+    events.update(_ev(3, "2019-05-19", [
+        _m(4, ["Tony Nese"], ["Ariya Daivari"], "Tony Nese (c) defeats Ariya Daivari", title=t,
+           champ_side="winner")]))
+    preshow = [{"lineage": "lineage::cruiserweight-2016", "date": "2019-04-07", "event_id": 2, "order": 0.5,
+                "champions": ["Tony Nese"]}]
+    reigns = build_title_reigns(events, offcard=preshow)[lineage_name(t, "2019-01-01")]
+    assert [(r["champion_names"], r["start"], r["start_event_id"], r["pre_corpus"]) for r in reigns[1:]] == [
+        (["Buddy Murphy"], "2018-10-06", 1, False),
+        (["Tony Nese"], "2019-04-07", 2, False)], reigns
+
+
+def test_a_reign_runs_on_beside_an_interim_champion():
+    """Jordan Devlin won the Cruiserweight title at Worlds Collide 2020-01-25.
+    Unable to travel, he kept it while Santos Escobar was crowned interim
+    champion (aired 2020-06-03), until Escobar beat him on 2021-04-08. Kushida
+    took it from Escobar on 2021-04-13. Both reigns run their full length."""
+    t = "NXT Cruiserweight Title"
+    events = _ev(1, "2020-01-25", [
+        _m(1, ["Jordan Devlin"], ["Angel Garza"], "Jordan Devlin defeats Angel Garza (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")])
+    nxt = [{"lineage": "lineage::cruiserweight-2016", "date": "2020-06-03", "champions": ["Santos Escobar"],
+            "interim": True, "previous_holds_until": "2021-04-08"},
+           {"lineage": "lineage::cruiserweight-2016", "date": "2021-04-13", "champions": ["Kushida"]}]
+    reigns = build_title_reigns(events, offcard=nxt)[lineage_name(t, "2020-01-25")]
+    assert [(r["champion_names"], r["start"], r["end"]) for r in reigns[1:]] == [
+        (["Jordan Devlin"], "2020-01-25", "2021-04-08"),
+        (["Santos Escobar"], "2020-06-03", "2021-04-13"),
+        (["Kushida"], "2021-04-13", None)], reigns
+    assert reigns[1].get("beside_interim") and not reigns[2].get("beside_interim")
+
+
 def test_a_stand_in_wins_the_belt_for_the_man_he_replaced():
     """SmackDown 2006-01-13: Randy Orton, "[Replacement for Booker T]", won the
     deciding match of the best-of-seven series for the vacant US title. The

@@ -1,0 +1,214 @@
+{
+ "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT) and on the pre-shows of pay-per-views we do. Each is listed by at least two of the belt's Wikipedia list, Duncan and Will's title history and WWE.com's. A pre-show change names its event and sorts ahead of the card. Built by lineup-check/offshow_titles.py.",
+ "changes": [
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2016-09-14",
+   "order": 0,
+   "champions": [
+    "TJ Perkins"
+   ],
+   "event": "Cruiserweight Classic Finale",
+   "place": "Winter Park, FL",
+   "why": "Before the finale of the Cruiserweight Classic, WWE Chief Operating Officer Triple H revealed that the winner would also win the inaugural WWE Cruiserweight Championship for WWE's revived cruiserweight division exclusive to the Raw brand. T. J. Perkins defeated Gran Metalik in the tournament final t",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2016-11-29",
+   "order": 0,
+   "champions": [
+    "Rich Swann"
+   ],
+   "event": "205 Live",
+   "place": "Columbia, SC",
+   "why": "This was the inaugural episode of 205 Live.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #3",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2017-08-20",
+   "order": 0.5,
+   "champions": [
+    "Neville"
+   ],
+   "event": "SummerSlam",
+   "place": "Brooklyn, NY",
+   "why": "Won on the SummerSlam pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   },
+   "event_id": 1972
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2018-04-08",
+   "order": 0.5,
+   "champions": [
+    "Cedric Alexander"
+   ],
+   "event": "WrestleMania 34",
+   "place": "New Orleans, LA",
+   "why": "Won on the WrestleMania 34 pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #10",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   },
+   "event_id": 2052
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2019-04-07",
+   "order": 0.5,
+   "champions": [
+    "Tony Nese"
+   ],
+   "event": "WrestleMania 35",
+   "place": "East Rutherford, NJ",
+   "why": "Won on the WrestleMania 35 pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #12",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   },
+   "event_id": 2177
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2019-06-23",
+   "order": 0.5,
+   "champions": [
+    "Drew Gulak"
+   ],
+   "event": "Stomping Grounds",
+   "place": "Tacoma, WA",
+   "why": "Won on the Stomping Grounds pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #13",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   },
+   "event_id": 2203
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2019-10-09",
+   "order": 0,
+   "champions": [
+    "Lio Rush"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #14",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2019-12-11",
+   "order": 0,
+   "champions": [
+    "Angel Garza"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #15",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2020-06-03",
+   "order": 0,
+   "champions": [
+    "Santos Escobar"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Due to a travel ban as a result of the COVID-19 pandemic, an interim champion was crowned in the United States until Jordan Devlin could return; Devlin, who resided in the United Kingdom, still defended the title on NXT UK while the U.S.-based interim champion defended the title on NXT. Fantasma def",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #17",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   },
+   "happened": "2020-05-27",
+   "interim": true,
+   "previous_holds_until": "2021-04-08"
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2021-04-13",
+   "order": 0,
+   "champions": [
+    "Kushida"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #18",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2021-09-21",
+   "order": 0,
+   "champions": [
+    "Roderick Strong"
+   ],
+   "event": "NXT 2.0",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #19",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-2016",
+   "title_name": "WWE NXT Cruiserweight Championship",
+   "date": "2022-01-04",
+   "order": 0,
+   "champions": [
+    "Carmelo Hayes"
+   ],
+   "event": "NXT 2.0: New Year's Evil",
+   "place": "Orlando, FL",
+   "why": "This was a title unification match in which Hayes also defended the NXT North American Championship. WWE's official title history incorrectly lists his reign as ending on January 5, 2022.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #20",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html"
+   }
+  }
+ ]
+}

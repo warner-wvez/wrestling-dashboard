@@ -40,7 +40,10 @@ EXTRA = {
 # A list's name for a champion -> the name our cards use, where the two differ
 # and the alias map does not join them.
 ALIASES = {"Hollywood Hulk Hogan": "Hulk Hogan", "Chavo Classic": "Chavo Guerrero Classic",
-           "Shane Helms": "Gregory Helms"}
+           "Shane Helms": "Gregory Helms",
+           # He won the interim title masked and unmasked a week later; our
+           # roster knows him only as Santos Escobar.
+           "El Hijo del Fantasma/Santos Escobar": "Santos Escobar"}
 
 
 def _plain(s):
@@ -87,6 +90,9 @@ def main():
         # Morrison"); we name a reign as it was won.
         name = ALIASES.get(name, name).split("/")[0]
         name = re.sub(r"^The ", "", name or "")
+        # Initials are spaced on one side and run together on the other
+        # ("T. J. Perkins", "TJ Perkins").
+        name = re.sub(r"\b([A-Z])\. ?(?=[A-Z]\.)", r"\1", name)
         return slug.get(_plain(name)) or slug.get(_plain("The " + name)) or _plain(name)
 
     pairs = [(lin["name"], lin["wiki_list"]) for lin in LINEAGES] + list(EXTRA.items())
