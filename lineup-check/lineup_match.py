@@ -187,6 +187,17 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
         s_min, s_max = common / min(len(a), len(b)), common / max(len(a), len(b))
         return s_min if s_min >= floor_min and s_max >= floor_max else 0.0
 
+    def same_result(o, c):
+        """His line and our match end the same way: the same winners, or no
+        winner on either. Breaks ties, so an attack before the bell that he
+        logs as a no contest ahead of the real bout (Lashley vs Booker,
+        SmackDown 2006-06-16) never takes our match from the real one."""
+        won = [set(t["participants"]) for t in o["teams"] if t.get("was_winner") is True]
+        if c["c"].get("result") != "win":
+            return not won
+        his = set(c["w"][0] + c["w"][1])
+        return bool(won and his and his <= won[0])
+
     pairs = []
     for i, o in enumerate(ours):
         for j, c in enumerate(tv):
@@ -196,10 +207,10 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
             else:
                 s = both_ways(c["names"], o)
             if s:
-                pairs.append((s, i, j))
-    pairs.sort(key=lambda p: (-p[0], p[1], p[2]))
+                pairs.append((s, same_result(o, c), i, j))
+    pairs.sort(key=lambda p: (-p[0], not p[1], p[2], p[3]))
     o_of, c_of = {}, {}
-    for s, i, j in pairs:
+    for s, _, i, j in pairs:
         if i not in o_of and j not in c_of:
             o_of[i], c_of[j] = j, i
     # Second pass for leftovers, still both ways round but looser, so a match
@@ -263,10 +274,17 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
         names = set(tv[j]["names"])
         if names and any(names <= mp for mp in multi_people):
             continue      # one segment of a gauntlet or elimination match we hold whole
-        if names and any(names == set(_people(o)) for o in ours):
+        same = [i for i, o in enumerate(ours) if names and names == set(_people(o))]
+        if same and tv[j]["c"].get("result") != "win" and any(i in o_of for i in same):
+            # A no contest beside the real bout he also lists, which paired
+            # with ours: the attack before the bell (Michaels vs Goldberg on
+            # Raw 2003-10-20, Mark Henry jumping Goldberg on his way out), not
+            # a second match.
+            continue
+        if same:
             # The same people already meet on our card: his second line is a
-            # rematch or restart that night (Michaels vs Goldberg twice on Raw
-            # 2003-10-20, the 24/7 title swaps). A person decides.
+            # rematch or restart that night (the Hardcore and 24/7 title
+            # swaps). A person decides.
             row("possible_second_bout", c=tv[j])
             continue
         # Where it sits on the card: right after our match that pairs with

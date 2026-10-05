@@ -149,3 +149,55 @@ def test_junk_on_our_side_is_replaced_by_the_real_wrestlers():
                                    ["X-Pac", "Justin Credible", "Albert"], result="double disqualification")], {})
     assert sorted(r["name"] for r in rows if r["class"] == "add_wrestler") == [
         "Albert", "Justin Credible", "X-Pac"]
+
+
+def _sd(matches):
+    return {"id": 2, "air_date": "2006-06-16", "show_type": "SmackDown", "title": "SmackDown",
+            "matches": matches}
+
+
+def test_attack_before_the_bell_does_not_steal_the_real_bout():
+    # SmackDown 2006-06-16: Cawthon logs Lashley vs Booker as a no contest
+    # when Finlay and Regal jumped Lashley on his way out, then the real
+    # match later. The no contest came first on his list and used to pair
+    # with our win, reporting a wrong result and a "second bout".
+    ev = _sd([_match(1, "Bobby Lashley defeats King Booker (16:02)",
+                     [_team(1, ["Bobby Lashley"], True), _team(2, ["King Booker"])])])
+    lines = [_line(["Bobby Lashley"], ["King Booker"], result="no contest"),
+             _line(["Bobby Lashley"], ["King Booker"])]
+    assert _classes(compare_show(ev, lines, {})) == []
+
+
+def test_unplaceable_name_does_not_steal_the_pairing():
+    # Raw 2011-08-08: "Rey Mysterio Jr. fought Mike Mizanin to a no contest"
+    # (Rey not on our card) scored as high as Miz vs Kofi once Rey dropped out.
+    ev = _sd([_match(1, "The Miz defeats Kofi Kingston (10:42)",
+                     [_team(1, ["The Miz"], True), _team(2, ["Kofi Kingston"])])])
+    lines = [_line(["Rey Mysterio Jr."], ["Mike Mizanin"], result="no contest"),
+             _line(["Mike Mizanin"], ["Kofi Kingston"])]
+    lineup_match.CANON = {"Mike Mizanin": "The Miz"}
+    try:
+        assert _classes(compare_show(ev, lines, {})) == [("missing_match", "")]
+    finally:
+        lineup_match.CANON = {}
+
+
+def test_title_changing_hands_twice_is_still_a_second_bout():
+    # Raw 2001-01-22: Al Snow won the Hardcore title from Raven, then Raven
+    # took it back the same night. Both are real; a person adds the second.
+    ev = _sd([_match(1, "Al Snow defeats Raven (c) (3:35)",
+                     [_team(1, ["Al Snow"], True), _team(2, ["Raven"])])])
+    lines = [_line(["Al Snow"], ["Raven"]), _line(["Raven"], ["Al Snow"])]
+    assert _classes(compare_show(ev, lines, {})) == [("possible_second_bout", "")]
+
+
+def test_a_ruled_row_leaves_the_review_list(tmp_path):
+    import lineup_check
+    f = tmp_path / "rulings.csv"
+    f.write_text("class,event_id,match_id,cawthon,ruling,why\n"
+                 "possible_second_bout,782,,Matt Hardy defeated WWE US Champion MVP,no change,arm wrestling\n")
+    rulings = lineup_check.load_rulings(f)
+    row = {"class": "possible_second_bout", "event_id": 782, "match_id": None,
+           "cawthon": "Matt Hardy defeated WWE US Champion MVP via count-out ..."}
+    other = {**row, "event_id": 783}
+    assert lineup_check.to_review([row, other], rulings) == [other]
