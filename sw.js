@@ -69,7 +69,10 @@
 // instead of nine, the 1956 Women's title apart from the 2016 ones, the 1971 and
 // 2024 World Tag Team titles apart), eight wrong title changes fixed, and 18
 // misspelled names corrected. Core, match shards and titles changed.
-const CACHE = 'wrestling-dashboard-v24';
+// v25: vacancies from the title histories end reigns on the day a belt was
+// vacated (45 of them), titles awarded without a match added, and Becky
+// Lynch's 2024 Women's World title reign restored. Core and titles changed.
+const CACHE = 'wrestling-dashboard-v25';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
