@@ -115,6 +115,7 @@ def clean_participant(name: str):
     if n.endswith(")") and "(" not in n:
         n = n[:-1].rstrip()
     n = _RESULT_TAIL_RE.sub("", n).strip()
+    n = n.rstrip("\u00a9").rstrip()          # a champion mark, "Layla \u00a9"
     if not n or n.lower() in _NOT_PEOPLE:
         return None
     if re.fullmatch(r"(?:the\s+)?[A-Za-z]", n, re.IGNORECASE):

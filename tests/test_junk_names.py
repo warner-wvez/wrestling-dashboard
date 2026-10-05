@@ -65,3 +65,7 @@ def test_single_letter_left_by_a_hyphen_split_is_dropped():
     assert clean_participant("D") is None
     assert clean_participant("B²") == "B²"
     assert clean_participant("The X") is None
+
+
+def test_champion_mark_comes_off_the_name():
+    assert clean_participant("Layla ©") == "Layla"
