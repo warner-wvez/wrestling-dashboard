@@ -35,7 +35,7 @@ if str(ROOT) not in sys.path:
 
 from src.export_to_html import (  # noqa: E402
     build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date,
-    inject, split_fused_multiman_sides, strip_phantom_group_labels, write_sharded)
+    clean_junk_participants, inject, split_fused_multiman_sides, strip_phantom_group_labels, write_sharded)
 from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E402
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
@@ -450,9 +450,10 @@ def main():
     # same as rebuild_indexes: un-fuse multi-man sides so a triple threat is not a
     # handicap match, and drop phantom group labels so a stable is not a roster
     # person. Without this a refresh silently regresses both for every new show.
+    cleaned = clean_junk_participants(events)
     unfused = split_fused_multiman_sides(events)
     trimmed = strip_phantom_group_labels(events)
-    print(f"  un-fused multi-man sides: {unfused} matches; "
+    print(f"  cleaned junk names: {cleaned}; un-fused multi-man sides: {unfused} matches; "
           f"trimmed phantom group labels: {trimmed} teams", flush=True)
 
     print("Recomputing wrestler index + title reigns...", flush=True)

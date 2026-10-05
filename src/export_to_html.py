@@ -82,6 +82,60 @@ def is_placeholder_name(name: str) -> bool:
     return n in PLACEHOLDER_NAMES or bool(_PLACEHOLDER_RE.match(n))
 
 
+# Results and words the parsers wrote into a participant slot. Found on shipped
+# cards 2026-10-05: "countout" and "no contest" parsed as opponents, "and" from a
+# pipe link, "Jeff Hardy by TKO", "The Rock Non" (from "Non-title").
+_NOT_PEOPLE = {"countout", "double countout", "no contest", "and"}
+_RESULT_TAIL_RE = re.compile(
+    r"\s+(?:by\s+(?:tko|forfeit|reverse\s+decision)|to\s+unify\s+the\s+titles|non)\s*$",
+    re.IGNORECASE)
+# One person, two spellings, where one is a typo or a case/quote slip rather
+# than a different billing. Era billing (Big Show / The Big Show) is NOT here.
+# Goodfather is one word per the August data audit; case-only twins take the
+# spelling the corpus uses most.
+CARD_SPELLING = {
+    "The Good Father": "The Goodfather",
+    "Grand Master Sexay": "Grandmaster Sexay",
+    "Lance Anoai": "Lance Anoa'i",
+    "Je’Von Evans": "Je'Von Evans",
+    "Walter": "WALTER",
+    "Iyo Sky": "IYO SKY",
+    "Mace": "MACE",
+    "T-Bar": "T-BAR",
+    "SLAPJACK": "Slapjack",
+    "Cruz del Toro": "Cruz Del Toro",
+    "månsôör": "mån.sôör",
+}
+
+
+def clean_participant(name: str):
+    """The name as a card should show it, or None when it is not a person."""
+    n = re.sub(r"\s+", " ", name or "").strip()
+    n = re.sub(r"^[:;,\s]+", "", n)
+    if n.endswith(")") and "(" not in n:
+        n = n[:-1].rstrip()
+    n = _RESULT_TAIL_RE.sub("", n).strip()
+    if not n or n.lower() in _NOT_PEOPLE:
+        return None
+    return CARD_SPELLING.get(n, n)
+
+
+def clean_junk_participants(events: dict) -> int:
+    """Clean every participant on every card, in place. Returns how many
+    names changed or were dropped, so a second run reports 0."""
+    changed = 0
+    for ev in events.values():
+        for match in ev.get('matches') or []:
+            for t in match.get('teams') or []:
+                before = t.get('participants') or []
+                cleaned = [clean_participant(p) for p in before]
+                n = sum(1 for p, c in zip(before, cleaned) if c != p)
+                if n:
+                    changed += n
+                    t['participants'] = [c for c in cleaned if c]
+    return changed
+
+
 def build_wrestlers_index(events: dict, canon=None, title_reigns=None) -> tuple[dict, dict]:
     """Pre-compute wrestler profiles from the assembled events dict.
 
