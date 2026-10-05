@@ -218,7 +218,19 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
     def row(cls, o=None, c=None, **kw):
         his = (c or {}).get("names") or []
         his_w = (c["w"][0] + c["w"][1]) if c and c["c"].get("result") == "win" else []
-        rows.append({"class": cls, "vote": _vote({"class": cls}, o, his, his_w, sdh_matches, show_names),
+        complete = not (c and (c["w"][2] or c["l"][2]))
+        verdict, sdh_line, sdh_match = _vote({"class": cls}, o, his, his_w, sdh_matches,
+                                             show_names, complete)
+        if verdict in ("fix_result_same_people", "add_match_same_people"):
+            kw = {**kw, "his_winners": his_w, "outcome": outcome_kind(c["c"]["line"]),
+                  "duration_seconds": duration_of(c["c"]["line"]),
+                  "sdh_match": {"match_type": sdh_match.get("match_type"),
+                                "title_at_stake": sdh_match.get("title_at_stake"),
+                                "teams": [{"participants": [best_match(p, show_names) or p
+                                                            for p in t.get("participants") or []],
+                                           "was_winner": t.get("was_winner")}
+                                          for t in sdh_match.get("teams") or []]}}
+        rows.append({"class": cls, "vote": verdict, "sdh": sdh_line,
                      "event_id": ev["id"], "air_date": day,
                      "show_type": ev.get("show_type"), "title": ev.get("title"),
                      "match_id": (o or {}).get("id"), "match_order": (o or {}).get("match_order"),
@@ -251,7 +263,16 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
         names = set(tv[j]["names"])
         if names and any(names <= mp for mp in multi_people):
             continue      # one segment of a gauntlet or elimination match we hold whole
-        row("missing_match", c=tv[j])
+        if names and any(names == set(_people(o)) for o in ours):
+            # The same people already meet on our card: his second line is a
+            # rematch or restart that night (Michaels vs Goldberg twice on Raw
+            # 2003-10-20, the 24/7 title swaps). A person decides.
+            row("possible_second_bout", c=tv[j])
+            continue
+        # Where it sits on the card: right after our match that pairs with
+        # the nearest earlier line of his.
+        before = [c_of[k] for k in range(j) if k in c_of]
+        row("missing_match", c=tv[j], after_match_id=ours[max(before)]["id"] if before else None)
 
     for i, j in o_of.items():
         o, c = ours[i], tv[j]
@@ -264,6 +285,27 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
             _lineup_rows(o, c, teams, row)
         _result_rows(o, c, teams, row)
     return rows
+
+
+def outcome_kind(line):
+    """How his line says the match ended: 'no-contest', 'draw', 'dq',
+    'countout' or 'win'."""
+    low = (line or "").lower()
+    if re.search(r"fought .* to an? (?:no contest|double (?:count[- ]?out|disqualification|dq))", low):
+        return "no-contest"
+    if re.search(r"fought .* to an? (?:time[- ]limit )?draw", low):
+        return "draw"
+    if "disqualification" in low or "reverse decision" in low:
+        return "dq"
+    if re.search(r"count[- ]?out", low):
+        return "countout"
+    return "win"
+
+
+def duration_of(line):
+    """Seconds from his "at 12:05", or None."""
+    m = re.search(r"\bat (?:around )?(\d{1,2}):(\d{2})\b", line or "")
+    return int(m.group(1)) * 60 + int(m.group(2)) if m else None
 
 
 MULTI_MATCH = re.compile(r"rumble|battle royal|gauntlet|elimination|chamber|turmoil|"

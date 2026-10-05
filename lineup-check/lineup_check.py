@@ -37,7 +37,7 @@ CACHE, SDH_CACHE, OUT = HERE / "cache", HERE / "sdh-cache", HERE / "out"
 YEARS = range(2001, 2014)
 AUTO_CLASSES = ("not_aired", "aired_heat", "add_wrestler")
 REVIEW_FIELDS = ("class", "vote", "air_date", "show_type", "title", "event_id", "match_id",
-                 "match_order", "name", "detail", "ours", "cawthon")
+                 "match_order", "name", "detail", "ours", "cawthon", "sdh")
 
 
 def _org(year):
@@ -116,16 +116,33 @@ def run(bundle):
 
 def auto_fixes(rows):
     """The machine-applied set, keyed so the migration can find each match by
-    id and check its stored text before touching it."""
+    id and check its stored text before touching it.
+
+    Besides the both-sources classes, two SmackDown Hotel vote kinds are
+    applied, each because every row it selected was checked by hand
+    (2026-10-05): a result all three sources describe with the same people
+    (31 of 31 right) and a missing match with the same people and winner on
+    Cawthon's and SmackDown Hotel's cards (14 of 14 right)."""
     out = {k: [] for k in AUTO_CLASSES}
+    out["fix_result"], out["add_match"] = [], []
     for r in rows:
         if r["class"] in AUTO_CLASSES:
             item = {"event_id": r["event_id"], "match_id": r["match_id"], "ours": r["ours"]}
             if r["class"] == "add_wrestler":
                 item.update(team_number=r["team_number"], name=r["name"])
             out[r["class"]].append(item)
+        elif r.get("vote") == "fix_result_same_people":
+            out["fix_result"].append({"event_id": r["event_id"], "match_id": r["match_id"],
+                                      "ours": r["ours"], "winners": sorted(r["his_winners"]),
+                                      "outcome": r["outcome"], "cawthon": r["cawthon"]})
+        elif r.get("vote") == "add_match_same_people":
+            out["add_match"].append({"event_id": r["event_id"], "after_match_id": r["after_match_id"],
+                                     "cawthon": r["cawthon"], "sdh": r["sdh"],
+                                     "outcome": r["outcome"], "duration_seconds": r["duration_seconds"],
+                                     "match": r["sdh_match"]})
     for k in out:
-        out[k].sort(key=lambda i: (i["event_id"], i["match_id"], i.get("name", "")))
+        out[k].sort(key=lambda i: (i["event_id"], i.get("match_id") or 0, i.get("name", ""),
+                                   i.get("cawthon", "")))
     return out
 
 
@@ -168,11 +185,15 @@ def lineup_match_auto():
     return AUTO
 
 
+APPLIED_VOTES = ("fix_result_same_people", "add_match_same_people")
+
+
 def review_csv(rows):
     buf = io.StringIO()
     w = csv.DictWriter(buf, fieldnames=REVIEW_FIELDS, extrasaction="ignore")
     w.writeheader()
-    w.writerows(sorted((r for r in rows if r["class"] not in AUTO_CLASSES),
+    w.writerows(sorted((r for r in rows if r["class"] not in AUTO_CLASSES
+                        and r.get("vote") not in APPLIED_VOTES),
                        key=lambda r: (r["class"], r["air_date"])))
     return buf.getvalue()
 
@@ -188,7 +209,7 @@ def main():
     atomic_write_text(OUT / "LINEUP-CHECK.md", render(rows, shows, fixes))
     print(f"{shows} shows compared; auto: " +
           ", ".join(f"{k}={len(v)}" for k, v in fixes.items()) +
-          f"; review rows: {sum(1 for r in rows if r['class'] not in AUTO_CLASSES)}")
+          f"; review rows: {sum(1 for r in rows if r['class'] not in AUTO_CLASSES and r.get('vote') not in APPLIED_VOTES)}")
 
 
 if __name__ == "__main__":
