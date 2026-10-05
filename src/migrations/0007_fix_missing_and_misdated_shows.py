@@ -84,6 +84,9 @@ TITLE_NAMES = {
     "WWF Championship": "WWF World Heavyweight Title",
     "WCW Championship": "WCW World Heavyweight Title",
     "WCW Tag Team Championship": "WCW World Tag Team Title",
+    # The corpus names this belt "World Women's Title" until late 2005, and
+    # Insurrextion 2003 is the only added show that defends it.
+    "WWE Women's Championship": "World Women's Title",
 }
 
 
