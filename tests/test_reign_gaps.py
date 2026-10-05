@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.title_lineages import lineage_name  # noqa: E402
 from src.export_to_html import build_title_reigns  # noqa: E402
 
 TITLE = "WWE Intercontinental Title"
@@ -36,7 +37,7 @@ def _ev(eid, date, matches):
 
 
 def _reigns(events, title=TITLE):
-    return build_title_reigns(events)[title]
+    return build_title_reigns(events)[lineage_name(title, min(e["air_date"] for e in events.values()))]
 
 
 def test_a_missing_title_change_is_recovered_from_the_champion_marker():

@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.title_lineages import lineage_name  # noqa: E402
 from src.export_to_html import CLIP_SHOWS, build_title_reigns  # noqa: E402
 
 
@@ -41,7 +42,7 @@ def test_a_clip_show_does_not_crown_a_champion():
     clip_id = next(iter(CLIP_SHOWS))
     events.update(_event(clip_id, "2001-12-31", "Year In Review Special",
                          [_title_match("Steve Austin", "The Rock", "WWF Title")]))
-    reigns = build_title_reigns(events)["WWF Title"]
+    reigns = build_title_reigns(events)[lineage_name("WWF Title", "2001-04-01")]
     starts = [r["start"] for r in reigns]
     assert "2001-04-01" in starts, "the real title change must still be walked"
     assert "2001-12-31" not in starts, (

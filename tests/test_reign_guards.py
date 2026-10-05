@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from src.title_lineages import lineage_name  # noqa: E402
 from src.export_to_html import build_title_reigns  # noqa: E402
 
 
@@ -54,7 +55,8 @@ def _ev(eid, date, matches):
 
 def _chain(events, title, canon=None):
     return [(r["start"], r["end"], r["champion_names"])
-            for r in build_title_reigns(events, canon=canon, offcard=())[title]]
+            for r in build_title_reigns(events, canon=canon, offcard=())[
+                lineage_name(title, min(e["air_date"] for e in events.values()))]]
 
 
 def _champs(events, title, canon=None):
@@ -528,3 +530,20 @@ def test_a_stand_in_wins_the_belt_for_the_man_he_replaced():
            "Randy Orton [Replacement for Booker T] (c) defeats Orlando Jordan (12:57)", title=t,
            champ_side="winner")]))
     assert _champs(events, t) == [["Booker T"]], _chain(events, t)
+
+
+def test_a_ruling_on_a_mapped_belt_overrides_a_co_holders_c_marker():
+    """LayCool, 2010: Michelle McCool held the unified Divas title and Layla
+    defended it as "(c)" under the Freebird rule. With a ruling naming McCool,
+    Layla's defense is not a reign of her own."""
+    t = "Unified WWE Divas Title"
+    events = {}
+    events.update(_ev(1, "2010-09-19", [
+        _m(1, ["Michelle McCool"], ["Melina"], "Michelle McCool defeats Melina (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    defense = _m(1, ["Layla"], ["Natalya"], "Layla (w/ Michelle McCool ) (c) defeats Natalya", title=t,
+                 champ_side="winner")
+    defense["title_result"] = {"title": t, "champions": ["Michelle McCool"]}
+    events.update(_ev(2, "2010-10-24", [defense]))
+    assert _champs(events, t)[-1] == ["Michelle McCool"], _chain(events, t)
+    assert ["Layla"] not in _champs(events, t)
