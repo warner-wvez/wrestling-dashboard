@@ -89,7 +89,11 @@
 // NXT, 205 Live and pay-per-view pre-shows), every reign on its real start
 // date, and Devlin's reign running beside Escobar's interim one. Core and
 // titles changed.
-const CACHE = 'wrestling-dashboard-v30';
+// v31: the six NXT belts' full histories (changes on NXT TV, and the four won
+// on our NXT cards without a title-change mark), three NXT vacancies, and two
+// rulings (Fyre and Dawn the last NXT women's tag champions, Zaria a stand-in
+// for Sol Ruca). Core, the 2022 and 2025 match shards and titles changed.
+const CACHE = 'wrestling-dashboard-v31';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
