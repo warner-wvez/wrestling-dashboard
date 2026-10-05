@@ -201,3 +201,54 @@ def test_a_ruled_row_leaves_the_review_list(tmp_path):
            "cawthon": "Matt Hardy defeated WWE US Champion MVP via count-out ..."}
     other = {**row, "event_id": 783}
     assert lineup_check.to_review([row, other], rulings) == [other]
+
+
+def test_dark_rematch_never_takes_a_televised_line():
+    # SmackDown 2009-08-07: Hardy beat Punk on TV and again after the show.
+    # Cawthon also logs a no contest earlier that night; it paired with the
+    # dark rematch, which then escaped the dark rule.
+    ev = _sd([_match(6, "Jeff Hardy (c) defeats CM Punk (11:10)",
+                     [_team(1, ["Jeff Hardy"], True), _team(2, ["CM Punk"])]),
+              _match(7, "Jeff Hardy (c) defeats CM Punk",
+                     [_team(1, ["Jeff Hardy"], True), _team(2, ["CM Punk"])], "Dark Match")])
+    lines = [_line(["Jeff Hardy"], ["CM Punk"], result="no contest"),
+             _line(["Jeff Hardy"], ["CM Punk"])]
+    rows = compare_show(ev, lines, {})
+    assert _classes(rows) == [("not_aired", "")] and rows[0]["match_id"] == 7
+
+
+def test_dark_main_event_never_pairs_with_a_different_match():
+    # Raw 2008-12-15: our dark Cena vs Jericho took Cawthon's line for
+    # Jericho refusing to face Jim Duggan, a man not on our card.
+    ev = _sd([_match(7, "John Cena (c) defeats Chris Jericho",
+                     [_team(1, ["John Cena"], True), _team(2, ["Chris Jericho"])], "Dark Match")])
+    lines = [_line(["Chris Jericho"], ["Jim Duggan"], result="no contest")]
+    assert _classes(compare_show(ev, lines, {})) == [("missing_match", ""), ("not_aired", "")]
+
+
+def test_his_not_televised_note_is_his_dark_label():
+    # SmackDown 2004-02-05: "Ernest Miller pinned Tajiri ... (match not televised)".
+    ev = _sd([_match(2, "Ernest Miller defeats Tajiri",
+                     [_team(1, ["Ernest Miller"], True), _team(2, ["Tajiri"])], "Dark Match"),
+              _match(3, "Kane defeats Simon Dean (2:30)",
+                     [_team(1, ["Kane"], True), _team(2, ["Simon Dean"])])])
+    miller, kane = _line(["Ernest Miller"], ["Tajiri"]), _line(["Kane"], ["Simon Dean"])
+    miller["line"] += " (match not televised)"
+    kane["line"] += " (this bout took place during the commercial break and was not mentioned on TV)"
+    assert _classes(compare_show(ev, [miller, kane], {})) == [("cawthon_says_dark", ""), ("not_aired", "")]
+
+
+def test_a_contest_is_never_added_automatically():
+    # SmackDown 2013-05-03: Cawthon and SmackDown Hotel both list Mark Henry
+    # beating Sheamus "in an arm wrestling contest". Not a match.
+    ev = _sd([_match(8, "Randy Orton & Sheamus defeat Mark Henry & The Big Show",
+                     [_team(1, ["Randy Orton", "Sheamus"], True),
+                      _team(2, ["Mark Henry", "The Big Show"])], "Dark Tag Team Match")])
+    line = _line(["Mark Henry"], ["Sheamus"])
+    line["line"] = "Mark Henry defeated Sheamus in an arm wrestling contest"
+    sdh = [{"teams": [{"participants": ["Mark Henry"], "was_winner": True},
+                      {"participants": ["Sheamus"], "was_winner": False}]}]
+    rows = compare_show(ev, [line], {}, sdh_matches=sdh)
+    assert [(r["class"], r["vote"]) for r in rows if r["class"] == "missing_match"] == [
+        ("missing_match", "add_match")]
+    assert lineup_match.CONTEST.search("fought Raven to a no contest") is None

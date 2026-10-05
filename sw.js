@@ -53,7 +53,9 @@
 // v19: 3 same-night Hardcore title swaps added (Raw 2001-01-22 and 2001-09-10,
 // SmackDown 2002-02-28) and 3 more dark matches greyed. Match shards and the
 // title history changed.
-const CACHE = 'wrestling-dashboard-v19';
+// v20: 8 DQ and count-out results corrected to the no contests WWE's own
+// recaps report, and 15 more dark matches greyed. Match shards changed.
+const CACHE = 'wrestling-dashboard-v20';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
