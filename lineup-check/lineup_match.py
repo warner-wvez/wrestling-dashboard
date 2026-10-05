@@ -41,6 +41,8 @@ ERA_NAMES = {"B\u00b2": "Bull Buchanan", "B-2": "Bull Buchanan"}
 # The dashboard's own alias map (ring-name changes, respellings), set by the
 # caller from src.roster_aliases: name -> canonical name.
 CANON = {}
+CONTEST = re.compile(r"\b(?:in|won) an? (?:[\w-]+ ){1,3}(?:contest|competition)\b", re.I)
+NOT_TELEVISED = re.compile(r"\b(?:not|never) televised\b|\bdid not air\b|not mentioned on TV", re.I)
 MULTI_TYPES = re.compile(r"rumble|battle royal|gauntlet|elimination chamber|royal", re.I)
 
 
@@ -172,9 +174,13 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
                         "names": w[0] + w[1] + l[0] + l[1]})
         return out
 
-    # His own "Dark match after the taping" lines are not televised.
-    dark = prep([c for c in cawthon_lines if c["line"].lower().startswith("dark match")])
-    tv = prep([c for c in cawthon_lines if not c["line"].lower().startswith("dark match")])
+    # His own "Dark match after the taping" lines are not televised, and so
+    # are lines he notes "(match not televised)" or "took place during the
+    # commercial break and was not mentioned on TV".
+    def his_dark(c):
+        return c["line"].lower().startswith("dark match") or bool(NOT_TELEVISED.search(c["line"]))
+    dark = prep([c for c in cawthon_lines if his_dark(c)])
+    tv = prep([c for c in cawthon_lines if not his_dark(c)])
     heat = prep(heat_lines)
 
     def both_ways(names, o, floor_min=0.5, floor_max=0.34):
@@ -198,6 +204,9 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
         his = set(c["w"][0] + c["w"][1])
         return bool(won and his and his <= won[0])
 
+    def labelled_dark(o):
+        return "dark" in (o.get("match_type") or "").lower()
+
     pairs = []
     for i, o in enumerate(ours):
         for j, c in enumerate(tv):
@@ -206,17 +215,28 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
                             set(c["names"]) & set(_people(o))) else 0.0
             else:
                 s = both_ways(c["names"], o)
+            # A match our source calls dark is on his televised list only if
+            # he has those very people with the same result. Anything looser
+            # let a dark main event take a different televised line (Raw
+            # 2008-12-15: dark Cena vs Jericho took Jericho refusing to face
+            # Jim Duggan) and so escape the dark rule.
+            if s and labelled_dark(o) and not (set(c["names"]) == set(_people(o))
+                                               and same_result(o, c)):
+                s = 0.0
             if s:
-                pairs.append((s, same_result(o, c), i, j))
-    pairs.sort(key=lambda p: (-p[0], not p[1], p[2], p[3]))
+                pairs.append((s, same_result(o, c), labelled_dark(o), i, j))
+    # Ties go to the line that ends the way ours does, then to our televised
+    # match over a dark rematch of the same people (SmackDown 2011-08-26 has
+    # Sin Cara vs Slater twice, once dark).
+    pairs.sort(key=lambda p: (-p[0], not p[1], p[2], p[3], p[4]))
     o_of, c_of = {}, {}
-    for s, _, i, j in pairs:
+    for s, _, _, i, j in pairs:
         if i not in o_of and j not in c_of:
             o_of[i], c_of[j] = j, i
     # Second pass for leftovers, still both ways round but looser, so a match
     # with one unplaceable name is compared rather than reported twice.
     rest = sorted(((both_ways(tv[j]["names"], ours[i], 0.0, 0.34), i, j)
-                   for i in range(len(ours)) if i not in o_of
+                   for i in range(len(ours)) if i not in o_of and not labelled_dark(ours[i])
                    for j in range(len(tv)) if j not in c_of and tv[j]["c"]["kind"] != "multi"),
                   key=lambda p: (-p[0], p[1], p[2]))
     for s, i, j in rest:
@@ -232,6 +252,10 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
         complete = not (c and (c["w"][2] or c["l"][2]))
         verdict, sdh_line, sdh_match = _vote({"class": cls}, o, his, his_w, sdh_matches,
                                              show_names, complete)
+        if verdict == "add_match_same_people" and CONTEST.search(c["c"]["line"]):
+            # An arm wrestling or lingerie contest is not a match; the corpus
+            # keeps almost none, so one is never added without a person.
+            verdict = "add_match"
         if verdict in ("fix_result_same_people", "add_match_same_people"):
             kw = {**kw, "his_winners": his_w, "outcome": outcome_kind(c["c"]["line"]),
                   "duration_seconds": duration_of(c["c"]["line"]),
@@ -253,10 +277,9 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
             continue
         hj = next((j for j, h in enumerate(heat) if both_ways(h["names"], o, 0.5, 0.5)), None)
         dj = next((j for j, d in enumerate(dark) if both_ways(d["names"], o)), None)
-        labelled_dark = "dark" in (o.get("match_type") or "").lower()
         if hj is not None:
             row("aired_heat", o, heat[hj])
-        elif labelled_dark and not unreadable:
+        elif labelled_dark(o) and not unreadable:
             # Our own source labels it a dark match and his televised list
             # does not have it: both say it never aired.
             row("not_aired", o)
@@ -294,7 +317,7 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
 
     for i, j in o_of.items():
         o, c = ours[i], tv[j]
-        if "dark" in (o.get("match_type") or "").lower():
+        if labelled_dark(o):
             row("dark_but_televised", o, c)
         teams = [t for t in o["teams"] if t.get("participants")]
         if c["c"].get("all_sides"):
