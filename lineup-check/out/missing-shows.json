@@ -1,0 +1,4374 @@
+{
+ "date_fixes": [
+  {
+   "event_id": 556,
+   "show_type": "SmackDown",
+   "from": "2005-09-08",
+   "to": "2005-09-09",
+   "votes": [
+    3,
+    0
+   ]
+  },
+  {
+   "event_id": 1168,
+   "show_type": "SmackDown",
+   "from": "2010-12-24",
+   "to": "2010-12-21",
+   "votes": [
+    3,
+    1
+   ]
+  },
+  {
+   "event_id": 1247,
+   "show_type": "SmackDown",
+   "from": "2011-09-02",
+   "to": "2011-08-30",
+   "votes": [
+    3,
+    1
+   ]
+  }
+ ],
+ "week_shifts": [
+  {
+   "event_id": 842,
+   "show_type": "Raw",
+   "from": "2008-02-04",
+   "to": "2008-02-11",
+   "to_tape_date": "2008-02-04",
+   "to_place": "Austin, TX",
+   "to_venue": "Frank Irwin Center",
+   "number": 768,
+   "vacated": {
+    "air_date": "2008-02-04",
+    "number": 767,
+    "tape_date": "2008-02-04",
+    "place": "Austin, TX",
+    "venue": "Frank Irwin Center",
+    "fit": 0.95,
+    "add": true,
+    "cawthon_lines": [
+     "Mickie James & Kelly Kelly defeated WWE Women's Champion Beth Phoenix & Victoria at 2:43 when Mickie pinned Victoria with a Tornado DDT",
+     "Ken Kennedy defeated Super Crazy via submission with an inverted figure-4 at 2:30; after the bout, Kennedy showed footage on the big screen of the previous week's Smackdown! in which WWE US Champion MVP attacked Ric Flair after their match; Kennedy then offered Flair a chance to appear the next week and forfeit his match against Kennedy at No Way Out or face having to retire and limp the rest of his life",
+     "Carlito Caribbean Cool & Santino Marella (w/ Maria) defeated Brian Kendrick & Paul London at 1:18 when Carlito pinned Kendrick with the Backstabber; neither London or Marella were legally involved in the bout",
+     "WWE Raw Tag Team Champions Hardcore Holly & Cody Rhodes defeated Lance Cade & Trevor Murdoch in a non-title match at 2:16 when Rhodes pinned Murdoch with a DDT; after the bout, Carlito Caribbean Cool, Santino Marella, & Maria appeared with Carlito and Santino announcing they had been named the new #1 contenders and would take the belts from Holly & Rhodes",
+     "Shawn Michaels, WWE IC Champion Jeff Hardy, & Chris Jericho defeated John Bradshaw Layfield, Umaga, & Snitsky at 15:12 when Hardy pinned Snitsky with the Twist of Fate and Swanton",
+     "John Cena fought Mark Henry to a no contest in an arm wrestling contest when \u2013 as Cena was about to win \u2013 WWE World Champion Randy Orton interfered; moments later, Cena easily sent Orton out of the ring and dropped Henry with the FU to close the broadcast"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Mickie James & Kelly Kelly defeat Beth Phoenix & Victoria",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Mickie James",
+         "Kelly Kelly"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Beth Phoenix",
+         "Victoria"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Mr. Kennedy defeats Super Crazy",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Mr. Kennedy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Super Crazy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Carlito & Santino Marella defeat Paul London & Brian Kendrick",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Carlito",
+         "Santino Marella"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Paul London",
+         "Brian Kendrick"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Hardcore Holly & Cody Rhodes defeat Lance Cade & Trevor Murdoch",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Hardcore Holly",
+         "Cody Rhodes"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Lance Cade",
+         "Trevor Murdoch"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Shawn Michaels, Chris Jericho & Jeff Hardy defeat John Bradshaw Layfield, Umaga & Snitsky",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Shawn Michaels",
+         "Chris Jericho",
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "John Bradshaw Layfield",
+         "Umaga",
+         "Snitsky"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 6,
+      "match_type": "Arm Westling Contest",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "no-decision",
+      "finish": null,
+      "parse_confidence": "low",
+      "raw_description": "John Cena vs. Mark Henry ends in a No contest",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "John Cena"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": null,
+        "match_outcome": null
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Mark Henry"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": null,
+        "match_outcome": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 932,
+   "show_type": "SmackDown",
+   "from": "2008-11-14",
+   "to": "2008-11-21",
+   "to_tape_date": "2008-11-11",
+   "to_place": "Manchester, England",
+   "to_venue": "Evening News Arena",
+   "number": 483,
+   "vacated": {
+    "air_date": "2008-11-14",
+    "number": 482,
+    "tape_date": "2008-11-11",
+    "place": "Manchester, England",
+    "venue": "Evening News Arena",
+    "fit": 0.9,
+    "add": true,
+    "cawthon_lines": [
+     "ECW World Champion Matt Hardy pinned WWE US Champion Shelton Benjamin in a non-title match at 14:08 with the Twist of Fate; prior to the bout, it was announced Batista, Hardy, R Truth, WWE Raw Tag Team Champions CM Punk & Kofi Kingston would face Randy Orton, Benjamin, Mark Henry, WWE IC Champion William Regal, & Cody Rhodes in an elimination match at Survivor Series; during Benjamin's entrance, Hurricane Helms cut an insert promo stating Benjamin looked like the love child of Butch Reed and Gary Coleman",
+     "The Brian Kendrick (w/ Ezikial Jackson) pinned WWE Smackdown! Tag Team Champion Carlito (w/ WWE Smackdown! Tag Team Champion Primo Colon) at 5:50 with The Kendrick after Carlito became distracted by Jackson attacking Primo on the floor",
+     "Sho Funaki pinned MVP at 1:22 with a crane kick after MVP became distracted by the Great Khali and Runjin Singh at ringside; prior to the bout, it was announced Shawn Michaels, Cryme Tyme, Khali, & Rey Mysterio Jr. would face John Bradshaw Layfield, MVP, Kane, John Morrison & Mike Mizanin in an elimination match at Survivor Series; after the contest, Khali knocked MVP out with a chop to the head; moments later, Singh picked a woman from the crowd, named Tallulah, to kiss Khali as Khali dropped MVP with a second chop to the head; as the crowd cheered Khali on to kiss the woman, MVP staggered to his feet and was dropped with Khali's tree slam; Khali then proposed that Tallulah kiss MVP instead, with MVP and Tallulah rolling around on the mat until MVP escaped the ring",
+     "WWE Divas Champion Michelle McCool defeated Maria via submission with the heel hook at 1:39; during McCool's entrance, Hurricane Helms cut an insert promo on the divas; to begin the match, the two shook hands; after the bout, Festus, who came ringside early in the match with Jesse, chased Michelle out of the ring, then helped Maria to her feet and gave her a stuffed animal dog",
+     "Jeff Hardy pinned the Undertaker in an extreme rules match at 15:54 after hitting Taker with a steel chair and following with a legdrop off the top over a ladder set up in the ring; late in the bout, the Big Show came out and hit the chokeslam on Taker but was knocked to the floor moments later after Taker hit Show over the back with a chair as Hardy held onto Show; after the contest, Hardy confronted Vickie Guerrero, with Chavo Guerrero Jr., backstage with Vickie saying Hardy wasn't in the Survivor Series main event yet but he would be if he beat WWE World Champion Triple H in a non-title match the following week, during which Vladimir Kozlov interrupted and said Triple H's days as champion were coming to an end"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Matt Hardy defeats Shelton Benjamin",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Matt Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Shelton Benjamin"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "The Brian Kendrick defeats Carlito",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "The Brian Kendrick"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Carlito"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Kung Fu Naki defeats Montel Vontavious Porter",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Kung Fu Naki"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": "WWE Divas Championship",
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Michelle McCool \u00a9 defeats Maria to retain the title",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Michelle McCool \u00a9"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Maria"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": "Extreme Rules Match",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Jeff Hardy defeats The Undertaker",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Undertaker"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 936,
+   "show_type": "SmackDown",
+   "from": "2008-11-28",
+   "to": "2008-12-05",
+   "to_tape_date": "2008-11-25",
+   "to_place": "Albany, NY",
+   "to_venue": "Times Union Center",
+   "number": 485,
+   "vacated": {
+    "air_date": "2008-11-28",
+    "number": 484,
+    "tape_date": "2008-11-25",
+    "place": "Albany, NY",
+    "venue": "Times Union Center",
+    "fit": 1.0,
+    "add": true,
+    "cawthon_lines": [
+     "Beat the Clock Challenge : Jeff Hardy pinned The Brian Kendrick (w/ Ezikial Jackson) at 12:13 with an overhead wheelbarrow slam and the Swanton after knocking Jackson off the apron",
+     "Maryse, Victoria, & Natalya Neidhart defeated WWE Divas Champion Michelle McCool, Brie & Nikki Bella at 4:13 when Maryse pinned Michelle after one of the Bellas accidentally hit a clothesline on Michelle when Maryse moved out of the way; prior to the bout, footage was shown of Victoria & Natalya Neidhart pulling both Bellas out from under the ring three weeks earlier, revealing that there were two twins; during the match, it was announced the Bellas were recently on Yahoo!'s most searched list; moments later, Michelle argued with both the Bellas until Maria came out to calm her down; Michelle then shoved Maria to the mat and left the ring",
+     "Beat the Clock Challenge : Vladimir Kozlov fought ECW World Champion Matt Hardy to a time-limit draw at 12:14 in a non-title match; prior to the bout, Gregory Helms cut an insert promo saying he would return to Smackdown! the following week; after the match, Jeff Hardy was shown watching backstage before coming face to face with Triple H",
+     "Jesse & Festus defeated John Morrison & Mike Mizanin via disqualification at 4:59 when Morrison & Mizanin double teamed Jesse on the floor after both teams took turns ringing the timekeeper's bell, causing Festus to become angry and then comatose; after the bout, Morrison & Mizanin took turns ringing the bell and making fun of Festus before then knocking Jesse out with the bell; moments later, Mizanin accidentally rang the bell, with Festus then clearing the ring",
+     "Beat the Clock Challenge : Triple H pinned WWE US Champion Shelton Benjamin in a non-title match at 12:13 with the Pedigree; Triple H hit the move with 30 seconds remaining and had to revive referee Mike Chioda to make the pinfall; during the contest, Jeff Hardy was shown watching the match backstage; after the contest, referee Charles Robinson came out to determine who had won the Beat the Clock series and had replays shown of both Hardy and Triple H's pinfalls; Hardy then appeared and had words with Triple H as the show went off the air"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": "#1 Contender (WWE Championship) Beat the Clock Challenge",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Jeff Hardy [Winner] defeats The Brian Kendrick in 12'13\"",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Brian Kendrick"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Natalya, Maryse & Victoria defeat Michelle McCool & The Bella Twins (Brie & Nikki Bella)",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Natalya",
+         "Maryse",
+         "Victoria"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Michelle McCool",
+         "Brie Bella",
+         "Nikki Bella"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": "#1 Contender (WWE Championship) Beat the Clock Challenge",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "no-decision",
+      "finish": null,
+      "parse_confidence": "low",
+      "raw_description": "Vladimir Kozlov vs. Matt Hardy ends in a Draw via Time Limit",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Vladimir Kozlov"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": null,
+        "match_outcome": null
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Matt Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": null,
+        "match_outcome": null
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "DQ",
+      "parse_confidence": "high",
+      "raw_description": "Jesse & Festus defeat The Miz & John Morrison via DQ",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Jesse",
+         "Festus"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Miz",
+         "John Morrison"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": "#1 Contender (WWE Championship) Beat the Clock Challenge",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Triple H [Winner] defeats Shelton Benjamin in 12'13\"",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Triple H"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Shelton Benjamin"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 946,
+   "show_type": "SmackDown",
+   "from": "2009-01-02",
+   "to": "2009-01-09",
+   "to_tape_date": "2008-12-30",
+   "to_place": "East Rutherford, NJ",
+   "to_venue": "Izod Center",
+   "number": 490,
+   "vacated": {
+    "air_date": "2009-01-02",
+    "number": 489,
+    "tape_date": "2008-12-30",
+    "place": "East Rutherford, NJ",
+    "venue": "Izod Center",
+    "fit": 0.94,
+    "add": true,
+    "cawthon_lines": [
+     "The Great Khali (w/ Runjin Singh) & Finlay (w/ Hornswoggle) defeated Curt Hawkins & Zach Ryder at 4:04 when Khali pinned Ryder with one foot on his chest after hitting the tree slam on Ryder and the chop to the head on Hawkins; after the bout, Finlay & Hornswoggle attacked the opponents with Finlay dropping Hawkins with the Celtic Cross and Hornswoggle following with the frog splash",
+     "The Brian Kendrick & Ezikial Jackson defeated Jesse & Festus at 4:43 when Jackson pinned Jesse with a uranagi after making the blind tag",
+     "Vladimir Kozlov pinned Hurricane Helms at 4:02 following the headbutt to the chest and uranagi",
+     "Kizarny pinned MVP at 6:27 with a double arm DDT into a float over; prior to the bout, a degected MVP, without his trademark necklaces, asked his opponent to come on in so he could get it over with already; MVP was cheered during the bout and Kizarny booed; after the match, Ken Kennedy came out, told MVP not to let the loss get to him, and then plugged his new movie, \u201cBehind Enemy Lines: Columbia\u201d (Kizarny's TV debut)",
+     "WWE World Champion Jeff Hardy & ECW World Champion Matt Hardy defeated Edge & the Big Show at 14:23 when Jeff pinned Edge following the Twist of Fate / Swanton combo; prior to the bout, Edge cut a promo on everything the fans blame him for, then adding they could blame him once Jeff loses his title; late in the bout, Show walked out of the match"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "The Great Khali & Finlay defeat Curt Hawkins & Zack Ryder",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "The Great Khali",
+         "Finlay"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Curt Hawkins",
+         "Zack Ryder"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "The Brian Kendrick & Ezekiel Jackson defeat Jesse & Festus",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "The Brian Kendrick",
+         "Ezekiel Jackson"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Jesse",
+         "Festus"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Vladimir Kozlov defeats Hurricane Helms",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Vladimir Kozlov"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Hurricane Helms"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Kizarny defeats Montel Vontavious Porter",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Kizarny"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "The Hardy Boyz (Matt & Jeff Hardy) defeat Edge & Big Show",
+      "teams": [
+       {
+        "team_name": "The Hardy Boyz",
+        "participants": [
+         "Matt Hardy",
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Edge",
+         "Big Show"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 949,
+   "show_type": "SmackDown",
+   "from": "2009-01-16",
+   "to": "2009-01-23",
+   "to_tape_date": "2009-01-13",
+   "to_place": "Omaha, NE",
+   "to_venue": "Qwest Center",
+   "number": 492,
+   "vacated": {
+    "air_date": "2009-01-16",
+    "number": 491,
+    "tape_date": "2009-01-13",
+    "place": "Omaha, NE",
+    "venue": "Qwest Center",
+    "fit": 1.0,
+    "add": true,
+    "cawthon_lines": [
+     "Matt Hardy & Finlay defeated ECW World Champion Jack Swagger & Mark Henry",
+     "R Truth defeated The Brian Kendrick",
+     "MVP defeated the Big Show in a last man standing match after Triple H interfered",
+     "Michelle McCool defeated Victoria (Victoria's last match)"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Finlay & Matt Hardy defeat Mark Henry & Jack Swagger",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Finlay",
+         "Matt Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Mark Henry",
+         "Jack Swagger"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "R-Truth defeats The Brian Kendrick",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "R-Truth"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Brian Kendrick"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": "Last Man Standing Match",
+      "stipulation": "last man standing",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Montel Vontavious Porter defeats Big Show",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Big Show"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Michelle McCool defeats Victoria",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Michelle McCool"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Victoria"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 953,
+   "show_type": "SmackDown",
+   "from": "2009-01-30",
+   "to": "2009-02-06",
+   "to_tape_date": "2009-01-27",
+   "to_place": "Indianapolis, IN",
+   "to_venue": "Conseco Fieldhouse",
+   "number": 494,
+   "vacated": {
+    "air_date": "2009-01-30",
+    "number": 493,
+    "tape_date": "2009-01-27",
+    "place": "Indianapolis, IN",
+    "venue": "Conseco Fieldhouse",
+    "fit": 1.0,
+    "add": true,
+    "cawthon_lines": [
+     "R Truth pinned The Brian Kendrick with the scissors kick at 2:14; prior to the bout, Ezikial Jackson escorted Kendrick ringside but was ejected by the referee before the contest began",
+     "MVP pinned Chavo Guerrero Jr. at 5:12 with the Drive By after avoiding Guerrero's frog splash; prior to the bout, it was announced that tickets for WrestleMania Axxess would go on sale the following morning; after the match, Tazz conducted an in-ring interview with MVP regarding his 20-week losing streak and recent wins, during which MVP set his sights on the WWE US Title",
+     "Umaga pinned Jimmy Wang Yang with the thumb strike to the throat at 1:44 (Umaga's TV return after a 6-month absence) (Umaga's debut with new theme music)",
+     "Elimination Chamber Qualifying Match : The Undertaker defeated Mark Henry (w/ Tony Atlas) via submission with the Hell's Gate at 5:25 following a chokeslam",
+     "Elimination Chamber Qualifying Match : The Big Show pinned Festus (w/ Jesse) with the right hand punch at 2:39; after the bout, Show hit the chokeslam on Jesse",
+     "Elimination Chamber Qualifying Match : Triple H defeated the Great Khali (w/ Rujin Singh) and Vladimir Kozlov at 9:05 by pinning Khali with the Pedigree after Kozlov struck Khali with the headbutt to the chest and was then knocked to the floor by Triple H"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "R-Truth defeats The Brian Kendrick",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "R-Truth"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Brian Kendrick"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Montel Vontavious Porter defeats Chavo Guerrero",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Chavo Guerrero"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Umaga defeats Jimmy Wang Yang",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Umaga"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Jimmy Wang Yang"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": "Elimination Chamber - Qualifying Match",
+      "stipulation": "elimination chamber",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "The Undertaker defeats Mark Henry",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "The Undertaker"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Mark Henry"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": "Elimination Chamber - Qualifying Match",
+      "stipulation": "elimination chamber",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Big Show defeats Festus",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Big Show"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Festus"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 6,
+      "match_type": "Elimination Chamber - Qualifying Triple Threat Match",
+      "stipulation": "elimination chamber",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Triple H defeats The Great Khali and Vladimir Kozlov",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Triple H"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Great Khali"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Vladimir Kozlov"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 3,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 959,
+   "show_type": "SmackDown",
+   "from": "2009-02-20",
+   "to": "2009-02-27",
+   "to_tape_date": "2009-02-17",
+   "to_place": "Portland, OR",
+   "to_venue": "Rose Garden",
+   "number": 497,
+   "vacated": {
+    "air_date": "2009-02-20",
+    "number": 496,
+    "tape_date": "2009-02-17",
+    "place": "Portland, OR",
+    "venue": "Rose Garden",
+    "fit": 0.91,
+    "add": true,
+    "cawthon_lines": [
+     "WWE Divas Champion Maryse & Michelle McCool defeated Maria & Eve",
+     "MVP & R Truth defeated WWE US Champion Shelton Benjamin & Chavo Guerrero Jr.",
+     "Umaga defeated Scotty Goldman (Goldman's last appearance)",
+     "Jeff Hardy defeated World Heavyweight Champion Edge via disqualification in a non-title match"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Michelle McCool & Maryse defeat Eve Torres & Maria",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Michelle McCool",
+         "Maryse"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Eve Torres",
+         "Maria"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": "2-on-1 Handicap Match",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Montel Vontavious Porter defeats Shelton Benjamin & Chavo Guerrero",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Shelton Benjamin",
+         "Chavo Guerrero"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Umaga defeats Scotty Goldman",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Umaga"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Scotty Goldman"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "DQ",
+      "parse_confidence": "high",
+      "raw_description": "Edge defeats Jeff Hardy via DQ",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Edge"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 962,
+   "show_type": "SmackDown",
+   "from": "2009-03-06",
+   "to": "2009-03-13",
+   "to_tape_date": "2009-03-03",
+   "to_place": "Uncasville, CT",
+   "to_venue": "Mohegan Sun Arena",
+   "number": 499,
+   "vacated": {
+    "air_date": "2009-03-06",
+    "number": 498,
+    "tape_date": "2009-03-03",
+    "place": "Uncasville, CT",
+    "venue": "Mohegan Sun Arena",
+    "fit": 0.88,
+    "add": true,
+    "cawthon_lines": [
+     "Money in the Bank Qualifying Match : MVP pinned Matt Hardy at 7:59 by reversing an attempt at the Twist of Fate into a roll up; prior to the match, Matt cut an in-ring promo on Jeff Hardy not wanting to wrestle him and said once they both win their Money in the Bank qualifying matches then he would finally get his hands on Jeff at WrestleMania",
+     "WWE Divas Champion Maryse pinned Eve in a non-title match at 3:26 with the DDT after avoiding a crossbody off the top; Michelle McCool provided guest commentary for the match; after the contest, WWE Women's Champion Melina ran out and jumped Maryse until Michelle climbed in the ring and threw Melina into the ringpost",
+     "Money in the Bank Qualifying Match : WWE US Champion Shelton Benjamin defeated Jeff Hardy via disqualification in a non-title match at 9:25 when Matt Hardy came out, climbed into the ring, stared at Jeff, and then punched Benjamin; after the match, Matt slowly turned away from Jeff and left the ring",
+     "WWE World Champion Triple H fought Umaga to a no contest in a non-title match at around the 3-minute mark when Randy Orton, Ted Dibiase Jr., and Cody Rhodes came through the crowd, surrounded the ring, and then jumped Triple H after Umaga was knocked to the floor and referee Mike Chioda left the ring; after the match, Triple H brawled with all three members of Legacy in and around the ring until they eventually ganged up on him and took turns beating the champion to the mat; Orton eventually ordered Dibiase & Rhodes to the floor before then standing over Triple H's body; Orton then went to leave the ring as Triple H tried to crawl after him"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": "Money in the Bank - Qualifying Match",
+      "stipulation": "money in the bank",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Montel Vontavious Porter defeats Matt Hardy",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Matt Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Maryse defeats Eve Torres",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Maryse"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Eve Torres"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": "Money in the Bank - Qualifying Match",
+      "stipulation": "money in the bank",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "DQ",
+      "parse_confidence": "high",
+      "raw_description": "Shelton Benjamin defeats Jeff Hardy via DQ",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Shelton Benjamin"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "no-decision",
+      "finish": null,
+      "parse_confidence": "low",
+      "raw_description": "Triple H vs. Umaga ends in a No Contest",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Triple H"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": null,
+        "match_outcome": null
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Umaga"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": null,
+        "match_outcome": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 965,
+   "show_type": "SmackDown",
+   "from": "2009-03-20",
+   "to": "2009-03-27",
+   "to_tape_date": "2009-03-17",
+   "to_place": "Corpus Christi, TX",
+   "to_venue": "American Bank Center",
+   "number": 501,
+   "vacated": {
+    "air_date": "2009-03-20",
+    "number": 500,
+    "tape_date": "2009-03-17",
+    "place": "Corpus Christi, TX",
+    "venue": "American Bank Center",
+    "fit": 1.0,
+    "add": true,
+    "cawthon_lines": [
+     "WWE World Champion Triple H pinned Vladimir Kozlov in a non-title match with the Pedigree at 7:35; prior to the bout, Triple H said that his being married to Stephanie McMahon was the worst kept secret in the business but they kept it quiet for business reasons; he then said all the fans knew and that Randy Orton especially knew; Triple H said he let it slide when Orton kicked Vince McMahon and Shane McMahon in the head because they were grown men but said he would get revenge on Orton at WrestleMania for what he did to Stephanie and that no cops could stop him",
+     "MVP pinned WWE US Champion Shelton Benjamin to win the title at 5:20 with the Playmaker after reversing the Paydirt into a Hot Shot",
+     "Shawn Michaels pinned Kane with the superkick at 11:20",
+     "Jeff Hardy pinned The Brian Kendrick (w/ Ezikiel Jackson) in an extreme rules match with the Swanton at 3:33 after hitting a Twist of Fate onto a steel chair; mid-way through the bout, Hardy repeatedly hit Jackson with a steel chair",
+     "The Undertaker defeated WWE IC Champion John Bradshaw Layfield in a non-title match via submission with the Hell's Gate at 11:40; prior to the match, Taker cut an in-ring promo in which he told Shawn Michaels that he was the prey and Taker was the hunter; during JBL's entrance, it was announced JBL had accepted Rey Mysterio Jr.'s challenge to a title match at WrestleMania; late in the bout, Taker kicked out after JBL hit the Clothesline from Hell"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Triple H defeats Vladimir Kozlov",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Triple H"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Vladimir Kozlov"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": "WWE United States Championship",
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Montel Vontavious Porter defeats Shelton Benjamin \u00a9 to win the title",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Shelton Benjamin \u00a9"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Shawn Michaels defeats Kane",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Shawn Michaels"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Kane"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": "Extreme Rules Match",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Jeff Hardy defeats The Brian Kendrick",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Jeff Hardy"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Brian Kendrick"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "The Undertaker defeats John Bradshaw Layfield",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "The Undertaker"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "John Bradshaw Layfield"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 998,
+   "show_type": "Raw",
+   "from": "2009-06-29",
+   "to": "2009-07-06",
+   "to_tape_date": "2009-06-29",
+   "to_place": "San Jose, CA",
+   "to_venue": "HP Pavilion",
+   "number": 841,
+   "vacated": {
+    "air_date": "2009-06-29",
+    "number": 840,
+    "tape_date": "2009-06-29",
+    "place": "San Jose, CA",
+    "venue": "HP Pavilion",
+    "fit": 1.0,
+    "add": true,
+    "cawthon_lines": [
+     "Night of Champions #1 Contender Tournament Semi Finals : Triple H pinned MVP by reversing the Playmaker into the Pedigree at 4:37; prior to the bout, footage was shown of MVP appearing with Sherri Shepherd the previous night at the BET Awards in Los Angeles",
+     "WWE Unified Tag Team Champions Chris Jericho & Edge defeated Carlito & Primo Colon at 9:36 when Edge pinned Carlito with the spear after Jericho shoved Primo into the bottom rope outside the ring, causing Carlito to miss a springboard elbow and hit the mat; prior to the bout, Jericho and Edge said they joined forces to dominate the WWE at a time in which they couldn't get the job done alone due to inept management; after the bout, Carlito appeared to be upset with Primo for the loss",
+     "Night of Champions #1 Contender Tournament Semi Finals : John Cena defeated Mike Mizanin via submission with the STFU at 13:50",
+     "Mickie James defeated Kelly Kelly, Beth Phoenix, and Rosa Mendes at 6:07 by pinning Mendes with the DDT; stipulations stated the winner would challenge WWE Divas Champion Maryse at Night of Champions; Maryse provided guest commentary for the match; after the contest, Mickie confronted Maryse at the commentary table",
+     "WWE US Champion Kofi Kingston fought the Big Show to a double count-out in a non-title match at 3:40 after Kingston sent Show head-first into the ringpost as both men were on the outside",
+     "Gauntlet Match : WWE World Champion Randy Orton pinned Evan Bourne (mystery opponent) at 3:19 in a non-title match with an RKO off the top after crotching Bourne on the top as he attempted the Shooting Star Press",
+     "Gauntlet Match : WWE World Champion Randy Orton defeated Jack Swagger (mystery opponent) via count-out in a non-title match at 1:14 when Swagger stood on the ring apron and allowed himself to be counted-out; after the bout, Swagger took the mic, said he always liked and respected Orton, and then shook his hand before leaving the ring",
+     "Gauntlet Match : Mark Henry (mystery opponent) pinned WWE World Champion Randy Orton in a non-title match at 3:33 with the powerslam; prior to the bout, Henry took the mic and said he also liked and respected Orton and would also leave a good impression on his return to Raw; after the contest, Batista appeared at the entrance stage to celebrate the win"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": "#1 Contender (WWE Championship) Tournament - Semifinal",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Triple H defeats Montel Vontavious Porter",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Triple H"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Montel Vontavious Porter"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": "Unified WWE Tag Team Championship",
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Edge & Chris Jericho \u00a9 defeat The Col\u00f3ns (Carlito & Primo) to retain the titles",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Edge",
+         "Chris Jericho \u00a9"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": "The Col\u00f3ns",
+        "participants": [
+         "Carlito",
+         "Primo"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": "#1 Contender (WWE Championship) Tournament - Semifinal",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "John Cena defeats The Miz",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "John Cena"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Miz"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": "#1 Contender (WWE Divas Championship) Fatal 4-Way Match",
+      "stipulation": "fatal",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Mickie James defeats Kelly Kelly, Beth Phoenix and Rosa Mendes",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Mickie James"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Kelly Kelly"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Beth Phoenix"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 3,
+        "was_winner": false,
+        "match_outcome": "loss"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Rosa Mendes"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 4,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "no-decision",
+      "finish": null,
+      "parse_confidence": "low",
+      "raw_description": "Big Show vs. Kofi Kingston ends in a No Contest via Double Count-out",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Big Show"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": null,
+        "match_outcome": null
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Kofi Kingston"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": null,
+        "match_outcome": null
+       }
+      ]
+     },
+     {
+      "match_order": 6,
+      "match_type": "3-on-1 Handicap Gauntlet Match",
+      "stipulation": "gauntlet",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "Count-out; Henry eliminates Orton",
+      "parse_confidence": "high",
+      "raw_description": "Mark Henry, Jack Swagger & Evan Bourne defeat Randy Orton. Orton eliminates Bourne and Swagger via Count-out; Henry eliminates Orton",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Mark Henry",
+         "Jack Swagger",
+         "Evan Bourne"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Randy Orton"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 1122,
+   "show_type": "Raw",
+   "from": "2010-07-26",
+   "to": "2010-08-02",
+   "to_tape_date": "2010-07-26",
+   "to_place": "San Antonio, TX",
+   "to_venue": "AT&T Center",
+   "number": 897,
+   "vacated": {
+    "air_date": "2010-07-26",
+    "number": 896,
+    "tape_date": "2010-07-26",
+    "place": "San Antonio, TX",
+    "venue": "AT&T Center",
+    "fit": 0.46,
+    "add": false,
+    "cawthon_lines": [
+     "Randy Orton pinned Jey Uso (w/ Jimmy Uso & Tamina) with the RKO at 2:33; WWE World Champion Sheamus sat ringside for the match; after the bout, Jimmy jumped Orton from behind only for Orton to gain the upper hand; moments later, Sheamus slid in the ring to try to kick Orton in the face but accidentally kicked Jimmy instead; Orton followed by dropping Sheamus with the RKO; WWE US Champion Mike Mizanin then ran out to cash in his Money in the Bank title shot; as the referee waited for Sheamus to get to his feet, Orton slid back in the ring and dropped Miz with the RKO; after the commercial break, Sheamus and Miz argued in the ring until Michael Cole received another e-mail from the Raw GM in which it was ordered Sheamus & Miz would face John Cena & Chris Jericho later in the show",
+     "Edge fought the Great Khali (w/ Runjin Singh) to a no contest at the 1:30 mark when Wade Barrett, Heath Slater, Skip Sheffield, David Otunga, Justin Gabriel, Darren Young, & Michael Tarver came out, with Edge and Singh escaping ringside; Cole called the match by himself after noting Jerry Lawler was getting ready to be part of the elimination tag team match later in the show against Nexus; stipulations stated Khali would be off John Cena's Summer Slam team if he lost; after the bout, Nexus surrounded Khali but then let him leave the ring unharmed",
+     "Wade Barrett, Heath Slater, Skip Sheffield, David Otunga, Justin Gabriel, Darren Young, & Michael Tarver Evan Bourne, Mark Henry, Jerry Lawler, Yoshi Tatsu, Goldust, WWE Unified Tag Team Champions David Hart Smith & Tyson Kidd in an elimination match at 11:44; prior to the bout, Natalya Neidhart escorted Smith & Kidd to the ring but returned backstage before the match began; Tarver pinned Tatsu with a modified powerslam at the 51-second mark; Slater pinned Lawler with a jumping side Russian legsweep after avoiding the fistdrop from the middle turnbuckle (elimination came during the commercial break); Slater pinned Smith with the jumping side Russian legsweep at 6:58; Otunga pinned Goldust at 8:13 with an elbow drop and spinebuster after Young tripped Goldust from the floor; Sheffield pinned Henry with a clothesline at 10:07 after Henry splashed Gabriel in the corner; Young pinned Kidd at 11:01 with a full nelson into a facebuster; Barrett pinned Bourne with the fireman's carry into the forward slam; after the match, Bourne sustained Sheffield's clothesline, Otunga's spinebuster, and Gabriel's 450 splash; Barrett then took the mic and said his team dominated because they had a common purpose while John Cena's team had too many egos and agendas; Sheffield and Tarver then cut promos saying they had a focus and would save Cena for last at Summer Slam",
+     "WWE Divas Champion Alicia Fox pinned Brie Bella (w/ Nikki Bella) in a non-title match at 1:04 with the scissors kick after Jillian Hall came ringside and prevented the Bellas from switching places behind the referee's back; after the match, Jillian took the mic and sang Queen's \u201cWe Are the Champions\u201d until Alicia attacked her and dropped her with the scissors kick",
+     "Ted Dibiase Jr. (w/ Maryse) pinned John Morrison at 2:17 after hitting a drop toe hold and causing Morrison to butt heads with R-Truth, who provided guest commentary for the bout and prevented Dibiase from using the ropes for leverage during the final moments; after the bout, Morrison argued with Truth over the loss; moments later, John Cena was shown watching the situation backstage",
+     "WWE World Champion Sheamus & WWE US Champion Mike Mizanin defeated John Cena & Chris Jericho at 13:23 when Miz pinned Cena after Jericho attacked his partner and dropped Cena with the Code Breaker; after the bout, Jericho applied the Walls of Jericho on Cena, with Cena then reversing it into the STFU; moments later, the Great Khali came out to break up the fight only to be dropped by Edge and a spear; John Morrison and R-Truth then came out, with all the men arguing and Khali dropping Morrison and Edge with chops to the head as the show ended"
+    ]
+   }
+  },
+  {
+   "event_id": 1128,
+   "show_type": "Raw",
+   "from": "2010-08-16",
+   "to": "2010-08-23",
+   "to_tape_date": "2010-08-16",
+   "to_place": "Los Angeles, CA",
+   "to_venue": "Staples Center",
+   "number": 900,
+   "vacated": {
+    "air_date": "2010-08-16",
+    "number": 899,
+    "tape_date": "2010-08-16",
+    "place": "Los Angeles, CA",
+    "venue": "Staples Center",
+    "fit": 0.95,
+    "add": true,
+    "cawthon_lines": [
+     "Wade Barrett pinned Chris Jericho at 5:22 by catching Jericho attempting the Code Breaker and reversing it into the fireman's carry into a forward slam; Jericho's right arm was heavily taped for the bout; during the match, the remaining members of Nexus were shown watching on backstage; stipulations stated Barrett would be kicked out of Nexus if he lost",
+     "Michael Tarver pinned Daniel Bryan at 2:10 with a roll up after Bryan became distracted by WWE US Champion Mike Mizanin & Alex Riley at ringside; stipulations stated Tarver would be kicked out of Nexus if he lost; early in the match, there were chants of \u201cDaniel Bryan;\u201d after the match, Tarver & Riley held Bryan so Miz could attack him, with Miz then dropping Bryan with the Skull Crushing Finale onto the briefcase outside the ring",
+     "Justin Gabriel defeated Randy Orton (sub. for Bret Hart) via count-out at 2:50 when Orton began fighting in the crowd with WWE World Champion Sheamus, who appeared ringside late in the match; stipulations stated Gabriel would be kicked out of Nexus if he lost; after Gabriel's entrance, Michael Cole received an e-mail from the Raw GM which read he didn't like Hart, didn't want to see him wrestle on Raw again, and didn't care what the fans thought; the GM then said he had found a replacement for Hart; after the contest, Orton dropped Gabriel with a RKO inside the ring and then assaulted Sheamus with a steel chair on the floor, repeatedly hitting him over the back; moments later, Orton ran back over as Sheamus struggled to his feet and dropped Sheamus with a RKO on the floor",
+     "Skip Sheffield & David Otunga defeated John Morrison & R-Truth at 3:00 when Sheffield pinned Morrison with a clothesline; during the bout, the remaining members of Nexus were shown watching on backstage; stipulations stated Sheffield & Otunga would be kicked out of Nexus if they lost",
+     "Alicia Fox, Maryse, & Jillian Hall defeated WWE Divas Champion Melina, Gail Kim, & Eve at 2:55 when Jillian pinned Eve after pulling her off the top as Eve attempted a moonsault; prior to the bout, Jon Lovitz was shown in the crowd",
+     "Heath Slater defeated Edge via count-out at 4:30 when Slater slid back into the ring to avoid Edge's spear on the floor; stipulations stated Slater would be kicked out of Nexus if he lost; after the match, Edge dropped Slater with the spear inside the ring",
+     "John Cena defeated Darren Young via submission with the STFU at 8:00; stipulations stated Young would be kicked out of Nexus if he lost; prior to the bout, the remaining members of Nexus came out on the entrance stage; after the match, Nexus surrounded the ring, with Cena then leaving ringside; moments later, Nexus surrounded and attacked Young; during the segment, Jerry Lawler referred to Young as \u201cDaniel Bryan\u201d until he was corrected; Young then sustained Sheffield's clothesline, Barrett's forward slam, and Gabriel's 450 splash"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": "\u201cIf Barrett loses he leaves The Nexus\u201d",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Wade Barrett defeats Chris Jericho",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Wade Barrett"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Chris Jericho"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": "\u201cIf Tarver loses he leaves The Nexus\u201d",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Michael Tarver defeats Daniel Bryan",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Michael Tarver"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Daniel Bryan"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": "\u201cIf Gabriel loses he leaves The Nexus\u201d",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "Count-out",
+      "parse_confidence": "high",
+      "raw_description": "Justin Gabriel defeats Randy Orton via Count-out",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Justin Gabriel"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Randy Orton"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": "\u201cIf Sheffield & Otunga lose they leave The Nexus\u201d",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Skip Sheffield & David Otunga defeat John Morrison & R-Truth",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Skip Sheffield",
+         "David Otunga"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "John Morrison",
+         "R-Truth"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Alicia Fox, Maryse & Jillian Hall defeat Melina, Eve Torres & Gail Kim",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Alicia Fox",
+         "Maryse",
+         "Jillian Hall"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Melina",
+         "Eve Torres",
+         "Gail Kim"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 6,
+      "match_type": "\u201cIf Slater loses he leaves The Nexus\u201d",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "Count-out",
+      "parse_confidence": "high",
+      "raw_description": "Heath Slater defeats Edge via Count-out",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Heath Slater"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Edge"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 7,
+      "match_type": "\u201cIf Young loses he leaves The Nexus\u201d",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "John Cena defeats Darren Young",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "John Cena"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Darren Young"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 1138,
+   "show_type": "Raw",
+   "from": "2010-09-20",
+   "to": "2010-09-27",
+   "to_tape_date": "2010-09-20",
+   "to_place": "Indianapolis, IN",
+   "to_venue": "Conseco Fieldhouse",
+   "number": 905,
+   "vacated": {
+    "air_date": "2010-09-20",
+    "number": 904,
+    "tape_date": "2010-09-20",
+    "place": "Indianapolis, IN",
+    "venue": "Conseco Fieldhouse",
+    "fit": 0.95,
+    "add": true,
+    "cawthon_lines": [
+     "WWE Tag Team Champions Drew McIntyre & Cody Rhodes defeated Santino Marella & Vladimir Kozlov in a non-title match at 4:13 when McIntyre pinned Kozlov with the Future Shock; David Hart Smith & Tyson Kidd provided guest commentary for the bout; after the contest, Kidd noted he and Smith would get their title rematch the following week",
+     "John Morrison pinned Chris Jericho at 10:20 with a knee to the face and Starship Pain; after the bout, Jericho was visibly upset as some in the crowd chanted \u201cY2J\u201d",
+     "WWE US Champion Daniel Bryan defeated Edge via reverse decision in a non-title match; Edge originally pinned Bryan with the spear at 4:03 after Mike Mizanin, who provided guest commentary for the bout, dropped Bryan over the top rope as Alex Riley, who ran out moments earlier, distracted the referee from the opposite end of the ring; prior to the entrances, Mizanin walked out with a mic, saying he did not tap out to Bryan, that he suffered from a tender ligament, and the doctors told him not to compete at Night of Champions; Miz then said he had to save himself from potential surgery but would regain the US title; during the contest, Miz announced Riley had been signed to assist Miz; after the bout, Michael Cole recieved an e-mail from the GM which read the decision was overturned due to interference, with Edge then taking the mic and saying he was sick of the anonymous GM interfering with his career; after Edge left ringside, Miz & Riley double teamed Bryan in the ring for several minutes, with Riley holding Bryan as Miz repeatedly slapped Bryan across the face and then dropped him with the Skull Crushing Finale; Miz and Riley then left ringside as the crowd chanted \u201cYou tapped out\u201d at him (Bryan's first appearance using Wagner's \u2018Ride of the Valkyries' as his entrance music)",
+     "WWE Unified Women's Champion Layla (w/ WWE Unified Women's Champion Michelle McCool) pinned Melina at 2:03 with a modified jawbreaker off the top; McCool provided guest commentary for the match",
+     "R-Truth & Eve pinned Ted Dibiase Jr. & Maryse at 2:37 when Eve pinned Maryse with a reversal into a neckbreaker; after the bout, Dibiase and Maryse argued over the loss until the words \u201cI will have you\u201d appeared on the big screen with a heart (Truth's first appearance using \u2018Crunk' as his entrance music; Dibiase's first appearance with new entrance music)",
+     "John Cena defeated David Otunga, Heath Slater, Justin Gabriel, & Michael Tarver (w/ Wade Barrett) in a gauntlet match at 13:47; prior to the bout, Barrett took the mic, stood on the commentary table, and said Cena would have to beat the other members of Nexus in a gauntlet match before facing Barrett in their previously announced singles match; Cena pinned Slater with the FU (2:25); Cena pinned Otunga with an inside cradle (6:55); Tarver submitted to Cena's STFU (7:58); Cena defeated Gabriel via disqualification when the other members of Nexus and Barrett attacked Cena; Barrett stood on the commentary table for the duration of the bout; moments later, Cena cleared the ring with a steel chair; Cena then took the mic and said he wanted his match with Barrett, with Barrett saying he had nothing to gain before agreeing to the match at Hell in a Cell but only under the stipulation that Cena joins Nexus if he loses; Cena agreed but then added his own stipulation that Nexus is gone from the WWE if he wins, with Barrett agreeing as the show came to a close"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Cody Rhodes & Drew McIntyre defeat Santino Marella & Vladimir Kozlov",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Cody Rhodes",
+         "Drew McIntyre"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Santino Marella",
+         "Vladimir Kozlov"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "John Morrison defeats Chris Jericho",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "John Morrison"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Chris Jericho"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "DQ",
+      "parse_confidence": "high",
+      "raw_description": "Daniel Bryan defeats Edge via DQ",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Daniel Bryan"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Edge"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": "Unified WWE Divas Championship",
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Layla \u00a9 defeats Melina to retain the title",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Layla \u00a9"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Melina"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "R-Truth & Eve Torres defeat Ted DiBiase Jr. & Maryse",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "R-Truth",
+         "Eve Torres"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Ted DiBiase Jr.",
+         "Maryse"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 6,
+      "match_type": "4-on-1 Handicap Gauntlet Match",
+      "stipulation": "gauntlet",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "DQ. Cena eliminates Slater, Otunga, Tarver and Gabriel via DQ",
+      "parse_confidence": "low",
+      "raw_description": "John Cena defeats The Nexus (Heath Slater, Justin Gabriel, David Otunga & Michael Tarver) via DQ. Cena eliminates Slater, Otunga, Tarver and Gabriel via DQ",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "John Cena"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": "The Nexus",
+        "participants": [
+         "Heath Slater",
+         "Justin Gabriel",
+         "David Otunga",
+         "Michael Tarver"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 1227,
+   "show_type": "Raw",
+   "from": "2011-06-27",
+   "to": "2011-07-04",
+   "to_tape_date": "2011-06-27",
+   "to_place": "Las Vegas, NV",
+   "to_venue": "Thomas & Mack Center",
+   "number": 945,
+   "vacated": {
+    "air_date": "2011-06-27",
+    "number": 944,
+    "tape_date": "2011-06-27",
+    "place": "Las Vegas, NV",
+    "venue": "Thomas & Mack Center",
+    "fit": 1.0,
+    "add": true,
+    "cawthon_lines": [
+     "Kane (mystery opponent) defeated CM Punk via count-out in an impromptu match at 4:19 when Punk left the ring and walked backstage, yelling at fans \u201cWhat are they going to do, fire me?\u201d; Kane's involvement was determined by Booker T, who spun the wheel and had it land on \u201cmystery opponent\u201d",
+     "Sin Cara pinned Evan Bourne at 4:52 with a modified La Mistica after Bourne missed Air Bourne and landed on his feet; following the ring entrances, Booker T and Eve appeared backstage and spun the wheel to determine the stipulation; during the match, some in the crowd chanted \u201cPower Ranger\u201d and \u201cUSA\u201d toward Sin Cara; the match was wrestled under blue and orange lights",
+     "Kofi Kingston pinned WWE US Champion Dolph Ziggler in a non-title match at 7:37 with the spin kick to the head; Vickie Guerrero was banned from ringside for the bout; following Kingston's entrance, Vickie appeared at the entrance stage to introduce the champion but was promptly ejected by referees due to the stipulation",
+     "Alberto Del Rio defeated the Big Show in a steel cage match at 5:19 when Mark Henry, who appeared ringside at the 2-minute mark, broke the cage door off and attacked Show with it inside the ring, allowing Del Rio to escape out the door; after the bout, Henry rammed the door into Show, causing Show to knock down a side of the cage and fall out to the floor; Henry then went out to the floor as numerous referees and officials tended to Show and ordered Henry backstage; during the commercial break, Show was helped to his feet at ringside",
+     "WWE Divas Champion Kelly Kelly defeated Nikki Bella (w/ Brie Bella) in a non-title submission match at 1:14 when Nikki submitted to a Boston Crab; during the Bellas' entrance, it was noted Brie would challenge Kelly at Money in the Bank; after the entrances, Booker T appeared backstage and spun the wheel, with it landing on submission match; after the contest, the Bellas attacked Kelly until Eve made the save",
+     "Rey Mysterio Jr. & Alex Riley defeated Mike Mizanin & Jack Swagger in a Texas Tornado match at 11:43 when Mysterio pinned Swagger with a splash off the top after hitting the 619 and Riley following with a DDT",
+     "R-Truth defeated WWE World Champion John Cena in a non-title tables match at 5:12 with a tackle, putting Cena through a table set up in the corner, as Cena fought off an interfering CM Punk; during the bout, there were dueling chants of \u201cLet's go, Cena\u201d and \u201cCena sucks;\u201d after the contest, Punk walked up the ramp with a mic, eventually sitting down at the stage and said he liked Cena but hated the idea that Cena was the best; Punk then said the one thing Cena was better at was kissing Vince McMahon's ass, then adding Hulk Hogan and \u201cDwayne\u201d were the same; Punk then said Paul Heyman saw a lot in him, as he did Brock Lesnar who also left, then adding no one could touch him on the mic, in the ring, or on commentary; Punk went on to rant about the fact he wasn't promoted as strong as those who weren't as good as him yet someone like \u201cDwayne\u201d was in the main event of WrestleMania next year; Punk then said he might take the belt to New Japan Pro Wrestling or Ring of Honor, adding \u201cHey, Colt Cabana. How you doing?\u201d; Punk continued to rant about how Vince McMahon should be a billionaire but surrounds himself with gladhanders like John Laurinaitis, then ranted about Stephanie McMahon and Triple H and the anti-bullying campaign before his mic was cut off"
+    ],
+    "sdh_matches": [
+     {
+      "match_order": 1,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": "Count-out",
+      "parse_confidence": "high",
+      "raw_description": "Kane defeats CM Punk by Count-out",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Kane"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "CM Punk"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 2,
+      "match_type": "No Count-out Match",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Sin Cara defeats Evan Bourne",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Sin Cara"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Evan Bourne"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 3,
+      "match_type": null,
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Kofi Kingston defeats Dolph Ziggler",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Kofi Kingston"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Dolph Ziggler"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 4,
+      "match_type": "Steel Cage Match",
+      "stipulation": "steel cage",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Alberto Del Rio defeats Big Show",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Alberto Del Rio"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Big Show"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 5,
+      "match_type": "Submission Match",
+      "stipulation": "submission",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Kelly Kelly defeats Nikki Bella",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Kelly Kelly"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "Nikki Bella"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 6,
+      "match_type": "Tornado Match",
+      "stipulation": null,
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "Rey Mysterio & Alex Riley defeat The Miz & Jack Swagger",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "Rey Mysterio",
+         "Alex Riley"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "The Miz",
+         "Jack Swagger"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     },
+     {
+      "match_order": 7,
+      "match_type": "Tables Match",
+      "stipulation": "tables",
+      "title_at_stake": null,
+      "duration_seconds": null,
+      "result_method": "defeated",
+      "finish": null,
+      "parse_confidence": "high",
+      "raw_description": "R-Truth defeats John Cena",
+      "teams": [
+       {
+        "team_name": null,
+        "participants": [
+         "R-Truth"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 1,
+        "was_winner": true,
+        "match_outcome": "win"
+       },
+       {
+        "team_name": null,
+        "participants": [
+         "John Cena"
+        ],
+        "accompaniment": null,
+        "was_champion_entering": false,
+        "team_number": 2,
+        "was_winner": false,
+        "match_outcome": "loss"
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "weekly": [
+  {
+   "air_date": "2013-10-04",
+   "show_type": "SmackDown",
+   "tape_date": "2013-10-01",
+   "place": "Baton Rouge, LA",
+   "venue": "River Center",
+   "fit": 0.89,
+   "sdh_matches": [
+    {
+     "match_order": 1,
+     "match_type": null,
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": "DQ",
+     "parse_confidence": "high",
+     "raw_description": "Rob Van Dam defeats Fandango via DQ",
+     "teams": [
+      {
+       "team_name": null,
+       "participants": [
+        "Rob Van Dam"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": null,
+       "participants": [
+        "Fandango"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    },
+    {
+     "match_order": 2,
+     "match_type": null,
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": null,
+     "parse_confidence": "high",
+     "raw_description": "Ryback defeats R-Truth",
+     "teams": [
+      {
+       "team_name": null,
+       "participants": [
+        "Ryback"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": null,
+       "participants": [
+        "R-Truth"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    },
+    {
+     "match_order": 3,
+     "match_type": null,
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": null,
+     "parse_confidence": "high",
+     "raw_description": "Alberto Del Rio defeats Dolph Ziggler",
+     "teams": [
+      {
+       "team_name": null,
+       "participants": [
+        "Alberto Del Rio"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": null,
+       "participants": [
+        "Dolph Ziggler"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    },
+    {
+     "match_order": 4,
+     "match_type": null,
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": null,
+     "parse_confidence": "high",
+     "raw_description": "Los Matadores (Diego & Fernando) defeat 3MB (Heath Slater & Jinder Mahal)",
+     "teams": [
+      {
+       "team_name": "Los Matadores",
+       "participants": [
+        "Diego",
+        "Fernando"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": "3MB",
+       "participants": [
+        "Heath Slater",
+        "Jinder Mahal"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    },
+    {
+     "match_order": 5,
+     "match_type": null,
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": null,
+     "parse_confidence": "high",
+     "raw_description": "Brie Bella defeats Aksana",
+     "teams": [
+      {
+       "team_name": null,
+       "participants": [
+        "Brie Bella"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": null,
+       "participants": [
+        "Aksana"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    },
+    {
+     "match_order": 6,
+     "match_type": null,
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": null,
+     "parse_confidence": "high",
+     "raw_description": "Kofi Kingston defeats Big E Langston",
+     "teams": [
+      {
+       "team_name": null,
+       "participants": [
+        "Kofi Kingston"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": null,
+       "participants": [
+        "Big E Langston"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    },
+    {
+     "match_order": 7,
+     "match_type": "4-on-1 Handicap Match",
+     "stipulation": null,
+     "title_at_stake": null,
+     "duration_seconds": null,
+     "result_method": "defeated",
+     "finish": "DQ",
+     "parse_confidence": "high",
+     "raw_description": "Big Show defeats The Shield (Dean Ambrose, Seth Rollins & Roman Reigns) & Randy Orton via DQ",
+     "teams": [
+      {
+       "team_name": null,
+       "participants": [
+        "Big Show"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 1,
+       "was_winner": true,
+       "match_outcome": "win"
+      },
+      {
+       "team_name": null,
+       "participants": [
+        "Dean Ambrose",
+        "Seth Rollins",
+        "Roman Reigns",
+        "Randy Orton"
+       ],
+       "accompaniment": null,
+       "was_champion_entering": false,
+       "team_number": 2,
+       "was_winner": false,
+       "match_outcome": "loss"
+      }
+     ]
+    }
+   ],
+   "number": 737,
+   "cawthon_lines": [
+    "Rob Van Dam (w/ Ricardo Rodriguez) defeated Fandango (w/ Summer Rae) via disqualification at 6:20 when Summer interfered; Rodriguez served as RVD's ring announcer for the bout; after the match, Fandango attacked RVD but RVD fought him off and hit the Van Terminator",
+    "Ryback (w/ Paul Heyman & WWE IC Champion Curtis Axel) pinned R-Truth with Shellshocked at 2:26; during the match, it was noted Truth would challenge Axel for the title at Battleground; following the bout, Axel attacked Truth, taunted him, and left the ring to join Ryback and Heyman in the aisle",
+    "World Heavyweight Champion Alberto Del Rio defeated Dolph Ziggler in a non-title match via submission with the cross armbreaker at 13:37; during ADR's entrance, WWE YouTube clips recapped some of RVD's biggest assaults; Damien Sandow provided guest commentary for the match",
+    "Los Matadores (w/ El Torito) defeated Heath Slater & Jinder Mahal at 3:18 when Mahal was pinned after a double Samoan Drop; prior to the bout, WWE app footage showed Renee Young conducting a backstage interview with Slater & Mahal about wanting a rematch against Los Matadores; after the contest, El Torito jumped off the top onto Slater & Mahal outside the ring",
+    "Brie Bella (w/ Nikki Bella) pinned Aksana at 2:11 with a facebuster off the top; following the bout, WWE Divas Champion AJ, with Tamina, appeared at the entrance stage with a mic, mocked Brie's engagement to Daniel Bryan, and cut a promo on facing Brie at Battleground",
+    "Kofi Kingston pinned Big E Langston with a reversal into a roll up at the 52-second mark; after the bout, Bray Wyatt came out and cut a promo as Kingston was trapped between Wyatt and, on the other side of him, Luke Harper & Erik Rowan",
+    "The Big Show defeated Randy Orton, WWE US Champion Dean Ambrose, WWE Tag Team Champions Seth Rollins & Roman Reigns in a handicap match via disqualification at 5:40 when, as Ambrose attempted to use a steel chair as a weapon, Show punched the chair into his face; after the bout, Show fought off his opponents before sustaining the spear from Reigns and then the RKO from Orton; moments later, Jimmy & Jey Uso ran out to try to make the save and brawled with Rollins & Reigns on the floor; Daniel Bryan then ran into the ring and attacked Orton, briefly applying the Yes Lock before Ambrose made the save; Bryan followed by kicking Ambrose in the head and then the running knee to the head, knocking him out"
+   ]
+  }
+ ],
+ "ppv": [
+  {
+   "air_date": "2007-06-03",
+   "article": "One Night Stand (2007)",
+   "parsed": {
+    "info": {
+     "name": "One Night Stand",
+     "promotion": "World Wrestling Entertainment",
+     "venue": "Jacksonville Veterans Memorial Arena",
+     "city": "Jacksonville, Florida",
+     "attendance": "7,000",
+     "dates": [
+      "2007-06-03"
+     ],
+     "year": 2007
+    },
+    "tables": [
+     {
+      "caption": null,
+      "matches": [
+       {
+        "match_order": 1,
+        "match_type": "Singles match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 253,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Santino Marella]] defeated [[Chris Masters]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Santino Marella"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Chris Masters"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 2,
+        "match_type": "Stretcher match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 871,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[Rob Van Dam]] defeated [[Randy Orton]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Rob Van Dam"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Randy Orton"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 3,
+        "match_type": "Six-man tag team",
+        "stipulation": "tables",
+        "title_at_stake": null,
+        "duration_seconds": 438,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[CM Punk]] and [[The ECW Originals]] ([[The Sandman (wrestler)|The Sandman]] and [[Tommy Dreamer]]) defeated [[The New Breed (ECW)|The New Breed]] ([[Elijah Burke]], [[Matt Striker]], and [[Marcus Cor Von]])",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "CM Punk",
+           "The ECW Originals",
+           "The Sandman",
+           "Tommy Dreamer"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": "The New Breed",
+          "participants": [
+           "Elijah Burke",
+           "Matt Striker",
+           "Marcus Cor Von"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 4,
+        "match_type": "Ladder match",
+        "stipulation": "ladder",
+        "title_at_stake": "World Tag Team Championship",
+        "duration_seconds": 1045,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[The Hardys]] ([[Jeff Hardy]] and [[Matt Hardy]]) (c) defeated [[The World's Greatest Tag Team]] ([[Charlie Haas]] and [[Shelton Benjamin]])",
+        "teams": [
+         {
+          "team_name": "The Hardys",
+          "participants": [
+           "Jeff Hardy",
+           "Matt Hardy"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": "The World's Greatest Tag Team",
+          "participants": [
+           "Charlie Haas",
+           "Shelton Benjamin"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 5,
+        "match_type": "Lumberjack match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 547,
+        "result_method": "defeated",
+        "finish": "technical submission",
+        "raw_description": "[[Mark Henry]] defeated [[Kane (wrestler)|Kane]] by [[technical submission]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Mark Henry"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Kane"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 6,
+        "match_type": "Street Fight",
+        "stipulation": "street fight",
+        "title_at_stake": "ECW World Championship",
+        "duration_seconds": 743,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Bobby Lashley]] defeated [[Mr. McMahon]] (c) (with [[Shane McMahon]] and [[Umaga (wrestler)|Umaga]]) by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Bobby Lashley"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Mr. McMahon"
+          ],
+          "accompaniment": "Shane McMahon",
+          "was_champion_entering": true,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 7,
+        "match_type": "Pudding match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 175,
+        "result_method": "defeated",
+        "finish": "submission",
+        "raw_description": "[[Candice Michelle]] defeated [[Melina Perez|Melina]] by [[Submission (professional wrestling)|submission]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Candice Michelle"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Melina"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 8,
+        "match_type": "Steel Cage match",
+        "stipulation": "steel cage",
+        "title_at_stake": "World Heavyweight Championship",
+        "duration_seconds": 939,
+        "result_method": "defeated",
+        "finish": "escaping the cage",
+        "raw_description": "[[Edge (wrestler)|Edge]] (c) defeated [[Dave Bautista|Batista]] by escaping the cage",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Edge"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Batista"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 9,
+        "match_type": "Falls Count Anywhere match",
+        "stipulation": null,
+        "title_at_stake": "WWE Championship",
+        "duration_seconds": 630,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[John Cena]] (c) defeated [[The Great Khali]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "John Cena"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "The Great Khali"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       }
+      ],
+      "date": "2007-06-03"
+     }
+    ]
+   }
+  },
+  {
+   "air_date": "2008-06-01",
+   "article": "One Night Stand (2008)",
+   "parsed": {
+    "info": {
+     "name": "One Night Stand",
+     "promotion": "World Wrestling Entertainment",
+     "venue": "San Diego Sports Arena",
+     "city": "San Diego, California",
+     "attendance": "9,961",
+     "dates": [
+      "2008-06-01"
+     ],
+     "year": 2008
+    },
+    "tables": [
+     {
+      "caption": null,
+      "matches": [
+       {
+        "match_order": 1,
+        "match_type": "Singles match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": null,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Matt Hardy]] defeated [[Shelton Benjamin]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Matt Hardy"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Shelton Benjamin"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 2,
+        "match_type": "Falls Count Anywhere match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 567,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Jeff Hardy]] defeated [[Umaga (wrestler)|Umaga]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Jeff Hardy"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Umaga"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 3,
+        "match_type": "Singapore Cane match",
+        "stipulation": null,
+        "title_at_stake": "ECW Championship / Night of Champions",
+        "duration_seconds": 515,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[Big Show]] defeated [[Chavo Guerrero Jr.|Chavo Guerrero]], [[CM Punk]], [[John Morrison (wrestler)|John Morrison]], and [[Tommy Dreamer]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Big Show"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Chavo Guerrero",
+           "CM Punk",
+           "John Morrison",
+           "Tommy Dreamer"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 4,
+        "match_type": "First Blood match",
+        "stipulation": "first blood",
+        "title_at_stake": null,
+        "duration_seconds": 870,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[John Cena]] defeated [[John \"Bradshaw\" Layfield]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "John Cena"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "John \"Bradshaw\" Layfield"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 5,
+        "match_type": "\"I Quit\" match",
+        "stipulation": "i quit",
+        "title_at_stake": null,
+        "duration_seconds": 554,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[Beth Phoenix]] defeated [[Melina Perez|Melina]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Beth Phoenix"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Melina"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 6,
+        "match_type": "Stretcher match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 1023,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[Dave Bautista|Batista]] defeated [[Shawn Michaels]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Batista"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Shawn Michaels"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 7,
+        "match_type": "Last Man Standing match",
+        "stipulation": "last man standing",
+        "title_at_stake": "WWE Championship",
+        "duration_seconds": 795,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[Triple H]] (c) defeated [[Randy Orton]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Triple H"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Randy Orton"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 8,
+        "match_type": "Tables, Ladders, and Chairs match",
+        "stipulation": "tables, ladders",
+        "title_at_stake": "World Heavyweight Championship",
+        "duration_seconds": 1430,
+        "result_method": "defeated",
+        "finish": null,
+        "raw_description": "[[Edge (wrestler)|Edge]] defeated [[The Undertaker]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Edge"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "The Undertaker"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       }
+      ],
+      "date": "2008-06-01"
+     }
+    ]
+   }
+  },
+  {
+   "air_date": "2010-06-20",
+   "article": "Fatal 4-Way (2010)",
+   "parsed": {
+    "info": {
+     "name": "Fatal 4-Way",
+     "promotion": "World Wrestling Entertainment",
+     "venue": "Nassau Coliseum",
+     "city": "Uniondale, New York",
+     "attendance": "10,000",
+     "dates": [
+      "2010-06-20"
+     ],
+     "year": 2010
+    },
+    "tables": [
+     {
+      "caption": null,
+      "matches": [
+       {
+        "match_order": 1,
+        "match_type": "Singles match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 218,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Zack Ryder]] defeated [[Montel Vontavious Porter]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Zack Ryder"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Montel Vontavious Porter"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 2,
+        "match_type": "Singles match",
+        "stipulation": null,
+        "title_at_stake": "WWE Intercontinental Championship",
+        "duration_seconds": 989,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Kofi Kingston]] (c) defeated [[Drew McIntyre]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Kofi Kingston"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Drew McIntyre"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 3,
+        "match_type": "Fatal four-way match",
+        "stipulation": null,
+        "title_at_stake": "WWE Divas Championship",
+        "duration_seconds": 342,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Alicia Fox]] defeated [[Eve Torres]] (c), [[Gail Kim]], and [[Maryse Ouellet|Maryse]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Alicia Fox"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Eve Torres"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Gail Kim"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 3,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Maryse"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 4,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 4,
+        "match_type": "Singles match",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 724,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Evan Bourne]] defeated [[Chris Jericho]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Evan Bourne"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Chris Jericho"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 5,
+        "match_type": "Fatal four-way match",
+        "stipulation": null,
+        "title_at_stake": "World Heavyweight Championship",
+        "duration_seconds": 628,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Rey Mysterio]] defeated [[Jack Swagger]] (c), [[Big Show]], and [[CM Punk]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Rey Mysterio"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Jack Swagger"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Big Show"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 3,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "CM Punk"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 4,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 6,
+        "match_type": "Singles match",
+        "stipulation": null,
+        "title_at_stake": "WWE United States Championship",
+        "duration_seconds": 803,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[The Miz]] (c) defeated [[R-Truth]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "The Miz"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "R-Truth"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 7,
+        "match_type": "Six-person",
+        "stipulation": null,
+        "title_at_stake": null,
+        "duration_seconds": 569,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[The Hart Dynasty]] ([[David Hart Smith]], [[Natalya Neidhart|Natalya]], and [[Tyson Kidd]]) defeated [[The Usos]] ([[Jey Uso]] and [[Jimmy Uso]]) and [[Tamina Snuka|Tamina]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": "The Hart Dynasty",
+          "participants": [
+           "David Hart Smith",
+           "Natalya",
+           "Tyson Kidd"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": "The Usos",
+          "participants": [
+           "Jey Uso",
+           "Jimmy Uso"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Tamina"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 3,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       },
+       {
+        "match_order": 8,
+        "match_type": "Fatal four-way match",
+        "stipulation": null,
+        "title_at_stake": "WWE Championship",
+        "duration_seconds": 1045,
+        "result_method": "defeated",
+        "finish": "pinfall",
+        "raw_description": "[[Sheamus]] defeated [[John Cena]] (c), [[Edge (wrestler)|Edge]], and [[Randy Orton]] by [[pinfall]]",
+        "teams": [
+         {
+          "team_name": null,
+          "participants": [
+           "Sheamus"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 1,
+          "was_winner": true,
+          "match_outcome": "win"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "John Cena"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": true,
+          "team_number": 2,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Edge"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 3,
+          "was_winner": false,
+          "match_outcome": "loss"
+         },
+         {
+          "team_name": null,
+          "participants": [
+           "Randy Orton"
+          ],
+          "accompaniment": null,
+          "was_champion_entering": false,
+          "team_number": 4,
+          "was_winner": false,
+          "match_outcome": "loss"
+         }
+        ]
+       }
+      ],
+      "date": "2010-06-20"
+     }
+    ]
+   }
+  }
+ ],
+ "skipped": [
+  {
+   "air_date": "2002-12-28",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2005-11-29",
+   "show_type": "SmackDown",
+   "why": "same card as our 2005-11-25: date question"
+  },
+  {
+   "air_date": "2006-02-16",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2006-12-29",
+   "show_type": "SmackDown",
+   "why": "no SmackDown Hotel card to build from"
+  },
+  {
+   "air_date": "2007-02-15",
+   "show_type": "Raw",
+   "why": "no SmackDown Hotel card to build from"
+  },
+  {
+   "air_date": "2007-03-27",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2007-06-19",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2007-07-21",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2007-12-28",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2008-08-14",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2008-08-31",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2008-09-04",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2008-12-13",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2010-06-03",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2010-09-23",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2011-01-27",
+   "show_type": "Raw",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2011-11-29",
+   "show_type": "SmackDown",
+   "why": "same card as our 2011-12-02: date question"
+  },
+  {
+   "air_date": "2012-02-21",
+   "show_type": "SmackDown",
+   "why": "same card as our 2012-02-24: date question"
+  },
+  {
+   "air_date": "2012-04-10",
+   "show_type": "SmackDown",
+   "why": "same card as our 2012-04-13: date question"
+  },
+  {
+   "air_date": "2012-07-03",
+   "show_type": "SmackDown",
+   "why": "same card as our 2012-07-06: date question"
+  },
+  {
+   "air_date": "2012-09-04",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2012-11-04",
+   "show_type": "SmackDown",
+   "why": "only Cawthon lists it"
+  },
+  {
+   "air_date": "2012-11-06",
+   "show_type": "SmackDown",
+   "why": "same card as our 2012-11-09: date question"
+  },
+  {
+   "air_date": "2012-12-18",
+   "show_type": "SmackDown",
+   "why": "same card as our 2012-12-21: date question"
+  }
+ ]
+}

@@ -44,7 +44,10 @@
 // v16: 31 match results corrected where all three sources (ours, Cawthon,
 // SmackDown Hotel) list the same people and the other two agree on the winner,
 // and 4 missing matches added in card order. Match shards changed.
-const CACHE = 'wrestling-dashboard-v16';
+// v17: 14 shows that held the next episode's card moved to their real dates,
+// 13 recovered shows and 4 missing ones (incl. One Night Stand 2007/2008 and
+// Fatal 4-Way 2010) added, 3 dates fixed. Core and match shards changed.
+const CACHE = 'wrestling-dashboard-v17';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
