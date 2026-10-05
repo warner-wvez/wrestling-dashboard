@@ -78,16 +78,19 @@ it what no card carries:
   A pre-show change counts only when the event's Wikipedia results table marks
   the match "pre", and it sorts ahead of the card. An interim champion's reign
   runs beside the champion's, who keeps the belt until the histories end his
-  reign. Only the NXT Cruiserweight title is listed so far (`BELTS`).
+  reign. A change our card carries as a match, but without a title-change
+  mark (the "vacant / NXT Women's Championship" cards from Wikipedia's tables),
+  goes in right after that match. `BELTS` lists the NXT Cruiserweight title and
+  the six NXT belts; the NXT UK belts are not in yet.
 
 As of 2026-10-05 every belt in the lineage map, plus the Intercontinental,
 United States, European, ECW, Women's tag and 24/7 titles, matches its list
-reign for reign, the NXT Cruiserweight title included. One does not: the
+reign for reign, the NXT Cruiserweight title and the six NXT belts included. One does not: the
 Hardcore title (Wikipedia lacks two April 2002 house-show nights that Cawthon
 and Solie both list). The audit compares champions, not dates, so a change
 won on a pre-show still reads as matched when our reign starts at the next
-card; the NXT Cruiserweight title's dates were checked by hand against all
-three histories. The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
+card; every NXT belt's dates (174 reigns) were checked against all three
+histories when they went in. The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
 Sunil Singh, then Samir, the order Duncan and Will and WWE.com both give;
 Wikipedia lists Samir first and calls WWE.com's order a mistake.
 
