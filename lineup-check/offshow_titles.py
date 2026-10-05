@@ -29,6 +29,7 @@ histories end it, so neither reign is cut short.
 import json
 import re
 import sys
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 
@@ -44,21 +45,55 @@ from wiki_titles import _unlink, fetch, reigns  # noqa: E402
 OUT = ROOT / "data" / "offshow-title-changes.json"
 WIKI = "https://en.wikipedia.org/wiki/"
 DW = "https://www.wrestling-titles.com/wwe/"
-WWE = "https://www.wwe.com/titlehistory/"
-# Our title name -> its lineage key and the three histories' pages.
+WWE = "https://www.wwe.com/"
+# Our title name -> its lineage key (for a belt in src/title_lineages.py) and
+# the three histories' pages.
 BELTS = {
     "WWE NXT Cruiserweight Championship": {
         "lineage": "lineage::cruiserweight-2016",
         "wiki": "List of WWE Cruiserweight Champions",
         "dw": "nxt/wwe-nxt-c.html",
-        "wwe": "nxt-cruiserweight-championship",
+        "wwe": "titlehistory/nxt-cruiserweight-championship",
+    },
+    "NXT Title": {
+        "wiki": "List of NXT Champions",
+        "dw": "nxt/wwe-nxt.html",
+        "wwe": "titlehistory/nxt-championship",
+    },
+    "NXT Women's Title": {
+        "wiki": "List of NXT Women's Champions",
+        "dw": "nxt/wwe-nxt-wm.html",
+        "wwe": "titlehistory/nxt-womens-championship",
+    },
+    "NXT North American Title": {
+        "wiki": "List of NXT North American Champions",
+        "dw": "nxt/wwe-nxt-na.html",
+        "wwe": "titlehistory/nxt-north-american-championship",
+    },
+    "WWE NXT Tag Team Title": {
+        "wiki": "List of NXT Tag Team Champions",
+        "dw": "nxt/wwe-nxt-t.html",
+        "wwe": "titlehistory/nxt-tag-team-championship",
+    },
+    "NXT Women's Tag Team Title": {
+        "wiki": "List of NXT Women's Tag Team Champions",
+        "dw": "nxt/wwe-nxt-wt.html",
+        "wwe": "titlehistory/nxt-womens-tag-team-championship",
+    },
+    "NXT Women's North American Title": {
+        "wiki": "List of NXT Women's North American Champions",
+        "dw": "nxt/wwe-nxt-na-wm.html",
+        "wwe": "classics/titlehistory/nxt-womens-north-american-championship",
     },
 }
 # One person under two names across the histories. WWE.com uses today's ring
 # name or a short one (JD McDonagh was Jordan Devlin; "TJP", "Angel", "Murphy").
 ALIASES = {"jdmcdonagh": "jordandevlin", "tjp": "tjperkins", "angel": "angelgarza",
-           "murphy": "buddymurphy", "elhijodelfantasma": "santosescobar"}
+           "murphy": "buddymurphy", "elhijodelfantasma": "santosescobar",
+           "andradecienalmas": "andradealmas"}
 INTERIM = re.compile(r"\binterim\b", re.I)
+# A history's event for a weekly show, never one of our pay-per-view cards.
+WEEKLY = {"nxt", "nxt20", "nxtlevelup", "nxtuk", "205live", "raw", "smackdown", "mainevent"}
 
 
 def key(name):
@@ -66,8 +101,29 @@ def key(name):
     return ALIASES.get(s, s)
 
 
+def keys(r):
+    """Every name a history gives a reign: the champion, and for a team its
+    name and each member. Duncan and Will write "Wyatt Family: Erick Rowan &
+    Luke Harper", WWE.com "The Wyatt Family" or "Adrian Neville & Corey Graves",
+    Wikipedia the team name with its members apart."""
+    out = set()
+    for part in re.split(r":|&| and ", re.sub(r"\(.*?\)", "", r["champion"])):
+        if key(part):
+            out.add(key(part))
+    out.add(key(r["champion"]))
+    out |= {key(m) for m in r.get("members") or [] if key(m)}
+    return out
+
+
 def same(a, b):
-    return key(a) == key(b)
+    return bool(keys(a) & keys(b))
+
+
+def event_key(s):
+    """"NXT TakeOver: Brooklyn" and "WWE NXT TakeOver: Brooklyn" alike, which
+    plain() cannot do: it stops at the colon."""
+    s = unicodedata.normalize("NFKD", re.sub(r"<[^>]+>|\(.*?\)", " ", s or "")).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]", "", s.lower())
 
 
 def wikipedia(page):
@@ -91,10 +147,10 @@ def duncan_will(page):
     return out
 
 
-def wwe_com(slug):
+def wwe_com(path):
     """WWE.com lists newest first: a name line, then "Mon D, YYYY - Mon D, YYYY"."""
     from bs4 import BeautifulSoup
-    html = _get(WWE + slug, HERE / "wwe-cache" / f"titlehistory_{slug}.html")
+    html = _get(WWE + path, HERE / "wwe-cache" / f"titlehistory_{path.split('/')[-1]}.html")
     lines = [ln.strip() for ln in BeautifulSoup(html, "html.parser").get_text("\n").split("\n") if ln.strip()]
     span = re.compile(r"^([A-Z][a-z]{2} \d{1,2}, \d{4})(?: - ([A-Z][a-z]{2} \d{1,2}, \d{4}))?$")
 
@@ -112,15 +168,14 @@ def wwe_com(slug):
 def confirm(name, cfg):
     """Each Wikipedia row, marked with the histories that list it. Duncan and
     Will date a change as Wikipedia does, give or take a day; WWE.com dates a
-    taped one by its air date, up to two weeks later."""
+    taped one by its air date, up to five weeks later (NXT taped a month of
+    shows at a time at Full Sail until 2019)."""
     wiki, dw, wwe = wikipedia(cfg["wiki"]), duncan_will(cfg["dw"]), wwe_com(cfg["wwe"])
     for r in wiki:
         r["sources"] = {"Wikipedia": f"{WIKI}{cfg['wiki'].replace(' ', '_')} #{r['n']}"}
-    for i, j in align(wiki, dw, lambda w, d: same(w["champion"], d["champion"])
-                      and abs(_days(w["date"], d["date"])) <= 1):
+    for i, j in align(wiki, dw, lambda w, d: same(w, d) and abs(_days(w["date"], d["date"])) <= 1):
         wiki[i]["sources"]["Duncan & Will"] = DW + cfg["dw"]
-    for i, j in align(wiki, wwe, lambda w, e: same(w["champion"], e["champion"])
-                      and 0 <= _days(w["date"], e["date"]) <= 14):
+    for i, j in align(wiki, wwe, lambda w, e: same(w, e) and 0 <= _days(w["date"], e["date"]) <= 35):
         wiki[i]["sources"]["WWE.com"] = WWE + cfg["wwe"]
         wiki[i]["wwe"] = wwe[j]
     return wiki
@@ -131,7 +186,7 @@ def preshow(event, champion):
     on the pre-show? None when no page or no such match is found."""
     base = re.sub(r'^WWE\s+|\s+-\s+".*"$', "", event["ppv_name"] or event["title"]).strip()
     year = event["air_date"][:4]
-    names = [base, re.sub(rf"\s+{year}$", f" ({year})", base), "WWE " + base]
+    names = [base, re.sub(rf"\s+{year}$", f" ({year})", base), f"{base} ({year})", "WWE " + base]
     surname = plain(champion.split()[-1])
     for page in dict.fromkeys(names):
         try:
@@ -144,6 +199,19 @@ def preshow(event, champion):
                 note = re.search(rf"\|\s*note{m.group(1)}\s*=\s*([^\n|]*)", text)
                 return bool(note and note.group(1).strip().lower().startswith("pre"))
     return None
+
+
+def won_on_card(card, r):
+    """The match on our card the new champion won, when exactly one fits. The
+    cards from Wikipedia's results tables (2020 on) write a vacant belt as
+    "vacant / NXT Women's Championship" with no TITLE CHANGE marker, and one
+    (Worlds Collide 2022) leaves the belt off, so the walk never crowns the
+    winner there."""
+    won = [m for m in card["matches"] for t in m["teams"]
+           if t.get("was_winner") and same({"champion": " & ".join(p for p in t["participants"] if p)}, r)]
+    if len(won) > 1:
+        won = [m for m in won if m.get("title_at_stake")]
+    return won[0] if len(won) == 1 else None
 
 
 def carried_reigns(events, name):
@@ -168,27 +236,42 @@ def main():
         if e["show_type"] == "PPV":
             ppv_by_date.setdefault(e["air_date"], []).append(e)
 
+    # Nothing past our last show: the title pages stay where the site ends.
+    corpus_end = max(e["air_date"] for e in events.values())
     changes = []
     for name, cfg in BELTS.items():
         rows = confirm(name, cfg)
         ours = carried_reigns(events, name)
         for k, r in enumerate(rows):
             day = r["wwe"]["date"] if r.get("wwe") else r["date"]
+            if day > corpus_end:
+                continue
             if len(r["sources"]) < 2:
                 print(f"only {', '.join(r['sources'])} lists it, not applied: {r['date']} {name}: {r['champion']}")
                 continue
-            if any(same(o["champion_names"][0], r["champion"]) and o["start"] in (r["date"], day) for o in ours):
+            if any(o["start"] in (r["date"], day) and same({"champion": " & ".join(o["champion_names"])}, r)
+                   for o in ours):
                 continue
-            now = re.sub(r"^.*/", "", r["champion"])     # the name he wrestled under later
-            champion = by_plain.get(plain(now), now)
-            entry = {"lineage": cfg["lineage"], "title_name": name, "date": day, "order": 0,
-                     "champions": [champion], "event": r["event"], "place": r["location"],
+            # A team by its members; a wrestler by the name he wrestled under
+            # later ("El Hijo del Fantasma/Santos Escobar").
+            names = r["members"] if "Tag" in name and len(r["members"]) > 1 else [r["champion"]]
+            champions = [by_plain.get(plain(re.sub(r"^.*/", "", n)), re.sub(r"^.*/", "", n)) for n in names]
+            champion = champions[0]
+            where = {"lineage": cfg["lineage"]} if "lineage" in cfg else {"title": name}
+            entry = {**where, "title_name": name, "date": day, "order": 0,
+                     "champions": champions, "event": r["event"], "place": r["location"],
                      "why": r["notes"][:300], "sources": r["sources"]}
             if day != r["date"]:
                 entry["happened"] = r["date"]
+            ek = event_key(r["event"])
             card = next((e for e in ppv_by_date.get(day, [])
-                         if plain(r["event"]) and plain(r["event"]) in plain(e["ppv_name"] or e["title"])), None)
-            if card:
+                         if ek and ek not in WEEKLY and ek in event_key(e["ppv_name"] or e["title"])), None)
+            won = card and won_on_card(card, r)
+            if won:
+                entry.update(event_id=card["id"], order=won["match_order"] + 0.5,
+                             why=f"Won in match {won['match_order']} of {card['title']}, which our card does not "
+                                 "mark as a title change.")
+            elif card:
                 pre = preshow(card, champion)
                 if pre is None:
                     print(f"on {card['title']}, no results-table row found, not applied: {day} {name}: {champion}")
@@ -222,7 +305,7 @@ def main():
         extra = (f", event {c['event_id']}" if "event_id" in c else "") + \
                 (f", happened {c['happened']}" if "happened" in c else "") + \
                 (f", previous reign runs to {c['previous_holds_until']}" if c.get("interim") else "")
-        print(f"  {c['date']} {c['title_name']}: {c['champions'][0]} ({', '.join(c['sources'])}){extra}")
+        print(f"  {c['date']} {c['title_name']}: {' & '.join(c['champions'])} ({', '.join(c['sources'])}){extra}")
 
 
 if __name__ == "__main__":

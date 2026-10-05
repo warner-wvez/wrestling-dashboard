@@ -2,6 +2,230 @@
  "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT) and on the pre-shows of pay-per-views we do. Each is listed by at least two of the belt's Wikipedia list, Duncan and Will's title history and WWE.com's. A pre-show change names its event and sorts ahead of the card. Built by lineup-check/offshow_titles.py.",
  "changes": [
   {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2012-08-29",
+   "order": 0,
+   "champions": [
+    "Seth Rollins"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Title was established on July 1, 2012, for WWE's developmental brand NXT. Rollins defeated Jinder Mahal in the eight-man NXT Championship tournament finals to become the inaugural champion. WWE recognizes his reign as beginning on August 29, 2012, when the match aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   },
+   "happened": "2012-07-26"
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2013-01-09",
+   "order": 0,
+   "champions": [
+    "Big E. Langston"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "This was a no disqualification match. WWE recognizes Big E's reign as beginning on January 9, 2013, when the match aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #2",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   },
+   "happened": "2012-12-06"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2013-02-13",
+   "order": 0,
+   "champions": [
+    "Adrian Neville",
+    "Oliver Grey"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "The championship was established on January 23, 2013. The British Ambition defeated The Wyatt Family (Luke Harper and Erick Rowan) in the tournament final to become the inaugural champions. Bo Dallas replaced Grey when he was injured, but was not recognized as champion. WWE recognizes their reign as",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2013-01-31"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2013-05-08",
+   "order": 0,
+   "champions": [
+    "Luke Harper",
+    "Erick Rowan"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Bo Dallas filled in for an injured Oliver Grey. WWE recognizes their reign as beginning on May 8, 2013, and ending on July 17, 2013, both episodes of which aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #2",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2013-05-02"
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2013-06-12",
+   "order": 0,
+   "champions": [
+    "Bo Dallas"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE recognizes Dallas' reign as beginning on June 12, 2013, when the match aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #3",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   },
+   "happened": "2013-05-23"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2013-07-17",
+   "order": 0,
+   "champions": [
+    "Adrian Neville",
+    "Corey Graves"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE recognizes their reign as beginning on July 17, 2013, and ending on October 2, 2013, both episodes of which aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #3",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2013-06-20"
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2013-07-24",
+   "order": 0,
+   "champions": [
+    "Paige"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Defeated Emma in the finals of an eight-woman single-elimination tournament to become the inaugural champion. WWE recognizes Paige's reign as beginning on July 24, 2013, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   },
+   "happened": "2013-06-20"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2013-10-02",
+   "order": 0,
+   "champions": [
+    "Conor O'Brian",
+    "Konnor",
+    "Rick Victor",
+    "Viktor"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "During their reign, their ring names were shortened to Konnor and Viktor, respectively. WWE recognizes their reign as beginning on October 2, 2013, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2013-09-12"
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2015-01-28",
+   "order": 0,
+   "champions": [
+    "Buddy Murphy",
+    "Murphy",
+    "Wesley Blake",
+    "Blake"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "During their reign, their ring names were shortened to Murphy and Blake, respectively. WWE recognizes their reign as beginning on January 28, 2015, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2015-01-15"
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2015-07-04",
+   "order": 0,
+   "champions": [
+    "Finn Bálor"
+   ],
+   "event": "The Beast in the East",
+   "place": "Tokyo, Japan",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #7",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2015-11-11",
+   "order": 0,
+   "champions": [
+    "Dash Wilder",
+    "Scott Dawson"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "During their reign, Dash and Dawson were renamed to The Revival. WWE recognizes their reign as beginning on November 11, 2015, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #8",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2015-10-22"
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2016-04-21",
+   "order": 0,
+   "champions": [
+    "Samoa Joe"
+   ],
+   "event": "NXT Live",
+   "place": "Lowell, MA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #8",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2016-09-14",
@@ -36,6 +260,23 @@
    }
   },
   {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2016-12-03",
+   "order": 0,
+   "champions": [
+    "Shinsuke Nakamura"
+   ],
+   "event": "NXT",
+   "place": "Osaka, Japan",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #11",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2017-08-20",
@@ -54,6 +295,27 @@
    "event_id": 1972
   },
   {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2017-12-20",
+   "order": 0,
+   "champions": [
+    "Kyle O'Reilly",
+    "Bobby Fish",
+    "Adam Cole",
+    "Roderick Strong"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Eric Young and Killian Dain represented Sanity. Fish and O'Reilly won the match and were originally champions as a duo. After Fish suffered a torn ACL and torn MCL in his left knee, he was replaced by Adam Cole under the Freebird Rule. On the April 11 tapings of NXT, Strong replaced Cole. WWE recogn",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #14",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2017-11-29"
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2018-04-08",
@@ -70,6 +332,79 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
    },
    "event_id": 2052
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2018-06-19",
+   "order": 0,
+   "champions": [
+    "Tyler Bate",
+    "Trent Seven"
+   ],
+   "event": "United Kingdom Championship Tournament",
+   "place": "London, England",
+   "why": "Roderick Strong and Kyle O'Reilly represented The Undisputed Era. Aired on tape delay on June 26, 2018. WWE recognizes their reign as ending on July 11, 2018, when the following episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #15",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2018-07-11",
+   "order": 0,
+   "champions": [
+    "Kyle O'Reilly",
+    "Roderick Strong"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Won by submission when Tyler Bate threw in the towel. WWE recognizes their reign as beginning on July 11, 2018, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2018-06-21"
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2018-07-25",
+   "order": 0,
+   "champions": [
+    "Tommaso Ciampa"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE recognizes Ciampa's reign as beginning on July 25, 2018 and ending on March 20, 2019 due to both episodes airing on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   },
+   "happened": "2018-07-18"
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2019-02-20",
+   "order": 0,
+   "champions": [
+    "The Velveteen Dream"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE taped two endings for the match, one with Gargano retaining and the other with Dream winning. The latter was revealed as the true result when the episode aired on tape delay on February 20, the date WWE recognizes for Dream's reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   },
+   "happened": "2019-01-30"
   },
   {
    "lineage": "lineage::cruiserweight-2016",
@@ -108,6 +443,42 @@
    "event_id": 2203
   },
   {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2019-08-28",
+   "order": 0,
+   "champions": [
+    "Bobby Fish",
+    "Kyle O'Reilly"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE recognizes their reign as beginning on August 28, 2019, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #19",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "happened": "2019-08-15"
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2019-09-18",
+   "order": 0,
+   "champions": [
+    "Roderick Strong"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #5",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2019-10-09",
@@ -142,6 +513,75 @@
    }
   },
   {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2019-12-18",
+   "order": 0,
+   "champions": [
+    "Rhea Ripley"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE recognizes Ripley's reign as ending on April 5, 2020, when the following match aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #10",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2020-01-22",
+   "order": 0,
+   "champions": [
+    "Keith Lee"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "WWE recognizes Lee's reign as ending on July 22, 2020, when the episode in which he vacated the title aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2020-02-16",
+   "order": 0,
+   "champions": [
+    "Matt Riddle",
+    "Pete Dunne"
+   ],
+   "event": "TakeOver: Portland",
+   "place": "Portland, OR",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #20",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2020-05-13",
+   "order": 0,
+   "champions": [
+    "Fabian Aichner",
+    "Marcel Barthel"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "Defeated Riddle and Timothy Thatcher, who substituted for Dunne, as Dunne (who lives in the UK) was not able to travel to the U.S. due to COVID-19 pandemic travel restrictions.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #21",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2020-06-03",
@@ -161,6 +601,231 @@
    "previous_holds_until": "2021-04-08"
   },
   {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2020-07-08",
+   "order": 0,
+   "champions": [
+    "Keith Lee"
+   ],
+   "event": "NXT: The Great American Bash",
+   "place": "Winter Park, FL",
+   "why": "This was a Winner Takes All match, in which Lee also defended the NXT North American Championship. WWE recognizes Lee's reign as beginning on July 8, 2020, when the match aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #19",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   },
+   "happened": "2020-07-01"
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2020-08-22",
+   "order": 0,
+   "champions": [
+    "Damian Priest"
+   ],
+   "event": "TakeOver XXX",
+   "place": "Winter Park, FL",
+   "why": "Defeated Bronson Reed, Cameron Grimes, Johnny Gargano, and Velveteen Dream in a five-man ladder match to win the vacant title.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #7",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2020-08-22",
+   "order": 0,
+   "champions": [
+    "Karrion Kross"
+   ],
+   "event": "TakeOver XXX",
+   "place": "Winter Park, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #20",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2020-08-26",
+   "order": 0,
+   "champions": [
+    "Tyler Breeze",
+    "Fandango"
+   ],
+   "event": "NXT",
+   "place": "Winter Park, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #22",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2020-09-08",
+   "order": 0,
+   "champions": [
+    "Finn Bálor"
+   ],
+   "event": "NXT: Super Tuesday II",
+   "place": "Winter Park, FL",
+   "why": "A 60-minute fatal four-way iron man match for the vacant championship took place on the September 1 episode of NXT Super Tuesday between Finn Bálor, Adam Cole, Tommaso Ciampa, and Johnny Gargano, but the match ended in a tie between Bálor and Cole. NXT General Manager William Regal then scheduled a ",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #21",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2020-10-21",
+   "order": 0,
+   "champions": [
+    "Oney Lorcan",
+    "Danny Burch"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2020-10-28",
+   "order": 0,
+   "champions": [
+    "Johnny Gargano"
+   ],
+   "event": "NXT: Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "This was a Devil's Playground match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #8",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2020-11-11",
+   "order": 0,
+   "champions": [
+    "Leon Ruff"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #9",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2021-03-10",
+   "order": 0,
+   "champions": [
+    "Dakota Kai",
+    "Raquel González"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "NXT General Manager William Regal awarded the titles to the Women's Dusty Rhodes Tag Team Classic winners Kai and González after a screwjob finish to their WWE Women's Tag Team Championship match against Nia Jax and Shayna Baszler the week prior.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2021-03-10",
+   "order": 0,
+   "champions": [
+    "Ember Moon",
+    "Shotzi Blackheart"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #2",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2021-04-07",
+   "order": 0,
+   "champions": [
+    "Raquel González"
+   ],
+   "event": "TakeOver: Stand & Deliver",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #13",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2021-04-07",
+   "order": 0,
+   "champions": [
+    "Wes Lee",
+    "Nash Carter"
+   ],
+   "event": "TakeOver: Stand & Deliver",
+   "place": "Orlando, FL",
+   "why": "This was a triple threat tag team match also involving Grizzled Young Veterans (Zack Gibson and James Drake) and Legado Del Fantasma (Raul Mendoza and Joaquin Wilde) for the vacant titles.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #24",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2021-04-08",
+   "order": 0,
+   "champions": [
+    "Karrion Kross"
+   ],
+   "event": "TakeOver: Stand & Deliver",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #22",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2021-04-13",
@@ -175,6 +840,90 @@
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #18",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2021-05-18",
+   "order": 0,
+   "champions": [
+    "Bronson Reed"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "This was a Steel Cage match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #11",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2021-06-29",
+   "order": 0,
+   "champions": [
+    "Isaiah \"Swerve\" Scott"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #12",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2021-07-06",
+   "order": 0,
+   "champions": [
+    "Io Shirai",
+    "Zoey Stark"
+   ],
+   "event": "NXT: The Great American Bash",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #3",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2021-08-22",
+   "order": 0,
+   "champions": [
+    "Samoa Joe"
+   ],
+   "event": "TakeOver 36",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2021-09-14",
+   "order": 0,
+   "champions": [
+    "Tommaso Ciampa"
+   ],
+   "event": "NXT 2.0",
+   "place": "Orlando, FL",
+   "why": "This was a fatal four-way match for the vacant championship, also involving LA Knight, Pete Dunne, and Von Wagner.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #24",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
    }
   },
   {
@@ -195,6 +944,93 @@
    }
   },
   {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2021-10-12",
+   "order": 0,
+   "champions": [
+    "Carmelo Hayes"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "This was Hayes' Breakout Tournament contract cash-in match. At NXT: New Year's Evil on January 4, 2022, Hayes defeated Roderick Strong to unify the NXT Cruiserweight Championship into the NXT North American Championship.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #13",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2021-10-26",
+   "order": 0,
+   "champions": [
+    "Gigi Dolin",
+    "Jacy Jayne"
+   ],
+   "event": "NXT 2.0: Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "This was a Spin the Wheel, Make the Deal: Triple threat tag team Scareway to Hell Ladder match also involving the team of Indi Hartwell and Persia Pirotta.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2021-10-26",
+   "order": 0,
+   "champions": [
+    "Mandy Rose"
+   ],
+   "event": "NXT 2.0: Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "This was a Trick or Street Fight match. On September 4, 2022, at Worlds Collide, Rose defeated Meiko Satomura and Blair Davenport in a triple threat match to unify the NXT UK Women's Championship into the NXT Women's Championship. The NXT UK Women's Championship was retired with Rose going forward a",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #14",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2021-10-26",
+   "order": 0,
+   "champions": [
+    "Fabian Aichner",
+    "Marcel Barthel"
+   ],
+   "event": "NXT 2.0: Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "This was a Lumber Jack-O'-Lantern match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #25",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2022-01-04",
+   "order": 0,
+   "champions": [
+    "Bron Breakker"
+   ],
+   "event": "NXT 2.0: New Year's Evil",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #25",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2022-01-04",
@@ -208,6 +1044,695 @@
    "sources": {
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #20",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2022-03-08",
+   "order": 0,
+   "champions": [
+    "Dolph Ziggler"
+   ],
+   "event": "NXT 2.0: Roadblock",
+   "place": "Orlando, FL",
+   "why": "This was a triple threat match, also involving Tommaso Ciampa, who Ziggler pinned.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #26",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2022-04-05",
+   "order": 0,
+   "champions": [
+    "Gigi Dolin",
+    "Jacy Jayne"
+   ],
+   "event": "NXT 2.0",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2022-04-12",
+   "order": 0,
+   "champions": [
+    "Elton Prince",
+    "Kit Wilson"
+   ],
+   "event": "NXT 2.0",
+   "place": "Orlando, FL",
+   "why": "This was a Gauntlet match also involving Legado Del Fantasma (Joaquin Wilde and Cruz Del Toro), Josh Briggs and Brooks Jensen, and Grayson Waller and Sanga, and Creed Brothers (Brutus Creed and Julius Creed), who they last eliminated to win the vacant titles.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #27",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2022-07-05",
+   "order": 0,
+   "champions": [
+    "Cora Jade",
+    "Roxanne Perez"
+   ],
+   "event": "NXT 2.0: The Great American Bash",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #7",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2022-07-19",
+   "order": 0,
+   "champions": [
+    "Roxanne Perez"
+   ],
+   "event": "NXT 2.0",
+   "place": "Orlando, FL",
+   "why": "On the July 12, 2022, episode of NXT 2.0, Cora Jade turned on Perez. The following week, Jade threw her championship belt in a trashcan, vacating her half of the championship. WWE.com lists this as a separate entry on the official title history, but it is unclear if WWE views this as an official sec",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #8",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "title_name": "NXT Women's Tag Team Title",
+   "date": "2022-08-02",
+   "order": 0,
+   "champions": [
+    "Katana Chance",
+    "Kayden Carter"
+   ],
+   "event": "NXT 2.0",
+   "place": "Orlando, FL",
+   "why": "Defeated the teams of Ivy Nile and Tatum Paxley, Toxic Attraction (Gigi Dolin and Jacy Jayne), and Yulisa Leon and Valentina Feroz in a fatal four-way tag team elimination match to win the vacant title.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #9",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2022-09-04",
+   "order": 4.5,
+   "champions": [
+    "Elton Prince",
+    "Kit Wilson"
+   ],
+   "event": "Worlds Collide",
+   "place": "Orlando, FL",
+   "why": "Won in match 4 of Worlds Collide, which our card does not mark as a title change.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #29",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   },
+   "event_id": 2980
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2022-09-13",
+   "order": 0,
+   "champions": [
+    "Solo Sikoa"
+   ],
+   "event": "NXT 2.0: One Year Anniversary Show",
+   "place": "Orlando, FL",
+   "why": "Sikoa replaced Wes Lee after Lee was injured by Carmelo Hayes and Trick Williams.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2022-10-22",
+   "order": 3.5,
+   "champions": [
+    "Wes Lee"
+   ],
+   "event": "Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "Won in match 3 of NXT Halloween Havoc, which our card does not mark as a title change.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #17",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   },
+   "event_id": 2982
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2022-12-13",
+   "order": 0,
+   "champions": [
+    "Roxanne Perez"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #15",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2023-05-28",
+   "order": 5.5,
+   "champions": [
+    "Tiffany Stratton"
+   ],
+   "event": "Battleground",
+   "place": "Lowell, MA",
+   "why": "Won in match 5 of NXT Battleground, which our card does not mark as a title change.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #17",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   },
+   "event_id": 2992
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2023-07-18",
+   "order": 0,
+   "champions": [
+    "Dominik Mysterio"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #18",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2023-09-12",
+   "order": 0,
+   "champions": [
+    "Becky Lynch"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #18",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2023-10-03",
+   "order": 0,
+   "champions": [
+    "Dominik Mysterio"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "Had Mysterio lost, he would've been forced to leave the Judgement Day.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #20",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2023-10-24",
+   "order": 0,
+   "champions": [
+    "Lyra Valkyria"
+   ],
+   "event": "NXT: Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #19",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2023-10-24",
+   "order": 0,
+   "champions": [
+    "Andre Chase",
+    "Duke Hudson"
+   ],
+   "event": "NXT: Halloween Havoc",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #33",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2023-11-14",
+   "order": 0,
+   "champions": [
+    "Tony D'Angelo",
+    "Channing \"Stacks\" Lorenzo"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #34",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2024-01-09",
+   "order": 0,
+   "champions": [
+    "Oba Femi"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "This was Femi's Breakout Tournament contract cash-in match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #22",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2024-02-13",
+   "order": 0,
+   "champions": [
+    "Bron Breakker",
+    "Baron Corbin"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #35",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2024-04-09",
+   "order": 0,
+   "champions": [
+    "Nathan Frazer",
+    "Axiom"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #36",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2024-04-23",
+   "order": 0,
+   "champions": [
+    "Trick Williams"
+   ],
+   "event": "NXT: Spring Breakin'",
+   "place": "Orlando, FL",
+   "why": "Had Williams lost, he would have had to leave NXT.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #30",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2024-08-13",
+   "order": 0,
+   "champions": [
+    "Andre Chase",
+    "Ridge Holland"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #37",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2024-10-01",
+   "order": 0,
+   "champions": [
+    "Trick Williams"
+   ],
+   "event": "NXTs debut on The CW",
+   "place": "Rosemont, IL",
+   "why": "CM Punk was the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #32",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2024-10-08",
+   "order": 0,
+   "champions": [
+    "Tony D'Angelo"
+   ],
+   "event": "NXT",
+   "place": "Chesterfield, MO",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2025-01-07",
+   "order": 0,
+   "champions": [
+    "Oba Femi"
+   ],
+   "event": "NXT: New Year's Evil",
+   "place": "Los Angeles, CA",
+   "why": "This was a triple threat match also involving Eddy Thorpe.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #33",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2025-01-07",
+   "order": 0,
+   "champions": [
+    "Giulia"
+   ],
+   "event": "NXT: New Year's Evil",
+   "place": "Los Angeles, CA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #21",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2025-03-04",
+   "order": 0,
+   "champions": [
+    "Shawn Spears"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #24",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2025-03-11",
+   "order": 0,
+   "champions": [
+    "Stephanie Vaquer"
+   ],
+   "event": "NXT: Roadblock",
+   "place": "New York, NY",
+   "why": "This was a Winner Takes All match in which Vaquer defended the NXT Women's North American Championship.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #22",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2025-04-01",
+   "order": 0,
+   "champions": [
+    "Ricky Saints"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #25",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's North American Title",
+   "title_name": "NXT Women's North American Title",
+   "date": "2025-04-19",
+   "order": 4.5,
+   "champions": [
+    "Sol Ruca"
+   ],
+   "event": "Stand & Deliver",
+   "place": "Paradise, NV",
+   "why": "Won in match 4 of Stand & Deliver, which our card does not mark as a title change.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_North_American_Champions #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na-wm.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/nxt-womens-north-american-championship"
+   },
+   "event_id": 3022
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2025-05-27",
+   "order": 0,
+   "champions": [
+    "Ethan Page"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #26",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2025-05-27",
+   "order": 0,
+   "champions": [
+    "Jacy Jayne"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2025-10-07",
+   "order": 0,
+   "champions": [
+    "Matt Hardy",
+    "Jeff Hardy"
+   ],
+   "event": "NXT vs. TNA Showdown",
+   "place": "Orlando, FL",
+   "why": "This was a Winners Take All match in which The Hardy Boyz defended the TNA World Tag Team Championship.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #41",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's Title",
+   "title_name": "NXT Women's Title",
+   "date": "2025-11-18",
+   "order": 0,
+   "champions": [
+    "Jacy Jayne"
+   ],
+   "event": "NXT: Gold Rush",
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Champions #25",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-championship"
+   }
+  },
+  {
+   "title": "NXT Women's North American Title",
+   "title_name": "NXT Women's North American Title",
+   "date": "2025-12-16",
+   "order": 0,
+   "champions": [
+    "Thea Hail"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "This was a legitimate unplanned finish, as in reality, Monroe was supposed to retain the title, but during a pin, Monroe did not get her shoulder up in time and the referee counted the pinfall.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_North_American_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na-wm.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/nxt-womens-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Women's North American Title",
+   "title_name": "NXT Women's North American Title",
+   "date": "2026-01-06",
+   "order": 0,
+   "champions": [
+    "Izzi Dame"
+   ],
+   "event": "NXT: New Year's Evil",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_North_American_Champions #7",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na-wm.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/nxt-womens-north-american-championship"
+   }
+  },
+  {
+   "title": "NXT Title",
+   "title_name": "NXT Title",
+   "date": "2026-02-03",
+   "order": 0,
+   "champions": [
+    "Joe Hendry"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "Defeated Ricky Saints, Dion Lennox, Sean Legacy, Jackson Drake, Shiloh Hill, and Keanu Carver in a seven-man ladder match to win the vacant title.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #36",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "NXT North American Title",
+   "title_name": "NXT North American Title",
+   "date": "2026-02-24",
+   "order": 0,
+   "champions": [
+    "Myles Borne"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #27",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2026-02-24",
+   "order": 0,
+   "champions": [
+    "Brad Baylor",
+    "Ricky Smokes"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #43",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "NXT Women's North American Title",
+   "title_name": "NXT Women's North American Title",
+   "date": "2026-06-09",
+   "order": 0,
+   "champions": [
+    "Zaria"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "On August 30, 2026, at Heatwave, Zaria defeated Wren Sinclair to unify the WWE Women's Speed Championship into the NXT Women's North American Championship in a Winner Takes All triple threat match, also involving Kali Armstrong.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_North_American_Champions #9",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na-wm.html"
    }
   }
  ]

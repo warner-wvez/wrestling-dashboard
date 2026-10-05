@@ -34,6 +34,12 @@ EXTRA = {
     "WWE 24/7 Title": "List of WWE 24/7 Champions",
     "WWF Hardcore Title": "List of WWE Hardcore Champions",
     "WWE Women's Tag Team Title": "List of WWE Women's Tag Team Champions",
+    "NXT Title": "List of NXT Champions",
+    "NXT Women's Title": "List of NXT Women's Champions",
+    "NXT North American Title": "List of NXT North American Champions",
+    "WWE NXT Tag Team Title": "List of NXT Tag Team Champions",
+    "NXT Women's Tag Team Title": "List of NXT Women's Tag Team Champions",
+    "NXT Women's North American Title": "List of NXT Women's North American Champions",
 }
 
 
@@ -43,7 +49,8 @@ ALIASES = {"Hollywood Hulk Hogan": "Hulk Hogan", "Chavo Classic": "Chavo Guerrer
            "Shane Helms": "Gregory Helms",
            # He won the interim title masked and unmasked a week later; our
            # roster knows him only as Santos Escobar.
-           "El Hijo del Fantasma/Santos Escobar": "Santos Escobar"}
+           "El Hijo del Fantasma/Santos Escobar": "Santos Escobar",
+           'Andrade "Cien" Almas': "Andrade Almas"}
 
 
 def _plain(s):
@@ -116,9 +123,11 @@ def main():
         else:
             # A belt born inside the corpus starts at its first reign, not at
             # the last of its first night (the 24/7 title changed hands three
-            # times on 2019-05-20).
+            # times on 2019-05-20). We date a taped first reign by its air
+            # date, up to five weeks after the list's taping date (Seth
+            # Rollins won the first NXT title on 2012-07-26; it aired 08-29).
             first = min([i for i, r in enumerate(rows)
-                         if r["date"] >= (date.fromisoformat(lo) - timedelta(days=14)).isoformat()] or [0])
+                         if r["date"] >= (date.fromisoformat(lo) - timedelta(days=35)).isoformat()] or [0])
         wiki = [r for r in rows[first:] if r["date"] <= hi]
         if not wiki:
             print(f"## {name}: no parsable reigns on {page}")
