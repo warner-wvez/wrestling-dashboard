@@ -106,7 +106,13 @@ def main():
         start = lo
         if ours[0].get("pre_corpus"):
             start = (date.fromisoformat(lo) - timedelta(days=7)).isoformat()
-        first = max([i for i, r in enumerate(rows) if r["date"] <= start] or [0])
+            first = max([i for i, r in enumerate(rows) if r["date"] <= start] or [0])
+        else:
+            # A belt born inside the corpus starts at its first reign, not at
+            # the last of its first night (the 24/7 title changed hands three
+            # times on 2019-05-20).
+            first = min([i for i, r in enumerate(rows)
+                         if r["date"] >= (date.fromisoformat(lo) - timedelta(days=14)).isoformat()] or [0])
         wiki = [r for r in rows[first:] if r["date"] <= hi]
         if not wiki:
             print(f"## {name}: no parsable reigns on {page}")
@@ -117,8 +123,12 @@ def main():
             b = [frozenset(key(n) for n in (r["members"] or [r["champion"]])) for r in wiki]
             ops = align(a, b, lambda x, y: len(x & y) >= min(2, len(x), len(y)))
         else:
-            a = [key(r["champion_names"][0]) if r["champion_names"] else "" for r in ours]
-            b = [key(r["champion"]) for r in wiki]
+            # A team can hold a singles belt (The Revival shared the 24/7
+            # title in 2019); then both sides compare by the pair.
+            a = [key(r["champion_names"][0]) if len(r["champion_names"]) == 1
+                 else tuple(sorted(key(n) for n in r["champion_names"])) for r in ours]
+            b = [tuple(sorted(key(n) for n in r["members"])) if len(r["members"]) > 1 and "/" not in r["champion"]
+                 else key(r["champion"]) for r in wiki]
             ops = difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes()
         diffs = [op for op in ops if op[0] != "equal"]
         print(f"## {name}: ours {len(ours)} reigns, Wikipedia {len(wiki)} in {lo}..{hi}, "
