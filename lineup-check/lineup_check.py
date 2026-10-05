@@ -146,8 +146,8 @@ def auto_fixes(rows):
     return out
 
 
-def render(rows, shows, fixes):
-    counts = collections.Counter(r["class"] for r in rows)
+def render(rows, shows, fixes, review):
+    counts = collections.Counter(r["class"] for r in review)
     L = ["# Lineup check, 2001 to 2013", "",
          f"Our {shows} Raw, SmackDown and PPV cards compared with Graham Cawthon's "
          f"thehistoryofwwe.com, run {date.today().isoformat()}. SmackDown Hotel votes on weekly "
@@ -162,13 +162,17 @@ def render(rows, shows, fixes):
     L += ["### Wrestlers put back", "", "| Event | Match | Name | Our text |", "|---|---|---|---|"]
     for f in fixes["add_wrestler"]:
         L.append(f"| {f['event_id']} | {f['match_id']} | {f['name']} | {f['ours'][:90].replace('|', '/')} |")
-    L += ["", "## For review", "", "| Kind | Count | SmackDown Hotel agrees with ours | with Cawthon | split |",
+    n_ruled = sum(1 for r in rows if r["class"] not in AUTO_CLASSES) - len(review)
+    L += ["", "## For review", "",
+          f"{len(review)} rows in review.csv; {n_ruled} more were ruled by hand (\"our card is "
+          "right\") in rulings.csv and are left out.", "",
+          "| Kind | Count | SmackDown Hotel agrees with ours | with Cawthon | split |",
           "|---|---|---|---|---|"]
     keep = {"keep", "aired"}
     for cls, n in counts.most_common():
         if cls in AUTO_CLASSES:
             continue
-        rs = [r for r in rows if r["class"] == cls]
+        rs = [r for r in review if r["class"] == cls]
         L.append(f"| {cls} | {n} | {sum(1 for r in rs if r.get('vote') in keep)} | "
                  f"{sum(1 for r in rs if r.get('vote') in lineup_match_auto())} | "
                  f"{sum(1 for r in rs if r.get('vote') in (None, 'split', '-'))} |")
@@ -186,15 +190,35 @@ def lineup_match_auto():
 
 
 APPLIED_VOTES = ("fix_result_same_people", "add_match_same_people")
+RULINGS = HERE / "rulings.csv"
+
+
+def load_rulings(path=RULINGS):
+    """Review rows a person ruled "our card is right": (class, event id,
+    match id) -> the starts of the Cawthon lines ruled. Rows ruled a data
+    change need no entry; once a migration applies them they stop differing."""
+    out = collections.defaultdict(list)
+    if path.exists():
+        for r in csv.DictReader(path.open(encoding="utf-8")):
+            out[(r["class"], r["event_id"], r["match_id"])].append(r["cawthon"])
+    return out
+
+
+def ruled(row, rulings):
+    starts = rulings.get((row["class"], str(row.get("event_id") or ""), str(row.get("match_id") or "")))
+    return bool(starts) and any((row.get("cawthon") or "").startswith(s) for s in starts)
+
+
+def to_review(rows, rulings):
+    return [r for r in rows if r["class"] not in AUTO_CLASSES
+            and r.get("vote") not in APPLIED_VOTES and not ruled(r, rulings)]
 
 
 def review_csv(rows):
     buf = io.StringIO()
     w = csv.DictWriter(buf, fieldnames=REVIEW_FIELDS, extrasaction="ignore")
     w.writeheader()
-    w.writerows(sorted((r for r in rows if r["class"] not in AUTO_CLASSES
-                        and r.get("vote") not in APPLIED_VOTES),
-                       key=lambda r: (r["class"], r["air_date"])))
+    w.writerows(sorted(rows, key=lambda r: (r["class"], r["air_date"])))
     return buf.getvalue()
 
 
@@ -203,13 +227,15 @@ def main():
     from src.ship_guard import atomic_write_text
     rows, shows = run(load_existing())
     fixes = auto_fixes(rows)
+    rulings = load_rulings()
+    review = to_review(rows, rulings)
     OUT.mkdir(exist_ok=True)
     atomic_write_text(OUT / "auto-fixes.json", json.dumps(fixes, indent=1))
-    atomic_write_text(OUT / "review.csv", review_csv(rows))
-    atomic_write_text(OUT / "LINEUP-CHECK.md", render(rows, shows, fixes))
+    atomic_write_text(OUT / "review.csv", review_csv(review))
+    atomic_write_text(OUT / "LINEUP-CHECK.md", render(rows, shows, fixes, review))
     print(f"{shows} shows compared; auto: " +
           ", ".join(f"{k}={len(v)}" for k, v in fixes.items()) +
-          f"; review rows: {sum(1 for r in rows if r['class'] not in AUTO_CLASSES and r.get('vote') not in APPLIED_VOTES)}")
+          f"; review rows: {len(review)} ({sum(1 for r in rows if ruled(r, rulings))} ruled in rulings.csv)")
 
 
 if __name__ == "__main__":

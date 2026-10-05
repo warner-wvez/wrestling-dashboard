@@ -106,3 +106,43 @@ def test_non_match_lines():
 
 def test_generational_suffix_stays_on_the_name():
     assert split_side("Chavo Guerrero, Sr. & Eddie Guerrero") == ["Chavo Guerrero Sr.", "Eddie Guerrero"]
+
+
+def test_ppv_list_ends_at_the_next_nights_bold_header():
+    # WrestleMania X-Seven is followed by "WWF @ Ft. Worth, TX - April 2,
+    # 2001", one dash only; its Raw card once ran on into the PPV list.
+    wm = parse_ppv_page(_read("results-2001-wm17.html"))["2001-04-01"]
+    assert len(wm["ppv"]) == 11
+    assert not any("Dave Taylor" in line or "steel cage" in line for line in wm["ppv"] + wm["heat"])
+
+
+def test_header_whose_note_has_no_date_is_its_own_episode():
+    # Raw 11/3/08's italic line is a note ("3-hour episode celebrating ...").
+    eps = parse_show_page(_read("raw-2008-november.html"))
+    assert [e["air_date"] for e in eps] == ["2008-10-27", "2008-11-03"]
+    assert len(eps[0]["lines"]) == 5
+    assert eps[1]["lines"][0].startswith("ECW World Champion Matt Hardy")
+
+
+def test_header_with_no_italic_line_is_its_own_episode():
+    eps = parse_show_page(_read("raw-2004-august.html"))
+    assert [(e["air_date"], len(e["lines"])) for e in eps] == [
+        ("2004-08-23", 2), ("2004-08-30", 6), ("2004-09-06", 0)]
+
+
+def test_air_date_after_text_or_an_entity_is_found():
+    # "Raw SuperShow 9/5/11 - Labor Day" and a taped special whose air date
+    # follows a quoted title: "&#8220;Holiday with the Troops&#8221; - 12/19/05".
+    eps = parse_show_page(_read("raw-2011-labor-day.html"))
+    assert [e["air_date"] for e in eps] == ["2011-09-05", "2011-09-19"]
+    assert eps[0]["lines"] and not eps[0]["lines"][0].startswith("Raw SuperShow")
+    eps = parse_show_page(_read("raw-2005-december.html"))
+    assert [(e["tape_date"], e["air_date"]) for e in eps] == [
+        ("2005-12-09", "2005-12-19"), ("2005-12-26", "2005-12-26")]
+
+
+def test_house_show_after_an_episode_is_not_part_of_it():
+    # SmackDown 1/9/03 is followed by "WWE (Smackdown!) @ Trenton, NJ - ...
+    # January 11, 2003", a house show with a second DeMott vs Moore.
+    eps = parse_show_page(_read("smackdown-2003-trenton.html"))
+    assert [(e["air_date"], len(e["lines"])) for e in eps] == [("2003-01-09", 9)]

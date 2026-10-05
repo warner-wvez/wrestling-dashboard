@@ -62,19 +62,65 @@ def _lines(fragment):
     return [t for t in (_text(p) for p in parts) if t]
 
 
+_LOOSE_HEAD_RE = re.compile(
+    r"<p>\s*((Taped\s+)?(\d{1,2})/(\d{1,2})/(\d{2});\s*([^;<]+?)(?:;\s*([^<]*?))?)\s*<br\s*/?>",
+    re.I)
+_HEAD_NOTE_RE = re.compile(r"\s*<i>((?:[^<]|<(?!/i>))*)</i>\s*:?", re.I)
+
+
+def _until_next_event(body):
+    """Cut a body at the next bold dated header ("WWF @ Ft. Worth, TX -
+    April 2, 2001", the next night's TV or a house show). Without the cut,
+    WrestleMania X-Seven took on the next night's Raw cage match and
+    SmackDown 1/9/03 a Trenton house show's second DeMott vs Moore."""
+    nxt = next((b for b in _PPV_HEAD_RE.finditer(body) if b.group(2).split()[0] in MONTHS), None)
+    return body[:nxt.start()] if nxt else body
+
+
+def _loose_heads(page_html, strict):
+    """Episode headers the strict pattern misses because the italic line
+    under them has no plain air date: no italic line at all (Raw 8/30/04), a
+    note with no date (Raw 11/3/08), text before the date with no dash ("Raw
+    SuperShow 9/5/11") or an entity before it ("&#8220;Holiday with the
+    Troops&#8221; &#8211; 12/19/05"). Each is a paragraph that opens with the
+    header. Missed, a header's matches ran on into the week before.
+
+    Yields (start, end, groups) shaped like an _EPISODE_RE match: groups 3-5
+    the header date, 8-10 the air date (None when it cannot be known)."""
+    taken = {h.start() for h in strict}
+    for m in _LOOSE_HEAD_RE.finditer(page_html):
+        if m.start(1) in taken:
+            continue
+        end = m.end()
+        note = _HEAD_NOTE_RE.match(page_html, end)
+        air = None
+        if note:
+            end = note.end()
+            found = re.search(r"(\d{1,2})/(\d{1,2})/(\d{2})\b", _text(note.group(1))[:80])
+            air = found.groups() if found else None
+        if air is None and not m.group(2):
+            air = m.group(3, 4, 5)      # a live show airs on its header date
+        g = m.groups()
+        yield m.start(1), end, g[:7] + (air or (None, None, None))
+
+
 def parse_show_page(page_html):
     """Episodes on a Raw or SmackDown year page: [{air_date, tape_date,
     header_date, date_conflict, city, venue, lines}] in page order."""
-    heads = list(_EPISODE_RE.finditer(page_html))
+    strict = list(_EPISODE_RE.finditer(page_html))
+    heads = sorted([(h.start(), h.end(), (None, None) + h.groups()[1:]) for h in strict] +
+                   [(s, e, (None,) + g) for s, e, g in _loose_heads(page_html, strict)])
     out = []
-    for n, h in enumerate(heads):
-        end = heads[n + 1].start() if n + 1 < len(heads) else len(page_html)
-        body = page_html[h.end():end]
-        tape = _iso(h.group(3), h.group(4), h.group(5))
-        taped = bool(h.group(2))
-        city, venue = _text(h.group(6)), _text(h.group(7) or "")
+    for n, (_, h_end, g) in enumerate(heads):
+        end = heads[n + 1][0] if n + 1 < len(heads) else len(page_html)
+        body = _until_next_event(page_html[h_end:end])
+        if g[8] is None:
+            continue        # a taped header whose air date the page never gives
+        tape = _iso(g[3], g[4], g[5])
+        taped = bool(g[2])
+        city, venue = _text(g[6]), _text(g[7] or "")
         # One taping can carry a second episode: another "<i>date</i>:" inside.
-        cuts = [(h.group(8), h.group(9), h.group(10), 0)]
+        cuts = [(g[8], g[9], g[10], 0)]
         cuts += [(m.group(1), m.group(2), m.group(3), m.end()) for m in _AIRDATE_RE.finditer(body)]
         for k, (mo, dd, yy, start) in enumerate(cuts):
             stop = cuts[k + 1][3] if k + 1 < len(cuts) else len(body)
@@ -106,7 +152,7 @@ def parse_ppv_page(page_html):
     out = {}
     for n, h in enumerate(heads):
         end = heads[n + 1].start() if n + 1 < len(heads) else len(page_html)
-        body = page_html[h.end():end]
+        body = _until_next_event(page_html[h.end():end])
         if "pay-per-view bouts" not in body.lower():
             continue
         month, rest = h.group(2).split(" ", 1)
