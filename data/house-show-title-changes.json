@@ -1,0 +1,198 @@
+{
+ "about": "Title changes at house shows, and reigns WWE recognized without a match, on belts other than the Hardcore title. Each is listed by Wikipedia's title history and by Cawthon's results or Duncan and Will's title histories. Built by lineup-check/house_show_titles.py.",
+ "changes": [
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "2003-08-10",
+   "order": 0,
+   "champions": [
+    "Christian"
+   ],
+   "place": "Des Moines, IA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #104: House show, Des Moines, IA",
+    "Cawthon": "WWE (Raw) @ Des Moines, IA – Veterans Memorial Auditorium – August 10, 2003: Christian pinned WWE IC Champion Booker T to win the title with the Unprettier after Booker failed a scissors kick while suffering from a back injury",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "2005-01-16",
+   "order": 0,
+   "champions": [
+    "Robert Conway",
+    "Sylvain Grenier"
+   ],
+   "place": "Winnipeg, MB, Canada",
+   "why": "Jonathan Coachman replaced Eugene in this match due to injury.",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #162: House show, Winnipeg, MB, Canada",
+    "Cawthon": "WWE (Raw) @ Winnipeg, Manitoba – MTS Centre – January 16, 2005 (matinee) (6,500): Rob Conway & Sylvian Grenier defeated Jonathan Coachman (sub. for an injured Eugene) & WWE Raw Tag Team Champion William Regal to win the titles when Regal was pinned with the Aur Reviour after Regal "
+   }
+  },
+  {
+   "lineage": "lineage::cruiserweight-1991",
+   "title_name": "WWE Cruiserweight Championship",
+   "date": "2005-11-15",
+   "order": 0,
+   "champions": [
+    "Nunzio"
+   ],
+   "place": "Rome, Italy",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Cruiserweight Champions (1996–2007) #73: House show, Rome, Italy",
+    "Cawthon": "WWE (Smackdown!) @ Rome, Italy – PalaLottomatica – November 15, 2005 (10,000; sell out): Nunzio pinned WWE Cruiserweight Champion Juventud Guerrera to win the title with a backslide after avoiding the Juvi Driver",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-c.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "2007-04-24",
+   "order": 0,
+   "champions": [
+    "Mickie James"
+   ],
+   "place": "Paris, France",
+   "why": "This was a triple threat match also involving Victoria, who James pinned.<br>This was a legitimate unplanned finish, as in reality, Melina was supposed to retain the title, but during a pin, Victoria did not get her shoulder up in time and the referee counted the pinfall.",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Champions (1956–2010) #58: Live event, Paris, France",
+    "Cawthon": "WWE (Raw) @ Paris, France – The Zenith – April 24, 2007 (5,349; sell out): Mickie James defeated WWE Women's Champion Melina and Victoria to win the title by pinning Victoria with a hurricanrana; that was not the planned finish but Victoria failed to kick out of Mickie's cov",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "2007-04-24",
+   "order": 1,
+   "champions": [
+    "Melina"
+   ],
+   "place": "Paris, France",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Champions (1956–2010) #59: Live event, Paris, France",
+    "Cawthon": "WWE (Raw) @ Paris, France – The Zenith – April 24, 2007 (5,349; sell out): Mickie James defeated WWE Women's Champion Melina and Victoria to win the title by pinning Victoria with a hurricanrana; that was not the planned finish but Victoria failed to kick out of Mickie's cov",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "2007-09-05",
+   "order": 0,
+   "champions": [
+    "Paul London",
+    "Brian Kendrick"
+   ],
+   "place": "Cape Town, South Africa",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #173: House show, Cape Town, South Africa",
+    "Cawthon": "WWE (Raw) @ Cape Town, South Africa – September 5, 2007 (6,000; sell out): Paul London & Brian Kendrick defeated WWE Raw Tag Team Champions Lance Cade & Trevor Murdoch to win the titles",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "2007-09-08",
+   "order": 0,
+   "champions": [
+    "Lance Cade",
+    "Trevor Murdoch"
+   ],
+   "place": "Johannesburg, South Africa",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #174: House show, Johannesburg, South Africa",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "2008-12-13",
+   "order": 0,
+   "champions": [
+    "John Morrison",
+    "The Miz"
+   ],
+   "place": "Hamilton, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #180: House show, Hamilton, ON, Canada",
+    "Cawthon": "WWE (Raw, Smackdown!, & ECW) @ Hamilton, Ontario – Copps Coliseum – December 13, 2008 (3,500): John Morrison & Mike Mizanin defeated WWE Raw Tag Team Champions CM Punk & Kofi Kingston to win the titles when Mizanin pinned Kingston with the Reality Check after Kingston hit Morrison with the spin",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::wwe-tag-2002",
+   "title_name": "WWE World Tag Team Championship",
+   "date": "2012-01-15",
+   "order": 0,
+   "champions": [
+    "Primo",
+    "Epico"
+   ],
+   "place": "Oakland, CA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE) #43: House show, Oakland, CA",
+    "Cawthon": "WWE (Raw) @ Oakland, CA – Oracle Arena – January 15, 2012 (matinee) (5,500): Epico & Primo Colon defeated WWE Tag Team Champions Kofi Kingston & Evan Bourne to win the titles when Primo pinned Bourne with the Back Stabber",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-t.html"
+   }
+  },
+  {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2017-07-07",
+   "order": 0,
+   "champions": [
+    "AJ Styles"
+   ],
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE United States Champions #173: WWE Live, New York, NY",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html"
+   }
+  },
+  {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2019-12-26",
+   "order": 0,
+   "champions": [
+    "Andrade"
+   ],
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE United States Champions #193: WWE Live, New York, NY",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html"
+   }
+  },
+  {
+   "title": "WWE Women's Tag Team Title",
+   "title_name": "WWE Women's Tag Team Title",
+   "date": "2025-06-30",
+   "order": 0,
+   "champions": [
+    "Raquel Rodriguez",
+    "Roxanne Perez"
+   ],
+   "place": "Pittsburgh, PA",
+   "why": "Due to a legitimate injury incurred by Rodriguez's previous partner Liv Morgan, Perez was chosen as Rodriguez's new partner; WWE recognizes this as a separate reign.",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Tag Team Champions #33: Raw, Pittsburgh, PA",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wt.html"
+   }
+  }
+ ]
+}

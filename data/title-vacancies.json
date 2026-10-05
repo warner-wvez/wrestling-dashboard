@@ -2,6 +2,14 @@
  "about": "Title vacancies from Wikipedia's title histories, kept where the champion the list names is who our history has holding the belt. Built by lineup-check/title_vacancies.py.",
  "vacancies": [
   {
+   "lineage": "lineage::womens-1956",
+   "date": "2001-11-01",
+   "vacate": true,
+   "vacated_by": "Chyna",
+   "why": "The title was vacated when Chyna retired and left the WWF in a contract dispute.",
+   "source": "List of WWE Women's Champions (1956–2010)"
+  },
+  {
    "title": "WWE Intercontinental Title",
    "date": "2002-10-20",
    "vacate": true,
@@ -68,6 +76,14 @@
    "vacated_by": "Batista",
    "why": "Batista vacated the title after he was sidelined with a legit triceps injury. Aired on tape delay on January 13, 2006.",
    "source": "List of World Heavyweight Champions (WWE, 2002–2013)"
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "date": "2006-09-18",
+   "vacate": true,
+   "vacated_by": "Trish Stratus",
+   "why": "Trish Stratus relinquished the title due to her retirement.",
+   "source": "List of WWE Women's Champions (1956–2010)"
   },
   {
    "title": "ECW World Heavyweight Title",
@@ -250,6 +266,14 @@
    "vacated_by": "Enzo Amore",
    "why": "Vacated due to Enzo Amore's release from WWE one day after it was confirmed that Amore was under investigation for an alleged sexual assault that was reported to the police in October 2017.",
    "source": "List of WWE Cruiserweight Champions"
+  },
+  {
+   "lineage": "lineage::wwe-tag-2002",
+   "date": "2018-04-09",
+   "vacate": true,
+   "vacated_by": "Braun Strowman and Nicholas",
+   "why": "Braun Strowman and Nicholas voluntarily relinquished the title due to \"scheduling conflicts\" with Nicholas being a fourth-grader and needing to attend school.",
+   "source": "List of World Tag Team Champions (WWE)"
   },
   {
    "lineage": "lineage::universal",

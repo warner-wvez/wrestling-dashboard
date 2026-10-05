@@ -23,6 +23,8 @@ Dates are inclusive ISO strings; None is open.
 """
 from __future__ import annotations
 
+import re
+
 
 LINEAGES = [
     {"key": "lineage::wwe-championship", "name": "WWE Championship", "cagematch": 20,
@@ -114,11 +116,21 @@ for _lin in LINEAGES:
 BY_KEY = {lin["key"]: lin for lin in LINEAGES}
 
 
+def _plain(title: str) -> str:
+    """The match walk normalizes belt strings before it asks (RAW to Raw,
+    Championship to Title); rulings and off-card changes are written by hand,
+    often in Wikipedia's spelling, so they get the same treatment here."""
+    s = re.sub(r"\s+", " ", title or "").strip()
+    s = re.sub(r"\bRAW\b", "Raw", s)
+    s = re.sub(r"\bChampionships$", "Titles", s)
+    return re.sub(r"\bChampionship$", "Title", s)
+
+
 def lineages_for(title: str, day: str) -> list[dict]:
     """The lineages a title string moves on this date; [] when the string is
     not mapped here (the caller falls back to its word-based key)."""
     out = []
-    for lo, hi, lin in _BY_STRING.get((title or "").strip(), []):
+    for lo, hi, lin in _BY_STRING.get(_plain(title), []):
         if (lo is None or day >= lo) and (hi is None or day <= hi):
             out.append(lin)
     return out
