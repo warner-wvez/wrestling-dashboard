@@ -8,6 +8,7 @@ the championship's article). reigns() reads the two formats the lists use:
 import json
 import re
 import sys
+import time
 import urllib.parse
 from datetime import datetime
 from pathlib import Path
@@ -24,9 +25,15 @@ def fetch(title):
     f = CACHE / ("api_" + re.sub(r"[^A-Za-z0-9_.()-]", "_", title) + ".json")
     if f.exists():
         return json.loads(f.read_text(encoding="utf-8"))
-    r = requests.get(API, params={"action": "query", "prop": "revisions", "rvprop": "content",
-                                  "rvslots": "main", "redirects": 1, "titles": title,
-                                  "format": "json", "formatversion": 2}, headers=UA, timeout=60)
+    # Wikipedia answers a burst of requests with a throttle page, not JSON;
+    # waiting a little and asking again gets the page.
+    for wait in (5, 20, 60, None):
+        r = requests.get(API, params={"action": "query", "prop": "revisions", "rvprop": "content",
+                                      "rvslots": "main", "redirects": 1, "titles": title,
+                                      "format": "json", "formatversion": 2}, headers=UA, timeout=60)
+        if r.ok and r.headers.get("content-type", "").startswith("application/json") or wait is None:
+            break
+        time.sleep(wait)
     page = r.json()["query"]["pages"][0]
     out = {"title": page["title"], "text": page["revisions"][0]["slots"]["main"]["content"]}
     CACHE.mkdir(exist_ok=True)
