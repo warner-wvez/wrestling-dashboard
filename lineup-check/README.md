@@ -64,13 +64,21 @@ what no card carries:
   both list.
 - `offcard_titles.py` writes `data/offcard-title-changes.json`: the Hardcore
   title's house-show swaps under the 24/7 rule, two of three records agreeing.
+- `title_247.py` writes `data/247-title-changes.json`: the 24/7 title's
+  changes outside a match (backstage, ringside, house shows, no show at all),
+  two of three title histories agreeing: Wikipedia, Duncan and Will, and
+  WWE.com's own history (cached in `wwe-cache/`). A change on a taped show
+  takes its air date, and one on a show we carry sits between that show's
+  matches in the order the histories give.
 
 As of 2026-10-05 every belt in the lineage map, plus the Intercontinental,
-United States, European, ECW and Women's tag titles, matches its list reign for
-reign. Three do not: the NXT Cruiserweight title (four reigns won on NXT TV or
-a missing Stomping Grounds 2019 match), the 24/7 title (most of its 203 changes
-happened off our cards), and the Hardcore title (Wikipedia lacks two April 2002
-house-show nights that Cawthon and Solie both list).
+United States, European, ECW, Women's tag and 24/7 titles, matches its list
+reign for reign. Two do not: the NXT Cruiserweight title (four reigns won on
+NXT TV or a missing Stomping Grounds 2019 match), and the Hardcore title
+(Wikipedia lacks two April 2002 house-show nights that Cawthon and Solie both
+list). The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
+Sunil Singh, then Samir, the order Duncan and Will and WWE.com both give;
+Wikipedia lists Samir first and calls WWE.com's order a mistake.
 
 ## The source's quirks
 

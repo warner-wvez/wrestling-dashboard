@@ -1,0 +1,2252 @@
+{
+ "about": "The 24/7 title's changes outside a match: backstage, at ringside, at house shows and away from any show. Each is listed by at least two of Wikipedia's List of WWE 24/7 Champions, Duncan and Will's title history and WWE.com's. A change on a show we carry names its event and an order between that show's matches. Built by lineup-check/title_247.py.",
+ "changes": [
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-05-28",
+   "champions": [
+    "Elias"
+   ],
+   "event": "SmackDown",
+   "place": "Tulsa, OK",
+   "why": "The 24/7 rule was temporarily suspended until after the scheduled tag team match later that same night in which Elias and R-Truth were both involved.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2194
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-05-28",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "SmackDown",
+   "place": "Tulsa, OK",
+   "why": "Took place in the ring after the 24/7 rule's temporary suspension was lifted.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #5",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2194
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-02",
+   "champions": [
+    "Jinder Mahal"
+   ],
+   "event": "N/A",
+   "place": "N/A",
+   "why": "Took place on a golf course at an undisclosed location. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-02",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "N/A",
+   "why": "Took place on a golf course at an undisclosed location. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #7",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-06",
+   "champions": [
+    "Jinder Mahal"
+   ],
+   "event": "N/A",
+   "place": "Frankfurt, Germany",
+   "why": "Took place on the tarmac during a stopover at the Frankfurt Airport on the way to Saudi Arabia. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #10",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-06",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "39,000 feet above the Red Sea",
+   "why": "Took place on an airplane during a flight to Saudi Arabia while Jinder Mahal was sleeping. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #11",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-18",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "SmackDown",
+   "place": "Ontario, CA",
+   "why": "Took place in the parking lot while R-Truth was trying to leave the arena where Maverick was disguised as Carmella.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #12",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2202
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-20",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "Orlando, FL",
+   "why": "During Drake Maverick's wedding ceremony, the pin took place in the aisle as Maverick and his wife Renee Michelle were making their exit. This title change was shown on WWE's website and social media accounts on June 21, the date WWE recognizes for the reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #13",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-24",
+   "champions": [
+    "Heath Slater"
+   ],
+   "event": "Raw",
+   "place": "Everett, WA",
+   "why": "Took place in the ring after R-Truth, who was being chased by several other wrestlers, interrupted a scheduled match between Slater and Mojo Rawley.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #14",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2204
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-24",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "Everett, WA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #15",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2204
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-24",
+   "champions": [
+    "Cedric Alexander"
+   ],
+   "event": "Raw",
+   "place": "Everett, WA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.2,
+   "event_id": 2204
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-24",
+   "champions": [
+    "EC3"
+   ],
+   "event": "Raw",
+   "place": "Everett, WA",
+   "why": "Took place at ringside.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #17",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.3,
+   "event_id": 2204
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-06-24",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "Everett, WA",
+   "why": "Took place on the entrance ramp after EC3 was distracted by Carmella.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #18",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.4,
+   "event_id": 2204
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-01",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "Raw",
+   "place": "Dallas, TX",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #19",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2206
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-15",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "Uniondale, NY",
+   "why": "Took place in Drake Maverick and his wife, Renee Michelle's hotel room. R-Truth bribed a referee to dress up as a hotel worker in order for him to gain access to Maverick's room.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #20",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2211
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #21",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Pat Patterson"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place in the locker room after Drake Maverick had tripped trying to escape The Boogeyman.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #22",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Gerald Brisco"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place off-screen backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.2,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Kelly Kelly"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #24",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.3,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Candice Michelle"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place backstage with Melina as the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #25",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.4,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Alundra Blayze"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place backstage with Melina as the special guest referee. Won by submission.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #26",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.5,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "The Million Dollar Man"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Bought the title from Alundra Blayze, who was about to throw the belt in a trash can at the commentary table.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #27",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.6,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place in a limousine in the parking lot.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #28",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.7,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-22",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw Reunion",
+   "place": "Tampa, FL",
+   "why": "Took place in the parking lot as Drake Maverick was trying to escape in a limousine.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #29",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.8,
+   "event_id": 2213
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-29",
+   "champions": [
+    "Mike Kanellis"
+   ],
+   "event": "Raw",
+   "place": "Little Rock, AR",
+   "why": "Took place in the ring when R-Truth was in a dogpile after a Mosh Pit mixed tag team match featuring Truth and Carmella against Drake Maverick and his wife, Renee Michelle, during which the 24/7 rule was suspended.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #30",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2215
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-07-29",
+   "champions": [
+    "Maria Kanellis"
+   ],
+   "event": "Raw",
+   "place": "Little Rock, AR",
+   "why": "Forced her husband Mike Kanellis to lie down for the pin in their locker room.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #31",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2215
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-05",
+   "champions": [
+    "Mike Kanellis"
+   ],
+   "event": "N/A",
+   "place": "Pittsburgh, PA",
+   "why": "Pinned his wife Maria Kanellis with a hug while she was lying on the examination table during her OB-GYN appointment where the referee was disguised as a nurse. Took place during the afternoon and shown later that night on Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #32",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-05",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "Pittsburgh, PA",
+   "why": "Took place in the waiting room of Maria Kanellis' OB-GYN appointment where Truth was disguised as a pregnant woman. Took place during the afternoon and shown later that night on Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #33",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-12",
+   "champions": [
+    "Scott Dawson",
+    "Dash Wilder"
+   ],
+   "event": "Raw",
+   "place": "Toronto, ON, Canada",
+   "why": "Took place in the ring after R-Truth, who was being chased by several other wrestlers, interrupted a scheduled tag team match between The Revival and Lucha House Party (Lince Dorado and Gran Metalik, with Kalisto). The Revival simultaneously pinned Truth to become co-champions.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #34",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2221
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-12",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "Toronto, ON, Canada",
+   "why": "Took place in the ring; Carmella pulled Truth on top of Scott Dawson, who had just been attacked by Kalisto.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #35",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2221
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-12",
+   "champions": [
+    "Elias"
+   ],
+   "event": "Raw",
+   "place": "Toronto, ON, Canada",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #36",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.2,
+   "event_id": 2221
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-23",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Fox Sports Founders Day",
+   "place": "Los Angeles, CA",
+   "why": "Took place on the stage during a musical performance by Elias. This title change was shown on WWE's website and social media accounts on August 24, the date WWE recognizes for the reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #37",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-23",
+   "champions": [
+    "Rob Stone"
+   ],
+   "event": "N/A",
+   "place": "Los Angeles, CA",
+   "why": "Took place on the Fox College Football set. This title change was shown on WWE's website and social media accounts on August 24, the date WWE recognizes for the reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #38",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-23",
+   "champions": [
+    "Elias"
+   ],
+   "event": "N/A",
+   "place": "Los Angeles, CA",
+   "why": "Took place on the Fox College Football set. This title change was shown on WWE's website and social media accounts on August 24, the date WWE recognizes for the reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #39",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-08-27",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "SmackDown",
+   "place": "Baton Rouge, LA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #40",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2226
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-03",
+   "champions": [
+    "Bo Dallas"
+   ],
+   "event": "SmackDown",
+   "place": "Norfolk, VA",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #41",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2229
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-03",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "SmackDown",
+   "place": "Norfolk, VA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #42",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2229
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-03",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "SmackDown",
+   "place": "Norfolk, VA",
+   "why": "Took place on the entrance ramp. R-Truth was disguised in the King of the Ring regalia on the stage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #43",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.2,
+   "event_id": 2229
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-09",
+   "champions": [
+    "Enes Kanter"
+   ],
+   "event": "Main Event",
+   "place": "New York, NY",
+   "why": "Took place in the ring. Recorded during a taping of Main Event prior to Raw going live on the air and shown on Raw. This was a cross promotion with NBC Sports' regional sports network that airs Boston Celtics games.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #44",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-09",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Main Event",
+   "place": "New York, NY",
+   "why": "Took place in the ring. Recorded during a taping of Main Event prior to Raw going live on the air and shown on Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #45",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-16",
+   "champions": [
+    "Mayor Glenn Jacobs"
+   ],
+   "event": "N/A",
+   "place": "Knoxville, TN",
+   "why": "Took place under the goal post of Neyland Stadium during a tour of Knoxville where the referee was disguised as a police officer. Jacobs is the mayor of Knox County, Tennessee, and is better known by his ring name Kane. Recorded during the afternoon and shown later that night on Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #46",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-16",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "Knoxville, TN",
+   "why": "Took place in the valet parking area prior to Raw going live on the air and shown later that night.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #47",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-20",
+   "champions": [
+    "EC3"
+   ],
+   "event": "WWE Live",
+   "place": "Quezon City, Philippines",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #48",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-20",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Quezon City, Philippines",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #49",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-21",
+   "champions": [
+    "EC3"
+   ],
+   "event": "WWE Live",
+   "place": "Shanghai, China",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #50",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-21",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Shanghai, China",
+   "why": "Chad Gable was the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #51",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-22",
+   "champions": [
+    "EC3"
+   ],
+   "event": "WWE Live",
+   "place": "Honolulu, HI",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #52",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-22",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Honolulu, HI",
+   "why": "Chad Gable was the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #53",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-09-23",
+   "champions": [
+    "Carmella"
+   ],
+   "event": "Raw",
+   "place": "San Francisco, CA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #54",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2235
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-04",
+   "champions": [
+    "Marshmello"
+   ],
+   "event": "SmackDown's 20th Anniversary",
+   "place": "Los Angeles, CA",
+   "why": "Tripped and fell on top of Carmella backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #55",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2238
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-04",
+   "champions": [
+    "Carmella"
+   ],
+   "event": "SmackDown's 20th Anniversary",
+   "place": "Los Angeles, CA",
+   "why": "Took place in the parking lot. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #56",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2238
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-06",
+   "champions": [
+    "Tamina"
+   ],
+   "event": "Hell in a Cell",
+   "place": "Sacramento, CA",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #57",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2239
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-06",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Hell in a Cell",
+   "place": "Sacramento, CA",
+   "why": "Took place by the international commentary tables.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #58",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2239
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-21",
+   "champions": [
+    "Sunil Singh"
+   ],
+   "event": "Raw",
+   "place": "Cleveland, OH",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #59",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2244
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-31",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Crown Jewel",
+   "place": "Riyadh, Saudi Arabia",
+   "why": "Took place on the entrance ramp after both Truth and Sunil Singh were eliminated from a battle royal where the 24/7 rule was suspended.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #60",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2247
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-10-31",
+   "champions": [
+    "Samir Singh"
+   ],
+   "event": "Crown Jewel",
+   "place": "Riyadh, Saudi Arabia",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #61",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2247
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-11-18",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "Boston, MA",
+   "why": "Took place backstage in the medical examination room where Truth was disguised as a doctor. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #62",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2253
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-11-19",
+   "champions": [
+    "Michael Giaccio"
+   ],
+   "event": "",
+   "place": "Stamford, CT",
+   "why": "Took place during a WWE Employee Town Hall event at WWE Headquarters. Giaccio was WWE's Senior Account Manager. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #63",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-11-19",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "",
+   "place": "Stamford, CT",
+   "why": "Took place during a Talent Relations meeting at WWE Headquarters. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #64",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-02",
+   "champions": [
+    "Kyle Busch"
+   ],
+   "event": "Raw",
+   "place": "Nashville, TN",
+   "why": "Took place at ringside with Michael Waltrip as the special guest referee. Cross promotion with NASCAR on NBC as part of the Monster Energy NASCAR Cup Series year-end award ceremony in Nashville, commemorating the 2019 NASCAR season that aired on NBCSN three days later.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #65",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2260
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-02",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "Nashville, TN",
+   "why": "Took place backstage. This title change was shown on WWE's website and social media accounts.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #66",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2260
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-22",
+   "champions": [
+    "Akira Tozawa"
+   ],
+   "event": "N/A",
+   "place": "New York, NY",
+   "why": "Took place at the Rockefeller Center in front of the Rockefeller Center Christmas Tree. This title change was shown on the December 23 episode of Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #67",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-22",
+   "champions": [
+    "Santa Claus"
+   ],
+   "event": "N/A",
+   "place": "New York, NY",
+   "why": "Took place at Columbus Circle. This title change was shown on the December 23 episode of Raw. Santa Claus was played by independent wrestler Bear Bronson.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #68",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-22",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "New York, NY",
+   "why": "Took place in front of the Lincoln Center. This title change was shown on the December 23 episode of Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #69",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-26",
+   "champions": [
+    "Samir Singh"
+   ],
+   "event": "WWE Live",
+   "place": "New York, NY",
+   "why": "This was a handicap match also involving Sunil Singh.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #70",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-26",
+   "champions": [
+    "Sunil Singh"
+   ],
+   "event": "WWE Live",
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #71",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-26",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #72",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-27",
+   "champions": [
+    "Samir Singh"
+   ],
+   "event": "WWE Live",
+   "place": "Pittsburgh, PA",
+   "why": "This was a handicap match also involving Sunil Singh.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #73",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-27",
+   "champions": [
+    "Mike Rome"
+   ],
+   "event": "WWE Live",
+   "place": "Pittsburgh, PA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #74",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-27",
+   "champions": [
+    "Sunil Singh"
+   ],
+   "event": "WWE Live",
+   "place": "Pittsburgh, PA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #75",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-27",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Pittsburgh, PA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #76",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 3
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-28",
+   "champions": [
+    "Samir Singh"
+   ],
+   "event": "WWE Live",
+   "place": "Baltimore, MD",
+   "why": "This was a handicap match also involving Sunil Singh.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #77",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-28",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Baltimore, MD",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #78",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-29",
+   "champions": [
+    "Sunil Singh"
+   ],
+   "event": "WWE Live",
+   "place": "Hershey, PA",
+   "why": "WWE.com mistakenly has Sunil and Samir's wins reversed on this date.",
+   "sources": {
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship",
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #80 (lists this night in another order)"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-29",
+   "champions": [
+    "Samir Singh"
+   ],
+   "event": "WWE Live",
+   "place": "Hershey, PA",
+   "why": "This was a handicap match also involving Sunil Singh. WWE.com mistakenly has Samir and Sunil's wins reversed on this date.",
+   "sources": {
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship",
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #79 (lists this night in another order)"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-29",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Hershey, PA",
+   "why": "",
+   "sources": {
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship",
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #81 (lists this night in another order)"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-31",
+   "champions": [
+    "Mojo Rawley"
+   ],
+   "event": "Fox's New Year's Eve with Steve Harvey",
+   "place": "New York, NY",
+   "why": "Took place in Times Square. Co-host Maria Menounos was the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #82",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2019-12-31",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Fox's New Year's Eve with Steve Harvey",
+   "place": "New York, NY",
+   "why": "Took place in Times Square. Co-host Maria Menounos was the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #83",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-01-17",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Lafayette, LA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #85",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-01-17",
+   "champions": [
+    "Mojo Rawley"
+   ],
+   "event": "WWE Live",
+   "place": "Lafayette, LA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #86",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-01-18",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Jackson, MS",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #87",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-01-18",
+   "champions": [
+    "Mojo Rawley"
+   ],
+   "event": "WWE Live",
+   "place": "Jackson, MS",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #88",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-01-19",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "WWE Live",
+   "place": "Topeka, KS",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #89",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-01-19",
+   "champions": [
+    "Mojo Rawley"
+   ],
+   "event": "WWE Live",
+   "place": "Topeka, KS",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #90",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-03-22",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "Orlando, FL",
+   "why": "Took place on a sidewalk while Riddick Moss was jogging. This title change was shown on WWE's website and social media accounts. WWE recognizes this reign as ending on April 4, when the following title change aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #94",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-04-04",
+   "champions": [
+    "Mojo Rawley"
+   ],
+   "event": "WrestleMania 36",
+   "place": "Orlando, FL",
+   "why": "Took place in the host's viewing area. WrestleMania was taped on March 25 and 26, but it is unknown which day this title change was taped. WWE recognizes this reign as beginning on April 4 and ending on April 5, when the title changes aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #95",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "happened": "2020-03-25",
+   "order": 100.0,
+   "event_id": 3044
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-04-05",
+   "champions": [
+    "Rob Gronkowski"
+   ],
+   "event": "WrestleMania 36",
+   "place": "Orlando, FL",
+   "why": "Took place in the host's viewing area. WrestleMania was taped on March 25 and 26, but it is unknown which day this title change was taped. WWE recognizes this reign as beginning on April 5, when the title change aired on tape delay. National Football League player Gronkowski was serving as the host ",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #96",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "happened": "2020-03-25",
+   "order": 100.0,
+   "event_id": 3045
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-09-27",
+   "champions": [
+    "Drew Gulak"
+   ],
+   "event": "Clash of Champions",
+   "place": "Orlando, FL",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #108",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2953
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-09-27",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Clash of Champions",
+   "place": "Orlando, FL",
+   "why": "Took place backstage in the interview area.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #109",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2953
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-11-22",
+   "champions": [
+    "The Gobbledy Gooker"
+   ],
+   "event": "Survivor Series",
+   "place": "Orlando, FL",
+   "why": "Took place by the panelist table. The character was portrayed by Drew Gulak, however, WWE did not acknowledge this and thus does not recognize this as Gulak's seventh reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #126",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2955
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-11-22",
+   "champions": [
+    "Akira Tozawa"
+   ],
+   "event": "Survivor Series",
+   "place": "Orlando, FL",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #127",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2955
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-11-22",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Survivor Series",
+   "place": "Orlando, FL",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #128",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.2,
+   "event_id": 2955
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2020-12-31",
+   "champions": [
+    "Angel Garza"
+   ],
+   "event": "TikTok's New Year's Eve Party",
+   "place": "N/A",
+   "why": "Took place during a party at an undisclosed location that was streamed live on TikTok.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #129",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-01-31",
+   "champions": [
+    "Alicia Fox"
+   ],
+   "event": "Royal Rumble",
+   "place": "St. Petersburg, FL",
+   "why": "Took place during the women's Royal Rumble match, in which Fox was participating.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #131",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2958
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-01-31",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Royal Rumble",
+   "place": "St. Petersburg, FL",
+   "why": "Took place ringside after Fox was eliminated from the women's Royal Rumble match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #132",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2958
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-01-31",
+   "champions": [
+    "Peter Rosenberg"
+   ],
+   "event": "Royal Rumble",
+   "place": "St. Petersburg, FL",
+   "why": "Took place by the panelist table. Radio personality Rosenberg had served as a panelist during the Royal Rumble Kickoff pre-show.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #133",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.2,
+   "event_id": 2958
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-02-01",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "The Michael Kay Show",
+   "place": "St. Petersburg, FL",
+   "why": "Pinned Peter Rosenberg in Rosenberg's hotel room during the live remote broadcast, which aired on the YES Network and WEPN Radio.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #134",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-02-06",
+   "champions": [
+    "Doug Flutie"
+   ],
+   "event": "2021 Celebrity Flag Football Game",
+   "place": "Clearwater, FL",
+   "why": "Took place at Clearwater Beach during halftime of the game, which aired on ESPNEWS.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #135",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-02-06",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "2021 Celebrity Flag Football Game",
+   "place": "Clearwater, FL",
+   "why": "Took place at Clearwater Beach during the game, which aired on ESPNEWS.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #136",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-03-15",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Raw",
+   "place": "St. Petersburg, FL",
+   "why": "Bad Bunny relinquished the title to R-Truth in exchange for \"Stone Cold\" Steve Austin memorabilia.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #139",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2333
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-03-21",
+   "champions": [
+    "Joseph Average"
+   ],
+   "event": "Fastlane",
+   "place": "St. Petersburg, FL",
+   "why": "Took place backstage during an Old Spice advertisement. The character was an Old Spice representative who was played by NXT and WWE Performance Center trainee Rik Bugez.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #140",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.0,
+   "event_id": 2960
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-03-21",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Fastlane",
+   "place": "St. Petersburg, FL",
+   "why": "Took place backstage during an Old Spice advertisement. WWE incorrectly lists that R-Truth's reign ended on May 17, 2021 as the official title history does not reflect the next three title changes.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #141",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 100.1,
+   "event_id": 2960
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-04-19",
+   "champions": [
+    "Akira Tozawa"
+   ],
+   "event": "N/A",
+   "place": "St. Petersburg, FL",
+   "why": "Took place in the backstage area of Tropicana Field. This title change was shown on WWE's YouTube channel. The actual date the title change took place is unknown. WWE's official title history does not reflect this title change.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #142",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-04-19",
+   "champions": [
+    "Joseph Average"
+   ],
+   "event": "N/A",
+   "place": "St. Petersburg, FL",
+   "why": "Took place in the backstage area of Tropicana Field. This title change was shown on WWE's YouTube channel. The actual date the title change took place is unknown. WWE's official title history does not reflect this title change.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #143",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-04-19",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "N/A",
+   "place": "St. Petersburg, FL",
+   "why": "Took place in the backstage area of Tropicana Field. This title change was shown on WWE's YouTube channel. The actual date the title change took place is unknown. WWE's official title history does not reflect this title change, although the match description for the following title change says that ",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #144",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2021-11-08",
+   "champions": [
+    "Drake Maverick"
+   ],
+   "event": "Raw",
+   "place": "Louisville, KY",
+   "why": "Took place ringside.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #154",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 7.1,
+   "event_id": 2367
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-05-02",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "Raw",
+   "place": "Greensboro, NC",
+   "why": "Took place backstage.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #164",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 4.9,
+   "event_id": 2392
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-06-23",
+   "champions": [
+    "Doudrop"
+   ],
+   "event": "Main Event",
+   "place": "Lincoln, NE",
+   "why": "Aired on tape delay on June 23, 2022.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #169",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html"
+   },
+   "happened": "2022-06-20",
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-06-23",
+   "champions": [
+    "Akira Tozawa"
+   ],
+   "event": "Main Event",
+   "place": "Lincoln, NE",
+   "why": "Aired on tape delay on June 23, 2022.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #170",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "happened": "2022-06-20",
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-06-23",
+   "champions": [
+    "R-Truth"
+   ],
+   "event": "Main Event",
+   "place": "Lincoln, NE",
+   "why": "Aired on tape delay on June 23, 2022.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #171",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "happened": "2022-06-20",
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-06-23",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "Main Event",
+   "place": "Lincoln, NE",
+   "why": "Took place ringside. Aired on tape delay on June 23, 2022.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #172",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "happened": "2022-06-20",
+   "order": 3
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-06-23",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "Main Event",
+   "place": "Lincoln, NE",
+   "why": "WWE recognizes this reign as beginning on June 23, when the title change aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #173",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "happened": "2022-06-20",
+   "order": 4
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-07-09",
+   "champions": [
+    "Carmella"
+   ],
+   "event": "WWE Live",
+   "place": "Bossier City, LA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #174",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-07-09",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Bossier City, LA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #175",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-07-10",
+   "champions": [
+    "Carmella"
+   ],
+   "event": "WWE Live",
+   "place": "Waco, TX",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #176",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-07-10",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Waco, TX",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #177",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-20",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "WWE Live",
+   "place": "Kingston, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #184",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-20",
+   "champions": [
+    "Tamina"
+   ],
+   "event": "WWE Live",
+   "place": "Kingston, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #185",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-20",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Kingston, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #186",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-21",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "WWE Live",
+   "place": "London, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #187",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-21",
+   "champions": [
+    "Shawn Bennett"
+   ],
+   "event": "WWE Live",
+   "place": "London, ON, Canada",
+   "why": "Bennett was a WWE referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #188",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-21",
+   "champions": [
+    "Tamina"
+   ],
+   "event": "WWE Live",
+   "place": "London, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #189",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-08-21",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "London, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #190",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 3
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-10",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "WWE Live",
+   "place": "Colorado Springs, CO",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #191",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-10",
+   "champions": [
+    "Eddie Orengo"
+   ],
+   "event": "WWE Live",
+   "place": "Colorado Springs, CO",
+   "why": "Orengo was a WWE referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #192",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-10",
+   "champions": [
+    "Tamina"
+   ],
+   "event": "WWE Live",
+   "place": "Colorado Springs, CO",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #193",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-10",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Colorado Springs, CO",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #194",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 3
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-24",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "WWE Live",
+   "place": "Vancouver, BC, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #195",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-24",
+   "champions": [
+    "Daphanie LaShaunn"
+   ],
+   "event": "WWE Live",
+   "place": "Vancouver, BC, Canada",
+   "why": "LaShaunn was a WWE referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #196",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-24",
+   "champions": [
+    "Nikki A.S.H."
+   ],
+   "event": "WWE Live",
+   "place": "Vancouver, BC, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #197",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-09-24",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Vancouver, BC, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #198",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 3
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-10-29",
+   "champions": [
+    "Nikki Cross"
+   ],
+   "event": "WWE Live",
+   "place": "Monterrey, NL, Mexico",
+   "why": "Cross was previously known as Nikki A.S.H.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #199",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-10-29",
+   "champions": [
+    "Tamina"
+   ],
+   "event": "WWE Live",
+   "place": "Monterrey, NL, Mexico",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #200",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-10-29",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Monterrey, NL, Mexico",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #201",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-247.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-10-30",
+   "champions": [
+    "Nikki Cross"
+   ],
+   "event": "WWE Live",
+   "place": "Mexico City, Mexico",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #202",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 0
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-10-30",
+   "champions": [
+    "Tamina"
+   ],
+   "event": "WWE Live",
+   "place": "Mexico City, Mexico",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #203",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 1
+  },
+  {
+   "title": "WWE 24/7 Title",
+   "date": "2022-10-30",
+   "champions": [
+    "Dana Brooke"
+   ],
+   "event": "WWE Live",
+   "place": "Mexico City, Mexico",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_24/7_Champions #204",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/24-7-championship"
+   },
+   "order": 2
+  }
+ ]
+}
