@@ -65,7 +65,11 @@
 // changes (data/offcard-title-changes.json). Match shards and titles changed.
 // v23: a stand-in now wins a belt for the man he replaced (Booker T's 2006 US
 // title, the 2018 NXT tag titles), and two garbled match records repaired.
-const CACHE = 'wrestling-dashboard-v23';
+// v24: belts filed by which belt they were on each date (one WWE Championship
+// instead of nine, the 1956 Women's title apart from the 2016 ones, the 1971 and
+// 2024 World Tag Team titles apart), eight wrong title changes fixed, and 18
+// misspelled names corrected. Core, match shards and titles changed.
+const CACHE = 'wrestling-dashboard-v24';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
