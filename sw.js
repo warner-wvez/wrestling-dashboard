@@ -47,7 +47,10 @@
 // v17: 14 shows that held the next episode's card moved to their real dates,
 // 13 recovered shows and 4 missing ones (incl. One Night Stand 2007/2008 and
 // Fatal 4-Way 2010) added, 3 dates fixed. Core and match shards changed.
-const CACHE = 'wrestling-dashboard-v17';
+// v18: 8 shows moved to the dates WWE's archive and Wikipedia give (the 2011-12
+// Tuesday SmackDowns, Raw's 2006 and 2007 Thursday airings), the 2005-11-29
+// SmackDown special and the four UK PPVs added.
+const CACHE = 'wrestling-dashboard-v18';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
