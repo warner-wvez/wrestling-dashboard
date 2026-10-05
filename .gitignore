@@ -35,3 +35,6 @@ lineup-check/sdh-cache/
 
 # Local planning docs (specs, plans, handoffs) never get committed
 docs/superpowers/
+
+# Wikipedia wikitext the missing-shows planner fetched
+lineup-check/wiki-cache/
