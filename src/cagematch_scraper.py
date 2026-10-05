@@ -83,6 +83,10 @@ _DURATION_RE = re.compile(r"\((\d+):(\d+)(?::(\d+))?\)")
 # line the wrong way and mark the loser as the winner.
 _WIN_VERB_RE = re.compile(r"\s+(defeat(?:s|ed)?|beats?)\s+", re.IGNORECASE)
 _VS_RE = re.compile(r"\s+vs\.?\s+", re.IGNORECASE)
+# The " - No Contest" / " - Double DQ" tail after a "vs." result. Only a SPACED
+# dash ends a side: the old "\s*-" cut at the first hyphen anywhere, so D-Von,
+# R-Truth, The X-Factor and Rated-RKO lost the rest of their side.
+_VS_TAIL_RE = re.compile(r"\s+-\s+.*$|\s+ended\s+in\s+an?\s+.*$", re.IGNORECASE)
 _ACCOMP_RE = re.compile(r"\(w\s*/\s*([^)]+)\)")
 # Champion tag: "(c)" with optional "[Title]" bracket suffix that names which
 # title the wrestler holds (common in mixed-title matches).
@@ -306,7 +310,7 @@ def parse_match_block(match_div, order):
             result_flavor = "countout"
     elif _VS_RE.search(body):
         parts = _VS_RE.split(body, maxsplit=1)
-        teams_text = [re.sub(r"\s*-\s*.*$", "", p).strip() for p in parts]
+        teams_text = [_VS_TAIL_RE.sub("", p).strip() for p in parts]
         if "no contest" in body_lower:
             result_method = "no contest"
             result_flavor = "no-contest"

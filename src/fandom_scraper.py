@@ -176,6 +176,10 @@ _OFFICIAL_PAREN_RE = re.compile(
 _CHAMPION_RE = re.compile(r"\s*\(\s*c\s*\)\s*", re.IGNORECASE)
 _WIN_VERB_RE = re.compile(r"\s+(?P<verb>defeated|beat|def\.?)\s+", re.IGNORECASE)
 _VS_RE = re.compile(r"\s+vs\.?\s+", re.IGNORECASE)
+# The " - No Contest" / " - Double DQ" tail after a "vs." result. Only a SPACED
+# dash ends a side: the old "\s*-" cut at the first hyphen anywhere, so D-Von,
+# R-Truth, The X-Factor and Rated-RKO lost the rest of their side.
+_VS_TAIL_RE = re.compile(r"\s+-\s+.*$|\s+ended\s+in\s+an?\s+.*$", re.IGNORECASE)
 _SEGMENT_TYPES = {"segment", "promo", "angle", "interview"}
 
 
@@ -566,7 +570,7 @@ def _parse_match_li(li, order):
             result_flavor = "countout"
     elif _VS_RE.search(body):
         split_parts = _VS_RE.split(body, maxsplit=1)
-        teams_text = [re.sub(r"\s*-\s*.*$", "", p).strip() for p in split_parts]
+        teams_text = [_VS_TAIL_RE.sub("", p).strip() for p in split_parts]
         if "no contest" in body_lower:
             result_method = "no contest"
             result_flavor = "no-contest"
