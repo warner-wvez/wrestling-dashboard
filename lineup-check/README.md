@@ -45,13 +45,15 @@ of 20 random rows finds 19 or more right.
 ## Title histories
 
 The Titles view walks every title match in order and builds each belt's
-reigns. Four tools check that walk against the published histories and feed it
-what no card carries:
+reigns. These tools check that walk against the published histories and feed
+it what no card carries:
 
     uv run --with requests --with beautifulsoup4 lineup-check/title_audit.py [title ...]
     uv run --with requests --with beautifulsoup4 lineup-check/title_vacancies.py
     uv run --with requests --with beautifulsoup4 lineup-check/house_show_titles.py
     uv run --with requests --with beautifulsoup4 lineup-check/offcard_titles.py
+    uv run --with requests --with beautifulsoup4 lineup-check/title_247.py
+    uv run --with requests --with beautifulsoup4 lineup-check/offshow_titles.py
 
 - `title_audit.py` lays each belt's reigns beside its Wikipedia list and prints
   every stretch where the champions differ (dates are shown, not compared).
@@ -70,13 +72,22 @@ what no card carries:
   WWE.com's own history (cached in `wwe-cache/`). A change on a taped show
   takes its air date, and one on a show we carry sits between that show's
   matches in the order the histories give.
+- `offshow_titles.py` writes `data/offshow-title-changes.json`: changes on
+  shows we don't carry (the Cruiserweight Classic, 205 Live, NXT) and on the
+  pre-shows of pay-per-views we do, two of three title histories agreeing.
+  A pre-show change counts only when the event's Wikipedia results table marks
+  the match "pre", and it sorts ahead of the card. An interim champion's reign
+  runs beside the champion's, who keeps the belt until the histories end his
+  reign. Only the NXT Cruiserweight title is listed so far (`BELTS`).
 
 As of 2026-10-05 every belt in the lineage map, plus the Intercontinental,
 United States, European, ECW, Women's tag and 24/7 titles, matches its list
-reign for reign. Two do not: the NXT Cruiserweight title (four reigns won on
-NXT TV or a missing Stomping Grounds 2019 match), and the Hardcore title
-(Wikipedia lacks two April 2002 house-show nights that Cawthon and Solie both
-list). The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
+reign for reign, the NXT Cruiserweight title included. One does not: the
+Hardcore title (Wikipedia lacks two April 2002 house-show nights that Cawthon
+and Solie both list). The audit compares champions, not dates, so a change
+won on a pre-show still reads as matched when our reign starts at the next
+card; the NXT Cruiserweight title's dates were checked by hand against all
+three histories. The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
 Sunil Singh, then Samir, the order Duncan and Will and WWE.com both give;
 Wikipedia lists Samir first and calls WWE.com's order a mistake.
 
