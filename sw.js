@@ -41,7 +41,10 @@
 // card template changed too, so index.html and every match shard are new.
 // v15: 23 "vs." result sides a hyphen had cut short are whole again (D-Von
 // Dudley, R-Truth, Rated-RKO, The X-Factor), and 9 more dark matches are greyed.
-const CACHE = 'wrestling-dashboard-v15';
+// v16: 31 match results corrected where all three sources (ours, Cawthon,
+// SmackDown Hotel) list the same people and the other two agree on the winner,
+// and 4 missing matches added in card order. Match shards changed.
+const CACHE = 'wrestling-dashboard-v16';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

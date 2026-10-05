@@ -17,13 +17,14 @@ Our 1404 Raw, SmackDown and PPV cards compared with Graham Cawthon's thehistoryo
 
 | Kind | Count | SmackDown Hotel agrees with ours | with Cawthon | split |
 |---|---|---|---|---|
-| missing_match | 300 | 182 | 59 | 59 |
+| missing_match | 275 | 182 | 44 | 49 |
 | unpaired | 230 | 113 | 66 | 51 |
 | missing_show | 156 | 0 | 0 | 156 |
 | result | 154 | 81 | 42 | 31 |
 | different_opponent | 77 | 32 | 8 | 37 |
 | cawthon_only_name | 65 | 40 | 5 | 20 |
 | extra_name | 38 | 23 | 11 | 4 |
+| possible_second_bout | 25 | 0 | 0 | 25 |
 | dark_but_televised | 21 | 13 | 8 | 0 |
 | junk_on_our_card | 1 | 0 | 0 | 1 |
 
