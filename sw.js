@@ -72,7 +72,11 @@
 // v25: vacancies from the title histories end reigns on the day a belt was
 // vacated (45 of them), titles awarded without a match added, and Becky
 // Lynch's 2024 Women's World title reign restored. Core and titles changed.
-const CACHE = 'wrestling-dashboard-v25';
+// v26: tag title histories matched to Wikipedia (Freebird defenses no longer
+// split a reign, house-show changes dated, WrestleMania XL's ladder match
+// split between its two winning teams), three more vacancies, and seven DQ
+// or count-out results fixed. Core, match shards and titles changed.
+const CACHE = 'wrestling-dashboard-v26';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
