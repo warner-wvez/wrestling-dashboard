@@ -1140,17 +1140,21 @@ TITLE_VACANCIES = Path(__file__).resolve().parent.parent / "data" / "title-vacan
 HOUSE_SHOW_CHANGES = Path(__file__).resolve().parent.parent / "data" / "house-show-title-changes.json"
 
 
+TITLE_247_CHANGES = Path(__file__).resolve().parent.parent / "data" / "247-title-changes.json"
+
+
 def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES,
-                         house=HOUSE_SHOW_CHANGES) -> list[dict]:
+                         house=HOUSE_SHOW_CHANGES, t247=TITLE_247_CHANGES) -> list[dict]:
     """Title changes no card carries: the Hardcore title's house-show swaps,
     each listed the same way by two of three published records
     (lineup-check/offcard_titles.py); other belts' house-show changes and
     reigns WWE recognized without a match, each confirmed by a second record
-    (lineup-check/house_show_titles.py); and vacancies from the title
-    histories that match who held the belt (lineup-check/title_vacancies.py).
-    Empty when the files are absent."""
+    (lineup-check/house_show_titles.py); the 24/7 title's changes outside a
+    match, two of three title histories agreeing (lineup-check/title_247.py);
+    and vacancies from the title histories that match who held the belt
+    (lineup-check/title_vacancies.py). Empty when the files are absent."""
     out = []
-    for f, key in ((path, "changes"), (house, "changes"), (vacancies, "vacancies")):
+    for f, key in ((path, "changes"), (house, "changes"), (t247, "changes"), (vacancies, "vacancies")):
         if f.exists():
             out += json.loads(f.read_text(encoding="utf-8")).get(key) or []
     return out
@@ -1183,6 +1187,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
         the match that filled it.
       * A change no card carries is known only when two published records list
         it (data/offcard-title-changes.json for the Hardcore title,
+        data/247-title-changes.json for the 24/7 title,
         data/house-show-title-changes.json for the rest).
       * Same-day title changes resolve to end-of-day state in champions_by_date.
       * Champion-vs-champion unification: when a composite match has both teams
@@ -1265,6 +1270,10 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
     # longer reads as one unbroken reign.
     # A vacancy (a belt vacated, stripped or relinquished) joins the same way:
     # the reign ends that day and the belt stays empty until a match fills it.
+    # A change made on a show we do carry, but not in one of its matches (the
+    # 24/7 title changed hands backstage and at ringside), names that show's
+    # event and an order between its matches, so it sorts inside the night
+    # rather than ahead of it.
     for change in (load_offcard_changes() if offcard is None else offcard):
         lk = change.get('lineage') or next(
             (lin['key'] for lin in lineages_for(change['title'], change['date'])),
@@ -1273,7 +1282,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             continue
         timelines[lk].append({
             'air_date': change['date'],
-            'event_id': None,
+            'event_id': change.get('event_id'),
             'match_order': change.get('order', 0),
             'teams': [],
             'raw_description': '',

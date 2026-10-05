@@ -515,6 +515,35 @@ def test_house_show_changes_join_the_chain_by_date():
                          ("2001-02-08", None, ["Hardcore Holly"])], chain
 
 
+def test_an_off_card_change_on_a_carried_show_sorts_between_its_matches():
+    """Raw 2021-11-08: the 24/7 title went Drake Maverick, Akira Tozawa, Corey
+    Graves, Byron Saxton, Drake Maverick, Reggie. The card carries five of the
+    six as matches; Drake pinning Saxton at ringside is a change the card does
+    not list, so the change list places it inside that night's show, after
+    Saxton's win and before Reggie's."""
+    t = "WWE 24/7 Title"
+    events = {}
+    events.update(_ev(1, "2021-07-19", [
+        _m(4, ["Reggie"], ["Akira Tozawa"], "Reggie defeats Akira Tozawa (c) to win the title",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2021-11-08", [
+        _m(4, ["Drake Maverick"], ["Reggie"], "Drake Maverick defeats Reggie (c) to win the title",
+           title=t, champ_side="loser"),
+        _m(5, ["Akira Tozawa"], ["Drake Maverick"], "Akira Tozawa defeats Drake Maverick (c) to win the title",
+           title=t, champ_side="loser"),
+        _m(6, ["Corey Graves"], ["Akira Tozawa"], "Corey Graves defeats Akira Tozawa (c) to win the title",
+           title=t, champ_side="loser"),
+        _m(7, ["Byron Saxton"], ["Corey Graves"], "Byron Saxton defeats Corey Graves (c) to win the title",
+           title=t, champ_side="loser"),
+        _m(8, ["Reggie"], ["Drake Maverick"], "Reggie defeats Drake Maverick (c) to win the title",
+           title=t, champ_side="loser")]))
+    ringside = [{"title": t, "date": "2021-11-08", "event_id": 2, "order": 7.5,
+                 "champions": ["Drake Maverick"]}]
+    chain = [r["champion_names"] for r in build_title_reigns(events, offcard=ringside)[t]]
+    assert chain == [["Akira Tozawa"], ["Reggie"], ["Drake Maverick"], ["Akira Tozawa"], ["Corey Graves"],
+                     ["Byron Saxton"], ["Drake Maverick"], ["Reggie"]], chain
+
+
 def test_a_stand_in_wins_the_belt_for_the_man_he_replaced():
     """SmackDown 2006-01-13: Randy Orton, "[Replacement for Booker T]", won the
     deciding match of the best-of-seven series for the vacant US title. The
