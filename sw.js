@@ -31,7 +31,11 @@
 // a retired belt's last champion no longer holds its revived namesake for years.
 // Shards are served cache-first, so without this bump a returning visitor keeps
 // the old champions board indefinitely.
-const CACHE = 'wrestling-dashboard-v12';
+// v13: 2001-2019 match shards changed. 433 sides got back the wrestler the old
+// parser dropped when a partner was named before a stable ("Billy Gunn & The
+// APA"), and two sides that had become their special referee got their real
+// wrestlers back. Four zero-day phantom tag reigns left title_reigns with them.
+const CACHE = 'wrestling-dashboard-v13';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

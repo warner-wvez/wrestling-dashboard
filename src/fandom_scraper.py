@@ -169,6 +169,10 @@ _EPISODE_NUM_RE = re.compile(r"(?:Smackdown|SmackDown)\s*#\s*(\d+)", re.IGNORECA
 _DURATION_RE = re.compile(r"\((\d+):(\d+)(?::(\d+))?\)")
 _ACCOMP_RE = re.compile(r"\(w\s*/\s*([^)]+)\)")
 _STABLE_RE = re.compile(r"^(.+?)\s*\(\s*(.+?)\s*\)\s*$")
+# An official noted beside a side, "(Special Guest Referee: Triple H )". Read as a
+# stable it made the referee the whole team, so it is removed before splitting.
+_OFFICIAL_PAREN_RE = re.compile(
+    r"\(\s*[^()]*\b(?:referee|enforcer|timekeeper)\b[^()]*\)(?!\s*:)", re.IGNORECASE)
 _CHAMPION_RE = re.compile(r"\s*\(\s*c\s*\)\s*", re.IGNORECASE)
 _WIN_VERB_RE = re.compile(r"\s+(?P<verb>defeated|beat|def\.?)\s+", re.IGNORECASE)
 _VS_RE = re.compile(r"\s+vs\.?\s+", re.IGNORECASE)
@@ -216,6 +220,9 @@ _LEADING_PAREN_CONTEXT_RE = re.compile(
 )
 # Leading role-prefix WITHOUT parens: "Special Guest Referee: Triple H",
 # "Guest Referee: X", "Special Enforcer: Y", "Commentator: Joe Smith", etc.
+# Leading match type: "Six Man Tag Team Match: Kane" -> "Kane". The source opens
+# some results with it, and it stuck to whoever was named first.
+_LEADING_MATCH_TYPE_RE = re.compile(r"^[^:()]*\bMatch\s*:\s*", re.IGNORECASE)
 _LEADING_ROLE_PREFIX_RE = re.compile(
     r"^\s*(special\s+)?(guest\s+)?(referee|enforcer|host|commentator):\s*",
     re.IGNORECASE,
@@ -297,6 +304,11 @@ _STRAY_PAREN_RE = re.compile(r"\s*[()]\s*")
 # split cleanly into three names instead of falling through the first-match
 # fallback (which would stop at '&' and leave the comma chunk whole).
 _PARTICIPANT_SPLIT_RE = re.compile(r"\s*(?:&|,|\s+and\s+)\s*", re.IGNORECASE)
+# Same separators for a side with stables in it, but a lowercase "and" only: the
+# source writes the separator lowercase and team names title case, so "Fire And
+# Desire ( Mandy Rose & Sonya Deville )" stays one team instead of a wrestler
+# called Fire.
+_DEPTH0_SPLIT_RE = re.compile(r"\s*(?:&|,|\s+and\s+)\s*")
 
 
 def _canonicalize_name(name):
@@ -327,6 +339,7 @@ def _canonicalize_name(name):
         return ""
     # Pre-name strips (parens-context first because it can expose a role-prefix).
     n = _LEADING_PAREN_CONTEXT_RE.sub("", n)
+    n = _LEADING_MATCH_TYPE_RE.sub("", n)
     n = _LEADING_ROLE_PREFIX_RE.sub("", n)
     n = _LEADING_TITLE_PREFIX_RE.sub("", n)
     # Drop entirely if the line starts with a narrative verb (Cagematch lost
@@ -402,14 +415,70 @@ def _split_participants(team_text):
     return [n for n in names if n]
 
 
+def _split_depth0(text):
+    """Split a side on '&', ',' or ' and ', but only outside parentheses, so a
+    stable's member list stays attached to its label."""
+    out, start, depth, i = [], 0, 0, 0
+    while i < len(text):
+        c = text[i]
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+        elif depth == 0:
+            m = _DEPTH0_SPLIT_RE.match(text, i)
+            if m:
+                out.append(text[start:i])
+                start = i = m.end()
+                continue
+        i += 1
+    out.append(text[start:])
+    return [p.strip() for p in out if p.strip()]
+
+
+def _side_members(text):
+    """Every person on a side, descending into stables at any depth:
+    'Billy Gunn & The APA ( Bradshaw & Faarooq )' -> Billy Gunn, Bradshaw,
+    Faarooq. A 'Label ( members )' token contributes its members; any other
+    token is a wrestler."""
+    names = []
+    for tok in _split_depth0(text):
+        m = _STABLE_RE.match(tok)
+        if m and _paren_depth_ok(m.group(2)):
+            names.extend(_side_members(m.group(2)))
+        else:
+            names.append(tok)
+    return names
+
+
+def _paren_depth_ok(text):
+    depth = 0
+    for c in text:
+        depth += (c == "(") - (c == ")")
+        if depth < 0:
+            return False
+    return depth == 0
+
+
 def _split_team(team_text):
     """Return (team_name, participants). Unpacks stables written as 'Name (A & B)'.
 
     team_name is the composite label (stable name, or the full 'A & B' string
     for no-parens tag teams). participants is always a list of individual
-    wrestler names.
+    wrestler names, including anyone named before the stable: the old
+    whole-string match kept only the parenthesised pair and dropped Billy Gunn
+    from 'Billy Gunn & The APA ( Bradshaw & Faarooq )'. A referee or other
+    official noted in parentheses is not on the team at all.
     """
-    team_text = team_text.strip()
+    team_text = _OFFICIAL_PAREN_RE.sub(" ", team_text)
+    team_text = re.sub(r"\s+", " ", team_text).strip()
+    if "(" in team_text and _paren_depth_ok(team_text):
+        tokens = _split_depth0(team_text)
+        if any(_STABLE_RE.match(t) for t in tokens):
+            m = _STABLE_RE.match(team_text)
+            team_name = _canonicalize_name(m.group(1)) if m else _canonicalize_name(team_text)
+            participants = [n for n in map(_canonicalize_name, _side_members(team_text)) if n]
+            return team_name, participants
     m = _STABLE_RE.match(team_text)
     if m:
         team_name = _canonicalize_name(m.group(1))
