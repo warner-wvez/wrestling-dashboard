@@ -55,7 +55,12 @@
 // title history changed.
 // v20: 8 DQ and count-out results corrected to the no contests WWE's own
 // recaps report, and 15 more dark matches greyed. Match shards changed.
-const CACHE = 'wrestling-dashboard-v20';
+// v21: title history fixed where a belt was won while vacant (Christian's IC
+// title at Judgment Day 2003 and about 30 more), the 2007 ECW chain (Vince
+// McMahon, not Shane) and the Jazz 2003 fragment; Raw #896 and the Best of
+// SmackDown 2006 episode added; 9 more dark matches greyed. Core and match
+// shards and titles changed.
+const CACHE = 'wrestling-dashboard-v21';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
