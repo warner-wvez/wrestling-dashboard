@@ -33,7 +33,11 @@ NAME_ALIASES = {
     "mikemizanin": "miz",
     "evenbourne": "evanbourne",
     "acolytes": "apa",
+    "bullbuchanon": "bullbuchanan",
 }
+# One wrestler under two ring names the alias map does not know: Bull Buchanan
+# wrestled as B-2 (B\u00b2) in 2002-03.
+ERA_NAMES = {"B\u00b2": "Bull Buchanan", "B-2": "Bull Buchanan"}
 # The dashboard's own alias map (ring-name changes, respellings), set by the
 # caller from src.roster_aliases: name -> canonical name.
 CANON = {}
@@ -58,7 +62,8 @@ def match_strength(a, b):
     ka, kb = nkey(a), nkey(b)
     if not ka or not kb:
         return 0
-    if ka == kb or (CANON.get(a, a) == CANON.get(b, b)):
+    if ka == kb or (CANON.get(a, a) == CANON.get(b, b)) or \
+            nkey(ERA_NAMES.get(a, a)) == nkey(ERA_NAMES.get(b, b)):
         return 3
     # Initials: "MVP" is Montel Vontavious Porter.
     for short, long_ in ((a, b), (b, a)):
@@ -167,7 +172,21 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
                         "names": w[0] + w[1] + l[0] + l[1]})
         return out
 
-    tv, heat = prep(cawthon_lines), prep(heat_lines)
+    # His own "Dark match after the taping" lines are not televised.
+    dark = prep([c for c in cawthon_lines if c["line"].lower().startswith("dark match")])
+    tv = prep([c for c in cawthon_lines if not c["line"].lower().startswith("dark match")])
+    heat = prep(heat_lines)
+
+    def both_ways(names, o, floor_min=0.5, floor_max=0.34):
+        """Shares enough people both ways round: a 4-way is never "the same
+        match" as a singles bout that happens to share one wrestler."""
+        a, b = set(names), set(_people(o))
+        common = len(a & b)
+        if not common:
+            return 0.0
+        s_min, s_max = common / min(len(a), len(b)), common / max(len(a), len(b))
+        return s_min if s_min >= floor_min and s_max >= floor_max else 0.0
+
     pairs = []
     for i, o in enumerate(ours):
         for j, c in enumerate(tv):
@@ -175,18 +194,17 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
                 s = 1.0 if (MULTI_TYPES.search(o.get("match_type") or "") and
                             set(c["names"]) & set(_people(o))) else 0.0
             else:
-                s = _score(c["names"], _people(o))
-            if s >= 0.5:
+                s = both_ways(c["names"], o)
+            if s:
                 pairs.append((s, i, j))
     pairs.sort(key=lambda p: (-p[0], p[1], p[2]))
     o_of, c_of = {}, {}
     for s, i, j in pairs:
         if i not in o_of and j not in c_of:
             o_of[i], c_of[j] = j, i
-    # Second pass: whatever is left on both sides pairs on any shared person,
-    # so a match with one unplaceable name is compared rather than reported
-    # twice (once as ours unpaired, once as his missing).
-    rest = sorted(((_score(tv[j]["names"], _people(ours[i])), i, j)
+    # Second pass for leftovers, still both ways round but looser, so a match
+    # with one unplaceable name is compared rather than reported twice.
+    rest = sorted(((both_ways(tv[j]["names"], ours[i], 0.0, 0.34), i, j)
                    for i in range(len(ours)) if i not in o_of
                    for j in range(len(tv)) if j not in c_of and tv[j]["c"]["kind"] != "multi"),
                   key=lambda p: (-p[0], p[1], p[2]))
@@ -207,94 +225,151 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
                      "ours": (o or {}).get("raw_description", ""),
                      "cawthon": (c or {}).get("c", {}).get("line", ""), **kw})
 
-    leftovers = [j for j in range(len(tv)) if j not in c_of]
     for i, o in enumerate(ours):
         if i in o_of:
             continue
-        # Both ways round: a 20-man battle royal is not "the same match" as a
-        # singles bout that happens to share one of its entrants.
-        hj = next((j for j, h in enumerate(heat)
-                   if _score(h["names"], _people(o)) >= 0.5
-                   and len(set(h["names"]) & set(_people(o))) / max(len(set(h["names"])), len(set(_people(o))), 1) >= 0.5),
-                  None)
+        hj = next((j for j, h in enumerate(heat) if both_ways(h["names"], o, 0.5, 0.5)), None)
+        dj = next((j for j, d in enumerate(dark) if both_ways(d["names"], o)), None)
+        labelled_dark = "dark" in (o.get("match_type") or "").lower()
         if hj is not None:
             row("aired_heat", o, heat[hj])
-        elif "dark" in (o.get("match_type") or "").lower() and not unreadable:
+        elif labelled_dark and not unreadable:
             # Our own source labels it a dark match and his televised list
             # does not have it: both say it never aired.
             row("not_aired", o)
+        elif dj is not None:
+            # He writes it out as a dark match; our source does not say so.
+            row("cawthon_says_dark", o, dark[dj])
         else:
             # His list lacks it but our source does not call it dark (or his
             # page had an unreadable line): a person decides.
             row("unpaired", o)
-    for j in leftovers:
+    multi_people = [set(_people(o)) for o in ours if is_multi(o)]
+    for j in range(len(tv)):
+        if j in c_of:
+            continue
+        names = set(tv[j]["names"])
+        if names and any(names <= mp for mp in multi_people):
+            continue      # one segment of a gauntlet or elimination match we hold whole
         row("missing_match", c=tv[j])
 
     for i, j in o_of.items():
         o, c = ours[i], tv[j]
         if "dark" in (o.get("match_type") or "").lower():
             row("dark_but_televised", o, c)
-        if c["c"]["kind"] == "multi" or c["c"].get("all_sides"):
-            continue
         teams = [t for t in o["teams"] if t.get("participants")]
-        sides = [c["w"], c["l"]]
-        # Map his two sides onto our teams by overlap; only a clean two-team
-        # match can take an automatic addition.
-        if len(teams) == 2:
-            ov = lambda side, t: len(set(side[0] + side[1]) & set(t.get("participants") or []))
-            straight = ov(sides[0], teams[0]) + ov(sides[1], teams[1])
-            crossed = ov(sides[0], teams[1]) + ov(sides[1], teams[0])
-            assign = [(sides[0], teams[0]), (sides[1], teams[1])] if straight >= crossed else \
-                     [(sides[0], teams[1]), (sides[1], teams[0])]
-            for side, team in assign:
-                have = set(team.get("participants") or [])
-                his = set(side[0] + side[1])
-                if have and not (have & his) and (side[0] or side[2]):
-                    # Nobody in common on this side: a different opponent
-                    # (a substitution), never an addition.
-                    row("different_opponent", o, c, team_number=team.get("team_number"),
-                        name=", ".join(side[0] + side[2]))
-                    continue
-                if have <= his:
-                    # Our side is a strict subset of his. Add a name only when
-                    # our own source text names him too, so both sources agree
-                    # he was there and only our parse lost him; otherwise he is
-                    # Cawthon's word alone and goes to review.
-                    # Escort credits "(w/ X)" do not name X as a wrestler.
-                    raw = re.sub(r"\(\s*w\s*/[^()]*\)", " ", (o.get("raw_description") or "")).lower()
-                    in_match = set(_people(o))
-                    # Several teams fused into one side ("A & B and C & D and E &
-                    # F", the source's multi-team form): which team a name
-                    # belongs to is not knowable, so a person decides.
-                    multi_team = re.search(r"\s+and\s+", re.sub(r"\([^()]*\)", " ", raw))
-                    for name in side[0] + side[2]:
-                        if name in have:
-                            continue
-                        if name in in_match:
-                            # Already wrestling on another side of this match:
-                            # the two sources describe different matches.
-                            row("different_opponent", o, c, team_number=team.get("team_number"), name=name)
-                            continue
-                        ours_says = all(t in raw for t in _tokens(name))
-                        row("add_wrestler" if ours_says and not multi_team else "cawthon_only_name",
-                            o, c, team_number=team.get("team_number"), name=name)
-                elif not side[2]:   # fully resolved side: our extras are suspect
-                    for p in have - his:
-                        row("extra_name", o, c, team_number=team.get("team_number"), name=p)
-                if not have <= his:
-                    for u in side[2]:
-                        row("unresolved_name", o, c, team_number=team.get("team_number"), name=u)
-        # Result: his winners against our winning team.
-        win_team = next((t for t in teams if t.get("was_winner")), None)
-        if c["c"]["result"] != "win":
-            if win_team is not None:
-                row("result", o, c, detail=f"he has {c['c']['result']}, we have a winner")
-        elif win_team is None:
-            row("result", o, c, detail="he has a winner, we have none")
-        else:
-            w = set(c["w"][0] + c["w"][1])
-            lose = [t for t in teams if t is not win_team]
-            if lose and len(w & set(win_team["participants"])) < max(
-                    len(w & set(t["participants"])) for t in lose):
-                row("result", o, c, detail="different winner")
+        if c["c"].get("all_sides"):
+            continue
+        if c["c"]["kind"] != "multi" and not is_multi(o) and len(teams) == 2:
+            _lineup_rows(o, c, teams, row)
+        _result_rows(o, c, teams, row)
     return rows
+
+
+MULTI_MATCH = re.compile(r"rumble|battle royal|gauntlet|elimination|chamber|turmoil|"
+                         r"tournament|scramble|beat the clock", re.I)
+
+
+def is_multi(o):
+    """Battle royals, gauntlets, elimination tags and anything with more than
+    two sides or eight people: only who won is compared, never the lineup."""
+    teams = [t for t in o.get("teams") or [] if t.get("participants")]
+    return bool(MULTI_MATCH.search(o.get("match_type") or "")) or len(teams) > 2 or \
+        len(_people(o)) >= 8
+
+
+_PARTICLES = {"de", "del", "la", "le", "van", "von", "da", "the", "of", "and", "el", "y"}
+
+
+def looks_like_prose(name):
+    """A participant that is really a sentence ("Molly knocked Noble into Nidia")."""
+    words = name.split()
+    return len(words) >= 3 and any(w.islower() and w not in _PARTICLES for w in words)
+
+
+def loosely_same(a, b):
+    """Two spellings of one wrestler in the same slot of the same match:
+    Ezikial/Ezekiel Jackson, Conquistadors #45/Conquistador Uno, Shawn/Sean
+    O'Haire. Only used when exactly these two names are the difference."""
+    if match_strength(a, b):
+        return True
+    # A one-word billing of a full name: "Eve" is Eve Torres, "Christian" on
+    # one side is Christian Cage on the other.
+    ta, tb = _tokens(a), _tokens(b)
+    if (len(ta) == 1 and ta[0] in (tb[:1] + tb[-1:])) or (len(tb) == 1 and tb[0] in (ta[:1] + ta[-1:])):
+        return True
+    ka, kb = nkey(a), nkey(b)
+    if ka and kb and SequenceMatcher(None, ka, kb).ratio() >= 0.7:
+        return True
+    stems = lambda n: {t[:6] for t in _tokens(re.sub(r"[#\d]+", " ", n)) if len(t) >= 4}
+    return bool(stems(a) & stems(b))
+
+
+def _lineup_rows(o, c, teams, row):
+    sides = [c["w"], c["l"]]
+    ov = lambda side, t: len(set(side[0] + side[1]) & set(t.get("participants") or []))
+    straight = ov(sides[0], teams[0]) + ov(sides[1], teams[1])
+    crossed = ov(sides[0], teams[1]) + ov(sides[1], teams[0])
+    assign = [(sides[0], teams[0]), (sides[1], teams[1])] if straight >= crossed else \
+             [(sides[0], teams[1]), (sides[1], teams[0])]
+    from src.export_to_html import clean_participant
+    # Junk on our side ("The X" cut from "The X-Factor") is not a person, so it
+    # neither blocks an addition nor counts as someone already in the match.
+    real = lambda names: {p for p in names if clean_participant(p)}
+    in_match = real(_people(o))
+    # Escort credits "(w/ X)" do not name X as a wrestler.
+    raw = re.sub(r"\(\s*w\s*/[^()]*\)", " ", (o.get("raw_description") or "")).lower()
+    # Several teams fused into one side ("A & B and C & D"): which team a name
+    # belongs to is not knowable, so nothing is added automatically.
+    multi_team = re.search(r"\s+and\s+", re.sub(r"\([^()]*\)", " ", raw))
+    for side, team in assign:
+        have = real(team.get("participants") or [])
+        his = set(side[0] + side[1])
+        ours_only = sorted(have - his)
+        his_only = [n for n in side[0] if n not in have] + list(side[2])
+        # A one-for-one swap that is just a spelling is not a difference.
+        for a in list(ours_only):
+            b = next((x for x in his_only if loosely_same(a, x)), None)
+            if b is not None:
+                ours_only.remove(a)
+                his_only.remove(b)
+        for name in his_only:
+            if name in in_match or any(loosely_same(name, p) for p in in_match):
+                continue          # already in this match, under this or another spelling
+            # Our text must name him as a wrestler: not as an escort, and not
+            # as a gimmick label "Calgary Kid ( The Miz )" whose person is in
+            # the brackets and already on the card.
+            label_use = re.search(re.escape(re.sub(r"^the\s+", "", name.lower())) + r"\s*\(", raw)
+            ours_says = all(t in raw for t in _tokens(name)) and not label_use
+            if ours_says and not multi_team:
+                row("add_wrestler", o, c, team_number=team.get("team_number"), name=name)
+            elif have & his:
+                row("cawthon_only_name", o, c, team_number=team.get("team_number"), name=name)
+        if not (have & his) and ours_only and his_only:
+            row("different_opponent", o, c, team_number=team.get("team_number"),
+                name=", ".join(his_only), detail="ours: " + ", ".join(ours_only))
+            continue
+        if not side[2]:
+            for p in ours_only:
+                row("junk_on_our_card" if looks_like_prose(p) else "extra_name",
+                    o, c, team_number=team.get("team_number"), name=p)
+
+
+def _result_rows(o, c, teams, row):
+    """Who won is the one thing wording cannot change: a different winner, or
+    a win on one side against no winner on the other."""
+    win_team = next((t for t in teams if t.get("was_winner")), None)
+    his_w = set(c["w"][0] + c["w"][1])
+    if c["c"]["result"] != "win":
+        if win_team is not None:
+            row("result", o, c, detail=f"he has {c['c']['result']}, we have a winner")
+        return
+    if not his_w:
+        return                    # his winner did not resolve: nothing to compare
+    if win_team is None:
+        row("result", o, c, detail="he has a winner, we have none")
+        return
+    if his_w & set(win_team["participants"]):
+        return
+    if any(his_w & set(t["participants"]) for t in teams if t is not win_team):
+        row("result", o, c, detail="different winner")

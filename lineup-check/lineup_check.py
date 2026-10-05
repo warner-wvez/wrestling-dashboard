@@ -66,6 +66,7 @@ def load_sdh():
 
 def run(bundle):
     import src.fandom_scraper as fs
+    from src.export_to_html import CLIP_SHOWS
     from src.roster_aliases import (CURATED, build_canon_map, bundle_derived_aliases,
                                     load_roster_snapshot)
     events = bundle["events"]
@@ -82,6 +83,9 @@ def run(bundle):
         for typ, slug in (("Raw", f"{_org(y)}-raw-{y}"), ("SmackDown", f"{_org(y)}-smackdown-{y}")):
             for ep in parse_show_page((CACHE / f"{slug}.html").read_text(encoding="utf-8")):
                 ev = by_key.get((ep["air_date"], typ))
+                if ev and ev["id"] in CLIP_SHOWS:
+                    seen.add(ev["id"])
+                    continue      # a replay special: its matches are clips, not a card
                 if not ev:
                     rows.append({"class": "missing_show", "air_date": ep["air_date"],
                                  "show_type": typ, "detail": "Cawthon has it, we do not"})
@@ -101,6 +105,8 @@ def run(bundle):
             rows += compare_show(ev, _parsed(v["ppv"]), groups, _parsed(v["heat"]),
                                  unreadable=_unreadable(v["ppv"]))
     for e in events.values():
+        if e["id"] in CLIP_SHOWS:
+            continue
         if str(YEARS.start) <= e["air_date"][:4] <= str(YEARS.stop - 1) and \
                 e["show_type"] in ("Raw", "SmackDown", "PPV") and e["id"] not in seen:
             rows.append({"class": "missing_show", "air_date": e["air_date"], "show_type": e["show_type"],

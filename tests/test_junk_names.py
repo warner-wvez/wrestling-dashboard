@@ -58,3 +58,10 @@ def test_cleanup_runs_over_every_team_in_place():
     assert teams[0]["participants"] == ["Jeff Hardy"]
     assert teams[1]["participants"] == ["The Goodfather", "Val Venis"]
     assert clean_junk_participants(events) == 0
+
+
+def test_single_letter_left_by_a_hyphen_split_is_dropped():
+    assert clean_participant("X") is None
+    assert clean_participant("D") is None
+    assert clean_participant("B²") == "B²"
+    assert clean_participant("The X") is None

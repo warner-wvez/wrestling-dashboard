@@ -123,3 +123,29 @@ def test_fused_multi_team_side_is_never_added_to():
     rows = compare_show(ev, [_line(["Cody Rhodes", "Drew McIntyre"],
                                    ["Evan Bourne", "Mark Henry", "Santino Marella", "Vladimir Kozlov"])], {})
     assert not [r for r in rows if r["class"] == "add_wrestler"]
+
+
+def test_one_word_billing_is_never_added_as_a_second_person():
+    # Cawthon writes "Eve" where our card has "Eve Torres" (about 60 matches).
+    ev = _ev([_match(1, "Eve Torres defeats Layla (3:10)",
+                     [_team(1, ["Eve Torres"], True), _team(2, ["Layla"])])])
+    assert not [r for r in compare_show(ev, [_line(["Eve"], ["Layla"])], {})
+                if r["class"] in ("add_wrestler", "cawthon_only_name", "extra_name")]
+
+
+def test_gimmick_label_in_our_text_is_not_a_missing_wrestler():
+    ev = _ev([_match(1, "Calgary Kid ( The Miz ) defeats Eugene (1:21)",
+                     [_team(1, ["The Miz"], True), _team(2, ["Eugene"])])])
+    rows = compare_show(ev, [_line(["The Calgary Kid"], ["Eugene"])], {})
+    assert not [r for r in rows if r["class"] == "add_wrestler"]
+
+
+def test_junk_on_our_side_is_replaced_by_the_real_wrestlers():
+    # SmackDown 2001-03-15: our X-Factor side was the junk "The X".
+    ev = _ev([_match(1, "Billy Gunn & The Hardy Boyz ( Jeff Hardy & Matt Hardy ) vs. The X-Factor "
+                        "( Albert , Justin Credible & X-Pac ) - Double DQ (5:05)",
+                     [_team(1, ["Billy Gunn", "Jeff Hardy", "Matt Hardy"]), _team(2, ["The X"])])])
+    rows = compare_show(ev, [_line(["Billy Gunn", "Matt Hardy", "Jeff Hardy"],
+                                   ["X-Pac", "Justin Credible", "Albert"], result="double disqualification")], {})
+    assert sorted(r["name"] for r in rows if r["class"] == "add_wrestler") == [
+        "Albert", "Justin Credible", "X-Pac"]

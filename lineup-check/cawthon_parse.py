@@ -183,7 +183,15 @@ def split_side(side):
     while prev != side:
         prev, side = side, _TITLE_PREFIX_RE.sub("", side)
     side = re.sub(r"\s+", " ", side).strip(" ,.")
-    return [p.strip(" ,.") for p in _SPLIT_RE.split(side) if p.strip(" ,.")]
+    out = []
+    for p in (p.strip(" ,.") for p in _SPLIT_RE.split(side)):
+        if not p:
+            continue
+        if out and re.fullmatch(r"(?:Sr|Jr|II|III)", p):
+            out[-1] = f"{out[-1]} {p}."    # "Chavo Guerrero, Sr." is one man
+        else:
+            out.append(p)
+    return out
 
 
 def parse_match_line(line):

@@ -102,3 +102,7 @@ def test_non_match_lines():
     assert parse_match_line("Featured a 3-hour special titled Best of the WWF 2001") is None
     assert looks_like_match("Kane pinned the Rock with the chokeslam")
     assert not looks_like_match("Copyright 2026 The History of WWE.")
+
+
+def test_generational_suffix_stays_on_the_name():
+    assert split_side("Chavo Guerrero, Sr. & Eddie Guerrero") == ["Chavo Guerrero Sr.", "Eddie Guerrero"]

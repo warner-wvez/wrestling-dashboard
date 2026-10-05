@@ -18,7 +18,8 @@ way src/rebuild_indexes.py does (which also runs the junk-name cleanup):
 Safety gates, in order:
   1. Every fix is located by event id AND match id, and the match's stored
      raw_description must equal the text the check saw, or the run aborts.
-  2. Counts must sit in the windows measured 2026-10-05 (760 / 1 / 13).
+  2. Counts must stay under the ceilings set from the 2026-10-05 run
+     (800 / 4 / 20).
   3. Idempotent: a fix already in place is skipped, and a second run reports
      "already applied".
 
@@ -39,7 +40,10 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.build_update import load_existing  # noqa: E402
 
 FIXES = PROJECT_ROOT / "lineup-check" / "out" / "auto-fixes.json"
-WINDOWS = {"not_aired": range(700, 801), "aired_heat": range(0, 5), "add_wrestler": range(5, 21)}
+# Upper bounds only: a re-run after other repairs (0005 fixed sides the check
+# had queued as additions) legitimately finds fewer. Gate 1 still pins every
+# fix to its exact match text.
+WINDOWS = {"not_aired": range(0, 801), "aired_heat": range(0, 5), "add_wrestler": range(0, 21)}
 HEAT = "Sunday Night Heat"
 
 

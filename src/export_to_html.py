@@ -117,6 +117,8 @@ def clean_participant(name: str):
     n = _RESULT_TAIL_RE.sub("", n).strip()
     if not n or n.lower() in _NOT_PEOPLE:
         return None
+    if re.fullmatch(r"(?:the\s+)?[A-Za-z]", n, re.IGNORECASE):
+        return None       # "The X" cut from "The X-Factor" at the hyphen, "D" from "D-Lo"
     return CARD_SPELLING.get(n, n)
 
 
