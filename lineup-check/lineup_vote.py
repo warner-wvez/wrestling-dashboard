@@ -19,7 +19,8 @@ Verdicts per row class, written to row["vote"]:
 """
 from lineup_match import _people, best_match
 
-AUTO = {"not_aired", "add_match", "fix_result", "fix_lineup"}
+AUTO = {"not_aired", "add_match", "fix_result", "fix_lineup",
+        "add_match_same_people", "fix_result_same_people"}
 
 
 def _sdh_people(m, show_names):
@@ -46,31 +47,53 @@ def find(sdh_matches, people, show_names):
     return best if best_s >= 0.5 else None
 
 
-def vote(row, ours_match, his_names, his_winners, sdh_matches, show_names):
+def _line(m):
+    if not m:
+        return ""
+    won = ", ".join(p for t in m.get("teams") or [] if t.get("was_winner") for p in t.get("participants") or [])
+    return (m.get("raw_description") or "")[:240] + (f"  [winner: {won}]" if won else "")
+
+
+def vote(row, ours_match, his_names, his_winners, sdh_matches, show_names, his_complete=True):
+    """(verdict, the SmackDown Hotel line it rests on, that SDH match)."""
+    verdict, used = _vote(row, ours_match, his_names, his_winners, sdh_matches, show_names,
+                          his_complete)
+    return verdict, _line(used), used
+
+
+def _vote(row, ours_match, his_names, his_winners, sdh_matches, show_names, his_complete=True):
     cls = row["class"]
     if sdh_matches is None:
-        return "split"
+        return "split", None
     if cls in ("unpaired", "dark_but_televised"):
-        return "aired" if find(sdh_matches, _people(ours_match), show_names) else "not_aired"
+        s = find(sdh_matches, _people(ours_match), show_names)
+        return ("aired" if s else "not_aired"), s
     if cls == "missing_match":
-        return "add_match" if find(sdh_matches, his_names, show_names) else "keep"
+        s = find(sdh_matches, his_names, show_names)
+        # Same people, every name of his placed, and the same winner (or none
+        # on both sides): the 24/7 title swaps share people but not winners.
+        if s and his_complete and _sdh_people(s, show_names) == set(his_names) and \
+                _sdh_winners(s, show_names) == set(his_winners):
+            return "add_match_same_people", s
+        return ("add_match" if s else "keep"), s
     s = find(sdh_matches, _people(ours_match) if ours_match else his_names, show_names) \
         or (find(sdh_matches, his_names, show_names) if his_names else None)
     if s is None:
-        return "split"
+        return "split", None
     if cls == "result":
         sw = _sdh_winners(s, show_names)
         ow = {p for t in ours_match["teams"] if t.get("was_winner") for p in t["participants"]}
         if sw == ow:
-            return "keep"
+            return "keep", s
         if his_winners and sw == set(his_winners):
-            return "fix_result"
-        return "split"
+            same = _sdh_people(s, show_names) == set(_people(ours_match)) == set(his_names)
+            return ("fix_result_same_people" if same else "fix_result"), s
+        return "split", s
     if cls in ("different_opponent", "extra_name", "cawthon_only_name"):
         sp = _sdh_people(s, show_names)
         if sp == set(_people(ours_match)):
-            return "keep"
+            return "keep", s
         if his_names and sp == set(his_names):
-            return "fix_lineup"
-        return "split"
-    return "split"
+            return "fix_lineup", s
+        return "split", s
+    return "split", s

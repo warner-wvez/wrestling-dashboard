@@ -3853,5 +3853,438 @@
    "ours": "Juventud defeats Simon Dean (4:10)"
   }
  ],
- "add_wrestler": []
+ "add_wrestler": [],
+ "fix_result": [
+  {
+   "event_id": 4,
+   "match_id": 19,
+   "ours": "Chris Jericho (c) defeated The Big Show by DQ in a WWF Intercontinental Championship Match (3:52)",
+   "winners": [
+    "The Big Show"
+   ],
+   "outcome": "dq",
+   "cawthon": "The Big Show defeated WWF IC Champion Chris Jericho via disqualification when Chris Benoit interfered and prevented Show from making the cover; after the match, guest commentator the Rock hit the Big Show with the IC title and gave him the Rock Bottom on the floor"
+  },
+  {
+   "event_id": 11,
+   "match_id": 64,
+   "ours": "WWF European Title Match: Test (c) vs. Eddie Guerrero (w / Perry Saturn & Terri Runnels ) (3:02)",
+   "winners": [
+    "Test"
+   ],
+   "outcome": "win",
+   "cawthon": "WWF European Champion Test pinned Eddie Guerrero (w/ Perry Saturn & Terri) with the boot to the face after Chris Jericho interfered"
+  },
+  {
+   "event_id": 21,
+   "match_id": 126,
+   "ours": "Singles Match: Dean Malenko (w / Perry Saturn & Terri Runnels ) vs Raven (2:32)",
+   "winners": [
+    "Dean Malenko"
+   ],
+   "outcome": "win",
+   "cawthon": "Dean Malenko (w/ Terri & Perry Saturn) defeated Raven after Saturn interfered; after the bout, Saturn accidentally superkicked a steel chair into Malenko's face before Raven then hit a DDT on Saturn onto the same chair; as a result of the injury sustained the night before on Raw as well as the DDT onto the chair, Saturn's became mentally unstable"
+  },
+  {
+   "event_id": 22,
+   "match_id": 130,
+   "ours": "WWF Intercontinental Title Match: Kane (c) vs. Edge (3:30)",
+   "winners": [
+    "Kane"
+   ],
+   "outcome": "win",
+   "cawthon": "WWF IC Champion Kane defeated Edge"
+  },
+  {
+   "event_id": 22,
+   "match_id": 133,
+   "ours": "WWF Hardcore Title Match: Rhyno (c) vs Raven (3:40)",
+   "winners": [
+    "Rhyno"
+   ],
+   "outcome": "win",
+   "cawthon": "WWF Hardcore Champion Rhyno defeated Raven"
+  },
+  {
+   "event_id": 24,
+   "match_id": 151,
+   "ours": "WWF World Heavyweight Title Match: Steve Austin (c) vs. Spike Dudley (4:32)",
+   "winners": [
+    "Steve Austin"
+   ],
+   "outcome": "win",
+   "cawthon": "WWF World Champion Steve Austin pinned Spike Dudley (w/ Molly Holly) with the Stunner at 4:30; after the match, WWF Tag Team Champions Chris Jericho & Chris Benoit made the save with chairs"
+  },
+  {
+   "event_id": 27,
+   "match_id": 168,
+   "ours": "WWF Intercontinental Title Match : Albert (c) vs. Edge (3:36)",
+   "winners": [
+    "Albert"
+   ],
+   "outcome": "win",
+   "cawthon": "WWF IC Champion Albert pinned Edge with the Baldo Bomb at 3:34 after hitting a low blow as the challenger punched away at him on the middle turnbuckle"
+  },
+  {
+   "event_id": 35,
+   "match_id": 218,
+   "ours": "WCW United States Championship Match: Kanyon (c) vs. Edge (3:11)",
+   "winners": [
+    "Kanyon"
+   ],
+   "outcome": "win",
+   "cawthon": "WCW US Champion Kanyon pinned WWF IC Champion Edge at 3:10 after Christian accidentally hit Edge with the IC title belt; only Kanyon's title was on the line"
+  },
+  {
+   "event_id": 39,
+   "match_id": 249,
+   "ours": "WWF World Tag Team Title Match: The Dudley Boyz ( Bubba Ray Dudley & D-Von Dudley ) (c) vs. Kurt Angle & The Rock ended in a No Contest (14:00)",
+   "winners": [
+    "Kurt Angle",
+    "The Rock"
+   ],
+   "outcome": "dq",
+   "cawthon": "WCW World Champion the Rock & WWF World Champion Kurt Angle defeated WWF Tag Team Champions the Dudley Boyz via disqualification when Booker T, Test, and Shane McMahon interfered; after the match, the Dudleyz put their opponents through tables with the 3D"
+  },
+  {
+   "event_id": 41,
+   "match_id": 261,
+   "ours": "Singles Match: Kurt Angle vs. William Regal ended in a No Contest (3:22)",
+   "winners": [
+    "Kurt Angle"
+   ],
+   "outcome": "dq",
+   "cawthon": "Kurt Angle defeated William Regal via disqualification at 4:00 when Raven, Mike Awesome, Chris Kanyon, and Tommy Dreamer interfered \u2013 with Angle taking each one down with a belly to belly suplex; after the match, the Rock made the save for Angle against the Dudley Boyz"
+  },
+  {
+   "event_id": 141,
+   "match_id": 2491,
+   "ours": "Dawn Marie vs. Shaniqua - No Contest (1:24)",
+   "winners": [
+    "Shaniqua"
+   ],
+   "outcome": "dq",
+   "cawthon": "Shaniqua defeated Dawn Marie via disqualification at 1:24 when Torrie Wilson and Nidia interfered after Dawn Marie was tossed to the floor"
+  },
+  {
+   "event_id": 163,
+   "match_id": 973,
+   "ours": "Eddie Guerrero defeats Chris Jericho (c) by DQ (3:42)",
+   "winners": [
+    "Chris Jericho"
+   ],
+   "outcome": "win",
+   "cawthon": "WWF IC Champion Chris Jericho defeated Eddie Guerrero via submission with the Walls of Jericho after blocking a hurricanrana; after the bout, X-Pac attacked the champion"
+  },
+  {
+   "event_id": 182,
+   "match_id": 1117,
+   "ours": "The X-Factor ( Justin Credible & X-Pac ) (w/ Albert ) defeat The Hardy Boyz ( Jeff Hardy & Matt Hardy ) (w/ Eddie Guerrero & Lita ) (3:41)",
+   "winners": [
+    "Jeff Hardy",
+    "Matt Hardy"
+   ],
+   "outcome": "win",
+   "cawthon": "Matt & Jeff Hardy defeated X-Pac & Justin Credible"
+  },
+  {
+   "event_id": 183,
+   "match_id": 1126,
+   "ours": "The Dudley Boyz ( Bubba Ray Dudley , D-Von Dudley & Spike Dudley ) defeat Crash , Hardcore Holly & Kurt Angle (7:16)",
+   "winners": [
+    "Crash",
+    "Hardcore Holly",
+    "Kurt Angle"
+   ],
+   "outcome": "win",
+   "cawthon": "Kurt Angle, Hardcore & Crash Holly defeated Bubba Ray, D-Von, & Spike Dudley when Angle pinned Bubba with the Olympic Slam"
+  },
+  {
+   "event_id": 385,
+   "match_id": 4053,
+   "ours": "Charlie Haas vs. Rob Van Dam - Double Count Out (7:38)",
+   "winners": [
+    "Charlie Haas"
+   ],
+   "outcome": "countout",
+   "cawthon": "Charlie Haas defeated Rob Van Dam at 7:38; the two men battled to a double count-out after Haas blocked a leap to the floor by holding up a steel chair, however Kurt Angle came out and declared Haas the winner on points and a nominee for the \u2018Great American' Award"
+  },
+  {
+   "event_id": 442,
+   "match_id": 4353,
+   "ours": "Eddie Guerrero & The Big Show vs. Kurt Angle & Luther Reigns - No Contest (12:30)",
+   "winners": [
+    "Eddie Guerrero",
+    "The Big Show"
+   ],
+   "outcome": "dq",
+   "cawthon": "Eddie Guerrero & the Big Show defeated Kurt Angle & Luther Reigns via disqualification at 15:01 when Mark Jindrak interfered"
+  },
+  {
+   "event_id": 492,
+   "match_id": 7672,
+   "ours": "Shelton Benjamin (c) defeats Gene Snitsky (3:08)",
+   "winners": [
+    "Gene Snitsky"
+   ],
+   "outcome": "dq",
+   "cawthon": "Gene Snitsky defeated WWE IC Champion Shelton Benjamin via disqualification at 3:07 when Benjamin hit the challenger in the head with a steel chair, as Benjamin was on the floor and Snitsky was in the ring"
+  },
+  {
+   "event_id": 502,
+   "match_id": 7717,
+   "ours": "Muhammad Hassan (w/ Khosrow Daivari ) vs. Shawn Michaels - No Contest (12:15)",
+   "winners": [
+    "Shawn Michaels"
+   ],
+   "outcome": "dq",
+   "cawthon": "Shawn Michaels defeated Muhammad Hassan (w/ Daivari) via disqualification at 12:05 when Kurt Angle interfered as Michaels prepared to hit the superkick; after the bout, Michaels fought off both Hassan and Angle, eventually hitting the superkick on Hassan; moments later, Angle and Michaels had a stare down before Angle was escorted out of the arena"
+  },
+  {
+   "event_id": 508,
+   "match_id": 7745,
+   "ours": "Booker T vs. Orlando Jordan - No Contest (1:41)",
+   "winners": [
+    "Booker T"
+   ],
+   "outcome": "dq",
+   "cawthon": "Booker T defeated WWE US Champion Orlando Jordan via disqualification when the Basham Brothers interfered; after the bout, the Big Show came out to make the save with Teddy Long soon following and ordering a handicap tag team match to take place immediately, pitting Booker & Show against Orlando & the Bashams"
+  },
+  {
+   "event_id": 631,
+   "match_id": 8441,
+   "ours": "Rey Mysterio (c) vs. Kurt Angle - No Contest (14:49)",
+   "winners": [
+    "Kurt Angle"
+   ],
+   "outcome": "dq",
+   "cawthon": "Kurt Angle defeated World Heavyweight Champion Rey Mysterio Jr. via disqualification at 14:48 when Mark Henry interfered and attacked the challenger as Mysterio was caught in the ankle lock; after the bout, Henry assaulted Angle outside the ring before laying him across a table and hitting a running splash from the ring apron through the table on the floor; Angle was attended to by medical personnel as the show came to a close"
+  },
+  {
+   "event_id": 693,
+   "match_id": 8858,
+   "ours": "Randy Orton vs. Triple H - No Contest (7:50)",
+   "winners": [
+    "Triple H"
+   ],
+   "outcome": "dq",
+   "cawthon": "Triple H defeated Randy Orton via disqualification at 7:45 when Edge interfered and, with Orton, double teamed Triple H; prior to the bout, Triple H hit Edge, who was scheduled as the guest referee, with the mic and dropped him with the Pedigree, with referee Jack Doane then taking over officiating duties; after the match, Edge twice hit Triple H over the back with a steel chair before Triple H avoided the RKO and threw Orton onto the chair; moments later, Edge dropped Triple H with the spear but Triple H quickly cleared Edge from the ring with the sledgehammer and used the weapon to hit Orton in the mid-section"
+  },
+  {
+   "event_id": 720,
+   "match_id": 9042,
+   "ours": "John Cena vs. Jonathan Coachman - No Contest (1:52)",
+   "winners": [
+    "John Cena"
+   ],
+   "outcome": "dq",
+   "cawthon": "WWE World Champion John Cena defeated Jonathan Coachman via disqualification in a non-title match at around the 25-second mark when Umaga, with Armando Allejandro Estrada, attacked the champion; Cena was then triple teamed before eventually sustaining a splash off the top through a table set up in the ring, with Estrada then counting him down as if it was the last man standing match; moments later, Cena was attended to by a trainer; after the commercial break, Cena was helped to his feet by referees"
+  },
+  {
+   "event_id": 788,
+   "match_id": 9490,
+   "ours": "Chavo Guerrero defeats Funaki by referee's decision (2:16)",
+   "winners": [
+    "Funaki"
+   ],
+   "outcome": "dq",
+   "cawthon": "Sho Funaki defeated Chavo Guerrero Jr. via disqualification at 2:14 when referee Charles Robinson stopped the match when Chavo refused to stop ramming Funaki's knee into the ringpost; prior to the bout, Chavo came ringside with a Rey Mysterio Jr. mask; after the bout, Chavo put the mask on Funaki's head, laid his knee on the steps, and smashed it with a steel chair"
+  },
+  {
+   "event_id": 788,
+   "match_id": 9494,
+   "ours": "Batista vs. Finlay - No Contest (12:02)",
+   "winners": [
+    "Batista"
+   ],
+   "outcome": "dq",
+   "cawthon": "Batista defeated Finlay via disqualification at 12:01 when Batista began attacking World Heavyweight Champion the Great Khali, who appeared ringside early in the bout with Runjin Singh, on the ring apron; after the bout, Khali attempted to apply the head vice but Batista knocked him to the floor and beat him down, while fighting off Finlay; Batista continued to punch Khali on the floor \u2013 busting him open \u2013 until he was pulled away by officials and referees"
+  },
+  {
+   "event_id": 941,
+   "match_id": 10577,
+   "ours": "Batista & John Cena vs. Cody Rhodes , Manu & Randy Orton - No Contest (18:19)",
+   "winners": [
+    "Batista",
+    "John Cena"
+   ],
+   "outcome": "dq",
+   "cawthon": "World Heavyweight Champion John Cena & Batista defeated Randy Orton, Cody Rhodes, & Manu via disqualification in a handicap match at 18:09 when Orton shoved referee Mike Chioda out of the way so he could kick Batista in the head; during the bout, it was noted the following week's show would feature Shawn Michaels vs. Kane, Rey Mysterio Jr. vs. John Bradshaw Layfield, Chris Jericho vs. CM Punk, and Orton vs. Batista, with the winners advancing to a match the week after to determine Cena's next challenger; after the contest, Cena and a trainer tended to Batista in the ring as Legacy celebrated at ringside (Batista's last appearance for 4 months)"
+  },
+  {
+   "event_id": 1147,
+   "match_id": 12789,
+   "ours": "CM Punk vs. Edge - No Contest (13:15)",
+   "winners": [
+    "Edge"
+   ],
+   "outcome": "dq",
+   "cawthon": "Edge defeated CM Punk via disqualification at 13:14 when Mike Mizanin & Alex Riley pulled Edge to the floor and rammed him into the barricade as Edge prepared to hit the spear; prior to the bout, it was noted that Punk's recent attack on Evan Bourne would put Bourne out of action about 4 months; after the contest, Kofi Kingston, Tyler Reks, John Morrison, Alberto Del Rio, Ezekiel Jackson, Jack Swagger, Santino Marella, Sheamus, the Big Show, and Rey Mysterio Jr. joined in a brawl, which ended with Edge dropping Punk with the spear and Team Smackdown celebrating in the ring"
+  },
+  {
+   "event_id": 1227,
+   "match_id": 13375,
+   "ours": "John Cena (c) defeats R-Truth",
+   "winners": [
+    "R-Truth"
+   ],
+   "outcome": "win",
+   "cawthon": "R-Truth defeated WWE World Champion John Cena in a non-title tables match at 5:12 with a tackle, putting Cena through a table set up in the corner, as Cena fought off an interfering CM Punk; during the bout, there were dueling chants of \u201cLet's go, Cena\u201d and \u201cCena sucks;\u201d after the contest, Punk walked up the ramp with a mic, eventually sitting down at the stage and said he liked Cena but hated the idea that Cena was the best; Punk then said the one thing Cena was better at was kissing Vince McMahon's ass, then adding Hulk Hogan and \u201cDwayne\u201d were the same; Punk then said Paul Heyman saw a lot in him, as he did Brock Lesnar who also left, then adding no one could touch him on the mic, in the ring, or on commentary; Punk went on to rant about the fact he wasn't promoted as strong as those who weren't as good as him yet someone like \u201cDwayne\u201d was in the main event of WrestleMania next year; Punk then said he might take the belt to New Japan Pro Wrestling or Ring of Honor, adding \u201cHey, Colt Cabana. How you doing?\u201d; Punk continued to rant about how Vince McMahon should be a billionaire but surrounds himself with gladhanders like John Laurinaitis, then ranted about Stephanie McMahon and Triple H and the anti-bullying campaign before his mic was cut off"
+  },
+  {
+   "event_id": 1332,
+   "match_id": 14170,
+   "ours": "Alberto Del Rio vs. Randy Orton - No Contest (7:15)",
+   "winners": [
+    "Randy Orton"
+   ],
+   "outcome": "dq",
+   "cawthon": "Randy Orton defeated Alberto Del Rio via disqualification at 7:20 when Chris Jericho slid in the ring and dropped Orton with the Codebreaker; as Ricardo Rodriguez introduced ADR before the bout, WWE US Champion Santino Marella interrupted, insulted Rodriguez, and hit him with the Cobra before introducing ADR himself; prior to ADR's entrance, it was noted Raw would celebrate its 1,000 episode \u2014 and move to a 3-hour format \u2014 beginning July 23; upon ADR's entrance, Marella ran backstage; during Orton's entrance, Michael Cole and Jerry Lawler discussed Big Show's return to WWE, with Cole saying Show did not resign with the company until the early morning hours, thus John Laurinaitis's win over John Cena would stand; after the match, Jericho took the mic and repeated he was the best in the world at what he does before hitting the Codebreaker twice more"
+  },
+  {
+   "event_id": 1441,
+   "match_id": 15875,
+   "ours": "Alberto Del Rio & Ricardo Rodriguez vs. Jack Swagger & Zeb Colter - No Contest (1:16)",
+   "winners": [
+    "Alberto Del Rio",
+    "Ricardo Rodriguez"
+   ],
+   "outcome": "dq",
+   "cawthon": "Alberto Del Rio & Ricardo Rodriguez defeated Jack Swagger & Zeb Colter via disqualification at around the 4-minute mark when World Heavyweight Champion Dolph Ziggler, who provided guest commentary for the match, and Big E Langston attacked ADR as he had the cross armbreaker applied; moments later, Teddy Long appeared and set up a triple threat tag team match (the bout began during the commercial break)"
+  },
+  {
+   "event_id": 1488,
+   "match_id": 16228,
+   "ours": "The Miz defeats Randy Orton by DQ (2:47)",
+   "winners": [
+    "Randy Orton"
+   ],
+   "outcome": "dq",
+   "cawthon": "Randy Orton pinned Mike Mizanin in a No DQ match at 7:51 with the RKO after a DDT from the barricade to the floor; Miz initially won the match via disqualification at 3:12 when Orton refused to stop assaulting Miz as the referee and trainer attempted to intervene; moments later, Triple H walked out to the entrance stage and said the match would continue under No DQ rules"
+  },
+  {
+   "event_id": 1508,
+   "match_id": 16385,
+   "ours": "CM Punk , Cody Rhodes & Goldust vs. The Shield ( Dean Ambrose , Roman Reigns & Seth Rollins ) - No Contest (9:20)",
+   "winners": [
+    "CM Punk",
+    "Cody Rhodes",
+    "Goldust"
+   ],
+   "outcome": "dq",
+   "cawthon": "CM Punk, WWE Tag Team Champions Cody Rhodes & Goldust defeated WWE US Champion Dean Ambrose, Seth Rollins & Roman Reigns in an impromptu match via disqualification at the 14-minute mark when Bray Wyatt, Luke Harper & Erick Rowan \u2013 who appeared ringside late in the match \u2013 attacked Goldust at ringside; after the match, Jimmy & Jey Uso and Rey Mysterio Jr. ran out to make the save; moments later, Vickie Guerrero walked out, demanded order, and said the match would continue as a 12-man tag team match (the match began during the commercial break)"
+  }
+ ],
+ "add_match": [
+  {
+   "event_id": 953,
+   "after_match_id": 11443,
+   "cawthon": "Elimination Chamber Qualifying Match : Triple H defeated the Great Khali (w/ Rujin Singh) and Vladimir Kozlov at 9:05 by pinning Khali with the Pedigree after Kozlov struck Khali with the headbutt to the chest and was then knocked to the floor by Triple H",
+   "sdh": "Triple H defeats The Great Khali and Vladimir Kozlov  [winner: Triple H]",
+   "outcome": "win",
+   "duration_seconds": 545,
+   "match": {
+    "match_type": "Elimination Chamber - Qualifying Triple Threat Match",
+    "title_at_stake": null,
+    "teams": [
+     {
+      "participants": [
+       "Triple H"
+      ],
+      "was_winner": true
+     },
+     {
+      "participants": [
+       "The Great Khali"
+      ],
+      "was_winner": false
+     },
+     {
+      "participants": [
+       "Vladimir Kozlov"
+      ],
+      "was_winner": false
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 962,
+   "after_match_id": null,
+   "cawthon": "Money in the Bank Qualifying Match : MVP pinned Matt Hardy at 7:59 by reversing an attempt at the Twist of Fate into a roll up; prior to the match, Matt cut an in-ring promo on Jeff Hardy not wanting to wrestle him and said once they both win their Money in the Bank qualifying matches then he would finally get his hands on Jeff at WrestleMania",
+   "sdh": "Montel Vontavious Porter defeats Matt Hardy  [winner: Montel Vontavious Porter]",
+   "outcome": "win",
+   "duration_seconds": 479,
+   "match": {
+    "match_type": "Money in the Bank - Qualifying Match",
+    "title_at_stake": null,
+    "teams": [
+     {
+      "participants": [
+       "Montel Vontavious Porter"
+      ],
+      "was_winner": true
+     },
+     {
+      "participants": [
+       "Matt Hardy"
+      ],
+      "was_winner": false
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 962,
+   "after_match_id": null,
+   "cawthon": "Money in the Bank Qualifying Match : WWE US Champion Shelton Benjamin defeated Jeff Hardy via disqualification in a non-title match at 9:25 when Matt Hardy came out, climbed into the ring, stared at Jeff, and then punched Benjamin; after the match, Matt slowly turned away from Jeff and left the ring",
+   "sdh": "Shelton Benjamin defeats Jeff Hardy via DQ  [winner: Shelton Benjamin]",
+   "outcome": "dq",
+   "duration_seconds": 565,
+   "match": {
+    "match_type": "Money in the Bank - Qualifying Match",
+    "title_at_stake": null,
+    "teams": [
+     {
+      "participants": [
+       "Shelton Benjamin"
+      ],
+      "was_winner": true
+     },
+     {
+      "participants": [
+       "Jeff Hardy"
+      ],
+      "was_winner": false
+     }
+    ]
+   }
+  },
+  {
+   "event_id": 1017,
+   "after_match_id": 11895,
+   "cawthon": "Cody Rhodes (w/ Dusty Rhodes) fought WWE World Champion Randy Orton to a no contest when, prior to the bout, Dusty took the mic and told guest referee John Cena that he was sorry, with Orton and Cody then double teaming Cena; following Orton's entrance, the challenger was shown backstage getting a pep talk from his father; moments later, Ted Dibiase Jr. ran in the ring and dropped Cena with Dream Street, with all three men then assaulting Cena; Triple H & Shawn Michaels then ran in to make the save, with Dusty taking off his cowboy boot and hitting Triple H in the head and Cody dropping Michaels with Crossroads; moments later, Orton, Cody, Dusty, and Dibiase raised their arms in victory before Orton dropped Dusty with a RKO; the show then ended with Cody and Orton staring at each other",
+   "sdh": "Randy Orton \u00a9 vs. Cody Rhodes ends in a No Contest; Orton retains the title",
+   "outcome": "no-contest",
+   "duration_seconds": null,
+   "match": {
+    "match_type": null,
+    "title_at_stake": "WWE Championship",
+    "teams": [
+     {
+      "participants": [
+       "Randy Orton"
+      ],
+      "was_winner": null
+     },
+     {
+      "participants": [
+       "Cody Rhodes"
+      ],
+      "was_winner": null
+     }
+    ]
+   }
+  }
+ ]
 }
