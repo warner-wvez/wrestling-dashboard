@@ -89,6 +89,22 @@ BELTS = {
         "dw": "nxt/wwe-nxt-na-wm.html",
         "wwe": "classics/titlehistory/nxt-womens-north-american-championship",
     },
+    # The NXT UK belts (2017 to 2022). Wikipedia keeps their histories on the
+    # belts' own pages, not a "List of" page. NXT UK taped its shows up to
+    # three months ahead in 2018 and 2019, so WWE.com's air date can sit that
+    # far after the taping Wikipedia gives.
+    "WWE United Kingdom Title": {
+        "wiki": "NXT United Kingdom Championship", "dw": "nxt-uk/wwe-uk-h.html",
+        "wwe": "classics/titlehistory/nxt-united-kingdom-championship", "taped_within": 100,
+    },
+    "WWE NXT UK Women's Title": {
+        "wiki": "NXT UK Women's Championship", "dw": "nxt-uk/wwe-nxt-uk-wm.html",
+        "wwe": "titlehistory/nxt-uk-womens-championship", "taped_within": 100,
+    },
+    "WWE NXT UK Tag Team Title": {
+        "wiki": "NXT UK Tag Team Championship", "dw": "nxt-uk/wwe-nxt-uk-t.html",
+        "wwe": "titlehistory/nxt-uk-tag-team-championship", "taped_within": 100,
+    },
     # The main-roster belts. Their changes on shows we don't carry (Velocity,
     # Main Event, ECW's own show, a Saturday Night's Main Event) and on
     # pre-shows started late the same way. WWE.com keeps the 2016 brand names
@@ -136,7 +152,10 @@ BELTS = {
 # a change is skipped when a card of ours crowns the same champion within a
 # week of it: a day or two between a history's date and our card (a time
 # zone, a taping) is our card being right.
-MAIN_ROSTER = {name for name in BELTS if not name.startswith(("NXT", "WWE NXT"))}
+NXT_FAMILY = {"WWE NXT Cruiserweight Championship", "NXT Title", "NXT Women's Title", "NXT North American Title",
+              "WWE NXT Tag Team Title", "NXT Women's Tag Team Title", "NXT Women's North American Title",
+              "WWE United Kingdom Title", "WWE NXT UK Women's Title", "WWE NXT UK Tag Team Title"}
+MAIN_ROSTER = set(BELTS) - NXT_FAMILY
 SLACK = 7
 # Wikipedia's note when WWE dates a reign from another day than the list
 # does: "WWE recognizes Asuka's reign as beginning on May 11, 2020".
@@ -224,14 +243,16 @@ def confirm(name, cfg):
     """Each Wikipedia row, marked with the histories that list it. Duncan and
     Will date a change as Wikipedia does, give or take a day; WWE.com dates a
     taped one by its air date, up to five weeks later (NXT taped a month of
-    shows at a time at Full Sail until 2019)."""
+    shows at a time at Full Sail until 2019), or the belt's own "taped_within"
+    days (NXT UK, three months)."""
     wiki, wwe = wikipedia(cfg["wiki"]), wwe_com(cfg["wwe"])
     dw = duncan_will(cfg["dw"]) if cfg.get("dw") else []
     for r in wiki:
         r["sources"] = {"Wikipedia": f"{WIKI}{cfg['wiki'].replace(' ', '_')} #{r['n']}"}
     for i, j in align(wiki, dw, lambda w, d: same(w, d) and abs(_days(w["date"], d["date"])) <= 1):
         wiki[i]["sources"]["Duncan & Will"] = DW + cfg["dw"]
-    for i, j in align(wiki, wwe, lambda w, e: same(w, e) and 0 <= _days(w["date"], e["date"]) <= 35):
+    window = cfg.get("taped_within", 35)
+    for i, j in align(wiki, wwe, lambda w, e: same(w, e) and 0 <= _days(w["date"], e["date"]) <= window):
         wiki[i]["sources"]["WWE.com"] = WWE + cfg["wwe"]
         wiki[i]["wwe"] = wwe[j]
     return wiki

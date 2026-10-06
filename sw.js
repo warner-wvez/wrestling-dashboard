@@ -105,7 +105,11 @@
 // (WrestleMania 38, Big E's cash-in, Christian's DQ win). Ezekiel Jackson is
 // the last ECW champion. Core, the 2004, 2007, 2019, 2022 and 2025 match
 // shards and titles changed.
-const CACHE = 'wrestling-dashboard-v34';
+// v35: the three NXT UK belts' full histories to their unification at Worlds
+// Collide 2022 (UK title 3 reigns to 5, UK Women's 3 to 4, UK Tag 2 to 7), the
+// UK title's own page, two NXT vacancies, and belt pictures for 14 more title
+// names. Core, the 2022 match shard, titles and belts changed.
+const CACHE = 'wrestling-dashboard-v35';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

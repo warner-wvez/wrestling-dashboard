@@ -364,6 +364,30 @@
    "source": "List of WWE Women's Tag Team Champions"
   },
   {
+   "title": "WWE NXT UK Tag Team Title",
+   "date": "2022-06-22",
+   "vacate": true,
+   "vacated_by": "Ashton Smith and Oliver Carter",
+   "why": "Vacated after Ashton Smith suffered a knee injury.<br> Aired on tape delay on 23 June 2022.",
+   "source": "NXT UK Tag Team Championship"
+  },
+  {
+   "title": "WWE United Kingdom Title",
+   "date": "2022-07-07",
+   "vacate": true,
+   "vacated_by": "Ilja Dragunov",
+   "why": "Ilja Dragunov was forced to relinquish the title after suffering an injury.<br>Aired on tape delay on 4 August 2022.",
+   "source": "NXT United Kingdom Championship"
+  },
+  {
+   "title": "NXT Women's Tag Team Title",
+   "date": "2022-07-26",
+   "vacate": true,
+   "vacated_by": "Roxanne Perez",
+   "why": "Roxanne Perez vacated the other half of the championship due to not having a tag team partner.",
+   "source": "List of NXT Women's Tag Team Champions"
+  },
+  {
    "title": "NXT North American Title",
    "date": "2022-09-20",
    "vacate": true,
@@ -394,6 +418,14 @@
    "vacated_by": "Rhea Ripley",
    "why": "Rhea Ripley was forced to relinquish the title due to a legitimate shoulder injury.",
    "source": "List of Women's World Champions (WWE)"
+  },
+  {
+   "title": "NXT Women's North American Title",
+   "date": "2025-04-01",
+   "vacate": true,
+   "vacated_by": "Stephanie Vaquer",
+   "why": "NXT General Manager Ava ordered Stephanie Vaquer to relinquish the title as she was also the reigning NXT Women's Champion.",
+   "source": "List of NXT Women's North American Champions"
   },
   {
    "lineage": "lineage::womens-world",

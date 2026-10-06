@@ -449,6 +449,23 @@
    }
   },
   {
+   "title": "WWE United Kingdom Title",
+   "title_name": "WWE United Kingdom Title",
+   "date": "2017-01-15",
+   "order": 0,
+   "champions": [
+    "Tyler Bate"
+   ],
+   "event": "United Kingdom Championship Tournament",
+   "place": "Blackpool, England",
+   "why": "Defeated Pete Dunne in the tournament final to become the inaugural WWE United Kingdom Champion. Bate subsequently defended the title on the NXT brand and at independent shows in the United Kingdom.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_United_Kingdom_Championship #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-uk-h.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/nxt-united-kingdom-championship"
+   }
+  },
+  {
    "lineage": "lineage::wwe-tag-2002",
    "title_name": "WWE World Tag Team Championship",
    "date": "2017-01-29",
@@ -613,6 +630,24 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
    },
    "happened": "2018-07-18"
+  },
+  {
+   "title": "WWE NXT UK Women's Title",
+   "title_name": "WWE NXT UK Women's Title",
+   "date": "2018-11-28",
+   "order": 0,
+   "champions": [
+    "Rhea Ripley"
+   ],
+   "event": "NXT UK",
+   "place": "Birmingham, England",
+   "why": "Defeated Toni Storm in the tournament final to become the inaugural champion. WWE recognizes Ripley's reign as beginning on 28 November 2018, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Women's_Championship #1",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-nxt-uk-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-womens-championship"
+   },
+   "happened": "2018-08-26"
   },
   {
    "title": "WWE United States Title",
@@ -793,6 +828,25 @@
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
    }
+  },
+  {
+   "title": "WWE NXT UK Tag Team Title",
+   "title_name": "WWE NXT UK Tag Team Title",
+   "date": "2019-10-17",
+   "order": 0,
+   "champions": [
+    "Mark Coffey",
+    "Wolfgang"
+   ],
+   "event": "NXT UK",
+   "place": "Brentwood, England",
+   "why": "WWE recognizes this reign as beginning on 17 October 2019 and ending on 25 February 2021, when the respective episodes aired on tape delay. The actual date of when they lost the title is unknown.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Tag_Team_Championship #3",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-nxt-uk-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-tag-team-championship"
+   },
+   "happened": "2019-10-04"
   },
   {
    "lineage": "lineage::cruiserweight-2016",
@@ -1095,6 +1149,24 @@
    }
   },
   {
+   "title": "WWE NXT UK Tag Team Title",
+   "title_name": "WWE NXT UK Tag Team Title",
+   "date": "2021-02-25",
+   "order": 0,
+   "champions": [
+    "Lewis Howley",
+    "Sam Stoker"
+   ],
+   "event": "NXT UK",
+   "place": "London, England",
+   "why": "WWE recognizes this reign as beginning on 25 February 2021, when the episode aired on tape delay. The actual date of when the match took place is unknown.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Tag_Team_Championship #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-nxt-uk-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-tag-team-championship"
+   }
+  },
+  {
    "title": "NXT Women's Tag Team Title",
    "title_name": "NXT Women's Tag Team Title",
    "date": "2021-03-10",
@@ -1214,6 +1286,22 @@
    }
   },
   {
+   "title": "WWE NXT UK Women's Title",
+   "title_name": "WWE NXT UK Women's Title",
+   "date": "2021-06-10",
+   "order": 0,
+   "champions": [
+    "Meiko Satomura"
+   ],
+   "event": "NXT UK",
+   "place": "London, England",
+   "why": "WWE recognizes this reign as beginning on 10 June 2021, when the episode aired on tape delay. The actual date of when the match took place is unknown.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Women's_Championship #4",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-womens-championship"
+   }
+  },
+  {
    "title": "NXT North American Title",
    "title_name": "NXT North American Title",
    "date": "2021-06-29",
@@ -1262,6 +1350,23 @@
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Champions #23",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
+   }
+  },
+  {
+   "title": "WWE United Kingdom Title",
+   "title_name": "WWE United Kingdom Title",
+   "date": "2021-08-22",
+   "order": 0,
+   "champions": [
+    "Ilja Dragunov"
+   ],
+   "event": "TakeOver 36",
+   "place": "Orlando, Florida, U.S.",
+   "why": "WWE recognizes Dragunov's reign as ending on 4 August 2022, when the following episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_United_Kingdom_Championship #4",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-uk-h.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/nxt-united-kingdom-championship"
    }
   },
   {
@@ -1405,6 +1510,23 @@
    }
   },
   {
+   "title": "WWE NXT UK Tag Team Title",
+   "title_name": "WWE NXT UK Tag Team Title",
+   "date": "2021-12-09",
+   "order": 0,
+   "champions": [
+    "Trent Seven",
+    "Tyler Bate"
+   ],
+   "event": "NXT UK",
+   "place": "London, England",
+   "why": "WWE recognizes this reign as beginning on 9 December 2021, when the episode aired on tape delay. The actual date of when the match took place is unknown.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Tag_Team_Championship #5",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-tag-team-championship"
+   }
+  },
+  {
    "title": "NXT Title",
    "title_name": "NXT Title",
    "date": "2022-01-04",
@@ -1491,6 +1613,44 @@
    }
   },
   {
+   "title": "WWE NXT UK Tag Team Title",
+   "title_name": "WWE NXT UK Tag Team Title",
+   "date": "2022-06-02",
+   "order": 0,
+   "champions": [
+    "Ashton Smith",
+    "Oliver Carter"
+   ],
+   "event": "NXT UK",
+   "place": "London, England",
+   "why": "This was a triple threat tag team match, also involving Die Familie (Teoman and Rohan Raja). WWE recognizes this reign as beginning on 2 June 2022 and ending on 23 June 2022, when the episodes aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Tag_Team_Championship #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-nxt-uk-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-tag-team-championship"
+   },
+   "happened": "2022-04-21"
+  },
+  {
+   "title": "WWE NXT UK Tag Team Title",
+   "title_name": "WWE NXT UK Tag Team Title",
+   "date": "2022-06-23",
+   "order": 0,
+   "champions": [
+    "Brooks Jensen",
+    "Josh Briggs"
+   ],
+   "event": "NXT UK",
+   "place": "London, England",
+   "why": "This was a fatal four-way tag team elimination match, also involving Die Familie (Teoman and Rohan Raja), Dave Mastiff and Jack Starz, and Mark Andrews and Wild Boar for the vacant titles. WWE recognizes this reign as beginning on 23 June 2022, when the episode aired on tape delay.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_UK_Tag_Team_Championship #7",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-nxt-uk-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-uk-tag-team-championship"
+   },
+   "happened": "2022-06-22"
+  },
+  {
    "title": "NXT Women's Tag Team Title",
    "title_name": "NXT Women's Tag Team Title",
    "date": "2022-07-05",
@@ -1543,23 +1703,22 @@
    }
   },
   {
-   "title": "WWE NXT Tag Team Title",
-   "title_name": "WWE NXT Tag Team Title",
-   "date": "2022-09-04",
-   "order": 4.5,
+   "title": "WWE United Kingdom Title",
+   "title_name": "WWE United Kingdom Title",
+   "date": "2022-09-01",
+   "order": 0,
    "champions": [
-    "Elton Prince",
-    "Kit Wilson"
+    "Tyler Bate"
    ],
-   "event": "Worlds Collide",
-   "place": "Orlando, FL",
-   "why": "Won in match 4 of Worlds Collide, which our card does not mark as a title change.",
+   "event": "NXT UK",
+   "place": "London, England",
+   "why": "Defeated Trent Seven in the final of a tournament to win the vacant championship. WWE recognizes Bate's reign as beginning on 1 September 2022, when the episode aired on tape delay, despite the fact that Bate started appearing as champion on 16 August at NXT Heatwave.",
    "sources": {
-    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #29",
-    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
-    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+    "Wikipedia": "https://en.wikipedia.org/wiki/NXT_United_Kingdom_Championship #5",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt-uk/wwe-uk-h.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/nxt-united-kingdom-championship"
    },
-   "event_id": 2980
+   "happened": "2022-07-07"
   },
   {
    "title": "NXT North American Title",

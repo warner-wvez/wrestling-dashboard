@@ -46,6 +46,10 @@ EXTRA = {
     "WWE NXT Tag Team Title": "List of NXT Tag Team Champions",
     "NXT Women's Tag Team Title": "List of NXT Women's Tag Team Champions",
     "NXT Women's North American Title": "List of NXT Women's North American Champions",
+    # The NXT UK belts keep their histories on their own pages.
+    "WWE United Kingdom Title": "NXT United Kingdom Championship",
+    "WWE NXT UK Women's Title": "NXT UK Women's Championship",
+    "WWE NXT UK Tag Team Title": "NXT UK Tag Team Championship",
 }
 
 
@@ -74,14 +78,15 @@ WWE_COM = {
     **{name: cfg["wwe"] for name, cfg in OFFSHOW_BELTS.items()},
 }
 SLACK = 7           # days a start may sit from the histories' date
-AIRED_WITHIN = 35   # WWE.com's air date for a taped change (NXT taped a month ahead until 2019)
+AIRED_WITHIN = 35   # WWE.com's air date for a taped change (NXT taped a month ahead until 2019;
+                    # a belt's own "taped_within" in offshow_titles.BELTS overrides it)
 
 
 def _days(a, b):
     return (date.fromisoformat(b) - date.fromisoformat(a)).days
 
 
-def off_dates(ours, wiki, ops, aired):
+def off_dates(ours, wiki, ops, aired, window=AIRED_WITHIN):
     """Each reign both lists share whose start is more than SLACK days from
     Wikipedia's date and from every WWE.com air date for that change. Our
     first reign of a belt is dated from the first match we have, so it is
@@ -97,7 +102,7 @@ def off_dates(ours, wiki, ops, aired):
             # A list's team name ends in markup ("British Ambition<br />").
             named = {"champion": re.sub(r"<[^>]+>", " ", w["champion"]).strip(), "members": w["members"]}
             air = [e["date"] for e in aired
-                   if same_reign(named, e) and 0 <= _days(w["date"], e["date"]) <= AIRED_WITHIN]
+                   if same_reign(named, e) and 0 <= _days(w["date"], e["date"]) <= window]
             if not any(abs(_days(a, o["start"])) <= SLACK for a in air):
                 out.append((o, w, air))
     return out
@@ -213,7 +218,8 @@ def main():
                  else key(r["champion"]) for r in wiki]
             ops = difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes()
         diffs = [op for op in ops if op[0] != "equal"]
-        off = off_dates(ours, wiki, ops, wwe_com(WWE_COM[name]) if name in WWE_COM else [])
+        off = off_dates(ours, wiki, ops, wwe_com(WWE_COM[name]) if name in WWE_COM else [],
+                        OFFSHOW_BELTS.get(name, {}).get("taped_within", AIRED_WITHIN))
         print(f"## {name}: ours {len(ours)} reigns, Wikipedia {len(wiki)} in {lo}..{hi}, "
               f"{sum(op[2]-op[1] for op in ops if op[0]=='equal')} matched, "
               f"{len(diffs)} differences, {len(off)} off by date")

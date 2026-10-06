@@ -58,12 +58,16 @@ def _date(s):
     # "{{dts|April 6, 2024}}", and the shapes editors also leave: no template,
     # a stray comma ("April 6 ,2024"), none ("October 30 2022"), and a taping
     # over two days ("March 25–26, 2020", "March 25 or 26, 2020": the first).
-    m = re.search(r"([A-Z][a-z]+)\.? (\d{1,2})(?:\s*(?:\u2013|-|or)\s*\d{1,2})?\s*,?\s*(\d{4})", s or "")
-    for fmt in ("%B %d %Y", "%b %d %Y"):
-        try:
-            return datetime.strptime(" ".join(m.groups()), fmt).date().isoformat() if m else None
-        except ValueError:
-            pass
+    # The NXT UK lists write the day first: "{{dts|15 January 2017}}".
+    for pattern, fmts in ((r"([A-Z][a-z]+)\.? (\d{1,2})(?:\s*(?:\u2013|-|or)\s*\d{1,2})?\s*,?\s*(\d{4})",
+                           ("%B %d %Y", "%b %d %Y")),
+                          (r"(\d{1,2}) ([A-Z][a-z]+)\.? (\d{4})", ("%d %B %Y", "%d %b %Y"))):
+        m = re.search(pattern, s or "")
+        for fmt in fmts if m else ():
+            try:
+                return datetime.strptime(" ".join(m.groups()), fmt).date().isoformat()
+            except ValueError:
+                pass
     return None
 
 

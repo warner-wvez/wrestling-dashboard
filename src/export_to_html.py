@@ -909,7 +909,14 @@ def _is_lineage_era_break(prev: dict, nxt: dict, holders: list[str], canon_fn) -
     retirement is who walks in on the far side: the same champion means the belt
     plainly never died, so `holders` (the reign in progress) vetoes the break.
     Nobody, or somebody new, means the lineage really did restart.
+
+    A change from the title histories vetoes it too: the histories list it as
+    the next reign of the same belt. We carry no NXT UK show from August 2019
+    to Worlds Collide 2022, so Kay Lee Ray's UK Women's reign ended at TakeOver:
+    Cardiff and Meiko Satomura's 2021 win started a "new" belt.
     """
+    if nxt.get('from_history'):
+        return False
     gap = (datetime.fromisoformat(nxt['air_date'])
            - datetime.fromisoformat(prev['air_date'])).days
     if gap <= _TITLE_UNSEEN_GRACE_DAYS:
@@ -1306,6 +1313,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             'vacate': bool(change.get('vacate')),
             'vacated_by': change.get('vacated_by') or '',
             'previous_holds_until': change.get('previous_holds_until'),
+            # A title history lists this as the belt's next change, so the
+            # belt lived through any gap before it (see _is_lineage_era_break).
+            'from_history': True,
         })
 
     # Canonical display name per lineage: the spelling that carries the most

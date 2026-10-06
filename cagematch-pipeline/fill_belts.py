@@ -77,7 +77,7 @@ def belt_for(title: str):
         if has("uk") and (has("women") or has("womens")): return "nxt-uk-womens"
         if has("uk") and has("tag"): return "uk-tag"
         if has("women") or has("womens"): return "nxt-womens"
-        if has("uk"): return "united-kingdom"
+        if has("uk") or has("united kingdom"): return "united-kingdom"
         if has("tag"): return "nxt-tag"
         return "nxt"
 

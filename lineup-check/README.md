@@ -86,7 +86,9 @@ it what no card carries:
   reign. A change our card carries as a match, but without a title-change
   mark (the "vacant / NXT Women's Championship" cards from Wikipedia's tables),
   goes in right after that match. `BELTS` lists the NXT Cruiserweight title,
-  the six NXT belts and the main-roster belts; the NXT UK belts are not in yet.
+  the six NXT belts, the three NXT UK belts (their histories sit on the belts'
+  own Wikipedia pages, written day first, and WWE.com's air date can come up
+  to three months after an NXT UK taping) and the main-roster belts.
   On a main-roster belt a change goes in only when no card of ours crowns the
   same champion within a week, champions pair through the dashboard's
   profiles ("The Hurricane" is our "Hurricane Helms"), a change on a Raw or
