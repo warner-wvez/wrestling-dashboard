@@ -93,7 +93,10 @@
 // on our NXT cards without a title-change mark), three NXT vacancies, and two
 // rulings (Fyre and Dawn the last NXT women's tag champions, Zaria a stand-in
 // for Sol Ruca). Core, the 2022 and 2025 match shards and titles changed.
-const CACHE = 'wrestling-dashboard-v31';
+// v32: Raven's Hardcore title win at Columbia, SC, 2002-07-28, the night's
+// first change, which the records told three ways (WWE.com breaks the tie).
+// Core and titles changed.
+const CACHE = 'wrestling-dashboard-v32';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

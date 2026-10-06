@@ -15,6 +15,14 @@ Each record misses nights the others have (Wikipedia lacks Salt Lake City and
 Amarillo, April 2002) and each has a few wrong dates, so no one of them is
 the list. Where no two agree, the change is left out and printed.
 
+A night the three tell differently is settled change by change, and there
+two more histories vote: WWE.com's own title history and Duncan and Will's
+wrestling-titles.com, each only where it lists as many changes that night.
+Columbia 2002-07-28 opens with three different winners in the first three
+records, and Wikipedia and WWE.com both have Raven. Duncan and Will have Raven
+first too but list six changes that night, Justin Credible's reign 8 twice
+with Steven Richards between, so they sit that night out.
+
     uv run --with requests --with beautifulsoup4 lineup-check/offcard_titles.py
 """
 import collections
@@ -38,6 +46,8 @@ WIKI = HERE / "wiki-cache" / "List_of_WWE_Hardcore_Champions.wiki"
 SOLIE = HERE / "wiki-cache" / "solie_whcwwf.html"
 WIKI_URL = "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions"
 SOLIE_URL = "http://web.archive.org/web/2008/http://www.solie.org/titlehistories/whcwwf.html"
+WWE_PATH = "titlehistory/hardcore-championship"
+DW_PAGE = "wwf-hc.html"
 WINDOW = ("2001-01-01", "2002-08-26")        # corpus start to the title's unification
 # A TV show or pay-per-view in any of the three records' wording; those changes
 # are on our cards (migration 0013), never here.
@@ -121,6 +131,20 @@ def tv_dates():
     return out
 
 
+def later_nights():
+    """WWE.com's and Duncan and Will's Hardcore histories as {date: [winner,
+    ...]} in the order of the night. WWE.com lists newest first."""
+    from offshow_titles import duncan_will, wwe_com
+    out = {}
+    for name, rows, newest_first in (("WWE.com", wwe_com(WWE_PATH), True),
+                                     ("Duncan & Will", duncan_will(DW_PAGE), False)):
+        nights = collections.defaultdict(list)
+        for r in rows:
+            nights[r["date"]].append(r["champion"])
+        out[name] = {d: v[::-1] if newest_first else v for d, v in nights.items()}
+    return out
+
+
 def same(a, b):
     a, b = (x.replace("Stevie", "Steven").replace('"', "") for x in (a, b))
     return match_strength(a, b) >= 1 or a.replace("-", "").lower()[:5] == b.replace("-", "").lower()[:5]
@@ -196,10 +220,13 @@ def build():
             else:
                 disputed.append(("wikipedia", k[0], k[1], names))
     # A night the records tell differently but with the same number of
-    # changes: keep each change two of them agree on. Columbia 2002-07-28 has
+    # changes: keep each change two of them agree on, with WWE.com and Duncan
+    # and Will voting where they list as many changes. Columbia 2002-07-28 has
     # three different first winners (Wikipedia Raven, Cawthon Eddie Guerrero,
-    # Solie Steven Richards) and the same three after that.
+    # Solie Steven Richards) and the same three after that; WWE.com breaks
+    # the tie for Raven.
     caw_nights = {(n["date"], city(n["place"])): n for n in cawthon()}
+    later = later_nights()
     for day in sorted({d[1] for d in disputed if d[0] == "wikipedia"}):
         wk = next(k for k in wiki if k[0] == day and k not in used_w)
         seqs = {"Wikipedia": [r["champion"] for r in wiki[wk]]}
@@ -213,6 +240,9 @@ def build():
         n = len(seqs["Wikipedia"])
         if len(seqs) < 2 or any(len(v) != n for v in seqs.values()):
             continue
+        for src, nights in later.items():
+            if len(nights.get(day, [])) == n:
+                seqs[src] = nights[day]
         for i in range(n):
             agree = [src for src, v in seqs.items() if same(v[i], seqs["Wikipedia"][i])]
             if len(agree) < 2:
@@ -235,8 +265,12 @@ def main():
     changes, disputed = build()
     doc = {"about": "Title changes at shows no card of ours carries. Each is listed the same way by at "
                     "least two of: Cawthon's results archive, Wikipedia's List of WWE Hardcore Champions, "
-                    "Solie's Title Histories. Built by lineup-check/offcard_titles.py.",
-           "sources": {"Wikipedia": WIKI_URL, "Solie": SOLIE_URL, "Cawthon": "https://thehistoryofwwe.com/"},
+                    "Solie's Title Histories, and on a night those three tell differently, also "
+                    "WWE.com's title history and Duncan and Will's wrestling-titles.com. "
+                    "Built by lineup-check/offcard_titles.py.",
+           "sources": {"Wikipedia": WIKI_URL, "Solie": SOLIE_URL, "Cawthon": "https://thehistoryofwwe.com/",
+                       "WWE.com": "https://www.wwe.com/" + WWE_PATH,
+                       "Duncan & Will": "https://www.wrestling-titles.com/wwe/" + DW_PAGE},
            "changes": changes}
     OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"{len(changes)} changes on {len({c['date'] for c in changes})} nights -> {OUT.relative_to(ROOT)}")

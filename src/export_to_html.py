@@ -1150,7 +1150,8 @@ def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES,
                          house=HOUSE_SHOW_CHANGES, t247=TITLE_247_CHANGES,
                          offshow=OFFSHOW_CHANGES) -> list[dict]:
     """Title changes no card carries: the Hardcore title's house-show swaps,
-    each listed the same way by two of three published records
+    each listed the same way by two published records, WWE.com's and Duncan
+    and Will's histories voting where the first three disagree
     (lineup-check/offcard_titles.py); other belts' house-show changes and
     reigns WWE recognized without a match, each confirmed by a second record
     (lineup-check/house_show_titles.py); the 24/7 title's changes outside a
