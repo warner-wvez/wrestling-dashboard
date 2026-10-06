@@ -111,6 +111,7 @@ def off_dates(ours, wiki, ops, aired, window=AIRED_WITHIN):
 # A list's name for a champion -> the name our cards use, where the two differ
 # and the alias map does not join them.
 ALIASES = {"Hollywood Hulk Hogan": "Hulk Hogan", "Chavo Classic": "Chavo Guerrero Classic",
+           '"Stone Cold" Steve Austin': "Steve Austin",
            "Shane Helms": "Gregory Helms",
            # He won the interim title masked and unmasked a week later; our
            # roster knows him only as Santos Escobar.
