@@ -114,7 +114,12 @@
 // the 2019 and 2022 match shards changed.
 // v37: match reports from Wikipedia's results tables read as names, not link
 // code ("[[Kay Lee Ray]] defeated [[Mia Yim]]"). Core changed.
-const CACHE = 'wrestling-dashboard-v37';
+// v38: valets read to the end of their bracket: 34 ringside lines lose their
+// link code and 13 valets leave the wrestler lists (Roxanne Perez beside
+// Dominik Mysterio, three of Legado del Fantasma at WrestleMania XL), and three
+// multi-team matches get their sides back. Core and the 2007, 2019, 2022 and
+// 2025 match shards changed.
+const CACHE = 'wrestling-dashboard-v38';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
