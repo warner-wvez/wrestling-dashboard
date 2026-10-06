@@ -3659,6 +3659,11 @@
   // walk reads team members out of it. A reader sees the names: a piped link
   // shows its second half, "[[Shane Thorne|Slapjack]]" reads "Slapjack".
   const plainWikiLinks = (s) => String(s ?? '').replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1');
+  // A card names the belt the way the export labels it (belt_label: the belt
+  // alone, spelled one way, null for a contender match), and a stipulation
+  // written into the stake ("If Lashley defeats Owens ...") rides as stake_note.
+  const beltLabelOf = (m) => (m && 'belt_label' in m ? m.belt_label : (m && m.title_at_stake)) || null;
+  const stipOf = (m) => (m && (m.stipulation || m.stake_note)) || null;
   const fmtDuration = (sec) => {
     if (sec == null) return '';
     const m = Math.floor(sec / 60), s = sec % 60;
@@ -4890,8 +4895,8 @@
       const cls = SHOW_CLASS[ev.show_type] || '';
       const rating = match.match_guide_rating != null
         ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${match.match_guide_rating.toFixed(1)}</span></span>` : '';
-      const tags = (match.title_at_stake ? `<span class="m-tag title">${esc(match.title_at_stake)}</span>` : '')
-        + (match.stipulation ? `<span class="m-tag stip">${esc(match.stipulation)}</span>` : '');
+      const tags = (beltLabelOf(match) ? `<span class="m-tag title">${esc(beltLabelOf(match))}</span>` : '')
+        + (stipOf(match) ? `<span class="m-tag stip">${esc(stipOf(match))}</span>` : '');
       const matchup = matchupLabel(match);
       return `
         <button class="saved-row" type="button" data-go-event="${esc(String(ev.id))}" data-go-match="${esc(String(match.id))}">
@@ -5814,10 +5819,11 @@
     const norm = (s) => String(s || '').toLowerCase()
       .replace(/championship/g, 'title').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
     const typeNorm = norm(type);
-    const titleTag = (m.title_at_stake && !typeNorm.includes(norm(m.title_at_stake)))
-      ? `<span class="m-tag title">${esc(m.title_at_stake)}</span>` : '';
-    const stipTag = (m.stipulation && !typeNorm.includes(norm(m.stipulation)))
-      ? `<span class="m-tag stip">${esc(m.stipulation)}</span>` : '';
+    const shownBelt = beltLabelOf(m), shownStip = stipOf(m);
+    const titleTag = (shownBelt && !typeNorm.includes(norm(shownBelt)))
+      ? `<span class="m-tag title">${esc(shownBelt)}</span>` : '';
+    const stipTag = (shownStip && !typeNorm.includes(norm(shownStip)))
+      ? `<span class="m-tag stip">${esc(shownStip)}</span>` : '';
     const notAired = m.aired === false;
     const airedTag = notAired
       ? `<span class="m-tag not-aired">${m.aired_on ? `Aired on ${esc(m.aired_on)}` : 'Not on the broadcast'}</span>` : '';
@@ -6033,8 +6039,10 @@
   function renderMatchBody(m, airDate, sourceSlug = null) {
     const teams = m.teams || [];
     if (!teams.length) return `<div class="match-body"><em style="color:var(--ink-faint);">No details</em></div>`;
-    const titleAtStake = m.title_at_stake || null;
-    const beltKey = beltFor(titleAtStake, airDate);
+    // The belt picture is keyed by the stake as stored; the tooltips name the
+    // belt the way the card's label does.
+    const beltKey = beltFor(m.title_at_stake || null, airDate);
+    const titleAtStake = beltLabelOf(m);
 
     // Battle royals / Royal Rumbles cram dozens of names into a single team and
     // collapse the inline two-column rendering into an unreadable wall. Switch

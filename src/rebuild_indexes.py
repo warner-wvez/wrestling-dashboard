@@ -26,7 +26,7 @@ if str(_PROJECT_ROOT) not in sys.path:
 from src.build_update import ROOT, load_existing                        # noqa: E402
 from src.export_to_html import (                                        # noqa: E402
     build_title_reigns, build_wrestler_reigns_by_date, build_wrestlers_index,
-    clean_junk_participants, data_sources, inject, inline_fonts, mark_belt_holders, split_fused_multiman_sides,
+    clean_junk_participants, data_sources, inject, inline_fonts, label_stakes, mark_belt_holders, split_fused_multiman_sides,
     strip_phantom_group_labels, write_sharded)
 from src.roster_aliases import (                                        # noqa: E402
     CURATED, build_canon_map, bundle_derived_aliases, load_roster_snapshot,
@@ -95,6 +95,7 @@ def rebuild(data):
         events, canon=lambda n: canon.get(n, n), title_reigns=title_reigns)
     wrbd = build_wrestler_reigns_by_date(title_reigns)
     mark_belt_holders(events, wrbd)
+    label_stakes(events)
 
     yrs = sorted({e["air_date"][:4] for e in events.values() if e["air_date"]})
     match_count = sum(e.get("match_count", len(e.get("matches") or [])) for e in events.values())
