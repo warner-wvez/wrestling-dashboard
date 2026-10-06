@@ -41,6 +41,10 @@ TITLE_URL = "https://www.cagematch.net/?id=5&nr={}"
 # words the 2002-13 belt carries too, so the shelf showed it as "World
 # Heavyweight Championship (2001)". It takes the lineage map's name.
 SHELF_NAMES = {755: "WCW World Heavyweight Championship"}
+# A Cagematch page whose name our cards never use: page 3237 is "WWE NXT United
+# Kingdom Championship", the cards say "WWE United Kingdom Title", so by words
+# the page found no reigns and the belt had no page at all.
+PAGE_REIGNS = {3237: "WWE United Kingdom Title"}
 
 
 def main() -> None:
@@ -90,7 +94,7 @@ def main() -> None:
 
     def page_key(t):
         nr = t["cagematch_title_nr"]
-        return f"cm::{nr}" if nr in mapped_nrs else lineage_key(t["title"])
+        return f"cm::{nr}" if nr in mapped_nrs else lineage_key(PAGE_REIGNS.get(nr, t["title"]))
 
     reigns_by_lineage = defaultdict(list)
     for tkey, reigns in bundle["title_reigns"].items():
