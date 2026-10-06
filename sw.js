@@ -125,7 +125,11 @@
 // 2022 and 2025 match shards and titles changed.
 // v40: the footer credits the data's own sources, cards and belt histories,
 // most used first (was "Data: Cagematch + Fandom"). Core changed.
-const CACHE = 'wrestling-dashboard-v40';
+// v41: the belt and the Champ mark go on whoever held the belt on a side with
+// more people than holders (24 sides, Judgment Day 2007's Vince McMahon among
+// them), taped dates read "Taped Dec 29, 2000", and the fonts load from the
+// site. Core, seven match shards and the fonts changed.
+const CACHE = 'wrestling-dashboard-v41';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
