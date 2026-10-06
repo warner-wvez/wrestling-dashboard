@@ -3632,6 +3632,11 @@
   const heroEl = el('hero');
 
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // Write-ups from Wikipedia's results tables (2020 on) keep their link code,
+  // "[[Kay Lee Ray]] defeated [[Mia Yim]] by [[pinfall]]", because the reign
+  // walk reads team members out of it. A reader sees the names: a piped link
+  // shows its second half, "[[Shane Thorne|Slapjack]]" reads "Slapjack".
+  const plainWikiLinks = (s) => String(s ?? '').replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g, '$1');
   const fmtDuration = (sec) => {
     if (sec == null) return '';
     const m = Math.floor(sec / 60), s = sec % 60;
@@ -5887,7 +5892,7 @@
       // so it cannot leak via the a11y tree, selection, reader mode, or disabled
       // CSS. The modal re-renders on toggle (see toggleSpoilers).
       const report = spoilers
-        ? `<span class="value mono">${esc(m.raw_description)}</span>`
+        ? `<span class="value mono">${esc(plainWikiLinks(m.raw_description))}</span>`
         : `<span class="value mono report-hidden">Result hidden. Turn spoilers on to read the finish.</span>`;
       rows.push(`
         <div class="details-row">
