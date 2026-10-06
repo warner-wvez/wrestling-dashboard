@@ -1517,12 +1517,19 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             # Kingston (c) [WWE] defeats Seth Rollins (c) [Universal] by DQ":
             # Kofi is a champion, so the flag said retain, and the Universal
             # chain crowned him. Kofi Kingston has never been Universal Champion.
+            #
+            # Unless a stipulation let the belt change hands that way and the
+            # source says so: Christian won the World Heavyweight title by DQ at
+            # Money in the Bank 2011, Sasha Banks the Raw Women's title by
+            # count-out on Raw 2020-07-27. Only on a single belt, where the
+            # marker can be pinned to it.
             if winner.get('match_outcome') in ('dq-win', 'countout-win'):
                 holds_this_belt = (
                     _champions_overlap(current['champion_names'], winner_names, canon_fn)
                     if current is not None
                     else bool(winner.get('was_champion_entering')))
-                if not holds_this_belt:
+                stipulated = m.get('title_change') and not m.get('composite_stake')
+                if not holds_this_belt and not stipulated:
                     continue
             # A singles belt is held by one wrestler and does not change hands on
             # a multi-man win. The source has fused a held-up finish, a handicap
