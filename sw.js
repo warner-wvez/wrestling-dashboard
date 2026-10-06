@@ -132,7 +132,10 @@
 // v42: the 2001-2003 SmackDowns are named as billed then, "WWF SmackDown #N"
 // and "WWE SmackDown #N" (149 were "Thursday Night SmackDown"), and Raw #397
 // is "RAW is WAR". Core changed.
-const CACHE = 'wrestling-dashboard-v42';
+// v43: 27 names spelled as their era billed them (Buh Buh Ray Dudley is Bubba
+// Ray, Rey Mysterio Jr is Rey Mysterio in WWE, Rhino is Rhyno, three
+// misspellings of Dominik Mysterio). Core, four match shards and titles changed.
+const CACHE = 'wrestling-dashboard-v43';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
