@@ -50,3 +50,17 @@ def test_champion_vs_champion_never_labels_the_champions_as_groups():
     labels = collect_group_labels(events)
     assert _label_key("Liv Morgan") not in labels
     assert _label_key("Nia Jax") not in labels
+
+
+def test_a_valet_whose_link_has_brackets_stays_a_valet():
+    """Survivor Series 2025: the "(with ...)" group was cut at the bracket in
+    "(wrestler)", so Roxanne Perez landed among the wrestlers and the ringside
+    line read "[[Raquel Rodriguez (wrestler"."""
+    side = parse_side("[[Dominik Mysterio]] (with [[Raquel Rodriguez (wrestler)|Raquel Rodriguez]] "
+                      "and [[Roxanne Perez]])")
+    assert side["participants"] == ["Dominik Mysterio"]
+    assert side["accompaniment"] == "Raquel Rodriguez, Roxanne Perez"
+    side = parse_side("[[Arianna Grace]] (with [[Lexis King]], [[Charlie Dempsey (wrestler)|Charlie Dempsey]], "
+                      "and [[Uriah Connors]])")
+    assert side["participants"] == ["Arianna Grace"]
+    assert side["accompaniment"] == "Lexis King, Charlie Dempsey, Uriah Connors"

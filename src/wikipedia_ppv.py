@@ -234,15 +234,31 @@ BRAND_OR_TITLE_RE = re.compile(
     r"|Champion", re.I)
 
 
+def with_group(side):
+    """The "(with ...)" group in a side as (start, end, inner text), read to its
+    own closing bracket: a valet's link can carry brackets of its own, "(with
+    [[Joe Coffey (wrestler)|Joe Coffey]])", and stopping at the first ")" cut
+    the group there, so the rest of it landed among the wrestlers."""
+    m = re.search(r"\(with ", side, re.I)
+    if not m:
+        return None
+    depth, j = 1, m.end()
+    while j < len(side) and depth:
+        depth += {"(": 1, ")": -1}.get(side[j], 0)
+        j += 1
+    return m.start(), j, side[m.end():j - 1]
+
+
 def parse_side(side):
     side = strip_refs(side).strip()
     champ = bool(re.search(r"\(c\)", side))
     side = re.sub(r"\(c\)", "", side)
     accompaniment = None
-    m = re.search(r"\(with (.+?)\)", side, re.I)
-    if m:
-        accompaniment = ", ".join(links_in(m.group(1))) or m.group(1).strip()
-        side = side[:m.start()] + side[m.end():]
+    g = with_group(side)
+    if g:
+        start, end, inner = g
+        accompaniment = ", ".join(links_in(inner)) or inner.strip()
+        side = side[:start] + side[end:]
     team_name, participants = None, []
     # Team pattern: a leading wikilink immediately followed by a parenthetical
     # listing members, e.g. "[[The New Day|...]] ([[Kofi]] and [[Xavier]])".
