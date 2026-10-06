@@ -1702,6 +1702,56 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
     return reigns_by_title
 
 
+def inline_fonts(html: str, root: Path) -> str:
+    """The archival single file opens offline on its own, so the fonts the
+    live page serves from fonts/ ride inside it as data URIs."""
+    import base64
+
+    def data_uri(m):
+        f = root / "fonts" / m.group(1)
+        return f"url('data:font/woff2;base64,{base64.b64encode(f.read_bytes()).decode()}')" if f.exists() else m.group(0)
+    return re.sub(r"url\('fonts/([\w.-]+\.woff2)'\)", data_uri, html)
+
+
+def mark_belt_holders(events: dict, wrestler_reigns_by_date: dict) -> int:
+    """On a side that walked in as champion with more people than the belt has
+    holders, name the ones who held the belt on the line, so the card puts the
+    belt on them and not on whoever is listed first. Judgment Day 2007's ECW
+    title match lists "Shane McMahon, Umaga, Vince McMahon": the belt was
+    Vince's. A tag belt is left alone (both partners hold it, and a partner's
+    reigns can sit under another spelling). Derived on every build, in place;
+    returns how many sides were marked."""
+    def keys_of(title, day):
+        return [lin['key'] for lin in lineages_for(title, day)] or [_title_lineage_key(title)]
+
+    # A reign is filed under its lineage's name ("WWE Women's Championship"),
+    # which need not be a string the belt was called on that date.
+    by_name = {lin['name']: lin['key'] for lin in LINEAGE_BY_KEY.values()}
+
+    def holds(name, day, want):
+        return any(iv['start'] < day and (iv['end'] is None or iv['end'] >= day)
+                   and set([by_name[iv['title']]] if iv['title'] in by_name else keys_of(iv['title'], day)) & want
+                   for iv in wrestler_reigns_by_date.get(name) or [])
+
+    marked = 0
+    for ev in events.values():
+        day = ev.get('air_date')
+        for m in ev.get('matches') or []:
+            stake = m.get('title_at_stake')
+            comps = _get_component_titles(stake, m) if stake and day else []
+            want = {k for c in comps if 'tag' not in c.lower() for k in keys_of(c, day)}
+            for t in m.get('teams') or []:
+                t.pop('belt_holders', None)
+                people = [p for p in t.get('participants') or [] if p]
+                if not (want and t.get('was_champion_entering') and len(people) > 1):
+                    continue
+                holders = [p for p in people if holds(p, day, want)]
+                if holders and len(holders) < len(people):
+                    t['belt_holders'] = holders
+                    marked += 1
+    return marked
+
+
 def build_wrestler_reigns_by_date(title_reigns: dict) -> dict[str, list[dict]]:
     """Per-wrestler interval list of title reigns.
 
