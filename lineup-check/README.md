@@ -56,7 +56,9 @@ it what no card carries:
     uv run --with requests --with beautifulsoup4 lineup-check/offshow_titles.py
 
 - `title_audit.py` lays each belt's reigns beside its Wikipedia list and prints
-  every stretch where the champions differ (dates are shown, not compared).
+  every stretch where the champions differ. Then it checks dates: each reign
+  the two share must start within a week of Wikipedia's date or of WWE.com's
+  air date for that change, and any that starts later is printed as `date`.
 - `title_vacancies.py` writes `data/title-vacancies.json`: vacancies and titles
   awarded without a match, kept only when the list's outgoing champion is who
   we have holding the belt.
