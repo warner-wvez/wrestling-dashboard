@@ -99,7 +99,13 @@
 // v33: WCW's 2001 belt named "WCW World Heavyweight Championship", not "World
 // Heavyweight Championship (2001)", and the 2002-13 belt loses the years it
 // carried only to tell the two apart. Titles changed.
-const CACHE = 'wrestling-dashboard-v33';
+// v34: 32 main-roster reigns start on the day the histories give: changes on
+// shows we don't carry (Velocity, Main Event, ECW), on pre-shows, outside a
+// match (the 2021 draft swap), and nine card wins the walk could not read
+// (WrestleMania 38, Big E's cash-in, Christian's DQ win). Ezekiel Jackson is
+// the last ECW champion. Core, the 2004, 2007, 2019, 2022 and 2025 match
+// shards and titles changed.
+const CACHE = 'wrestling-dashboard-v34';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
