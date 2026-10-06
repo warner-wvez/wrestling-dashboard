@@ -1,6 +1,107 @@
 {
- "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT) and on the pre-shows of pay-per-views we do. Each is listed by at least two of the belt's Wikipedia list, Duncan and Will's title history and WWE.com's. A pre-show change names its event and sorts ahead of the card. Built by lineup-check/offshow_titles.py.",
+ "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT, Velocity, Main Event, ECW) and on the pre-shows of pay-per-views we do, and changes outside a match on a Raw or SmackDown we carry. Each is listed by at least two of the belt's Wikipedia list, Duncan and Will's title history and WWE.com's. A pre-show change names its event and sorts ahead of the card. Built by lineup-check/offshow_titles.py.",
  "changes": [
+  {
+   "lineage": "lineage::cruiserweight-1991",
+   "title_name": "WWE Cruiserweight Championship",
+   "date": "2005-08-06",
+   "order": 0,
+   "champions": [
+    "Nunzio"
+   ],
+   "event": "Velocity",
+   "place": "Bridgeport, CT",
+   "why": "WWE recognizes Nunzio's reign as beginning on August 6, 2005, when the episode aired on tape delay.}}",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions_(1996–2007) #67",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-c.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/cruiserweight-championship"
+   },
+   "happened": "2005-08-02"
+  },
+  {
+   "title": "ECW World Heavyweight Title",
+   "title_name": "ECW World Heavyweight Title",
+   "date": "2007-09-01",
+   "order": 0,
+   "champions": [
+    "CM Punk"
+   ],
+   "event": "ECW",
+   "place": "Cincinnati, OH",
+   "why": "This was a Last Chance match which aired on tape delay on September 4, 2007.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_ECW_World_Heavyweight_Champions #40",
+    "WWE.com": "https://www.wwe.com/titlehistory/ecw-championship"
+   }
+  },
+  {
+   "title": "ECW World Heavyweight Title",
+   "title_name": "ECW World Heavyweight Title",
+   "date": "2008-01-22",
+   "order": 0,
+   "champions": [
+    "Chavo Guerrero"
+   ],
+   "event": "ECW",
+   "place": "Charlottesville, VA",
+   "why": "This was a No Disqualification Match. With Chavo being a member of the SmackDown roster, the title becomes shared between SmackDown and ECW.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_ECW_World_Heavyweight_Champions #41",
+    "WWE.com": "https://www.wwe.com/titlehistory/ecw-championship"
+   }
+  },
+  {
+   "title": "ECW World Heavyweight Title",
+   "title_name": "ECW World Heavyweight Title",
+   "date": "2009-01-13",
+   "order": 0,
+   "champions": [
+    "Jack Swagger"
+   ],
+   "event": "ECW",
+   "place": "Sioux City, IA",
+   "why": "This episode of ECW aired on tape delay on January 13, 2009.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_ECW_World_Heavyweight_Champions #45",
+    "WWE.com": "https://www.wwe.com/titlehistory/ecw-championship"
+   },
+   "happened": "2009-01-12"
+  },
+  {
+   "title": "ECW World Heavyweight Title",
+   "title_name": "ECW World Heavyweight Title",
+   "date": "2010-02-16",
+   "order": 0,
+   "champions": [
+    "Ezekiel Jackson"
+   ],
+   "event": "ECW",
+   "place": "Kansas City, MO",
+   "why": "This was an Extreme Rules match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_ECW_World_Heavyweight_Champions #49",
+    "WWE.com": "https://www.wwe.com/titlehistory/ecw-championship"
+   }
+  },
+  {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2012-08-19",
+   "order": 0.5,
+   "champions": [
+    "Antonio Cesaro"
+   ],
+   "event": "SummerSlam",
+   "place": "Los Angeles, CA",
+   "why": "Won on the SummerSlam pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_United_States_Champions #134",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/united-states-championship"
+   },
+   "event_id": 1360
+  },
   {
    "title": "NXT Title",
    "title_name": "NXT Title",
@@ -18,6 +119,23 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
    },
    "happened": "2012-07-26"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "2012-10-16",
+   "order": 0,
+   "champions": [
+    "Kofi Kingston"
+   ],
+   "event": "Main Event",
+   "place": "Memphis, TN",
+   "why": "Aired on tape delay on October 17, 2012.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Intercontinental_Champions #138",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/intercontinental-championship"
+   }
   },
   {
    "title": "NXT Title",
@@ -55,6 +173,24 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
    },
    "happened": "2013-01-31"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "2013-04-07",
+   "order": 0.5,
+   "champions": [
+    "The Miz"
+   ],
+   "event": "WrestleMania 29",
+   "place": "East Rutherford, NJ",
+   "why": "Won on the WrestleMania 29 pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Intercontinental_Champions #140",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/intercontinental-championship"
+   },
+   "event_id": 1433
   },
   {
    "title": "WWE NXT Tag Team Title",
@@ -150,6 +286,42 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
    },
    "happened": "2013-09-12"
+  },
+  {
+   "lineage": "lineage::wwe-tag-2002",
+   "title_name": "WWE World Tag Team Championship",
+   "date": "2014-01-26",
+   "order": 0.5,
+   "champions": [
+    "Billy Gunn",
+    "The Road Dogg"
+   ],
+   "event": "Royal Rumble",
+   "place": "Pittsburgh, PA",
+   "why": "Won on the Royal Rumble pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE) #48",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/raw-tag-team-championship"
+   },
+   "event_id": 1526
+  },
+  {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2014-11-03",
+   "order": 0,
+   "champions": [
+    "Rusev"
+   ],
+   "event": "Raw Backstage Pass",
+   "place": "Buffalo, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_United_States_Champions #138",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/united-states-championship"
+   }
   },
   {
    "title": "WWE NXT Tag Team Title",
@@ -277,6 +449,24 @@
    }
   },
   {
+   "lineage": "lineage::wwe-tag-2002",
+   "title_name": "WWE World Tag Team Championship",
+   "date": "2017-01-29",
+   "order": 0.5,
+   "champions": [
+    "Karl Anderson",
+    "Luke Gallows"
+   ],
+   "event": "Royal Rumble",
+   "place": "San Antonio, TX",
+   "why": "Won on the Royal Rumble pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE) #58",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-t.html"
+   },
+   "event_id": 1902
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2017-08-20",
@@ -291,6 +481,25 @@
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Cruiserweight_Champions #6",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-c.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
+   },
+   "event_id": 1972
+  },
+  {
+   "lineage": "lineage::smackdown-tag",
+   "title_name": "WWE Tag Team Championship",
+   "date": "2017-08-20",
+   "order": 0.5,
+   "champions": [
+    "Jey Uso",
+    "Jimmy Uso"
+   ],
+   "event": "SummerSlam",
+   "place": "Brooklyn, NY",
+   "why": "Won on the SummerSlam pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Tag_Team_Champions #6",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-sd-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/smackdown-tag-team-championship"
    },
    "event_id": 1972
   },
@@ -314,6 +523,23 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
    },
    "happened": "2017-11-29"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "2018-01-22",
+   "order": 0,
+   "champions": [
+    "The Miz"
+   ],
+   "event": "Raw 25 Years",
+   "place": "Brooklyn, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Intercontinental_Champions #164",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/intercontinental-championship"
+   }
   },
   {
    "lineage": "lineage::cruiserweight-2016",
@@ -389,6 +615,24 @@
    "happened": "2018-07-18"
   },
   {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2019-01-27",
+   "order": 0.5,
+   "champions": [
+    "Shinsuke Nakamura"
+   ],
+   "event": "Royal Rumble",
+   "place": "Phoenix, AZ",
+   "why": "Won on the Royal Rumble pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_United_States_Champions #163",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/united-states-championship"
+   },
+   "event_id": 2153
+  },
+  {
    "title": "NXT North American Title",
    "title_name": "NXT North American Title",
    "date": "2019-02-20",
@@ -425,6 +669,43 @@
    "event_id": 2177
   },
   {
+   "lineage": "lineage::wwe-tag-2002",
+   "title_name": "WWE World Tag Team Championship",
+   "date": "2019-04-07",
+   "order": 0.5,
+   "champions": [
+    "Curt Hawkins",
+    "Zack Ryder"
+   ],
+   "event": "WrestleMania 35",
+   "place": "East Rutherford, NJ",
+   "why": "Won on the WrestleMania 35 pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE) #73",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/raw-tag-team-championship"
+   },
+   "event_id": 2177
+  },
+  {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2019-06-03",
+   "order": 0,
+   "champions": [
+    "Samoa Joe"
+   ],
+   "event": "Raw",
+   "place": "Austin, TX",
+   "why": "Rey Mysterio voluntarily relinquished the title back to Joe due to Mysterio suffering a legitimate shoulder injury and the controversial way in which he won the title at Money in the Bank (Joe's left shoulder was not down when the referee counted the pin).",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_United_States_Champions #167",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/united-states-championship"
+   },
+   "event_id": 2196
+  },
+  {
    "lineage": "lineage::cruiserweight-2016",
    "title_name": "WWE NXT Cruiserweight Championship",
    "date": "2019-06-23",
@@ -441,6 +722,24 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-cruiserweight-championship"
    },
    "event_id": 2203
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "2019-07-14",
+   "order": 0.5,
+   "champions": [
+    "Shinsuke Nakamura"
+   ],
+   "event": "Extreme Rules",
+   "place": "Philadelphia, PA",
+   "why": "Won on the Extreme Rules pre-show, which our card does not carry.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Intercontinental_Champions #173",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/intercontinental-championship"
+   },
+   "event_id": 2210
   },
   {
    "title": "WWE NXT Tag Team Title",
@@ -564,6 +863,25 @@
    }
   },
   {
+   "lineage": "lineage::womens-2016",
+   "title_name": "WWE Women's Championship",
+   "date": "2020-05-11",
+   "order": 0,
+   "champions": [
+    "Asuka"
+   ],
+   "event": "Raw",
+   "place": "Stamford, CT",
+   "why": "The Money in the Bank briefcase was originally supposed to contain a guaranteed championship match contract, but after Becky Lynch forfeited the title due to her pregnancy, the title belt was given to Asuka by Becky in exchange for the briefcase on Raw. (A day before at Money in the Bank after Asuka",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Champions #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-raw-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/raw-womens-championship"
+   },
+   "happened": "2020-04-16",
+   "event_id": 2289
+  },
+  {
    "title": "WWE NXT Tag Team Title",
    "title_name": "WWE NXT Tag Team Title",
    "date": "2020-05-13",
@@ -617,6 +935,24 @@
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
    },
    "happened": "2020-07-01"
+  },
+  {
+   "lineage": "lineage::smackdown-tag",
+   "title_name": "WWE Tag Team Championship",
+   "date": "2020-07-19",
+   "order": 0,
+   "champions": [
+    "Shinsuke Nakamura",
+    "Cesaro"
+   ],
+   "event": "The Horror Show at Extreme Rules",
+   "place": "Orlando, FL",
+   "why": "This was a tables match. Big E and Kofi Kingston represented The New Day.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Tag_Team_Champions #21",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-sd-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/smackdown-tag-team-championship"
+   }
   },
   {
    "title": "NXT North American Title",
@@ -686,6 +1022,25 @@
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-championship"
    }
+  },
+  {
+   "lineage": "lineage::smackdown-tag",
+   "title_name": "WWE Tag Team Championship",
+   "date": "2020-10-12",
+   "order": 0,
+   "champions": [
+    "Angelo Dawkins",
+    "Montez Ford"
+   ],
+   "event": "Raw",
+   "place": "Orlando, FL",
+   "why": "As a result of the 2020 WWE Draft, The New Day (Kofi Kingston and Xavier Woods) were drafted to Raw while then-Raw Tag Team Champions The Street Profits were drafted to SmackDown. To keep the branded championships on their respective brands, WWE official Adam Pearce had the two teams exchange champi",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Tag_Team_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-sd-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/smackdown-tag-team-championship"
+   },
+   "event_id": 2311
   },
   {
    "title": "WWE NXT Tag Team Title",
@@ -959,6 +1314,42 @@
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
    }
+  },
+  {
+   "lineage": "lineage::womens-2016",
+   "title_name": "WWE Women's Championship",
+   "date": "2021-10-22",
+   "order": 0,
+   "champions": [
+    "Becky Lynch"
+   ],
+   "event": "SmackDown",
+   "place": "Wichita, KS",
+   "why": "As a result of the 2021 WWE Draft, then-SmackDown Women's Champion Becky Lynch was drafted to Raw while Charlotte Flair was drafted to SmackDown. To keep the titles on their respective brands, WWE had the two women exchange championships.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Champions #23",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-raw-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/raw-womens-championship"
+   },
+   "event_id": 2701
+  },
+  {
+   "lineage": "lineage::womens-world",
+   "title_name": "WWE Women's World Championship",
+   "date": "2021-10-22",
+   "order": 0,
+   "champions": [
+    "Charlotte Flair"
+   ],
+   "event": "SmackDown",
+   "place": "Wichita, KS",
+   "why": "As a result of the 2021 WWE Draft, then Raw Women's Champion, Charlotte Flair was drafted to SmackDown while Becky Lynch was drafted to Raw. To keep the titles to their respective brands, WWE had the two women exchange championships.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_Women's_World_Champions_(WWE) #21",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-sd-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/smackdown-womens-championship"
+   },
+   "event_id": 2701
   },
   {
    "title": "NXT Women's Tag Team Title",
@@ -1428,6 +1819,24 @@
    }
   },
   {
+   "title": "WWE Women's Tag Team Title",
+   "title_name": "WWE Women's Tag Team Title",
+   "date": "2024-08-31",
+   "order": 0,
+   "champions": [
+    "Bianca Belair",
+    "Jade Cargill"
+   ],
+   "event": "Bash in Berlin",
+   "place": "Berlin, Germany",
+   "why": "Belair originally won the championship with Cargill. 104 days later Belair chose Naomi as a new partner but after Cargill suffered an injury on the December 20, 2024, episode of SmackDown (taped December 13); WWE recognizes this as a single uninterrupted reign.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Tag_Team_Champions #27",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wt.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/wwe-womens-tag-team-championship"
+   }
+  },
+  {
    "title": "NXT Title",
    "title_name": "NXT Title",
    "date": "2024-10-01",
@@ -1614,6 +2023,23 @@
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #41",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "lineage": "lineage::womens-2016",
+   "title_name": "WWE Women's Championship",
+   "date": "2025-11-01",
+   "order": 0,
+   "champions": [
+    "Jade Cargill"
+   ],
+   "event": "Saturday Night's Main Event",
+   "place": "Salt Lake City, UT",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Champions #31",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-raw-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/raw-womens-championship"
    }
   },
   {
