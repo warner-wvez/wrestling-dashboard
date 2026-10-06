@@ -7,7 +7,11 @@ pay-per-view's pre-show, which our cards leave off (the same rule that greys
 out a match that aired on Heat). The reign walk saw only the champion's next
 defense on a card, so Tony Nese's reign started at Money in the Bank instead
 of WrestleMania 35, and Lio Rush, Santos Escobar and Kushida never held it.
-This builds data/offshow-title-changes.json, which the walk merges in.
+The main-roster belts had the same gaps: Nunzio's Cruiserweight title won on
+Velocity, Kofi Kingston's Intercontinental title on Main Event, three ECW
+titles on ECW's own show, The Miz's at the WrestleMania 29 pre-show, and the
+belts Becky Lynch and Charlotte Flair swapped on SmackDown after the 2021
+draft. This builds data/offshow-title-changes.json, which the walk merges in.
 
 A change goes in when two of three title histories list it:
   Wikipedia      the belt's list of champions (wiki-cache/)
@@ -85,7 +89,58 @@ BELTS = {
         "dw": "nxt/wwe-nxt-na-wm.html",
         "wwe": "classics/titlehistory/nxt-womens-north-american-championship",
     },
+    # The main-roster belts. Their changes on shows we don't carry (Velocity,
+    # Main Event, ECW's own show, a Saturday Night's Main Event) and on
+    # pre-shows started late the same way. WWE.com keeps the 2016 brand names
+    # in its addresses: the Raw Women's page is today's WWE Women's
+    # Championship. Duncan and Will have no page for the 2002-13 World
+    # Heavyweight or the ECW title, so there WWE.com is the second record.
+    "WWE Championship": {"lineage": "lineage::wwe-championship", "wiki": "List of WWE Champions",
+                         "dw": "wwe-h.html", "wwe": "titlehistory/wwe-championship"},
+    "WWE Universal Championship": {"lineage": "lineage::universal", "wiki": "List of WWE Universal Champions",
+                                   "dw": "wwe-univ.html", "wwe": "titlehistory/universal-championship"},
+    "World Heavyweight Championship": {
+        "lineage": "lineage::world-heavyweight-2002",
+        "wiki": "List of World Heavyweight Champions (WWE, 2002–2013)",
+        "wwe": "titlehistory/world-heavyweight-championship"},
+    "WWE Women's Championship": {"lineage": "lineage::womens-2016", "wiki": "List of WWE Women's Champions",
+                                 "dw": "wwe-raw-wm.html", "wwe": "titlehistory/raw-womens-championship"},
+    "WWE Women's World Championship": {
+        "lineage": "lineage::womens-world", "wiki": "List of Women's World Champions (WWE)",
+        "dw": "wwe-sd-wm.html", "wwe": "titlehistory/smackdown-womens-championship"},
+    "WWE Divas Championship": {"lineage": "lineage::divas", "wiki": "List of WWE Divas Champions",
+                               "dw": "wwe-diva.html", "wwe": "titlehistory/divas-championship"},
+    "World Tag Team Championship (1971-2010)": {
+        "lineage": "lineage::world-tag-1971", "wiki": "List of World Tag Team Champions (WWE, 1971–2010)",
+        "dw": "wwe-world-t.html", "wwe": "titlehistory/world-tag-team-championship"},
+    "WWE World Tag Team Championship": {
+        "lineage": "lineage::wwe-tag-2002", "wiki": "List of World Tag Team Champions (WWE)",
+        "dw": "wwe-t.html", "wwe": "titlehistory/raw-tag-team-championship"},
+    "WWE Tag Team Championship": {"lineage": "lineage::smackdown-tag", "wiki": "List of WWE Tag Team Champions",
+                                  "dw": "wwe-sd-t.html", "wwe": "titlehistory/smackdown-tag-team-championship"},
+    "WWE Cruiserweight Championship": {
+        "lineage": "lineage::cruiserweight-1991", "wiki": "List of WWE Cruiserweight Champions (1996–2007)",
+        "dw": "wwe-c.html", "wwe": "titlehistory/cruiserweight-championship"},
+    "WWE Intercontinental Title": {"wiki": "List of WWE Intercontinental Champions",
+                                   "dw": "ic.html", "wwe": "titlehistory/intercontinental-championship"},
+    "WWE United States Title": {"wiki": "List of WWE United States Champions",
+                                "dw": "wwf-us-h.html", "wwe": "titlehistory/united-states-championship"},
+    "WWF European Title": {"wiki": "List of WWE European Champions",
+                           "dw": "wwf-eu-h.html", "wwe": "titlehistory/european-championship"},
+    "ECW World Heavyweight Title": {"wiki": "List of ECW World Heavyweight Champions",
+                                    "wwe": "titlehistory/ecw-championship"},
+    "WWE Women's Tag Team Title": {"wiki": "List of WWE Women's Tag Team Champions",
+                                   "dw": "wwf-wt.html", "wwe": "classics/titlehistory/wwe-womens-tag-team-championship"},
 }
+# Our cards carry nearly every main-roster change already, so on those belts
+# a change is skipped when a card of ours crowns the same champion within a
+# week of it: a day or two between a history's date and our card (a time
+# zone, a taping) is our card being right.
+MAIN_ROSTER = {name for name in BELTS if not name.startswith(("NXT", "WWE NXT"))}
+SLACK = 7
+# Wikipedia's note when WWE dates a reign from another day than the list
+# does: "WWE recognizes Asuka's reign as beginning on May 11, 2020".
+RECOGNIZED_START = re.compile(r"WWE recognizes [^.]*?reign as beginning on ([A-Z][a-z]+ \d{1,2}, \d{4})")
 # One person under two names across the histories. WWE.com uses today's ring
 # name or a short one (JD McDonagh was Jordan Devlin; "TJP", "Angel", "Murphy").
 ALIASES = {"jdmcdonagh": "jordandevlin", "tjp": "tjperkins", "angel": "angelgarza",
@@ -170,7 +225,8 @@ def confirm(name, cfg):
     Will date a change as Wikipedia does, give or take a day; WWE.com dates a
     taped one by its air date, up to five weeks later (NXT taped a month of
     shows at a time at Full Sail until 2019)."""
-    wiki, dw, wwe = wikipedia(cfg["wiki"]), duncan_will(cfg["dw"]), wwe_com(cfg["wwe"])
+    wiki, wwe = wikipedia(cfg["wiki"]), wwe_com(cfg["wwe"])
+    dw = duncan_will(cfg["dw"]) if cfg.get("dw") else []
     for r in wiki:
         r["sources"] = {"Wikipedia": f"{WIKI}{cfg['wiki'].replace(' ', '_')} #{r['n']}"}
     for i, j in align(wiki, dw, lambda w, d: same(w, d) and abs(_days(w["date"], d["date"])) <= 1):
@@ -195,7 +251,10 @@ def preshow(event, champion):
             continue
         for m in re.finditer(r"\|\s*match(\d+)\s*=([^\n]*)", text):
             winner = _unlink(m.group(2).split(" defeated ")[0])
-            if " defeated " in m.group(2) and surname in plain(winner):
+            # plain() drops brackets, and a team's members sit in them: "New
+            # Age Outlaws (Billy Gunn and Road Dogg)".
+            spelled = re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", winner).lower())
+            if " defeated " in m.group(2) and (surname in plain(winner) or surname in spelled):
                 note = re.search(rf"\|\s*note{m.group(1)}\s*=\s*([^\n|]*)", text)
                 return bool(note and note.group(1).strip().lower().startswith("pre"))
     return None
@@ -214,12 +273,21 @@ def won_on_card(card, r):
     return won[0] if len(won) == 1 else None
 
 
-def carried_reigns(events, name):
-    """Our reigns that a card's own match starts, from the walk without this file."""
+def walk_without_this_file(events):
+    """Every belt's reigns from the walk without data/offshow-title-changes.json."""
     from src.export_to_html import build_title_reigns, load_offcard_changes
     others = load_offcard_changes(offshow=Path("/nonexistent"))
-    return [r for r in build_title_reigns(events, offcard=others).get(name, [])
-            if not r["pre_corpus"] and r["start_event_id"]]
+    return build_title_reigns(events, offcard=others)
+
+
+def carried(reigns):
+    """The reigns that a card's own match starts."""
+    return [r for r in reigns if not r["pre_corpus"] and r["start_event_id"]]
+
+
+def recognized_start(notes):
+    m = RECOGNIZED_START.search(notes or "")
+    return datetime.strptime(m.group(1), "%B %d, %Y").date().isoformat() if m else None
 
 
 def main():
@@ -239,23 +307,59 @@ def main():
     # Nothing past our last show: the title pages stay where the site ends.
     corpus_end = max(e["air_date"] for e in events.values())
     changes = []
+    walk = walk_without_this_file(events)
+    # A main-roster belt pairs a history's champion with ours through the
+    # dashboard's profiles: "The Hurricane" is our "Hurricane Helms", MNM our
+    # "Mercury" and "Nitro".
+    from title_audit import name_key
+    profile = name_key(data["wrestlers_by_name"])
+
+    def profiles(r):
+        names = [r["champion"]] + list(r.get("members") or [])
+        names += [p for n in names for p in re.split(r":|&| and ", re.sub(r"\(.*?\)", "", n))]
+        return {profile(n.strip()) for n in names if n.strip()}
+    cards_by_date = {}
+    for e in events.values():
+        cards_by_date.setdefault(e["air_date"], []).append(e)
     for name, cfg in BELTS.items():
         rows = confirm(name, cfg)
-        ours = carried_reigns(events, name)
+        reigns = walk.get(name, [])
+        ours = carried(reigns)
+        main_roster = name in MAIN_ROSTER
         for k, r in enumerate(rows):
             day = r["wwe"]["date"] if r.get("wwe") else r["date"]
+            if main_roster:
+                day = recognized_start(r["notes"]) or day
+                # Ours from the reign in force when our history of the belt
+                # starts; anything before it is outside the corpus.
+                if not reigns or day <= reigns[0]["start"]:
+                    continue
             if day > corpus_end:
                 continue
             if len(r["sources"]) < 2:
                 print(f"only {', '.join(r['sources'])} lists it, not applied: {r['date']} {name}: {r['champion']}")
                 continue
-            if any(o["start"] in (r["date"], day) and same({"champion": " & ".join(o["champion_names"])}, r)
-                   for o in ours):
+
+            def held_by(o):
+                if same({"champion": " & ".join(o["champion_names"]), "members": o["champion_names"]}, r):
+                    return True
+                return main_roster and bool({profile(n) for n in o["champion_names"]} & profiles(r))
+            if any(o["start"] in (r["date"], day) and held_by(o) for o in (reigns if main_roster else ours)):
+                continue
+            if main_roster and any(held_by(o) and min(abs(_days(o["start"], d)) for d in (r["date"], day)) <= SLACK
+                                   for o in ours):
                 continue
             # A team by its members; a wrestler by the name he wrestled under
             # later ("El Hijo del Fantasma/Santos Escobar").
             names = r["members"] if "Tag" in name and len(r["members"]) > 1 else [r["champion"]]
             champions = [by_plain.get(plain(re.sub(r"^.*/", "", n)), re.sub(r"^.*/", "", n)) for n in names]
+            if main_roster:
+                # The reign we have, started late: the change takes its names,
+                # spelled as our cards spell them and without a partner the
+                # team added later (Naomi joined Belair and Cargill in 2025).
+                late = next((o for o in reigns if held_by(o) and 0 < _days(day, o["start"]) <= 120), None)
+                if late:
+                    champions = list(late["champion_names"])
             champion = champions[0]
             where = {"lineage": cfg["lineage"]} if "lineage" in cfg else {"title": name}
             entry = {**where, "title_name": name, "date": day, "order": 0,
@@ -266,8 +370,19 @@ def main():
             ek = event_key(r["event"])
             card = next((e for e in ppv_by_date.get(day, [])
                          if ek and ek not in WEEKLY and ek in event_key(e["ppv_name"] or e["title"])), None)
-            won = card and won_on_card(card, r)
-            if won:
+            weekly = None
+            if main_roster and card is None and ek in WEEKLY:
+                # A Raw or SmackDown we carry: the change goes on that show.
+                weekly = next((e for e in cards_by_date.get(day, []) if ek in event_key(e["title"])), None)
+            won = (card or weekly) and won_on_card(card or weekly, r)
+            if won and main_roster:
+                print(f"won on our card without the walk seeing it, rule the match instead: {day} {name}: "
+                      f"{champion}, match {won['id']}")
+                continue
+            if weekly and not won:
+                entry.update(event_id=weekly["id"], order=0,
+                             why=(r["notes"][:300] or f"Changed hands on {weekly['title']} outside a match."))
+            elif won:
                 entry.update(event_id=card["id"], order=won["match_order"] + 0.5,
                              why=f"Won in match {won['match_order']} of {card['title']}, which our card does not "
                                  "mark as a title change.")
@@ -295,8 +410,9 @@ def main():
 
     changes.sort(key=lambda c: (c["date"], c["title_name"], c["order"]))
     OUT.write_text(json.dumps({
-        "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT) and on the "
-                 "pre-shows of pay-per-views we do. Each is listed by at least two of the belt's Wikipedia list, "
+        "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT, Velocity, "
+                 "Main Event, ECW) and on the pre-shows of pay-per-views we do, and changes outside a match on a "
+                 "Raw or SmackDown we carry. Each is listed by at least two of the belt's Wikipedia list, "
                  "Duncan and Will's title history and WWE.com's. A pre-show change names its event and sorts "
                  "ahead of the card. Built by lineup-check/offshow_titles.py.",
         "changes": changes}, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")

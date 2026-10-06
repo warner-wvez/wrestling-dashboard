@@ -56,7 +56,9 @@ it what no card carries:
     uv run --with requests --with beautifulsoup4 lineup-check/offshow_titles.py
 
 - `title_audit.py` lays each belt's reigns beside its Wikipedia list and prints
-  every stretch where the champions differ (dates are shown, not compared).
+  every stretch where the champions differ. Then it checks dates: each reign
+  the two share must start within a week of Wikipedia's date or of WWE.com's
+  air date for that change, and any that starts later is printed as `date`.
 - `title_vacancies.py` writes `data/title-vacancies.json`: vacancies and titles
   awarded without a match, kept only when the list's outgoing champion is who
   we have holding the belt.
@@ -83,17 +85,24 @@ it what no card carries:
   runs beside the champion's, who keeps the belt until the histories end his
   reign. A change our card carries as a match, but without a title-change
   mark (the "vacant / NXT Women's Championship" cards from Wikipedia's tables),
-  goes in right after that match. `BELTS` lists the NXT Cruiserweight title and
-  the six NXT belts; the NXT UK belts are not in yet.
+  goes in right after that match. `BELTS` lists the NXT Cruiserweight title,
+  the six NXT belts and the main-roster belts; the NXT UK belts are not in yet.
+  On a main-roster belt a change goes in only when no card of ours crowns the
+  same champion within a week, champions pair through the dashboard's
+  profiles ("The Hurricane" is our "Hurricane Helms"), a change on a Raw or
+  SmackDown we carry sits at the start of that show, and Wikipedia's "WWE
+  recognizes this reign as beginning on" date wins over the list's. A win on
+  our card that the walk did not see is printed, not applied: the match gets a
+  ruling instead.
 
-As of 2026-10-05 every belt in the lineage map, plus the Intercontinental,
+As of 2026-10-06 every belt in the lineage map, plus the Intercontinental,
 United States, European, ECW, Women's tag and 24/7 titles, matches its list
 reign for reign, the NXT Cruiserweight title and the six NXT belts included. One does not: the
 Hardcore title (Wikipedia lacks two April 2002 house-show nights that Cawthon
-and Solie both list). The audit compares champions, not dates, so a change
-won on a pre-show still reads as matched when our reign starts at the next
-card; every NXT belt's dates (174 reigns) were checked against all three
-histories when they went in. The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
+and Solie both list). Every shared reign starts within a week of its
+histories but one: CM Punk's 2025 World Heavyweight reign, won at a Saturday
+Night's Main Event we don't carry, which only Wikipedia lists (WWE.com has no
+page for the 2023 belt, Duncan and Will none either). The 24/7 title differs in one place by ruling: Hershey 2019-12-29 runs
 Sunil Singh, then Samir, the order Duncan and Will and WWE.com both give;
 Wikipedia lists Samir first and calls WWE.com's order a mistake.
 

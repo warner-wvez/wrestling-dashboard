@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "lineup-check"))
 sys.path.insert(0, str(ROOT))
 
-from offshow_titles import event_key, same, won_on_card  # noqa: E402
+from offshow_titles import event_key, recognized_start, same, won_on_card  # noqa: E402
 
 
 def test_a_team_pairs_across_all_three_ways_of_writing_it():
@@ -64,3 +64,16 @@ def test_two_wins_on_one_card_go_to_the_title_match():
          "teams": [_team(["Wes Lee"], True), _team(["Carmelo Hayes"], False)]},
     ]}
     assert won_on_card(card, {"champion": "Wes Lee"})["match_order"] == 4
+
+
+def test_wwe_s_recognized_start_date_is_read_from_the_note():
+    """Wikipedia dates Asuka's 2020 Raw Women's reign from the Money in the
+    Bank taping; its note gives the day WWE counts, the Raw she was handed
+    the belt on."""
+    note = ("the title belt was given to Asuka by Becky in exchange for the briefcase on Raw. "
+            "WWE recognizes Asuka's reign as beginning on May 11, 2020 (A day after the Money in the "
+            "Bank ladder match aired on tape delay)")
+    assert recognized_start(note) == "2020-05-11"
+    assert recognized_start("Banks won by countout.WWE recognizes Banks' reign as beginning on "
+                            "July 27, 2020, when the match aired on tape delay.") == "2020-07-27"
+    assert recognized_start("Defeated Iyo Sky to win the vacant title.") is None
