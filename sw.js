@@ -135,7 +135,10 @@
 // v43: 27 names spelled as their era billed them (Buh Buh Ray Dudley is Bubba
 // Ray, Rey Mysterio Jr is Rey Mysterio in WWE, Rhino is Rhyno, three
 // misspellings of Dominik Mysterio). Core, four match shards and titles changed.
-const CACHE = 'wrestling-dashboard-v43';
+// v44: match cards name the belt alone, spelled one way (284 stored ways down
+// to 113 labels); stipulations written into the stake show as a stipulation and
+// contender matches name no belt. Core and every match shard changed.
+const CACHE = 'wrestling-dashboard-v44';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
