@@ -129,7 +129,10 @@
 // more people than holders (24 sides, Judgment Day 2007's Vince McMahon among
 // them), taped dates read "Taped Dec 29, 2000", and the fonts load from the
 // site. Core, seven match shards and the fonts changed.
-const CACHE = 'wrestling-dashboard-v41';
+// v42: the 2001-2003 SmackDowns are named as billed then, "WWF SmackDown #N"
+// and "WWE SmackDown #N" (149 were "Thursday Night SmackDown"), and Raw #397
+// is "RAW is WAR". Core changed.
+const CACHE = 'wrestling-dashboard-v42';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
