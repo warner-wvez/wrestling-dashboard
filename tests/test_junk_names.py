@@ -44,7 +44,7 @@ def test_typo_twins_merge_to_one_spelling():
 
 
 def test_era_billing_is_left_alone():
-    for billed in ("Big Show", "The Big Show", "A-Train", "The A-Train", "Road Dogg", "a jobber"):
+    for billed in ("Big Show", "The Big Show", "A-Train", "The A-Train", "Road Dogg"):
         assert clean_participant(billed) == billed
 
 
@@ -69,3 +69,15 @@ def test_single_letter_left_by_a_hyphen_split_is_dropped():
 
 def test_champion_mark_comes_off_the_name():
     assert clean_participant("Layla ©") == "Layla"
+
+
+def test_an_unnamed_opponent_reads_as_a_local_competitor():
+    """17 cards wrote one four ways; none of them is a wrestler to profile."""
+    from src.export_to_html import is_placeholder_name
+    assert clean_participant("a jobber") == "a local competitor"
+    assert clean_participant("2 jobbers") == "2 local competitors"
+    assert clean_participant("3 local athletes") == "3 local competitors"
+    assert clean_participant("4 local competitors") == "4 local competitors"
+    for name in ("a local competitor", "2 local competitors"):
+        assert is_placeholder_name(name)
+    assert clean_participant("El Local") == "El Local"

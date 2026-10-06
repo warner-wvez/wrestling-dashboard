@@ -65,7 +65,7 @@ PLACEHOLDER_NAMES: frozenset[str] = frozenset({"???"})
 _PLACEHOLDER_RE = re.compile(
     r"^(?:"
     r"(?:a|an|\d+)\s+jobbers?"                      # a jobber, 2 jobbers
-    r"|\d+\s+local\s+(?:competitors?|athletes?)"    # 3 local competitors / athletes
+    r"|(?:a|an|\d+)\s+local\s+(?:competitors?|athletes?)"    # a local competitor, 3 local athletes
     r"|\d+\s+ninjas?|the\s+masked\s+ninja"          # 3 ninjas, The Masked Ninja
     r"|el\s+local\s+#?\d+"                          # El Local #1 (not bare "El Local")
     # comment-section UI a scraper can swallow as a participant:
@@ -109,6 +109,20 @@ CARD_SPELLING = {
 }
 
 
+# An unnamed opponent, written four ways across the sources ("a jobber", "2
+# jobbers", "3 local athletes", "4 local competitors"). WWE bills them as local
+# competitors, so every card says that, with the count.
+_UNNAMED_RE = re.compile(r"^(an?|\d+)\s+(?:jobbers?|local\s+(?:athletes?|competitors?))$", re.I)
+
+
+def _unnamed(n):
+    m = _UNNAMED_RE.match(n)
+    if not m:
+        return n
+    count = m.group(1).lower()
+    return "a local competitor" if count in ("a", "an", "1") else f"{count} local competitors"
+
+
 def clean_participant(name: str):
     """The name as a card should show it, or None when it is not a person."""
     n = re.sub(r"\s+", " ", name or "").strip()
@@ -121,7 +135,7 @@ def clean_participant(name: str):
         return None
     if re.fullmatch(r"(?:the\s+)?[A-Za-z]", n, re.IGNORECASE):
         return None       # "The X" cut from "The X-Factor" at the hyphen, "D" from "D-Lo"
-    return CARD_SPELLING.get(n, n)
+    return CARD_SPELLING.get(n, _unnamed(n))
 
 
 def clean_junk_participants(events: dict) -> int:
