@@ -123,7 +123,9 @@
 // 2017, The Horror Show at Extreme Rules 2020, Bash in Berlin 2024, Clash in
 // Paris 2025 and Clash in Italy 2026 (38 matches). Core, the 2001, 2016, 2019,
 // 2022 and 2025 match shards and titles changed.
-const CACHE = 'wrestling-dashboard-v39';
+// v40: the footer credits the data's own sources, cards and belt histories,
+// most used first (was "Data: Cagematch + Fandom"). Core changed.
+const CACHE = 'wrestling-dashboard-v40';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

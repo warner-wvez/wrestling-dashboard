@@ -7773,9 +7773,15 @@
     const fmt = (n) => Number(n).toLocaleString('en-US');
     const yr = meta.year_range || [0, 0];
     const stats = `${fmt(meta.event_count)} events · ${fmt(meta.match_count)} matches · ${yr[0]}-${yr[1]}`;
-    const attr = 'Data: Cagematch + Fandom';
+    // Credits come from the data (meta.sources, built at export from each
+    // event's source and each belt-history record), most used first.
+    const src = meta.sources || {};
+    const names = (pairs) => (pairs || []).map(p => p[0]).join(', ');
+    const attr = [src.cards && src.cards.length ? `Cards: ${names(src.cards)}` : '',
+                  src.belt_histories && src.belt_histories.length ? `Belt histories: ${names(src.belt_histories)}` : '']
+      .filter(Boolean).join(' · ');
     const repo = '<a class="page-footer__link" href="https://github.com/warner-wvez/wrestling-dashboard" target="_blank" rel="noopener">GitHub</a>';
-    line.innerHTML = `${esc(stats)} · ${esc(attr)} · ${repo}`;
+    line.innerHTML = attr ? `${esc(stats)} · ${esc(attr)} · ${repo}` : `${esc(stats)} · ${repo}`;
   }
   renderFooter();
 
