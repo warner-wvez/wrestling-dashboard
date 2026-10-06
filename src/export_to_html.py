@@ -1713,6 +1713,65 @@ def inline_fonts(html: str, root: Path) -> str:
     return re.sub(r"url\('fonts/([\w.-]+\.woff2)'\)", data_uri, html)
 
 
+_STAKE_QUOTE = re.compile(r'["\u201c]([^"\u201d]+)["\u201d]')
+_BELT_NAME = re.compile(r"^(.*?\b(?:Titles?|Championships?|Cup)(?: Tournament)?)(?!\w)", re.I)
+_NOT_FOR_THE_BELT = re.compile(r"contender|#\s*1\b|qualif", re.I)
+
+
+def stake_label(stake):
+    """(the belt a match card names, the stipulation sentence) from a stored
+    title_at_stake. The stake is written 284 ways for about 45 belts: a
+    stipulation in quotes ('"If Lashley defeats Owens, Rollins and Big E he
+    gets added to WWE Championship Match at Day 1" No DQ Match'), match words
+    after the belt ("WWE United States Championship Open Challenge"), "vacant /
+    X", "RAW" and "Title" from one source beside "Raw" and "Championship" from
+    another. The card shows the belt alone, spelled one way; a contender or
+    qualifying match names no belt, since none is on the line."""
+    if not stake:
+        return None, None
+    note = None
+    m = _STAKE_QUOTE.search(stake)
+    if m:
+        note = m.group(1).strip()
+        stake = (stake[:m.start()] + stake[m.end():]).strip()
+    belts = []
+    for part in re.split(r"\s+/\s+", stake):
+        part = re.sub(r"\s+", " ", part.replace("\u2019", "'")).strip()
+        if not part or part.lower() == "vacant":
+            continue
+        if _NOT_FOR_THE_BELT.search(part):
+            note = note or part
+            continue
+        found = _BELT_NAME.match(part)
+        if not found:
+            continue
+        name = re.sub(r"\bRAW\b", "Raw", found.group(1))
+        name = re.sub(r"\bTitles\b", "Championships", re.sub(r"\bTitle\b", "Championship", name))
+        if name not in belts:
+            belts.append(name)
+    return (" / ".join(belts) or None), note
+
+
+def label_stakes(events: dict) -> int:
+    """Each match's card label from its stake (stake_label), in place, only
+    where it differs from the stake as stored; returns how many differ."""
+    changed = 0
+    for ev in events.values():
+        for m in ev.get('matches') or []:
+            m.pop('belt_label', None)
+            m.pop('stake_note', None)
+            stake = m.get('title_at_stake')
+            if not stake:
+                continue
+            label, note = stake_label(stake)
+            if label != stake:
+                m['belt_label'] = label
+                changed += 1
+            if note and not m.get('stipulation'):
+                m['stake_note'] = note
+    return changed
+
+
 def mark_belt_holders(events: dict, wrestler_reigns_by_date: dict) -> int:
     """On a side that walked in as champion with more people than the belt has
     holders, name the ones who held the belt on the line, so the card puts the
