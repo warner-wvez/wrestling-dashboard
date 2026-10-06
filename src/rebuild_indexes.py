@@ -26,8 +26,8 @@ if str(_PROJECT_ROOT) not in sys.path:
 from src.build_update import ROOT, load_existing                        # noqa: E402
 from src.export_to_html import (                                        # noqa: E402
     build_title_reigns, build_wrestler_reigns_by_date, build_wrestlers_index,
-    clean_junk_participants, inject, split_fused_multiman_sides, strip_phantom_group_labels,
-    write_sharded)
+    clean_junk_participants, data_sources, inject, split_fused_multiman_sides,
+    strip_phantom_group_labels, write_sharded)
 from src.roster_aliases import (                                        # noqa: E402
     CURATED, build_canon_map, bundle_derived_aliases, load_roster_snapshot,
     save_roster_snapshot, scrape_roster)
@@ -100,7 +100,7 @@ def rebuild(data):
     bundle = {
         "meta": {"generated_at": datetime.now(timezone.utc).isoformat(),
                  "event_count": len(events), "match_count": match_count,
-                 "year_range": [int(yrs[0]), int(yrs[-1])]},
+                 "year_range": [int(yrs[0]), int(yrs[-1])], "sources": data_sources(events)},
         "events_by_date": data["events_by_date"], "events": events,
         "wrestlers": wrestlers, "wrestlers_by_name": wrestlers_by_name,
         "title_reigns": title_reigns, "wrestler_reigns_by_date": wrbd,

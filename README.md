@@ -82,12 +82,16 @@ wrestling-dashboard/
 
 ## Data sources
 
-The corpus is assembled from three lanes, each chosen because it serves to a normal request without circumventing any bot wall:
+The cards come from three main lanes, each chosen because it serves to a normal request without circumventing any bot wall:
 
 - **Historical base, 2001-2019**: [Cagematch.net](https://www.cagematch.net/) (scraped to the local SQLite database). Carries durations and community ratings.
 - **Weekly TV, 2020 to present**: [The SmackDown Hotel](https://www.thesmackdownhotel.com/) editor-curated results (one page per show-year). Clean dates and accurate, era-consistent cards.
 - **PPV / PLE, 2020 to present**: Wikipedia via the sanctioned MediaWiki API (`{{Pro wrestling results table}}`), which carries exact match durations.
 - **Roster names**: The SmackDown Hotel WWE roster page is used to canonicalize wrestler names and merge ring-name changes (its profile slugs preserve a wrestler's earlier name, so renames are auto-detected).
+- **Filling gaps**: a few cards come from the [Pro Wrestling Fandom wiki](https://prowrestling.fandom.com/) and Graham Cawthon's [History of WWE](https://thehistoryofwwe.com/) results archive, and missing PPVs from Wikipedia's results tables.
+- **Belt histories**: every belt's Wikipedia list, checked against WWE.com's own title history and Royal Duncan and Gary Will's [wrestling-titles.com](https://www.wrestling-titles.com/), plus Cawthon and Solie's Title Histories for the 2001-02 Hardcore title. A change no card carries goes in only when two of them list it (`lineup-check/`).
+
+The page footer credits these from the data itself (`meta.sources`), most used first.
 
 Not affiliated with WWE. This is a fan-made companion tool that points people at existing sources, not a replacement for them.
 

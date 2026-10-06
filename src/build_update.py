@@ -35,7 +35,8 @@ if str(ROOT) not in sys.path:
 
 from src.export_to_html import (  # noqa: E402
     build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date,
-    clean_junk_participants, inject, split_fused_multiman_sides, strip_phantom_group_labels, write_sharded)
+    clean_junk_participants, data_sources, inject, split_fused_multiman_sides, strip_phantom_group_labels,
+    write_sharded)
 from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E402
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
@@ -469,7 +470,7 @@ def main():
     bundle = {
         "meta": {"generated_at": datetime.now(timezone.utc).isoformat(),
                  "event_count": len(events), "match_count": match_count,
-                 "year_range": [int(yrs[0]), int(yrs[-1])]},
+                 "year_range": [int(yrs[0]), int(yrs[-1])], "sources": data_sources(events)},
         "events_by_date": data["events_by_date"], "events": events,
         "wrestlers": wrestlers, "wrestlers_by_name": wrestlers_by_name,
         "title_reigns": title_reigns, "wrestler_reigns_by_date": wrbd,

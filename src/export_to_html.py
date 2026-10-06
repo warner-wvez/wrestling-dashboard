@@ -1189,6 +1189,32 @@ def load_offcard_changes(path=OFFCARD_TITLE_CHANGES, vacancies=TITLE_VACANCIES,
     return out
 
 
+# The belt-history records that are not Wikipedia pages.
+_OTHER_RECORDS = {"Cawthon", "Solie", "WWE.com", "Duncan & Will"}
+# How each event's primary_source is named in the page footer.
+SOURCE_NAMES = {"cagematch": "Cagematch", "thesmackdownhotel": "SmackDown Hotel", "wikipedia": "Wikipedia",
+                "fandom": "Fandom", "cawthon": "Cawthon"}
+
+
+def data_sources(events: dict, offcard=None) -> dict:
+    """Who the cards and the belt histories come from, most used first, so the
+    footer credits the data as it is rather than a line written once ("Data:
+    Cagematch + Fandom" outlived both the SmackDown Hotel and Wikipedia lanes).
+    Cards count events by primary_source; belt histories count the records
+    each change or vacancy in the history files cites."""
+    cards = Counter(SOURCE_NAMES.get(e.get("primary_source"), e.get("primary_source"))
+                    for e in events.values() if e.get("primary_source"))
+    belts = Counter()
+    for change in (load_offcard_changes() if offcard is None else offcard):
+        cited = change.get("sources") or change.get("source") or []
+        for name in ([cited] if isinstance(cited, str) else list(cited)):
+            name = re.sub(r"\s*#\d+$", "", name)
+            # Every other record a change cites is a Wikipedia page, by its
+            # title ("List of WWE Champions", "NXT UK Tag Team Championship").
+            belts[name if name in _OTHER_RECORDS else "Wikipedia"] += 1
+    return {"cards": cards.most_common(), "belt_histories": belts.most_common()}
+
+
 def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list[dict]]:
     """Walk all title matches in chronological order and build per-title reign timelines.
 
