@@ -112,7 +112,9 @@
 // v36: every unnamed opponent reads "a local competitor" or "N local
 // competitors" (was "a jobber", "2 jobbers", "3 local athletes"). Core and
 // the 2019 and 2022 match shards changed.
-const CACHE = 'wrestling-dashboard-v36';
+// v37: match reports from Wikipedia's results tables read as names, not link
+// code ("[[Kay Lee Ray]] defeated [[Mia Yim]]"). Core changed.
+const CACHE = 'wrestling-dashboard-v37';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
