@@ -65,7 +65,10 @@ it what no card carries:
   and a second record (Cawthon, or Duncan and Will's wrestling-titles.com)
   both list.
 - `offcard_titles.py` writes `data/offcard-title-changes.json`: the Hardcore
-  title's house-show swaps under the 24/7 rule, two of three records agreeing.
+  title's house-show swaps under the 24/7 rule, two of three records agreeing
+  (Cawthon, Wikipedia, Solie). On a night those three tell differently,
+  WWE.com's history and Duncan and Will also vote, each only where it lists
+  as many changes that night.
 - `title_247.py` writes `data/247-title-changes.json`: the 24/7 title's
   changes outside a match (backstage, ringside, house shows, no show at all),
   two of three title histories agreeing: Wikipedia, Duncan and Will, and

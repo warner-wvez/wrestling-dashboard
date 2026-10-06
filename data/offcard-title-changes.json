@@ -1,9 +1,11 @@
 {
- "about": "Title changes at shows no card of ours carries. Each is listed the same way by at least two of: Cawthon's results archive, Wikipedia's List of WWE Hardcore Champions, Solie's Title Histories. Built by lineup-check/offcard_titles.py.",
+ "about": "Title changes at shows no card of ours carries. Each is listed the same way by at least two of: Cawthon's results archive, Wikipedia's List of WWE Hardcore Champions, Solie's Title Histories, and on a night those three tell differently, also WWE.com's title history and Duncan and Will's wrestling-titles.com. Built by lineup-check/offcard_titles.py.",
  "sources": {
   "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions",
   "Solie": "http://web.archive.org/web/2008/http://www.solie.org/titlehistories/whcwwf.html",
-  "Cawthon": "https://thehistoryofwwe.com/"
+  "Cawthon": "https://thehistoryofwwe.com/",
+  "WWE.com": "https://www.wwe.com/titlehistory/hardcore-championship",
+  "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-hc.html"
  },
  "changes": [
   {
@@ -1538,6 +1540,20 @@
   {
    "title": "WWE Hardcore Title",
    "date": "2002-07-28",
+   "order": 0,
+   "champions": [
+    "Raven"
+   ],
+   "place": "Columbia, South Carolina",
+   "sources": [
+    "Wikipedia #201",
+    "WWE.com"
+   ],
+   "cawthon": null
+  },
+  {
+   "title": "WWE Hardcore Title",
+   "date": "2002-07-28",
    "order": 1,
    "champions": [
     "Justin Credible"
@@ -1546,7 +1562,8 @@
    "sources": [
     "Wikipedia #202",
     "Cawthon",
-    "Solie"
+    "Solie",
+    "WWE.com"
    ],
    "cawthon": "Justin Credible pinned WWE Hardcore Champion Eddie Guerrero to win the title"
   },
@@ -1561,7 +1578,8 @@
    "sources": [
     "Wikipedia #203",
     "Cawthon",
-    "Solie"
+    "Solie",
+    "WWE.com"
    ],
    "cawthon": "Shawn Stasiak pinned WWE Hardcore Champion Justin Credible to win the title"
   },
@@ -1576,7 +1594,8 @@
    "sources": [
     "Wikipedia #204",
     "Cawthon",
-    "Solie"
+    "Solie",
+    "WWE.com"
    ],
    "cawthon": "Bradshaw pinned WWE Hardcore Champion Shawn Stasiak to win the title"
   },
