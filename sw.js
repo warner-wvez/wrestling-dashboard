@@ -109,7 +109,10 @@
 // Collide 2022 (UK title 3 reigns to 5, UK Women's 3 to 4, UK Tag 2 to 7), the
 // UK title's own page, two NXT vacancies, and belt pictures for 14 more title
 // names. Core, the 2022 match shard, titles and belts changed.
-const CACHE = 'wrestling-dashboard-v35';
+// v36: every unnamed opponent reads "a local competitor" or "N local
+// competitors" (was "a jobber", "2 jobbers", "3 local athletes"). Core and
+// the 2019 and 2022 match shards changed.
+const CACHE = 'wrestling-dashboard-v36';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
