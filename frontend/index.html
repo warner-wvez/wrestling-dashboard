@@ -7,13 +7,35 @@
 <!-- Inline so it costs no request and works offline. Without it every load 404s
      on /favicon.ico, which was the only error in the console. -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%230A0A0A'/><text x='16' y='23' font-family='system-ui,-apple-system,sans-serif' font-size='19' font-weight='700' fill='%23FFFFFF' text-anchor='middle'>W</text></svg>">
-<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700,900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* The two typefaces are served from fonts/ beside the page, not from
+     Fontshare and Google, so the service worker keeps them and the site reads
+     the same offline. Satoshi (Fontshare, ITF Free Font License) and IBM Plex
+     Mono (SIL Open Font License); see fonts/LICENSES.md. */
+  @font-face { font-family: 'Satoshi'; font-style: normal; font-weight: 500; font-display: swap;
+    src: url('fonts/satoshi-500.woff2') format('woff2'); }
+  @font-face { font-family: 'Satoshi'; font-style: normal; font-weight: 700; font-display: swap;
+    src: url('fonts/satoshi-700.woff2') format('woff2'); }
+  @font-face { font-family: 'Satoshi'; font-style: normal; font-weight: 900; font-display: swap;
+    src: url('fonts/satoshi-900.woff2') format('woff2'); }
+  @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap;
+    src: url('fonts/ibm-plex-mono-400-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap;
+    src: url('fonts/ibm-plex-mono-400-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap;
+    src: url('fonts/ibm-plex-mono-500-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap;
+    src: url('fonts/ibm-plex-mono-500-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+  @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap;
+    src: url('fonts/ibm-plex-mono-600-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 600; font-display: swap;
+    src: url('fonts/ibm-plex-mono-600-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
   :root {
     /* Live height of the sticky header. Seeded with the one-row desktop
        height so the first paint is right, then kept exact by JS. Every
@@ -5570,7 +5592,7 @@
     const place = placeOf(d);
     if (place) bits.push(esc(place));
     if (d.attendance) bits.push(`${d.attendance.toLocaleString()} fans`);
-    if (d.tape_date && d.tape_date !== d.air_date) bits.push(`Taped ${esc(d.tape_date)}`);
+    if (d.tape_date && d.tape_date !== d.air_date) bits.push(`Taped ${esc(fmtDateLong(d.tape_date))}`);
     if (d.tv_network) bits.push(esc(d.tv_network));
     if (d.commentary) bits.push(`Call: ${esc(d.commentary)}`);
     return bits.map(b => `<span class="piece">${b}</span>`).join('');
@@ -5930,7 +5952,12 @@
     // champion of the belt on the line), on its first member so a tag team shows
     // it once, not twice.
     const belt = (t.was_champion_entering && beltKey) ? beltKey : null;
-    const beltFor_ = (i) => (i === 0 ? belt : null);
+    // A side with more people than the belt has holders (Judgment Day 2007:
+    // Shane, Umaga and Vince, Vince the champion) names who held it
+    // (belt_holders, set at export); the belt and the pill go on them.
+    const holders = Array.isArray(t.belt_holders) && t.belt_holders.length ? t.belt_holders : null;
+    const holderIdx = holders ? Math.max(0, rawNames.findIndex(n => holders.includes(n))) : 0;
+    const beltFor_ = (i) => (i === holderIdx ? belt : null);
     const plainNames = rawNames.map(String).join(' & ');
     const slugFor = (n) => BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n];
     const linkOf = (n, slug) => {
@@ -5959,7 +5986,9 @@
     }
     // When the belt itself is on the headshot, the red "Champ" pill is redundant
     // and only adds width that wraps the line; the belt already says champion.
-    if (belt) champ = '';
+    // A named holder keeps the pill beside the name: the belt rides a headshot
+    // and goes with it when there is none (Vince McMahon has no photo).
+    if (belt && !holders) champ = '';
     const metaBits = [];
     if (t.accompaniment) metaBits.push(`w/ ${esc(t.accompaniment)}`);
     if (t.team_name && t.participants && t.participants.length > 1 &&
@@ -5974,9 +6003,9 @@
       const rows = rawNames.map((n, i) => {
         const slug = slugFor(n);
         const inner = slug ? `${wrestlerAvatar(slug, n, 'md', beltFor_(i))}${linkOf(n, slug)}` : esc(n);
-        return `<span class="mc-row">${inner}</span>`;
+        return `<span class="mc-row">${inner}${holders && i === holderIdx ? champ : ''}</span>`;
       }).join('');
-      const badgeRow = champ ? `<span class="mc-row mc-row-badge">${champ}</span>` : '';
+      const badgeRow = champ && !holders ? `<span class="mc-row mc-row-badge">${champ}</span>` : '';
       return `<div class="team ${side} ${cls}"><span class="team-names mc-stack">${rows}${badgeRow}</span>${metaRow}</div>`;
     }
 
@@ -5984,7 +6013,8 @@
       const slug = slugFor(n);
       if (!slug) return esc(n);   // not an indexed wrestler (placeholder/junk): plain text
       const link = linkOf(n, slug);
-      return solo ? link : `<span class="mc-pair">${wrestlerAvatar(slug, n, 'sm', beltFor_(i))}${link}</span>`;
+      const pill = holders && i === holderIdx ? champ : '';
+      return solo ? link : `<span class="mc-pair">${wrestlerAvatar(slug, n, 'sm', beltFor_(i))}${link}${pill}</span>`;
     }).join(' &amp; ');
     if (solo) {
       const slug = slugFor(rawNames[0]);
@@ -5993,7 +6023,7 @@
       const inner = side === 'left' ? `${linkedNames}${champ}${av}` : `${av}${linkedNames}${champ}`;
       return `<div class="team ${side} ${cls}"><span class="team-names mc-solo">${inner}</span>${metaRow}</div>`;
     }
-    return `<div class="team ${side} ${cls}"><span class="team-names mc-inline">${linkedNames}${champ}</span>${metaRow}</div>`;
+    return `<div class="team ${side} ${cls}"><span class="team-names mc-inline">${linkedNames}${holders ? '' : champ}</span>${metaRow}</div>`;
   }
 
   function shouldSwapTeams(m) {
@@ -6131,9 +6161,12 @@
     } else {
       // Each field entry is [tile][name] so the headshot rides with its name in
       // the grid cell instead of becoming a stray grid item.
-      const cells = rawNames.map(n => `<span class="mc-cell">${avatarFor(n, false)}${linkFor(n)}</span>`).join('');
+      // A field that walked in as champion names who held the belt
+      // (belt_holders, set at export): the pill rides that cell.
+      const holders = Array.isArray(t.belt_holders) && t.belt_holders.length ? t.belt_holders : null;
+      const cells = rawNames.map(n => `<span class="mc-cell">${avatarFor(n, false)}${linkFor(n)}${holders && holders.includes(n) ? champ : ''}</span>`).join('');
       const grid = `<div class="team-block-grid">${cells}</div>`;
-      namesHtml = champ ? `${grid}<div class="team-block-badges">${champ}</div>` : grid;
+      namesHtml = champ && !holders ? `${grid}<div class="team-block-badges">${champ}</div>` : grid;
     }
 
     const metaBits = [];

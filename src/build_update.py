@@ -35,8 +35,8 @@ if str(ROOT) not in sys.path:
 
 from src.export_to_html import (  # noqa: E402
     build_wrestlers_index, build_title_reigns, build_wrestler_reigns_by_date,
-    clean_junk_participants, data_sources, inject, split_fused_multiman_sides, strip_phantom_group_labels,
-    write_sharded)
+    clean_junk_participants, data_sources, inject, inline_fonts, mark_belt_holders, split_fused_multiman_sides,
+    strip_phantom_group_labels, write_sharded)
 from src.ship_guard import atomic_write_text, corpus_floor_problems  # noqa: E402
 from src.wikipedia_ppv import WIKILINK_RE, fetch_wikitext, parse_event   # noqa: E402
 from src.smackdownhotel import fetch_year, parse_year_html              # noqa: E402
@@ -464,6 +464,7 @@ def main():
     wrestlers, wrestlers_by_name = build_wrestlers_index(
         events, canon=lambda n: canon.get(n, n), title_reigns=title_reigns)
     wrbd = build_wrestler_reigns_by_date(title_reigns)
+    mark_belt_holders(events, wrbd)
 
     yrs = sorted({e["air_date"][:4] for e in events.values() if e["air_date"]})
     match_count = sum(e.get("match_count", len(e.get("matches") or [])) for e in events.values())
@@ -481,7 +482,7 @@ def main():
     core, shards = write_sharded(bundle, ROOT, template)
     # Archival single-file build: everything inline, opens offline standalone.
     atomic_write_text(ROOT / "dist" / "wrestling-dashboard.html",
-                      inject(bundle, template))
+                      inline_fonts(inject(bundle, template), ROOT))
 
     idx, dist = ROOT / "index.html", ROOT / "dist" / "wrestling-dashboard.html"
     shard_bytes = sum((ROOT / "shards" / f"matches-{e}.json").stat().st_size for e in shards)
