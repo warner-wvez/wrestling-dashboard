@@ -991,24 +991,6 @@
    "happened": "2020-07-01"
   },
   {
-   "lineage": "lineage::smackdown-tag",
-   "title_name": "WWE Tag Team Championship",
-   "date": "2020-07-19",
-   "order": 0,
-   "champions": [
-    "Shinsuke Nakamura",
-    "Cesaro"
-   ],
-   "event": "The Horror Show at Extreme Rules",
-   "place": "Orlando, FL",
-   "why": "This was a tables match. Big E and Kofi Kingston represented The New Day.",
-   "sources": {
-    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Tag_Team_Champions #21",
-    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-sd-t.html",
-    "WWE.com": "https://www.wwe.com/titlehistory/smackdown-tag-team-championship"
-   }
-  },
-  {
    "title": "NXT North American Title",
    "title_name": "NXT North American Title",
    "date": "2020-08-22",
@@ -1975,24 +1957,6 @@
    "sources": {
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #37",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html"
-   }
-  },
-  {
-   "title": "WWE Women's Tag Team Title",
-   "title_name": "WWE Women's Tag Team Title",
-   "date": "2024-08-31",
-   "order": 0,
-   "champions": [
-    "Bianca Belair",
-    "Jade Cargill"
-   ],
-   "event": "Bash in Berlin",
-   "place": "Berlin, Germany",
-   "why": "Belair originally won the championship with Cargill. 104 days later Belair chose Naomi as a new partner but after Cargill suffered an injury on the December 20, 2024, episode of SmackDown (taped December 13); WWE recognizes this as a single uninterrupted reign.",
-   "sources": {
-    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Tag_Team_Champions #27",
-    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wt.html",
-    "WWE.com": "https://www.wwe.com/classics/titlehistory/wwe-womens-tag-team-championship"
    }
   },
   {

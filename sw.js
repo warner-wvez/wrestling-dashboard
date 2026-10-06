@@ -119,7 +119,11 @@
 // Dominik Mysterio, three of Legado del Fantasma at WrestleMania XL), and three
 // multi-team matches get their sides back. Core and the 2007, 2019, 2022 and
 // 2025 match shards changed.
-const CACHE = 'wrestling-dashboard-v38';
+// v39: six pay-per-views we lacked: Insurrextion 2001, Great Balls of Fire
+// 2017, The Horror Show at Extreme Rules 2020, Bash in Berlin 2024, Clash in
+// Paris 2025 and Clash in Italy 2026 (38 matches). Core, the 2001, 2016, 2019,
+// 2022 and 2025 match shards and titles changed.
+const CACHE = 'wrestling-dashboard-v39';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
