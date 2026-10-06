@@ -96,7 +96,10 @@
 // v32: Raven's Hardcore title win at Columbia, SC, 2002-07-28, the night's
 // first change, which the records told three ways (WWE.com breaks the tie).
 // Core and titles changed.
-const CACHE = 'wrestling-dashboard-v32';
+// v33: WCW's 2001 belt named "WCW World Heavyweight Championship", not "World
+// Heavyweight Championship (2001)", and the 2002-13 belt loses the years it
+// carried only to tell the two apart. Titles changed.
+const CACHE = 'wrestling-dashboard-v33';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {

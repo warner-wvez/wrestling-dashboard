@@ -37,6 +37,10 @@ from src.title_lineages import LINEAGES  # noqa: E402
 OUT = Path(__file__).resolve().parent / "out"
 TAG = r'<script id="wrestling-data" type="application/json">(.*?)</script>'
 TITLE_URL = "https://www.cagematch.net/?id=5&nr={}"
+# Cagematch titles WCW's belt (page 755) "World Heavyweight Championship", the
+# words the 2002-13 belt carries too, so the shelf showed it as "World
+# Heavyweight Championship (2001)". It takes the lineage map's name.
+SHELF_NAMES = {755: "WCW World Heavyweight Championship"}
 
 
 def main() -> None:
@@ -142,7 +146,7 @@ def main() -> None:
         if isinstance(belt, dict):
             belt = belt["before"] if last_end < belt["cutoff"] else belt["after"]
         retired.append({
-            "title": t["title"],
+            "title": SHELF_NAMES.get(t["cagematch_title_nr"], t["title"]),
             "belt": belt,
             "years": [reigns[-1]["start"][:4], last_end[:4]],
             "rating": t["rating"],
@@ -185,8 +189,7 @@ def main() -> None:
     board.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
 
     # Two belts can share a name (the 1956 and 2016 WWE Women's
-    # Championships, WCW's 2001 World Heavyweight Championship and the
-    # 2002-13 one), and the Titles view links a page by its name, so a retired
+    # Championships), and the Titles view links a page by its name, so a retired
     # namesake opened the other belt's page. It carries its years instead.
     names = Counter(t["title"] for t in board + retired)
     for t in retired:
