@@ -19,7 +19,7 @@ anything, and every artifact write is atomic (temp file + os.replace), so the
 live bundle can never end up truncated or silently incomplete.
 
 Run from repo root:
-    uv run --with requests --with beautifulsoup4 src/build_update.py
+    uv run --with requests --with beautifulsoup4 src/build_update.py --refetch
 """
 import collections
 import json
@@ -256,13 +256,16 @@ def restore_stable_ids(new, prior_by_key, base_events):
     return new
 
 
-def discover_ppv_titles(years):
+def discover_ppv_titles(years, fallback=True):
     """Wikipedia article titles for every WWE PPV/PLE held in `years`.
 
     Scrapes the list page's "Past events" tables for event wikilinks whose
     trailing (YYYY) disambiguator is in range, then adds the WrestleMania
     editions. If the page can't be parsed, seeds a core per-year slate so the
-    PPV lane is never empty."""
+    PPV lane is never empty. The slate guesses at events a full year would
+    hold, so add_new_shows passes fallback=False: early in a year it would
+    name events that have not happened, and their missing pages would block
+    the run."""
     yset = set(years)
     titles, seen = [], set()
     try:
@@ -283,7 +286,7 @@ def discover_ppv_titles(years):
         wm = WRESTLEMANIA_BY_YEAR.get(y)
         if wm and wm not in seen:
             seen.add(wm); titles.append(wm)
-    if sum("WrestleMania" not in t for t in titles) < 4 * len(yset):   # discovery broke
+    if fallback and sum("WrestleMania" not in t for t in titles) < 4 * len(yset):   # discovery broke
         for y in sorted(yset):
             for ev in ("Royal Rumble", "Elimination Chamber", "Money in the Bank",
                        "SummerSlam", "Survivor Series", "Backlash", "Crown Jewel"):
@@ -294,6 +297,16 @@ def discover_ppv_titles(years):
 
 
 def main():
+    # Since the July 2026 refresh the migrations have corrected the 2020-on range
+    # inside the bundle, and this run drops that range and re-fetches it, so it
+    # would undo them. New shows go through src/add_new_shows.py instead.
+    if "--refetch" not in sys.argv:
+        print("build_update.py re-fetches 2020 on from scratch, which drops every "
+              "correction src/migrations/ made to that range. To add new shows run "
+              "src/add_new_shows.py. To re-fetch anyway (a parser fix, followed by "
+              "re-running the migrations that touch 2020 on), pass --refetch.",
+              file=sys.stderr)
+        sys.exit(2)
     data = load_existing()
     events = data["events"]
     old_events, old_matches = len(events), data["meta"]["match_count"]

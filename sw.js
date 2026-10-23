@@ -138,6 +138,9 @@
 // v44: match cards name the belt alone, spelled one way (284 stored ways down
 // to 113 labels); stipulations written into the stake show as a stipulation and
 // contender matches name no belt. Core and every match shard changed.
+// From v45 on, src/add_new_shows.py bumps this number itself each time it adds
+// shows (new core, the latest era's match shard, titles), so those bumps carry
+// no note here; the pull request that ships them lists the shows.
 const CACHE = 'wrestling-dashboard-v44';
 
 self.addEventListener('install', () => self.skipWaiting());
