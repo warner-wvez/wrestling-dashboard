@@ -4218,8 +4218,10 @@
       <div class="titles-note">Champions and reign counts stay hidden while spoilers are off, and belts that don't exist yet at your date are left out.</div>`;
     const activeRow = (t) => {
       if (spoilers) {
+        // A belt with no shows on file keeps the holder from the last titles
+        // snapshot, so it says when that was instead of a frozen day count.
         const since = t.since
-          ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.days_held ? `, ${t.days_held} days` : ''}</span>`
+          ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.as_of ? `, last checked ${esc(fmtTitleSince(t.as_of))}` : t.days_held ? `, ${t.days_held} days` : ''}</span>`
           : '';
         return titleRowHTML(t, `held by ${titleChampHTML(t)}${since}`);
       }
