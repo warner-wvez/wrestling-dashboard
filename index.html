@@ -4118,11 +4118,11 @@
     return `${d} ${TITLE_MONTHS[(m || 1) - 1]} ${y}`;
   }
   function titleChampHTML(t) {
-    // A champion in the corpus links to their profile; an NXT/EVOLVE/ID holder
-    // who is not in it renders as plain text. A tag title names the team.
-    const links = t.champions.map(c => c.slug
-      ? `<a class="title-champ-link" href="#wrestler/${esc(c.slug)}">${esc(c.name)}</a>`
-      : `<span>${esc(c.name)}</span>`).join(' & ');
+    // Plain text: the whole row is already a link to the belt page, and a link
+    // inside it made the browser close the row early, so the champion fell out
+    // of the card onto a line of its own. The belt page links each champion.
+    // A tag title names the team.
+    const links = t.champions.map(c => `<span>${esc(c.name)}</span>`).join(' & ');
     return t.team_name ? `${esc(t.team_name)} <span class="title-team">(${links})</span>` : links;
   }
   function reignDate(iso) {
