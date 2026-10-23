@@ -3406,6 +3406,169 @@
     .moments-block { padding: 4px 14px 20px; }
     .moment-row { flex-direction: column; gap: 3px; }
   }
+  /* ===========================================================
+     MOTION
+     Values copied from Reflex's own components (Radix Themes 3.3, Vaul 1.1,
+     Sonner 2.0) so clicks and state changes share one feel without a
+     restyle. Spring pops with no Reflex equivalent use TypeUI's springs.
+     The reduced-motion block below cuts all of it.
+     =========================================================== */
+  /* Show page: Radix dialog, in over 200ms (up 5px, from 97%), out over 100ms */
+  .modal-backdrop.open { animation: dlg-fade-in 200ms cubic-bezier(0.16,1,0.3,1); }
+  .modal-backdrop.open .modal { animation: dlg-in 200ms cubic-bezier(0.16,1,0.3,1); }
+  .modal-backdrop.closing { display: flex; pointer-events: none; animation: dlg-fade-out 100ms cubic-bezier(0.16,1,0.3,1) forwards; }
+  .modal-backdrop.closing .modal { animation: dlg-out 100ms cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes dlg-fade-in { from { opacity: 0; } }
+  @keyframes dlg-fade-out { to { opacity: 0; } }
+  @keyframes dlg-in { from { opacity: 0; transform: translateY(5px) scale(0.97); } }
+  @keyframes dlg-out { to { opacity: 0; transform: translateY(5px) scale(0.97); } }
+
+  /* Menu drawer: Vaul, 500ms on its own curve for the panel and the dim */
+  .nav-drawer { transition: transform 500ms cubic-bezier(0.32,0.72,0,1); }
+  .nav-backdrop { transition: opacity 500ms cubic-bezier(0.32,0.72,0,1), visibility 500ms; }
+
+  /* Details: Reflex accordion, 250ms. The gap above the panel opens with it
+     instead of jumping in first. */
+  .details-panel { transition: grid-template-rows 250ms cubic-bezier(0.87,0,0.13,1); }
+  .details-panel > .details-inner { transition: margin-top 250ms cubic-bezier(0.87,0,0.13,1), padding-top 250ms cubic-bezier(0.87,0,0.13,1); }
+  .details-toggle .chev { transition: transform 250ms cubic-bezier(0.87,0,0.13,1); }
+
+  /* Hover card: Radix popover, 160ms in (4px slide away from the name, from
+     97%), 100ms out. It stays in the layout while hidden so it can fade out. */
+  #wrestler-tooltip {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+    transform-origin: top left;
+    transition: opacity 100ms cubic-bezier(0.16,1,0.3,1), transform 100ms cubic-bezier(0.16,1,0.3,1), visibility 0s linear 100ms;
+  }
+  #wrestler-tooltip[data-side="top"] { transform: translateY(4px) scale(0.97); transform-origin: bottom left; }
+  #wrestler-tooltip.visible {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity 160ms cubic-bezier(0.16,1,0.3,1), transform 160ms cubic-bezier(0.16,1,0.3,1), visibility 0s;
+  }
+
+  /* Buttons: Radix hover (40ms in, 120ms out) and press. Pressing a light
+     button darkens it a step; pressing an ink-filled one lifts it a step. */
+  :is(.spoiler-btn, .watched-btn, .save-btn, .details-toggle, .cv-btn, .rmode, .mark-month,
+      .menu-btn, .modal-close, .search-btn, .wf-chip, .month-nav, .undo-toast button) {
+    transition-duration: 120ms;
+  }
+  :is(.spoiler-btn, .watched-btn, .save-btn, .details-toggle, .cv-btn, .rmode, .mark-month,
+      .menu-btn, .modal-close, .search-btn, .wf-chip, .month-nav, .undo-toast button):hover {
+    transition-duration: 40ms;
+  }
+  :is(.spoiler-btn, .watched-btn, .save-btn, .details-toggle, .cv-btn, .rmode, .mark-month,
+      .menu-btn, .modal-close, .search-btn, .wf-chip, .month-nav, .mini-chip):active {
+    filter: brightness(0.95) saturate(1.2);
+  }
+  :is(.watched-btn.active, .save-btn.active, .match-card.open .details-toggle, .mark-month.active,
+      .wf-chip.active, .modal-spoiler-btn:hover, .menu-btn:hover, .modal-close:hover,
+      .spoiler-btn[aria-pressed="true"], .mini-chip.ppv, .undo-toast button):active {
+    filter: contrast(0.82) saturate(1.2) brightness(1.16);
+  }
+
+  /* Segmented controls: Radix indicator, 100ms */
+  .has-seg { position: relative; isolation: isolate; }
+  .seg-ind {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    background: var(--ink);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .has-seg.seg-ready .seg-ind { transition: transform 100ms cubic-bezier(0.45,0.05,0.55,0.95), width 100ms cubic-bezier(0.45,0.05,0.55,0.95); }
+  .has-seg .cv-btn[aria-pressed="true"], .has-seg .cv-btn[aria-pressed="true"]:hover,
+  .has-seg .rmode.active { background: transparent; }
+
+  /* Watched and Save: turning one on pops its icon in on a spring
+     (TypeUI toggle reaction, 600/24) */
+  @keyframes icon-pop { from { transform: scale(0.5); } to { transform: none; } }
+  .watched-btn.just-on .wb-check, .save-btn.just-on .sv-ribbon { animation: icon-pop 570ms cubic-bezier(0.2,0.8,0.2,1); }
+  @supports (animation-timing-function: linear(0, 1)) {
+    .watched-btn.just-on .wb-check, .save-btn.just-on .sv-ribbon {
+      animation-timing-function: linear(0, 0.095, 0.504, 0.721, 1.038, 1.122, 1.161, 1.145, 1.112, 1.039, 1.01, 0.977, 0.972, 0.973, 0.983, 0.989, 0.999, 1.002, 1.004, 1.004, 1.004, 1.002, 1.001, 1, 1);
+    }
+  }
+
+  /* Copy link: the check draws in where the link icon was */
+  .modal-copylink .cl-check { display: none; }
+  .modal-copylink.copied .cl-link { display: none; }
+  .modal-copylink.copied .cl-check { display: block; }
+  .modal-copylink.copied .cl-check path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: cl-draw 200ms cubic-bezier(0.16,1,0.3,1) 40ms forwards; }
+  .modal-copylink.copied .cl-label { animation: cl-in 140ms cubic-bezier(0.16,1,0.3,1); }
+  @keyframes cl-draw { to { stroke-dashoffset: 0; } }
+  @keyframes cl-in { from { opacity: 0; transform: translateY(3px); } }
+
+  /* Calendar chips dim when watched; a bulk mark cascades them (see cascadeChips) */
+  .mini-chip { transition: opacity 250ms cubic-bezier(0.16,1,0.3,1); }
+  .calendar.cascade .mini-chip { transition-delay: var(--d, 0ms); }
+
+  /* Roster loading tiles: Radix skeleton pulse, 1000ms */
+  .r-skel { animation-duration: 1000ms; animation-direction: alternate-reverse; }
+
+  /* Undo toast: Sonner, 400ms in, 200ms out, bottom right (full width on phones) */
+  .undo-toast {
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: min(420px, calc(100vw - 32px));
+    padding: 10px 10px 10px 16px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    box-shadow: var(--shadow-lg);
+    color: #FFF;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100%);
+    transition: transform 200ms ease, opacity 200ms ease, visibility 0s linear 200ms;
+  }
+  .undo-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: transform 400ms ease, opacity 400ms ease, visibility 0s;
+  }
+  .undo-toast .ut-msg { flex: 1; min-width: 0; }
+  .undo-toast button {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 0 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.6);
+    color: #FFF;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition-property: background, color;
+  }
+  .undo-toast button:hover { background: #FFF; color: var(--ink); }
+  .undo-toast button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .undo-toast .drain { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform-origin: left; }
+  @media (max-width: 560px) {
+    .undo-toast { left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* the check is drawn by animating its stroke; with motion off, show it whole */
+    .modal-copylink.copied .cl-check path { stroke-dashoffset: 0; }
+    /* the countdown line is motion too; the 4s timer behind it still runs */
+    .undo-toast .drain { visibility: hidden; }
+  }
+
 </style>
 </head>
 <body>
@@ -3647,9 +3810,12 @@
         <span class="sp-label">Spoilers Off</span>
       </button>
       <button class="spoiler-btn modal-spoiler-btn modal-copylink" id="modal-copylink" type="button" aria-label="Copy a link to this show">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+        <svg class="cl-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
           <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L11.6 6"></path>
           <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4L12.4 18"></path>
+        </svg>
+        <svg class="cl-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true">
+          <path d="M4 12.5l5 5L20 6.5" pathLength="24"></path>
         </svg>
         <span class="cl-label">Copy link</span>
       </button>
@@ -3682,6 +3848,9 @@
   const el = (id) => document.getElementById(id);
   const yearSel = el('year'), monthSel = el('month'), calEl = el('calendar');
   const mBackdrop = el('modal-backdrop'), mContent = el('modal-content');
+  // JS-driven motion (closing sheets, row collapses) checks this; CSS motion is
+  // already cut by the prefers-reduced-motion block in the stylesheet.
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // .modal is the scroll container (see CSS comment on .modal). The backdrop
   // is just the dimmed overlay; it does not scroll.
   const mEl = mBackdrop.querySelector('.modal');
@@ -4720,6 +4889,81 @@
     refreshResumeUI();   // Watched is the only input to resume; keep them in lockstep.
   }
 
+  // ------------------ Undo toast ------------------------------------------
+  // Every bulk or destructive change (mark a week, catch up, remove a row) can
+  // be taken back. Sonner timing: in over 400ms, out over 200ms, on screen 4s,
+  // and the countdown pauses while the pointer or keyboard focus is on it. A
+  // newer change replaces the toast, and the older change stays final.
+  let undoState = null;
+  function hideUndo() {
+    const t = el('undo-toast');
+    if (t) t.classList.remove('show');
+    if (undoState) { undoState.drain.cancel(); undoState = null; }
+  }
+  function showUndo(msg, onUndo) {
+    let t = el('undo-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'undo-toast';
+      t.className = 'undo-toast';
+      t.setAttribute('role', 'status');
+      t.innerHTML = '<span class="ut-msg"></span><button type="button">Undo</button><span class="drain" aria-hidden="true"></span>';
+      document.body.appendChild(t);
+      const pause = () => { if (undoState) undoState.drain.pause(); };
+      const play = () => { if (undoState) undoState.drain.play(); };
+      t.addEventListener('mouseenter', pause);
+      t.addEventListener('mouseleave', play);
+      t.addEventListener('focusin', pause);
+      t.addEventListener('focusout', (e) => { if (!t.contains(e.relatedTarget)) play(); });
+      t.querySelector('button').addEventListener('click', () => { const st = undoState; hideUndo(); if (st) st.onUndo(); });
+    }
+    if (undoState) undoState.drain.cancel();
+    t.querySelector('.ut-msg').textContent = msg;
+    const drain = t.querySelector('.drain').animate(
+      [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }],
+      { duration: 4000, easing: 'linear', fill: 'forwards' });
+    undoState = { drain, onUndo };
+    drain.onfinish = () => { if (undoState && undoState.drain === drain) hideUndo(); };
+    requestAnimationFrame(() => t.classList.add('show'));
+  }
+
+  // A removed row closes its slot (TypeUI archive: 200ms) before the list
+  // re-renders, so the rows below slide up instead of jumping.
+  function closeSlot(row, done) {
+    if (!row || reduceMotion()) { done(); return; }
+    const h = row.getBoundingClientRect().height;
+    row.style.overflow = 'hidden';
+    row.style.pointerEvents = 'none';
+    row.animate(
+      [{ height: h + 'px', opacity: 1, transform: 'none' },
+       { height: '0px', opacity: 0, transform: 'translateX(20px)', paddingTop: '0px', paddingBottom: '0px', borderWidth: '0px' }],
+      { duration: 200, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' }
+    ).onfinish = done;
+  }
+
+  function restoreWatched(snapshot) {
+    watched.clear();
+    for (const [k, v] of snapshot) watched.set(k, v);
+    saveWatched();
+    refreshWatchedUI();
+    const wv = document.getElementById('view-mylist');
+    if (wv && !wv.hidden) renderWatched();
+  }
+  const showsWord = (n) => `${n.toLocaleString('en-US')} show${n === 1 ? '' : 's'}`;
+
+  // Select-all cascade (TypeUI): when a whole week or month flips, the chips
+  // dim one after another instead of all at once, 90ms apart, capped at 600ms.
+  function cascadeChips(ids) {
+    if (!calEl || reduceMotion()) return;
+    const set = new Set(ids.map(String));
+    const chips = [...calEl.querySelectorAll('.mini-chip[data-event-id]')].filter(c => set.has(c.dataset.eventId));
+    const step = Math.min(90, chips.length > 1 ? 600 / (chips.length - 1) : 90);
+    chips.forEach((c, i) => c.style.setProperty('--d', Math.round(i * step) + 'ms'));
+    calEl.classList.add('cascade');
+    clearTimeout(cascadeChips.t);
+    cascadeChips.t = setTimeout(() => calEl.classList.remove('cascade'), 600 + 300);
+  }
+
   // ------------------ Bulk watched (catch-up + month) ---------------------
   let currentPeriodEvents = [];
 
@@ -4808,7 +5052,10 @@
       const ids = currentPeriodEvents.map(e => String(e.id));
       if (!ids.length) return;
       const allWatched = ids.every(id => watched.has(id));
-      markWatchedBulk(ids, !allWatched);
+      const before = new Map(watched);
+      cascadeChips(ids);
+      const n = markWatchedBulk(ids, !allWatched);
+      if (n) showUndo(allWatched ? `Unmarked ${showsWord(n)}` : `Marked ${showsWord(n)} watched`, () => restoreWatched(before));
     });
 
     const cuDate = el('cu-date'), cuApply = el('cu-apply');
@@ -4830,8 +5077,10 @@
       if (cuApply) cuApply.addEventListener('click', () => {
         const cutoff = catchUpCutoff();
         if (!cutoff) return;
-        markWatchedBulk(eventIdsThrough(cutoff), true);
+        const before = new Map(watched);
+        const n = markWatchedBulk(eventIdsThrough(cutoff), true);
         renderWatched();
+        if (n) showUndo(`Marked ${showsWord(n)} watched`, () => restoreWatched(before));
       });
       updateCatchUpPreview();
     }
@@ -4894,8 +5143,18 @@
     container.querySelectorAll('[data-unwatch]').forEach(rm => {
       const h = (e) => {
         e.stopPropagation(); e.preventDefault();
-        watched.delete(rm.getAttribute('data-unwatch'));
-        saveWatched(); refreshWatchedUI(); renderWatched();
+        const id = rm.getAttribute('data-unwatch');
+        if (!watched.has(id)) return;
+        const ts = watched.get(id);
+        const row = rm.closest('.watched-row');
+        const name = (row && row.querySelector('.wr-name') || {}).textContent || 'Show';
+        watched.delete(id);
+        saveWatched(); refreshWatchedUI();
+        closeSlot(row, renderWatched);
+        showUndo(`Removed ${name} from watched`, () => {
+          watched.set(id, ts);
+          saveWatched(); refreshWatchedUI(); renderWatched();
+        });
       };
       rm.addEventListener('click', h);
       rm.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') h(e); });
@@ -5004,8 +5263,16 @@
     container.querySelectorAll('[data-remove]').forEach(rm => {
       const handler = (e) => {
         e.stopPropagation(); e.preventDefault();
-        saved.delete(rm.getAttribute('data-remove'));
-        persistSaved(); refreshSavedUI(); renderSaved();
+        const key = rm.getAttribute('data-remove');
+        if (!saved.has(key)) return;
+        const row = rm.closest('.saved-row');
+        saved.delete(key);
+        persistSaved(); refreshSavedUI();
+        closeSlot(row, renderSaved);
+        showUndo('Removed a saved match', () => {
+          saved.add(key);
+          persistSaved(); refreshSavedUI(); renderSaved();
+        });
       };
       rm.addEventListener('click', handler);
       rm.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') handler(e); });
@@ -5466,8 +5733,20 @@
   // moves away from the open modal (Back button or in-app navigation), and
   // in-modal links use it before setting their own hash so the show stays in
   // history and Back can retrace into it.
+  let modalCloseTimer = null;
   function dismissModal() {
+    const wasOpen = mBackdrop.classList.contains('open');
     mBackdrop.classList.remove('open');
+    // Radix dialog hide: the sheet fades and drops 5px over 100ms instead of
+    // vanishing. 'closing' only keeps it painted; every check of 'open' already
+    // treats it as closed.
+    clearTimeout(modalCloseTimer);
+    if (wasOpen && !reduceMotion()) {
+      mBackdrop.classList.add('closing');
+      modalCloseTimer = setTimeout(() => mBackdrop.classList.remove('closing'), 110);
+    } else {
+      mBackdrop.classList.remove('closing');
+    }
     document.body.style.overflow = '';
     modalHash = null;
     modalPushed = false;
@@ -5513,6 +5792,8 @@
     lastModalCtx = { events, iso, sourceSlug };
     if (iso) rosterViewISO = clampISO(iso);   // time-aware roster mirrors the show you're viewing
     mContent.innerHTML = '<div class="status">Loading…</div>';
+    clearTimeout(modalCloseTimer);
+    mBackdrop.classList.remove('closing');
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
     if (mEl) mEl.scrollTop = 0;
@@ -5576,16 +5857,26 @@
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
     });
+    // Turning one on pops its icon in on a spring (TypeUI toggle reaction);
+    // turning it off just switches, so only the positive action gets the beat.
+    const popOn = (btn) => {
+      if (!btn.classList.contains('active')) return;
+      btn.classList.remove('just-on');
+      void btn.offsetWidth;
+      btn.classList.add('just-on');
+    };
     mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleWatched(btn.getAttribute('data-watched-id'));
+        popOn(btn);
       });
     });
     mContent.querySelectorAll('[data-save-match]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleSaved(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match'));
+        popOn(btn);
       });
     });
   }
@@ -5673,11 +5964,47 @@
       }
       if (label) {
         label.textContent = ok ? 'Copied' : 'Copy failed';
+        // the check draws in where the link icon was; the aria-label carries
+        // the result too, since it overrides the visible text for screen readers
+        copyBtn.classList.remove('copied');
+        void copyBtn.offsetWidth;   // restart the draw on a second click
+        copyBtn.classList.toggle('copied', ok);
+        copyBtn.setAttribute('aria-label', ok ? 'Link copied' : 'Copy failed');
         clearTimeout(copyTimer);
-        copyTimer = setTimeout(() => { label.textContent = 'Copy link'; }, 1600);
+        copyTimer = setTimeout(() => {
+          label.textContent = 'Copy link';
+          copyBtn.classList.remove('copied');
+          copyBtn.setAttribute('aria-label', 'Copy a link to this show');
+        }, 1600);
       }
     });
   })();
+
+  // Segmented controls: one ink block slides to the chosen option (Radix
+  // segmented control, 100ms) instead of the fill jumping between buttons. It
+  // follows the existing active markers, so the click handlers stay as they are.
+  function wireSegmented(group, isActive) {
+    if (!group) return;
+    const ind = document.createElement('span');
+    ind.className = 'seg-ind';
+    ind.setAttribute('aria-hidden', 'true');
+    group.prepend(ind);
+    group.classList.add('has-seg');
+    const sync = () => {
+      const act = [...group.children].find(c => c !== ind && isActive(c));
+      if (!act || !act.offsetWidth) { ind.style.opacity = '0'; return; }
+      ind.style.opacity = '1';
+      ind.style.width = act.offsetWidth + 'px';
+      ind.style.transform = `translateX(${act.offsetLeft}px)`;
+    };
+    new MutationObserver(sync).observe(group, { subtree: true, attributes: true, attributeFilter: ['class', 'aria-pressed'] });
+    new ResizeObserver(sync).observe(group);
+    sync();
+    // first placement lands without sliding in from the left edge
+    requestAnimationFrame(() => requestAnimationFrame(() => group.classList.add('seg-ready')));
+  }
+  wireSegmented(el('calview-toggle'), b => b.getAttribute('aria-pressed') === 'true');
+  wireSegmented(el('roster-modes'), b => b.classList.contains('active'));
 
   // "San Jose, California" / "Sheffield, South Yorkshire, UK" / "Riyadh, Saudi Arabia".
   // city/state/country are stored split (see src/cagematch_scraper._parse_location),
@@ -6374,6 +6701,8 @@
     if (top + th > window.innerHeight - 8) top = rect.top - th - 8;
     tooltipEl.style.left = left + 'px';
     tooltipEl.style.top = top + 'px';
+    // the card slides 4px away from its name, so it needs to know which side it sits on
+    tooltipEl.dataset.side = top < rect.top ? 'top' : 'bottom';
   }
 
   // ---- As-of-date records ------------------------------------------------
@@ -6498,16 +6827,21 @@
     tooltipEl.setAttribute('aria-hidden', 'false');
   }
 
+  // Warm hover (Radix skipDelayDuration): once one card has shown, moving to the
+  // next name within 300ms opens its card at once instead of waiting again.
+  let tooltipHiddenAt = 0;
   function showTooltip(slug, anchor) {
     if (!hasHover || !tooltipEl) return;
     clearTimeout(tooltipTimer);
-    tooltipTimer = setTimeout(() => { currentTip = { slug, anchor }; renderTooltipInto(slug, anchor); }, 150);
+    const warm = tooltipEl.classList.contains('visible') || Date.now() - tooltipHiddenAt < 300;
+    tooltipTimer = setTimeout(() => { currentTip = { slug, anchor }; renderTooltipInto(slug, anchor); }, warm ? 0 : 150);
   }
 
   function hideTooltip() {
     clearTimeout(tooltipTimer);
     currentTip = null;
     if (tooltipEl) {
+      if (tooltipEl.classList.contains('visible')) tooltipHiddenAt = Date.now();
       tooltipEl.classList.remove('visible');
       tooltipEl.setAttribute('aria-hidden', 'true');
     }
