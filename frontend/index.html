@@ -3527,7 +3527,7 @@
 <section id="view-titles" class="view" hidden>
   <div class="video-view-header">
     <h2>Titles</h2>
-    <p class="video-sub">Every championship the corpus carries: world titles first, retired lineages at the bottom. The current holder shows with spoilers on.</p>
+    <p class="video-sub">Every championship, world titles first and older belts at the bottom. The current holder shows with spoilers on.</p>
   </div>
   <div id="titles-content" class="titles-board"></div>
 </section>
@@ -3950,9 +3950,19 @@
     if (/undisputed|world/i.test(n) || n === "WWE Women's Championship") return 'world';
     return 'midcard';
   }
+  // Some belt names carry their run in brackets to tell lineages apart ("WWE
+  // Women's Championship (2001-2010)"); with spoilers off the end year would
+  // give the belt's retirement away, so the bracket goes. "Undisputed" goes too:
+  // it names the December 2001 unification, a storyline the viewer may not have reached.
+  function beltDisplayName(title) {
+    if (spoilers) return title;
+    return String(title || '').replace(/\s*\(\d{4}\s*[-–]\s*\d{4}\)\s*$/, '').replace(/^Undisputed\s+/i, '');
+  }
   function titleRowHTML(t, sub) {
     const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
-    const rating = t.rating != null
+    const name = beltDisplayName(t.title);
+    // the rating is a lifetime average over every reign, ahead of the viewer too
+    const rating = (spoilers && t.rating != null)
       ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
       : '';
     const belt = t.belt
@@ -3963,7 +3973,7 @@
         <a class="title-row" href="#title/${esc(titleSlug(t))}">
           ${belt}
           <span class="title-main">
-            <span class="title-name">${esc(t.title)}</span>
+            <span class="title-name">${esc(name)}</span>
             <span class="title-holder">${sub}</span>
           </span>
           ${rating}
@@ -3983,10 +3993,25 @@
       container.innerHTML = '<div class="status">No title data available.</div>';
       return;
     }
-    // One spoiler note for the whole board, not one per row: with spoilers off
-    // every row instead shows spoiler-safe lineage facts.
+    // One spoiler note for the whole board, not one per row. With spoilers off a
+    // belt that does not exist yet at the viewer's date is left out, and the
+    // lifetime reign count goes too: both tell you what is coming.
+    // A belt already running when coverage starts has its first recorded reign
+    // in the first weeks of the record, so anything starting within 60 days of
+    // the first show counts as existing from the start; a belt that arrives
+    // later (the WCW belts in July 2001) shows once its first reign is reached.
+    // A belt with no dated reign cannot be placed, so it waits for spoilers on.
+    const pos = spoilers ? null : spoilerISO();
+    const firstShowISO = (BUNDLE.events[ORDERED_IDS[0]] || {}).air_date || '2001-01-01';
+    const runningFromStart = addDaysISO(firstShowISO, 60);
+    const firstReignOf = (t) => (t.reigns || []).map(r => r.start).filter(Boolean).sort()[0] || null;
+    const existsByPos = (t) => {
+      if (!pos) return true;
+      const first = firstReignOf(t);
+      return !!first && (first <= pos || first <= runningFromStart);
+    };
     const banner = spoilers ? '' : `
-      <div class="titles-note">Champions are hidden while spoilers are off. Rows show each belt's recorded lineage instead.</div>`;
+      <div class="titles-note">Champions and reign counts stay hidden while spoilers are off, and belts that don't exist yet at your date are left out.</div>`;
     const activeRow = (t) => {
       if (spoilers) {
         const since = t.since
@@ -3994,14 +4019,11 @@
           : '';
         return titleRowHTML(t, `held by ${titleChampHTML(t)}${since}`);
       }
-      const reigns = (t.reigns || []).length;
-      const first = reigns ? t.reigns[reigns - 1].start.slice(0, 4) : null;
-      return titleRowHTML(t, first
-        ? `${reigns} reign${reigns === 1 ? '' : 's'} recorded &middot; since ${esc(first)}`
-        : 'Lineage on the belt page');
+      const first = firstReignOf(t);
+      return titleRowHTML(t, first ? `on record since ${esc(first.slice(0, 4))}` : 'Lineage on the belt page');
     };
     const groups = TITLE_TIERS.map(tier => {
-      const rows = board.filter(t => titleTier(t) === tier.key);
+      const rows = board.filter(t => titleTier(t) === tier.key && existsByPos(t));
       if (!rows.length) return '';
       return `
         <section class="titles-group">
@@ -4009,13 +4031,21 @@
           <div class="titles-grid">${rows.map(activeRow).join('')}</div>
         </section>`;
     }).join('');
-    const retired = (TITLES_RETIRED || []).length ? `
+    // A belt retired after the viewer's date would give its retirement away under
+    // a "Retired" heading, so with spoilers off the section is just "More titles"
+    // and a span only shows once it has ended by then.
+    const retiredRows = (TITLES_RETIRED || []).filter(existsByPos);
+    const retired = retiredRows.length ? `
       <section class="titles-group">
-        <h2 class="titles-group-label">Retired &amp; Historic</h2>
-        <div class="titles-grid">${TITLES_RETIRED.map(t => {
+        <h2 class="titles-group-label">${spoilers ? 'Retired &amp; Historic' : 'More titles'}</h2>
+        <div class="titles-grid">${retiredRows.map(t => {
+          if (!spoilers) {
+            const ended = t.years && pos && String(t.years[1]) < pos.slice(0, 4);
+            return titleRowHTML(t, t.years ? (ended ? `${esc(t.years[0])}&ndash;${esc(t.years[1])}` : `on record since ${esc(t.years[0])}`) : 'Lineage on the belt page');
+          }
           const span = t.years ? `${esc(t.years[0])}&ndash;${esc(t.years[1])}` : '';
           const reigns = (t.reigns || []).length;
-          return titleRowHTML(t, `${span} &middot; ${reigns} reign${reigns === 1 ? '' : 's'} recorded`);
+          return titleRowHTML(t, `${span} &middot; ${reigns} reign${reigns === 1 ? '' : 's'}`);
         }).join('')}</div>
       </section>` : '';
     container.innerHTML = banner + groups + retired;
@@ -4098,56 +4128,76 @@
     const reigns = t.reigns || [];
     const watchISO = rosterAnchorISO();
     const retired = !!t.years;
-    const rating = t.rating != null
+    // With spoilers off, "As of your date" stops everything at that date, the
+    // same way the titles list does: no rating or lifetime reign count, no
+    // later belt designs, and a reign still running then shows as running,
+    // since its real end date says when the belt changes hands. All-time is
+    // the viewer asking for the whole record, so it stays complete.
+    const safe = spoilers || titleMode === 'all';
+    const clip = (r) => (r.end && r.end > watchISO) ? Object.assign({}, r, { end: null }) : r;
+    const known = safe ? reigns : reigns.filter(r => r.start <= watchISO).map(clip);
+    const retiredShown = retired && (safe || !!(reigns[0] && reigns[0].end && reigns[0].end < watchISO));
+    const rating = safe && t.rating != null
       ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>` : '';
-    const eras = beltEras(reigns);
+    const eras = beltEras(known);
     const chaptered = new Set(eras.map(e => e.belt)).size > 1;
-    const headBelt = t.belt ? `<img class="tp-belt" src="belts/${esc(t.belt)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
+    // the headline belt is the design of the latest reign you have reached;
+    // a belt that never changed design is safe to show from the start
+    const headKey = safe ? t.belt : ((known[0] && known[0].belt) || (beltEras(reigns).length <= 1 ? t.belt : null));
+    const headBelt = headKey ? `<img class="tp-belt" src="belts/${esc(headKey)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
 
     let stateLine, timeline;
     if (titleMode === 'time') {
-      const cur = reigns.find(r => r.start <= watchISO && (!r.end || r.end >= watchISO));
-      const upTo = reigns.filter(r => r.start <= watchISO);   // never past where you have watched
+      const upTo = spoilers ? reigns.filter(r => r.start <= watchISO) : known;   // never past where you have watched
+      const cur = upTo.find(r => !r.end || r.end >= watchISO);
       // Between a vacated reign and the next one the belt existed but sat empty.
+      // Before the first reign on record nothing is claimed about the belt: the
+      // records start in 2001, and many belts are older than that.
       stateLine = cur
         ? `As of <strong>${esc(fmtTitleSince(watchISO))}</strong> &middot; held by ${reignWhoHTML(cur)}`
         : upTo.length
           ? `${retired && reigns[0].end && watchISO > reigns[0].end ? 'Retired' : 'Vacant'} as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`
-          : `Not yet established as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
+          : `No reigns on record yet as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
       const earliest = reigns[reigns.length - 1];
+      const firstShowISO = (BUNDLE.events[ORDERED_IDS[0]] || {}).air_date || '2001-01-01';
+      const startsWithRecords = !!earliest && earliest.start <= addDaysISO(firstShowISO, 60);
+      const later = reigns.length - upTo.length;
       timeline = upTo.length
         ? timelineWithChapters(upTo, cur, chaptered) +
-          (reigns.length > upTo.length ? `<div class="tp-more">${reigns.length - upTo.length} later reign${reigns.length - upTo.length === 1 ? '' : 's'} hidden &mdash; keep watching, or switch to All-time.</div>` : '')
-        : `<div class="tp-more">${earliest ? `The corpus's first reign here begins ${reignDate(earliest.start)}. Keep watching, or switch to All-time.` : 'No reign recorded in the corpus.'}</div>`;
+          (later > 0 ? `<div class="tp-more">${spoilers ? `${later} later reign${later === 1 ? '' : 's'} hidden. ` : 'Later reigns stay hidden. '}Keep watching, or switch to All-time.</div>` : '')
+        : `<div class="tp-more">${!earliest ? 'No reigns on record.'
+            : (spoilers || startsWithRecords) ? `Our records for this belt start ${reignDate(earliest.start)}. Keep watching, or switch to All-time.`
+            : 'Its reigns show once you reach them. Keep watching, or switch to All-time.'}</div>`;
     } else {
       const cur = retired ? null : (reigns.find(r => !r.end) || reigns[0]);
       stateLine = retired
         ? `Retired &middot; last active ${esc(t.years[1])}`
-        : (cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reign recorded in the corpus.');
-      timeline = timelineWithChapters(reigns, cur, chaptered) || `<div class="tp-more">No reign in the corpus.</div>`;
+        : (cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reigns on record.');
+      timeline = timelineWithChapters(reigns, cur, chaptered) || `<div class="tp-more">No reigns on record.</div>`;
     }
 
     // Spoiler-safe design panel: belt art by era plus lineage facts. This is
     // what a fresh visitor sees instead of a blank page, and it fills the
     // right side on wide screens.
-    const span = reigns.length
-      ? `${reigns[reigns.length - 1].start.slice(0, 4)}&ndash;${retired ? esc(t.years[1]) : ((reigns[0].end || '').slice(0, 4) || 'present')}`
-      : '';
+    const firstYear = known.length ? known[known.length - 1].start.slice(0, 4) : '';
+    const span = !known.length ? ''
+      : safe ? `${firstYear}&ndash;${retired ? esc(t.years[1]) : ((reigns[0].end || '').slice(0, 4) || 'present')}`
+      : `since ${firstYear}`;
     const aside = `
       <aside class="tp-aside">
-        <h2 class="tp-aside-label">The belt${eras.length > 1 ? 's' : ''}</h2>
+        ${eras.length ? `<h2 class="tp-aside-label">The belt${eras.length > 1 ? 's' : ''}</h2>` : ''}
         ${eras.map(e => `
           <div class="tp-design">
             ${e.belt ? `<img class="tp-design-img" src="belts/${esc(e.belt)}.webp" alt="" loading="lazy" onerror="this.remove()">` : ''}
             <div class="tp-design-cap">
               ${BELT_DESIGN_LABELS[e.belt] ? `<span class="tp-design-name">${esc(BELT_DESIGN_LABELS[e.belt])}</span>` : ''}
-              <span class="tp-design-span">${esc(e.from)}&ndash;${esc(e.to)}</span>
+              <span class="tp-design-span">${!safe && e.to === 'present' ? `since ${esc(e.from)}` : `${esc(e.from)}&ndash;${esc(e.to)}`}</span>
             </div>
           </div>`).join('')}
         <div class="tp-facts">
-          <div class="tp-fact"><span class="tp-fact-label">Recorded reigns</span><span class="tp-fact-value">${reigns.length}</span></div>
-          ${span ? `<div class="tp-fact"><span class="tp-fact-label">In the corpus</span><span class="tp-fact-value">${span}</span></div>` : ''}
-          ${retired ? `<div class="tp-fact"><span class="tp-fact-label">Status</span><span class="tp-fact-value">Retired</span></div>` : ''}
+          ${safe ? `<div class="tp-fact"><span class="tp-fact-label">Reigns</span><span class="tp-fact-value">${reigns.length}</span></div>` : ''}
+          ${span ? `<div class="tp-fact"><span class="tp-fact-label">On record</span><span class="tp-fact-value">${span}</span></div>` : ''}
+          ${retiredShown ? `<div class="tp-fact"><span class="tp-fact-label">Status</span><span class="tp-fact-value">Retired</span></div>` : ''}
         </div>
         <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
       </aside>`;
@@ -4157,8 +4207,8 @@
         <div class="tp-head">
           ${headBelt}
           <div class="tp-headtext">
-            <h1 class="tp-name">${esc(t.title)}</h1>
-            <div class="tp-sub">${rating}<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} in the corpus</span>${retired ? `<span>Retired</span>` : ''}</div>
+            <h1 class="tp-name">${esc(beltDisplayName(t.title))}</h1>
+            <div class="tp-sub">${rating}${safe ? `<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} on record</span>` : ''}${retiredShown ? `<span>Retired</span>` : ''}</div>
           </div>
         </div>
         <div class="tp-body">
@@ -4179,7 +4229,7 @@
     if (!container) return;
     const paint = () => {
       const t = titleBySlug(slug);
-      if (t) setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: t.title }]);
+      if (t) setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: beltDisplayName(t.title) }]);
       container.innerHTML = t ? titlePageHTML(t) : '<div class="status">Title not found.</div>';
     };
     if (!TITLES_BOARD || !BELTS) {
@@ -4309,6 +4359,8 @@
     const h = window.location.hash;
     if (h.startsWith('#wrestler/')) renderWrestler(h.slice('#wrestler/'.length));
     if (h === '#titles') renderTitles();   // the current champion is spoiler-gated
+    if (h === '#video') renderVideo();     // the library stops at your date with spoilers off
+    if (h.startsWith('#title/')) renderTitlePage(h.slice('#title/'.length));   // the belt's name drops its end year
   }
   for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
@@ -5014,7 +5066,11 @@
     if (!container) return;
     container.innerHTML = '<div class="status">Loading video links...</div>';
     await loadMedia();
-    const rows = buildVideoRows();
+    // With spoilers off the library stops at the viewer's date: a list of every
+    // year's clips names the matches and feuds still ahead of them.
+    const allRows = buildVideoRows();
+    const vpos = spoilers ? null : spoilerISO();
+    const rows = vpos ? allRows.filter(r => (r.ev.air_date || '') <= vpos) : allRows;
 
     // Chip counts describe the whole library, not the filtered slice, so they
     // stay a stable map of what exists rather than a mirror of the search box.
@@ -5036,8 +5092,12 @@
         : 'Shows and matches with a direct video link.';
     }
 
-    if (!rows.length) {
+    if (!allRows.length) {
       container.innerHTML = `<div class="saved-empty">No video links are loaded. The sidecar lives in <code>shards/media.json</code>, which the single-file build does not carry.</div>`;
+      return;
+    }
+    if (!rows.length) {
+      container.innerHTML = `<div class="saved-empty">No video links up to your date yet. Turn spoilers on to see every year.</div>`;
       return;
     }
 
@@ -5048,7 +5108,7 @@
     }
 
     // Group by year so a 440-event list reads as a timeline you can scan.
-    let html = `<div class="video-note">Links open on YouTube or Dailymotion. We don't host video; fan uploads vary in quality and can go offline.</div>`;
+    let html = `<div class="video-note">Links open on YouTube or Dailymotion. We don't host video; fan uploads vary in quality and can go offline.${vpos ? ' Showing up to your date; turn spoilers on to see every year.' : ''}</div>`;
     let year = null;
     for (const row of visible) {
       const y = (row.ev.air_date || '').slice(0, 4);
@@ -5987,7 +6047,7 @@
         for (const tt of titlesHeldOn(n, airDate)) heldTitles.add(tt);
       }
       if (heldTitles.size > 0) {
-        champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
+        champ = `<span class="champ-badge" title="${esc([...heldTitles].map(beltDisplayName).join(', '))}">Champ</span>`;
       }
     }
     // When the belt itself is on the headshot, the red "Champ" pill is redundant
@@ -6159,7 +6219,7 @@
         for (const tt of titlesHeldOn(n, airDate)) heldTitles.add(tt);
       }
       if (heldTitles.size > 0) {
-        champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
+        champ = `<span class="champ-badge" title="${esc([...heldTitles].map(beltDisplayName).join(', '))}">Champ</span>`;
       }
     }
 
@@ -6373,6 +6433,11 @@
         rows += `<div class="tt-row"><span>Record</span><span class="tt-val tt-muted">working&hellip;</span></div>`;
         ensureAsOfRecords(asOf);
       }
+    } else if (!spoilers) {
+      // a show card with spoilers off: the career span and match total run to
+      // the present, so only the first year on record shows (not "debut": the
+      // records start in 2001 and The Rock debuted in 1996)
+      rows += `<div class="tt-row"><span>On record since</span><span class="tt-val">${esc(String(w.active_years[0]))}</span></div>`;
     } else {
       rows += `<div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>`;
       rows += `<div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>`;
@@ -6384,9 +6449,10 @@
       }
     }
     if (heldTitles.length) {
-      rows += `<div class="tt-row"><span>${asOf ? 'Holding now' : 'Held at this time'}</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>`;
+      rows += `<div class="tt-row"><span>${asOf ? 'Holding now' : 'Held at this time'}</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.map(beltDisplayName).join(', '))}</span></div>`;
     }
-    tooltipEl.innerHTML = `<div class="tt-name">${esc(w.name)}</div>${rows}`;
+    // the name on the card being hovered, not the one they ended up with
+    tooltipEl.innerHTML = `<div class="tt-name">${esc(ctxDate ? eraNameAt(slug, ctxDate) : w.name)}</div>${rows}`;
     positionTooltip(anchor);
     tooltipEl.classList.add('visible');
     tooltipEl.setAttribute('aria-hidden', 'false');
@@ -6511,6 +6577,49 @@
   let rosterCache = { iso: null, map: null };   // memo of the derived as-of roster
   let rosterDeriveToken = 0;              // guards against stale async paints
 
+  // The viewer's position for everything spoiler-gated: the next show they have
+  // not watched, the first show before they start, or the end once they have
+  // watched it all. With spoilers off nothing dated after it is listed.
+  function spoilerISO() {
+    const rid = computeResumeId();
+    if (rid && BUNDLE.events[String(rid)]) return BUNDLE.events[String(rid)].air_date;
+    if (watched && watched.size) return '9999-12-31';
+    const first = ORDERED_IDS.length ? BUNDLE.events[ORDERED_IDS[0]] : null;
+    return (first && first.air_date) || '2001-01-01';
+  }
+
+  // The name a merged wrestler was using on a date: Bradshaw in 2001, not
+  // "John Bradshaw Layfield". Match listings keep the names of their time, so
+  // take the alias from the latest listed match on or before the date. One-name
+  // wrestlers (most of them) skip the scan.
+  const eraNameCache = new Map();
+  let aliasesBySlug = null;
+  function eraNameAt(slug, iso) {
+    const w = BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
+    if (!w) return '';
+    if (!iso || !Array.isArray(BUNDLE.search_matches)) return w.name;
+    if (!aliasesBySlug) {
+      aliasesBySlug = {};
+      for (const [name, sl] of Object.entries(BUNDLE.wrestlers_by_name || {})) (aliasesBySlug[sl] || (aliasesBySlug[sl] = [])).push(name);
+    }
+    const names = aliasesBySlug[slug] || [w.name];
+    if (names.length < 2) return w.name;
+    const key = slug + '|' + iso;
+    if (eraNameCache.has(key)) return eraNameCache.get(key);
+    const tests = names.map(n => [n, new RegExp('(^|[^A-Za-z])' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-z]|$)')]);
+    let best = null, bestDate = '';
+    for (const [eventId, , matchup] of BUNDLE.search_matches) {
+      const ev = BUNDLE.events[String(eventId)], d = ev && ev.air_date;
+      if (!d || d > iso || d < bestDate) continue;
+      for (const [n, re] of tests) {
+        if (re.test(matchup) && (d > bestDate || n.length > best.length)) { best = n; bestDate = d; }
+      }
+    }
+    const out = best || w.name;
+    eraNameCache.set(key, out);
+    return out;
+  }
+
   // The date the roster mirrors: the show you're looking at, else your resume
   // position, else the first show.
   function rosterAnchorISO() {
@@ -6551,16 +6660,19 @@
     for (const ev of evs) {
       const brand = ev.show_type;
       const matches = Array.isArray(ev.matches) ? ev.matches : [];
-      const slugs = new Set();
+      // slug -> the name printed on this show's card, so the roster can show
+      // the name of the time (Bradshaw in 2001) instead of the merged one
+      const slugs = new Map();
       for (const m of matches)
         for (const t of (m.teams || []))
           for (const name of (t.participants || [])) {
             const slug = byName[name];
-            if (slug && BUNDLE.wrestlers[slug]) slugs.add(slug);
+            if (slug && BUNDLE.wrestlers[slug]) slugs.set(slug, name);
           }
-      for (const slug of slugs) {
+      for (const [slug, cardName] of slugs) {
         let rec = out.get(slug);
-        if (!rec) { rec = { w: BUNDLE.wrestlers[slug], apps: 0, raw: 0, sd: 0, lastWeekly: '', lastWeeklyBrand: '' }; out.set(slug, rec); }
+        if (!rec) { rec = { w: BUNDLE.wrestlers[slug], apps: 0, raw: 0, sd: 0, lastWeekly: '', lastWeeklyBrand: '', name: cardName, nameDate: '' }; out.set(slug, rec); }
+        if (ev.air_date >= rec.nameDate) { rec.name = cardName; rec.nameDate = ev.air_date; }
         rec.apps += 1;
         if (brand === 'Raw' || brand === 'SmackDown') {
           if (brand === 'Raw') rec.raw += 1; else rec.sd += 1;
@@ -6753,10 +6865,10 @@
     // match in the window (their only matches were PPVs), so badge it "PPV".
     recs.forEach(r => { r.brand = brandOf(r, iso); r.badge = (split && r.brand === 'WWE') ? 'PPV' : r.brand; });
     const total = recs.length;
-    if (q) recs = recs.filter(r => r.w.name.toLowerCase().includes(q));
+    if (q) recs = recs.filter(r => (r.name || r.w.name).toLowerCase().includes(q));
     const groups = split ? { Raw: [], SmackDown: [], WWE: [] } : { WWE: [] };
     for (const r of recs) (groups[r.brand] || groups.WWE).push(r);
-    for (const k in groups) groups[k].sort((a, b) => b.apps - a.apps || a.w.name.localeCompare(b.w.name));
+    for (const k in groups) groups[k].sort((a, b) => b.apps - a.apps || (a.name || a.w.name).localeCompare(b.name || b.w.name));
     const order = split ? ['Raw', 'SmackDown', 'WWE'] : ['WWE'];
     const body = order.filter(k => groups[k] && groups[k].length)
       .map(k => rosterSectionHtml(k, groups[k], split, iso)).join('');
@@ -6796,12 +6908,13 @@
     const era = eraImageFor(w.slug, iso);
     const dflt = `roster-img/${esc(w.slug)}.webp`;
     const src = era ? esc(era) : dflt;
-    return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(w.name)}">
+    const name = rec.name || w.name;   // the name on their latest card in the window
+    return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(name)}">
       <span class="r-card-photo">
-        <span class="r-card-ph">${esc(cardInitials(w.name))}</span>
+        <span class="r-card-ph">${esc(cardInitials(name))}</span>
         <img class="r-card-img" alt="" loading="lazy" src="${src}" data-fallback="${dflt}" onload="this.previousElementSibling.style.display='none'" onerror="if(this.dataset.fallback&&this.src.indexOf(this.dataset.fallback)<0){this.src=this.dataset.fallback}else{this.remove()}">
       </span>
-      <span class="r-card-name">${esc(w.name)}</span>
+      <span class="r-card-name">${esc(name)}</span>
       <span class="brand-badge ${bc}">${esc(rec.badge || rec.brand)}</span>
     </button>`;
   }
@@ -6867,7 +6980,9 @@
       for (const c of chain) {
         crumbs.push(`<button type="button" class="crumb wrestler-link" data-slug="${esc(c.slug)}">${esc(c.name)}</button>`);
       }
-      crumbs.push(`<span class="crumb current">${esc(w.name)}</span>`);
+      // named as on the show you came from, like the match card you clicked
+      const fromEv = BUNDLE.events[String(wrestlerSource.event_id)];
+      crumbs.push(`<span class="crumb current">${esc(fromEv ? eraNameAt(w.slug, fromEv.air_date) : w.name)}</span>`);
 
       const breadcrumbHtml = `<nav class="breadcrumbs" aria-label="Breadcrumb">${crumbs.join('<span class="crumb-sep" aria-hidden="true">›</span>')}</nav>`;
       const backBtnHtml = `<button type="button" class="profile-back-btn" id="profile-back-btn" data-back-event="${esc(String(wrestlerSource.event_id))}"><span class="pb-arrow">&#8592;</span><span class="pb-label">Back to ${esc(eventName)}</span></button>`;
@@ -6965,7 +7080,9 @@
     const t = profTs(entry.from);
     return t == null || t <= cutoff;
   }
-  function bioSectionHtml(prof) {
+  // Nicknames carry no dates, and some arrive late in a career ("The Final Boss"
+  // is 2024), so with spoilers off they wait behind the toggle.
+  function bioSectionHtml(prof, hideNicks = false) {
     const cells = [];
     const add = (label, val) => { if (val) cells.push(`<div class="bio-cell"><div class="bio-label">${label}</div><div class="bio-value">${esc(val)}</div></div>`); };
     add('Real name', prof.real_name);
@@ -6974,8 +7091,9 @@
     add('Height', prof.height);
     add('Weight', prof.weight);
     add('Nationality', prof.nationality);
-    const nicks = (prof.nicknames || []).length
-      ? `<div class="nick-chips">${prof.nicknames.map((n) => `<span class="nick-chip">${esc(n)}</span>`).join('')}</div>` : '';
+    const nicks = !(prof.nicknames || []).length ? ''
+      : hideNicks ? `<div class="profile-hint">Nicknames show with spoilers on, since some come later in a career.</div>`
+      : `<div class="nick-chips">${prof.nicknames.map((n) => `<span class="nick-chip">${esc(n)}</span>`).join('')}</div>`;
     if (!cells.length && !nicks) return '';
     return profSection('Profile', `<div class="bio-grid">${cells.join('')}</div>${nicks}`);
   }
@@ -7067,6 +7185,9 @@
     const arrivalTs = arrivalDate ? Date.parse(arrivalDate + 'T12:00:00Z') : -Infinity;
     const cutoff = spoilers ? Infinity : Math.max(watchFrontierTs(), arrivalTs);
     const cutoffYr = Number.isFinite(cutoff) ? new Date(cutoff).getUTCFullYear() : null;
+    // the name they went by at that point, not the one they ended up with
+    const shownName = spoilers ? w.name
+      : eraNameAt(w.slug, Number.isFinite(cutoff) ? new Date(cutoff).toISOString().slice(0, 10) : (w.first_match_date || spoilerISO()));
 
     // Career span: the debut year is not a spoiler, but the year it ended is, so
     // with spoilers off the span runs only to where the viewer is.
@@ -7126,7 +7247,7 @@
     const titleHistoryHtml = titleEntries.length
       ? `<div class="title-list">${titleEntries.map(([t, cnt], i) =>
           `<div class="title-row${i === 0 ? ' sig' : ''}">
-            <span class="title-name">${esc(t)}</span>
+            <span class="title-name">${esc(beltDisplayName(t))}</span>
             <span class="title-count">x${cnt}</span>
           </div>`).join('')}</div>`
       : (spoilers
@@ -7208,7 +7329,7 @@
           <img class="pp-img" alt="" loading="lazy" src="${heroImg}" data-fallback="${heroDefault}" onload="this.previousElementSibling.style.display='none'" onerror="if(this.dataset.fallback&&this.src.indexOf(this.dataset.fallback)<0){this.src=this.dataset.fallback}else{this.remove()}">
         </div>
         <div class="profile-id">
-          <div class="profile-name">${esc(w.name)}</div>
+          <div class="profile-name">${esc(shownName)}</div>
           <div class="profile-years">${esc(yr)}</div>
         </div>
       </div>
@@ -7219,12 +7340,12 @@
             ? `Shown as of where you're watching, ${MONTHS[new Date(cutoff).getUTCMonth()]} ${new Date(cutoff).getUTCFullYear()}. Turn on spoilers for the full career.`
             : `Shown spoiler-free. Mark shows watched, or turn on spoilers, to see this wrestler's career fill in.`}</div>`}
 
-      ${prof ? bioSectionHtml(prof) : ''}
+      ${prof ? bioSectionHtml(prof, !spoilers) : ''}
       ${prof ? ringNamesSectionHtml(prof, cutoff) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Career Record</div>
-        <div class="record-grid">
+        ${spoilers ? `<div class="record-grid">
           <div class="record-stat"><div class="rs-label">Matches</div><div class="rs-value">${w.total_matches}</div></div>
           <div class="record-stat"><div class="rs-label">Shows</div><div class="rs-value">${w.unique_event_count}</div></div>
           ${winLossTiles}
@@ -7232,7 +7353,8 @@
           <div class="record-stat"><div class="rs-label">Main Events</div><div class="rs-value">${w.main_events}</div></div>
           ${drawNcTiles}
         </div>
-        ${recordHint}
+        ${recordHint}`
+        : `<div class="profile-hint">Career totals count every year of a career, so they stay hidden while spoilers are off. Turn spoilers on to see them.</div>`}
       </div>
 
       ${prof ? movesSectionHtml(prof) : ''}
@@ -7382,7 +7504,7 @@
       if (v) v.hidden = false;
       markNav('titles');
       const t = titleBySlug(slug);
-      setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: (t && t.title) || 'Title' }]);
+      setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: (t && beltDisplayName(t.title)) || 'Title' }]);
       renderTitlePage(slug);
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else if (hash === '#titles') {
@@ -7476,6 +7598,7 @@
           total: w.total_matches || 0,
           ppv: w.ppv_appearances || 0,
           years: w.active_years || null,
+          first: w.first_match_date || null,
           hay: names.join(' ').toLowerCase(),
         });
       }
@@ -7576,19 +7699,23 @@
     buildSearchIndexes();
     const toks = searchTokens(q);
     const joined = toks.join(' ');
+    // With spoilers off, search stops at the viewer's date: no one who has not
+    // debuted yet, and no show or match after it.
+    const spos = spoilers ? null : spoilerISO();
+    const upTo = (d) => !spos || !d || d <= spos;
 
-    let wr = searchWrestlers.filter(w => allTokensIn(w.hay, toks))
+    let wr = searchWrestlers.filter(w => upTo(w.first) && allTokensIn(w.hay, toks))
       .map(w => { w._s = scoreWrestler(w, toks, joined); return w; })
       .sort((a, b) => a._s - b._s || b.total - a.total || a.name.localeCompare(b.name));
     const wrTotal = wr.length; wr = wr.slice(0, WR_CAP);
 
-    let ev = searchEvents.filter(e => allTokensIn(e.hay, toks))
+    let ev = searchEvents.filter(e => upTo(e.date) && allTokensIn(e.hay, toks))
       .sort((a, b) =>
         ((a.show === 'PPV' ? 0 : 1) - (b.show === 'PPV' ? 0 : 1)) ||
         (a.date || '').localeCompare(b.date || ''));
     const evTotal = ev.length; ev = ev.slice(0, EV_CAP);
 
-    let ma = searchMatches.filter(m => allTokensIn(m.hay, toks))
+    let ma = searchMatches.filter(m => upTo(m.date) && allTokensIn(m.hay, toks))
       .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
     const maTotal = ma.length; ma = ma.slice(0, MA_CAP);
 
@@ -7639,17 +7766,23 @@
 
     if (wr.length) {
       html.push(`<div class="sgroup-head">Wrestlers <span class="sgroup-n">${wrTotal}</span></div>`);
+      // Career totals and the year a career ended are all-time facts, so with
+      // spoilers off a wrestler reads as their name at your date and a debut year.
+      const spos = spoilers ? null : spoilerISO();
       for (const w of wr) {
         const yr = w.years
           ? (w.years[0] === w.years[1] ? String(w.years[0]) : `${w.years[0]}–${w.years[1]}`)
           : '';
-        const sub = [`${fmtN(w.total)} match${w.total === 1 ? '' : 'es'}`,
-                     w.ppv ? `${fmtN(w.ppv)} PPV` : null, yr].filter(Boolean).join(' · ');
+        const sub = spos
+          ? (w.years ? `since ${w.years[0]}` : '')
+          : [`${fmtN(w.total)} match${w.total === 1 ? '' : 'es'}`,
+             w.ppv ? `${fmtN(w.ppv)} PPV` : null, yr].filter(Boolean).join(' · ');
+        const shownName = spos ? eraNameAt(w.slug, spos) : w.name;
         html.push(
           `<button class="sresult" role="option" type="button" data-kind="wrestler" data-slug="${esc(w.slug)}">
              <span class="ss-ico" aria-hidden="true"></span>
              <span class="ss-main">
-               <span class="ss-title">${hlSearch(w.name, toks)}</span>
+               <span class="ss-title">${hlSearch(shownName, toks)}</span>
                <span class="ss-sub">${esc(sub)}</span>
              </span>
              <span class="ss-go" aria-hidden="true">&#8594;</span>
