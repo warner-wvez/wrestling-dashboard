@@ -564,6 +564,16 @@
   .mark-month:disabled { opacity: 0.38; cursor: default; }
   .mark-month[hidden] { display: none; }
   .mini-chip.watched { opacity: 0.4; }
+  /* Working memory: a show you have watched says so wherever it is listed */
+  .seen-mark {
+    display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--ink-dim); white-space: nowrap;
+  }
+  .seen-mark::before {
+    content: ''; width: 10px; height: 10px; background: currentColor;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12.5l5 5L20 6.5'/></svg>") no-repeat center / contain; -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='square'><path d='M4 12.5l5 5L20 6.5'/></svg>") no-repeat center / contain;
+  }
   @media (max-width: 600px) {
     .wp-bar { display: none; }
   }
@@ -1789,7 +1799,6 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     color: var(--ink-dim);
-    border: 1px solid var(--border);
   }
   .m-rating .star {
     color: var(--red);
@@ -5434,6 +5443,7 @@
             ${showBadge(ev.logo, ev.show_type === 'PPV' ? 'PPV' : ev.show_type, cls, 'sm')}
             <span class="ve-name">${esc(showName)}</span>
           </button>
+          ${watched.has(String(ev.id)) ? '<span class="seen-mark">Watched</span>' : ''}
           <span class="ve-n">${n} link${n === 1 ? '' : 's'}</span>
         </div>
         ${showLinks ? `<div class="ve-shows">${showLinks}</div>` : ''}
@@ -8426,6 +8436,7 @@
                <span class="ss-title">${hlSearch(e.name, toks)}</span>
                <span class="ss-sub">${esc(fmtDateLong(e.date))}</span>
              </span>
+             ${watched.has(String(e.id)) ? '<span class="seen-mark">Watched</span>' : ''}
              <span class="ss-go" aria-hidden="true">&#8594;</span>
            </button>`);
       }
@@ -8443,6 +8454,7 @@
                <span class="ss-title">${hlSearch(m.matchup, toks)}</span>
                <span class="ss-sub">${hlSearch(sub, toks)}</span>
              </span>
+             ${watched.has(String(m.eventId)) ? '<span class="seen-mark">Watched</span>' : ''}
              <span class="ss-go" aria-hidden="true">&#8594;</span>
            </button>`);
       }
