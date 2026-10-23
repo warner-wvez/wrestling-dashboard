@@ -540,6 +540,7 @@
   }
   .cu-apply:hover { background: var(--red); border-color: var(--red); }
   .cu-preview { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .cu-or { font-family: var(--font-sans); font-size: 13px; color: var(--ink-dim); }
 
   /* Mark-month button (calendar header) */
   .msh-right { display: flex; align-items: center; gap: 14px; }
@@ -1478,6 +1479,12 @@
     font-size: 14px;
   }
   .search-noresults strong { color: var(--ink); }
+  /* Postel: "did you mean" when a search finds nothing */
+  .search-suggest {
+    display: inline-block; padding: 0; border: 0; background: none;
+    font: inherit; font-weight: 700; color: var(--ink); text-decoration: underline; cursor: pointer;
+  }
+  .search-suggest:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
   .sgroup-head {
     display: flex;
@@ -3671,6 +3678,8 @@
     <div class="catch-up">
       <span class="cu-label">Seen a lot already? I have watched through</span>
       <input type="date" id="cu-date" class="cu-date" aria-label="Catch-up date">
+      <span class="cu-or">or the last PPV I saw</span>
+      <select id="cu-ppv" class="cu-date cu-ppv" aria-label="The last pay-per-view you watched"><option value="">Pick a PPV</option></select>
       <button class="cu-apply" id="cu-apply" type="button">Mark watched</button>
       <span class="cu-preview" id="cu-preview"></span>
     </div>
@@ -5074,6 +5083,24 @@
         if (maxIso) def = maxIso;
       }
       cuDate.value = def;
+      // Postel: fans remember "I stopped after WrestleMania X8", not a date, so
+      // the last PPV they saw fills the date in for them.
+      const cuPPV = el('cu-ppv');
+      if (cuPPV && BUNDLE && BUNDLE.events) {
+        const byYear = {};
+        for (const id of ORDERED_IDS) {
+          const e = BUNDLE.events[id];
+          if (e && e.show_type === 'PPV' && e.air_date) (byYear[e.air_date.slice(0, 4)] || (byYear[e.air_date.slice(0, 4)] = [])).push(e);
+        }
+        cuPPV.insertAdjacentHTML('beforeend', Object.entries(byYear).map(([y, evs]) =>
+          `<optgroup label="${esc(y)}">${evs.map(e => `<option value="${esc(e.air_date)}">${esc(fullShowName(e).replace(/^WW[EF]\s+/, ''))}</option>`).join('')}</optgroup>`).join(''));
+        cuPPV.addEventListener('change', () => {
+          if (!cuPPV.value) return;
+          cuDate.value = cuPPV.value;
+          updateCatchUpPreview();
+        });
+        cuDate.addEventListener('input', () => { cuPPV.value = ''; });
+      }
       cuDate.addEventListener('change', updateCatchUpPreview);
       cuDate.addEventListener('input', updateCatchUpPreview);
       if (cuApply) cuApply.addEventListener('click', () => {
@@ -7969,6 +7996,7 @@
       for (const [name, slug] of Object.entries(BUNDLE.wrestlers_by_name || {})) {
         (aliasesOf[slug] || (aliasesOf[slug] = [])).push(name);
       }
+      searchNamesOf = aliasesOf;
       for (const w of Object.values(BUNDLE.wrestlers)) {
         const names = aliasesOf[w.slug] || [w.name];
         searchWrestlers.push({
@@ -7999,7 +8027,7 @@
         logo: ev.logo,
         name: showName,
         hay: [showName, ev.venue, ev.city, ev.state_province, ev.show_type, year,
-              (ev.show_type === 'PPV' ? 'ppv pay per view premium live event' : '')]
+              (ev.show_type === 'PPV' ? 'ppv pay per view premium live event' : ''), wmEdition(showName)]
               .filter(Boolean).join(' ').toLowerCase(),
       });
       if (sharded) continue;   // matches handled below from the precomputed index
@@ -8040,6 +8068,122 @@
   }
 
   const searchTokens = (q) => q.toLowerCase().trim().split(/\s+/).filter(Boolean);
+
+  // Postel's law: take what fans type. Event shorthand widens to the words the
+  // data uses ("mitb 2026" finds Money in the Bank 2026), and a wrestler answers
+  // to initials ("jbl", "rvd") and to the nicknames on his SmackDown Hotel
+  // profile ("y2j", "stone cold", "the game") as well as to every ring name he
+  // worked under. With spoilers off the results still stop at your date and
+  // show the name used then; a nickname can match but is never printed.
+  const EVENT_SHORTHAND = {
+    mitb: 'money in the bank', wm: 'wrestlemania', rr: 'royal rumble', kotr: 'king of the ring',
+    noc: 'night of champions', snme: "saturday night's main event", hiac: 'hell in a cell',
+    ec: 'elimination chamber', sd: 'smackdown',
+  };
+  // Shorthand no name we carry can derive: Triple H worked as Hunter Hearst
+  // Helmsley before 2001, so "HHH" is not the initials of any of his names here.
+  const CURATED_SHORTHAND = { hhh: 'triple-h' };
+  let searchNamesOf = {};       // slug -> every ring name (wrestlers_by_name, inverted)
+  let searchAliases = new Map(); // alias -> slug, or null where two wrestlers share it
+  let searchNicknamesLoaded = false;
+  const aliasKey = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\s+/g, ' ').trim().replace(/^the /, '');
+
+  function buildSearchAliases() {
+    const map = new Map();
+    const add = (key, slug) => {
+      if (!key || key.length < 3) return;
+      map.set(key, map.has(key) && map.get(key) !== slug ? null : slug);
+    };
+    for (const [slug, names] of Object.entries(searchNamesOf)) {
+      for (const n of names) {
+        const words = aliasKey(n).split(' ').filter(Boolean);
+        if (words.length >= 3) add(words.map(w => w[0]).join(''), slug);
+      }
+    }
+    if (PROFILES) {
+      for (const [slug, p] of Object.entries(PROFILES)) {
+        if (!searchNamesOf[slug]) continue;
+        for (const nick of (p.nicknames || [])) {
+          for (const part of String(nick).split(/,\s*/)) {
+            add(aliasKey(part.replace(/\(.*?\)/g, ' ')), slug);
+            for (const m of part.matchAll(/\(([^)]+)\)/g)) add(aliasKey(m[1]), slug);   // "(HBK)"
+          }
+        }
+      }
+    }
+    for (const [k, slug] of Object.entries(CURATED_SHORTHAND)) if (searchNamesOf[slug]) map.set(k, slug);
+    // a real ring name never becomes another wrestler's alias
+    for (const [slug, names] of Object.entries(searchNamesOf)) {
+      for (const n of names) { const k = aliasKey(n); if (map.has(k) && map.get(k) !== slug) map.set(k, null); }
+    }
+    searchAliases = map;
+  }
+
+  // Each typed word becomes a group of words any one of which may match.
+  function searchGroups(toks) {
+    return toks.map(t => {
+      const alts = [t];
+      if (EVENT_SHORTHAND[t]) alts.push(EVENT_SHORTHAND[t]);
+      const slug = searchAliases.get(aliasKey(t));
+      if (slug) for (const n of searchNamesOf[slug] || []) alts.push(n.toLowerCase());
+      return alts;
+    });
+  }
+  const groupsIn = (hay, groups) => groups.every(alts => alts.some(a => hay.indexOf(a) !== -1));
+
+  // "WrestleMania 17", "wm 17" and "wm17" find WrestleMania X-Seven: editions
+  // through XXVIII are titled in Roman numerals, X8 and X-Seven their own way.
+  function romanToInt(r) {
+    const v = { i: 1, v: 5, x: 10, l: 50, c: 100 };
+    let n = 0;
+    for (let i = 0; i < r.length; i++) {
+      const a = v[r[i]], b = v[r[i + 1]] || 0;
+      n += a < b ? -a : a;
+    }
+    return n;
+  }
+  function wmEdition(name) {
+    const m = /wrestlemania\s+(x-seven|x8|[ivxlc]+|\d+)\b/i.exec(name || '');
+    if (!m) return '';
+    const t = m[1].toLowerCase();
+    const n = t === 'x-seven' ? 17 : t === 'x8' ? 18 : /^\d+$/.test(t) ? +t : romanToInt(t);
+    return n ? `wrestlemania ${n} wm ${n} wm${n}` : '';
+  }
+
+  function levenshtein(a, b) {
+    let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+    for (let i = 1; i <= a.length; i++) {
+      const cur = [i];
+      for (let j = 1; j <= b.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    return prev[b.length];
+  }
+
+  // One near spelling to offer when a search finds nothing ("stve austin").
+  // It names the wrestler as he was known at your date when spoilers are off.
+  function didYouMean(q, upTo) {
+    const key = aliasKey(q);
+    if (key.length < 4) return null;
+    const limit = key.length <= 5 ? 1 : key.length <= 10 ? 2 : 3;
+    let best = null;
+    for (const w of searchWrestlers) {
+      if (!upTo(w.first)) continue;
+      for (const n of searchNamesOf[w.slug] || [w.name]) {
+        const k = aliasKey(n);
+        for (const c of [k, ...k.split(' ').filter(x => x.length >= 4)]) {
+          if (Math.abs(c.length - key.length) > limit) continue;
+          const d = levenshtein(key, c);
+          if (d && d <= limit && (!best || d < best.d || (d === best.d && w.total > best.total))) best = { d, total: w.total, w };
+        }
+      }
+    }
+    if (!best) return null;
+    return spoilers ? best.w.name : eraNameAt(best.w.slug, spoilerISO());
+  }
   const allTokensIn = (hay, toks) => {
     for (const t of toks) if (hay.indexOf(t) === -1) return false;
     return true;
@@ -8076,29 +8220,36 @@
     searchClearBtn.hidden = !q;
     if (!q) { renderSearchEmpty(); return; }
     buildSearchIndexes();
+    if (!searchAliases.size) buildSearchAliases();
     const toks = searchTokens(q);
     const joined = toks.join(' ');
+    const groups = searchGroups(toks);
+    // a nickname of more than one word ("stone cold", "the game") names one wrestler
+    const wholeSlug = toks.length > 1 ? searchAliases.get(aliasKey(joined)) : null;
+    const wholeNames = wholeSlug ? (searchNamesOf[wholeSlug] || []).map(n => n.toLowerCase()) : null;
+    const hit = (hay) => groupsIn(hay, groups) || (wholeNames && wholeNames.some(n => hay.indexOf(n) !== -1));
     // With spoilers off, search stops at the viewer's date: no one who has not
     // debuted yet, and no show or match after it.
     const spos = spoilers ? null : spoilerISO();
     const upTo = (d) => !spos || !d || d <= spos;
 
-    let wr = searchWrestlers.filter(w => upTo(w.first) && allTokensIn(w.hay, toks))
-      .map(w => { w._s = scoreWrestler(w, toks, joined); return w; })
+    let wr = searchWrestlers.filter(w => upTo(w.first) && (hit(w.hay) || w.slug === wholeSlug))
+      .map(w => { w._s = w.slug === wholeSlug || searchAliases.get(aliasKey(joined)) === w.slug ? -1 : scoreWrestler(w, toks, joined); return w; })
       .sort((a, b) => a._s - b._s || b.total - a.total || a.name.localeCompare(b.name));
     const wrTotal = wr.length; wr = wr.slice(0, WR_CAP);
 
-    let ev = searchEvents.filter(e => upTo(e.date) && allTokensIn(e.hay, toks))
+    let ev = searchEvents.filter(e => upTo(e.date) && hit(e.hay))
       .sort((a, b) =>
         ((a.show === 'PPV' ? 0 : 1) - (b.show === 'PPV' ? 0 : 1)) ||
         (a.date || '').localeCompare(b.date || ''));
     const evTotal = ev.length; ev = ev.slice(0, EV_CAP);
 
-    let ma = searchMatches.filter(m => upTo(m.date) && allTokensIn(m.hay, toks))
+    let ma = searchMatches.filter(m => upTo(m.date) && hit(m.hay))
       .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
     const maTotal = ma.length; ma = ma.slice(0, MA_CAP);
 
-    renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal });
+    const suggest = !wr.length && !ev.length && !ma.length ? didYouMean(q, upTo) : null;
+    renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal, suggest });
   }
 
   function renderSearchEmpty() {
@@ -8134,11 +8285,12 @@
     return showBadge(logo, label, cls, 'sm');
   }
 
-  function renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal }) {
+  function renderSearchResults({ q, toks, wr, wrTotal, ev, evTotal, ma, maTotal, suggest }) {
     if (!wr.length && !ev.length && !ma.length) {
       searchFlat = []; searchActive = -1;
-      searchResults.innerHTML =
-        `<div class="search-noresults">No results for <strong>${esc(q)}</strong>. Try a different spelling, a single name, or a stipulation.</div>`;
+      searchResults.innerHTML = suggest
+        ? `<div class="search-noresults">No results for <strong>${esc(q)}</strong>. Did you mean <button class="search-suggest" type="button" data-suggest="${esc(suggest)}">${esc(suggest)}</button>?</div>`
+        : `<div class="search-noresults">No results for <strong>${esc(q)}</strong>. Try a different spelling, a single name, or a stipulation.</div>`;
       return;
     }
     const html = [];
@@ -8237,6 +8389,13 @@
   function openSearch() {
     if (searchBackdrop.classList.contains('open')) { searchInput.focus(); return; }
     buildSearchIndexes();
+    if (!searchNicknamesLoaded) {
+      searchNicknamesLoaded = true;
+      loadProfiles().then(() => {
+        buildSearchAliases();
+        if (searchBackdrop.classList.contains('open') && searchInput.value.trim()) runSearch(searchInput.value);
+      });
+    }
     searchInput.value = '';
     renderSearchEmpty();
     searchClearBtn.hidden = true;
@@ -8275,6 +8434,13 @@
 
     // Click delegation for result rows.
     searchResults.addEventListener('click', (e) => {
+      const sug = e.target.closest('[data-suggest]');
+      if (sug) {
+        searchInput.value = sug.dataset.suggest;
+        runSearch(searchInput.value);
+        searchInput.focus();
+        return;
+      }
       const row = e.target.closest('.sresult');
       if (row) activateSearchRow(row);
     });
