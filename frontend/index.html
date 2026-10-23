@@ -1624,7 +1624,7 @@
   .modal {
     background: var(--bg);
     border: 1px solid var(--ink);
-    width: min(96vw, 820px);
+    width: min(96vw, 1180px);
     max-height: calc(100vh - 80px);
     overflow-y: auto;
     overflow-x: hidden;
@@ -3446,6 +3446,158 @@
   @media (max-width: 720px) { .show-end { margin: 0 14px 20px; } .se-next { width: 100%; } }
 
   /* ===========================================================
+     WATCH ROOM (layout A): the player top-left, Tonight beside it, then
+     Why they're fighting, Who's who and Champions going in. Each module
+     reads at a glance; depth sits behind "All N" and the full card.
+     Sizes from the UI skill: 48px controls, 44px rows, 12px gaps, 2px
+     focus ring. Motion from Reflex plus TypeUI's roll reveal; the
+     reduced-motion block at the end cuts it.
+     =========================================================== */
+  .room { padding: 0 32px 8px; }
+  .room-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; align-items: start; }   /* no empty box bottoms */
+  .room-player { grid-column: span 4; }
+  .mod-tonight { grid-column: span 2; }
+  .mod-why, .mod-who, .mod-champs { grid-column: span 2; }
+  .mod { border: 1px solid var(--ink); background: var(--surface); display: flex; flex-direction: column; min-width: 0; }
+  .mh { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 6px 14px; border-bottom: 1px solid var(--border-strong); font-family: var(--font-sans); font-size: 14px; font-weight: 700; color: var(--ink); }
+  .mono, .mh-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+  .mh-link { background: none; border: 0; padding: 12px 0; margin: -6px 0; cursor: pointer; text-decoration: none; color: var(--ink); white-space: nowrap; }
+  .mh-link:hover { color: var(--red); }
+  .tn-rows, .why-rows, .ch-rows { list-style: none; margin: 0; padding: 0; }
+  .tn-row { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 120ms; }
+  .tn-row:hover { background: var(--bg); transition-duration: 40ms; }
+  .tn-row .st { flex: 0 0 24px; height: 24px; display: grid; place-items: center; border: 1px solid var(--ink); font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--ink); transition: background 120ms, color 120ms; }
+  .tn-row.cur { box-shadow: inset 3px 0 0 var(--ink); }
+  .tn-row.cur .st { background: var(--ink); color: #FFF; }
+  .tn-row.done .st { color: var(--ink-dim); border-color: var(--ink-dim); }
+  .tn-row.done .t { color: var(--ink-dim); }
+  .tn-txt, .ch-txt { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+  .tn-row .t, .why-rows .t, .ch-rows .t, .who-txt .t { font-family: var(--font-sans); font-size: 14px; font-weight: 700; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; line-height: 1.3; }
+  .tn-row .x, .why-rows .x, .ch-rows .x, .who-txt .x { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); display: block; line-height: 1.4; }
+  .tn-empty { padding: 12px 14px; font-family: var(--font-mono); font-size: 12px; color: var(--ink-dim); }
+  .mod-foot { display: flex; gap: 12px; padding: 12px 14px; margin-top: auto; }
+  .mod-foot .wc-next { flex: 1; }
+  .mod-links { display: flex; flex-wrap: wrap; gap: 0 16px; padding: 0 14px 6px; }
+  .mod-links a { font-family: var(--font-mono); font-size: 12px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; padding: 8px 0; }
+  .mod-links a:hover { color: var(--red); }
+  .wc-note { padding: 0 14px 12px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); }
+  .why-rows li a { display: flex; flex-direction: column; gap: 1px; min-height: 44px; padding: 8px 14px; border-bottom: 1px solid var(--border); text-decoration: none; color: inherit; transition: background 120ms; }
+  .why-rows li a:hover { background: var(--bg); transition-duration: 40ms; }
+  .who-body { display: flex; flex-wrap: wrap; gap: 10px 12px; padding: 12px 14px; align-items: flex-start; }
+  .who-side { flex: 1 1 150px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .who-vs { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); padding-top: 14px; }
+  .who-person { display: flex; gap: 10px; align-items: center; min-width: 0; }
+  .who-txt { min-width: 0; display: flex; flex-direction: column; }
+  .who-txt .wrestler-link { text-align: left; padding: 0; font-size: 14px; font-weight: 700; }
+  .ch-rows li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 6px 14px; border-bottom: 1px solid var(--border); }
+  .ch-rows .tag { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); border: 1px solid var(--ink); padding: 3px 6px; white-space: nowrap; }
+  .ch-rows li > .x { white-space: nowrap; }
+
+  /* Road to the next PPV, in the hero */
+  .room-stat { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 6px 12px; margin-top: 14px; font-family: var(--font-sans); font-size: 13px; color: var(--ink); }
+  .room-stat b { font-weight: 700; }
+  .room-stat .bar { grid-column: 1 / -1; height: 3px; background: var(--border-strong); }
+  .room-stat .bar i { display: block; height: 100%; background: var(--ink); transform-origin: left; }
+
+  /* Buttons in the room: 48px, press scale 0.97 over 200ms ease-out */
+  .wc-next, .wc-back {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 48px; padding: 0 18px; border: 1px solid var(--ink); cursor: pointer;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700; letter-spacing: 0.01em;
+    transition: background 120ms, color 120ms, border-color 120ms, transform 200ms ease-out;
+  }
+  .wc-back { width: 48px; padding: 0; background: transparent; color: var(--ink); font-size: 20px; line-height: 1; }
+  .wc-back:hover { background: var(--ink); color: #FFF; transition-duration: 40ms; }
+  .wc-back:disabled { opacity: 0.35; cursor: default; }
+  .wc-back:disabled:hover { background: transparent; color: var(--ink); }
+  .wc-next { background: var(--ink); color: #FFF; }
+  .wc-next:hover { background: var(--red); border-color: var(--red); transition-duration: 40ms; }
+  .wc-next.finish { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 18px; }
+  .wc-next .wc-sub { font-family: var(--font-mono); font-size: 11px; font-weight: 500; opacity: 0.85; }
+  :is(.wc-next, .wc-back, .wc-play, .wc-endplay, .wc-endclose, .room-full-toggle):active { transform: scale(0.97); }
+  :is(.wc-next, .wc-back, .mh-link, .mod-links a, .tn-row, .wc-endplay, .wc-endclose, .wc-endundo button, .room-full-toggle):focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* Label roll (TypeUI roll reveal, 200ms): the new text rises in under the
+     old one. Instant selection: the text changes first, the motion follows. */
+  .wc-roll { display: inline-grid; overflow: hidden; line-height: 1.3; }
+  .wc-roll > span { grid-area: 1 / 1; }
+  .roll-up { animation: wc-roll-in 200ms cubic-bezier(0.16,1,0.3,1); }
+  .roll-down { animation: wc-roll-in-down 200ms cubic-bezier(0.16,1,0.3,1); }
+  @keyframes wc-roll-in { from { transform: translateY(40%); opacity: 0; } }
+  @keyframes wc-roll-in-down { from { transform: translateY(-40%); opacity: 0; } }
+
+  /* The progress bar: fill sweep, 240ms ease-in-out */
+  .wc-progress { height: 3px; background: var(--border-strong); }
+  .wc-fill { display: block; height: 100%; background: var(--ink); transform-origin: left; transform: scaleX(0); transition: transform 240ms cubic-bezier(0.645,0.045,0.355,1); }
+
+  /* The player: 16:9, nothing loads until Play. The overlay is the one big
+     press; it fades (200ms) when the video reports it is playing. */
+  .wc-player { position: relative; aspect-ratio: 16 / 9; background: #0A0A0A; overflow: hidden; border: 1px solid var(--ink); }
+  .wc-video, .wc-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border: 0; background: #000; }
+  .wc-video[hidden] { display: none; }
+  .wc-play {
+    position: absolute; inset: 0; width: 100%; height: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px; padding: 16px; text-align: center;
+    background: transparent; border: 0; color: #FFF; cursor: pointer; text-decoration: none;
+    font-family: var(--font-sans); font-size: 16px; font-weight: 700;
+    transition: opacity 200ms cubic-bezier(0.16,1,0.3,1), visibility 0s, transform 200ms ease-out;
+  }
+  .wc-play-icon {
+    width: 64px; height: 64px; border: 2px solid #FFF; border-radius: 50%; display: grid; place-items: center;
+    font-size: 22px; padding-left: 5px; transition: transform 200ms ease-out, background 120ms, border-color 120ms;
+  }
+  .wc-play-link .wc-play-icon { padding-left: 0; }
+  .wc-play:hover .wc-play-icon { background: var(--red); border-color: var(--red); transition-duration: 40ms; }
+  .wc-play .wc-meta { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.05em; opacity: 0.8; }
+  .wc-play:focus-visible { outline: 2px solid var(--red); outline-offset: -4px; }
+  .wc-player.loading .wc-play-icon { animation: wc-spin 900ms linear infinite; border-top-color: transparent; font-size: 0; }
+  @keyframes wc-spin { to { transform: rotate(360deg); } }
+  .wc-player.playing .wc-play { opacity: 0; visibility: hidden; transition: opacity 200ms cubic-bezier(0.16,1,0.3,1), visibility 0s linear 200ms; }
+
+  /* Up next over the player: Radix dialog, 200ms over a 160ms fade. Undo
+     lives inside it so it is never missed (Selective Attention). */
+  .wc-endcard { position: absolute; inset: 0; z-index: 4; background: rgba(10,10,10,0.88); display: none; align-items: center; justify-content: center; padding: 16px; }
+  .wc-endcard.in { display: flex; animation: dlg-fade-in 160ms cubic-bezier(0.16,1,0.3,1); }
+  .wc-endcard.in .wc-endbox { animation: dlg-in 200ms cubic-bezier(0.16,1,0.3,1); }
+  .wc-endbox { display: flex; flex-direction: column; gap: 4px; color: #FFF; width: min(100%, 420px); }
+  .wc-endk { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; }
+  .wc-endn { font-family: var(--font-sans); font-size: 22px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; }
+  .wc-endd { font-family: var(--font-mono); font-size: 12px; opacity: 0.85; margin-bottom: 10px; }
+  .wc-endbtns { display: flex; gap: 12px; }
+  .wc-endplay, .wc-endclose { min-height: 48px; padding: 0 18px; font-family: var(--font-sans); font-size: 14px; font-weight: 700; cursor: pointer; border: 1px solid #FFF; transition: transform 200ms ease-out, background 120ms, color 120ms, border-color 120ms; }
+  .wc-endplay { background: #FFF; color: #09090B; }   /* sits on the dark overlay in both themes */
+  .wc-endplay svg { width: 16px; height: 16px; display: block; }
+  .wc-endplay:hover { background: var(--red); border-color: var(--red); color: #FFF; transition-duration: 40ms; }
+  .wc-endclose { background: transparent; color: #FFF; }
+  .wc-endclose:hover { background: rgba(255,255,255,0.12); transition-duration: 40ms; }
+  .wc-endundo { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.3); font-family: var(--font-mono); font-size: 12px; }
+  .wc-endundo button { min-height: 36px; padding: 0 12px; background: transparent; border: 1px solid rgba(255,255,255,0.6); color: #FFF; font-family: var(--font-sans); font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: background 120ms, color 120ms; }
+  .wc-endundo button:hover { background: #FFF; color: var(--ink); transition-duration: 40ms; }
+
+  /* The full card: Reflex accordion, 250ms, measured by the grid row */
+  .room-full-toggle { display: flex; align-items: center; gap: 12px; width: calc(100% - 64px); min-height: 48px; margin: 12px 32px 0; padding: 0 14px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 14px; font-weight: 700; cursor: pointer; text-align: left; transition: background 120ms, color 120ms, transform 200ms ease-out; }
+  .room-full-toggle:hover { background: var(--ink); color: #FFF; transition-duration: 40ms; }
+  .room-full-toggle:hover .mono { color: #FFF; }
+  .room-full-toggle .chev { margin-left: auto; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); transition: transform 250ms cubic-bezier(0.87,0,0.13,1); }
+  .room-full-toggle[aria-expanded="true"] .chev { transform: rotate(225deg) translateY(-2px); }
+  .room-full { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 250ms cubic-bezier(0.87,0,0.13,1); }
+  .room-full.open { grid-template-rows: 1fr; }
+  .room-full > .room-full-inner { overflow: hidden; }
+  .room-full.open > .room-full-inner { overflow: visible; }
+
+  /* The match you are on, in the full card: a bar and the word, never color alone */
+  .match-card.now { border-color: var(--ink); box-shadow: inset 3px 0 0 var(--ink); }
+  .match-card.now .m-number::after { content: 'Now'; margin-left: 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink); }
+
+  @media (max-width: 900px) {
+    .room { padding: 0 14px 8px; }
+    .room-grid { grid-template-columns: 1fr; }
+    .room-player, .mod-tonight, .mod-why, .mod-who, .mod-champs { grid-column: auto; }
+    .room-full-toggle { width: calc(100% - 28px); margin: 12px 14px 0; }
+    .wc-endbtns .wc-endplay { flex: 1; }
+  }
+
+  /* ===========================================================
      MOTION
      Values copied from Reflex's own components (Radix Themes 3.3, Vaul 1.1,
      Sonner 2.0) so clicks and state changes share one feel without a
@@ -3601,14 +3753,547 @@
   @media (max-width: 560px) {
     .undo-toast { left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); max-width: none; }
   }
+  /* ===========================================================
+     MICRO-INTERACTIONS (TypeUI micro-interactions + UI animations, read
+     10-22). One language for every press: the state changes on the
+     click's frame; the motion after it is small, quick, ease-out and
+     reversible. Each block names the pattern and the question it answers.
+     =========================================================== */
+
+  /* Menu: plus-to-close morph. "Did the menu open?" The three lines become
+     an X while the drawer is open and fold back when it closes. */
+  .menu-ico { transition: background-color 120ms; }
+  .menu-ico::before, .menu-ico::after { transition: transform 200ms cubic-bezier(0.16,1,0.3,1), top 200ms cubic-bezier(0.16,1,0.3,1); }
+  .menu-btn[aria-expanded="true"] .menu-ico { background-color: transparent; }
+  .menu-btn[aria-expanded="true"] .menu-ico::before { top: 0; transform: rotate(45deg); }
+  .menu-btn[aria-expanded="true"] .menu-ico::after { top: 0; transform: rotate(-45deg); }
+
+  /* Spoilers: swap state icon. The eye turns in as the state flips (the
+     swap itself runs from JS); the label rolls to the new word. */
+  .spoiler-btn .eye { transform-origin: center; }
+
+  /* Search: focus expand, character rise, clear fade. "Did it take my
+     typing?" Each new character rises in; the clear button appears with the
+     first character and leaves with the last. */
+  .search-panel { transition: width 200ms cubic-bezier(0.16,1,0.3,1); }
+  .search-panel:focus-within { width: min(96vw, 720px); }
+  .rise-wrap { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; }
+  .rise-wrap.inline { display: inline-flex; flex: 0 1 auto; }
+  .rise-wrap > input { width: 100%; color: transparent; caret-color: var(--ink); }
+  .rise-wrap > input::placeholder { color: var(--ink-faint); }
+  .rise-mirror { position: absolute; inset: 0; display: flex; align-items: center; pointer-events: none; white-space: pre; overflow: hidden; color: var(--ink); }
+  .rise-mirror > span { display: inline-block; }
+  .rise-mirror > span.rise { animation: char-rise 160ms cubic-bezier(0.16,1,0.3,1) both; }
+  @keyframes char-rise { from { transform: translateY(6px); opacity: 0; } }
+  .search-clear { opacity: 0; transform: scale(0.8); pointer-events: none; transition: opacity 150ms cubic-bezier(0.16,1,0.3,1), transform 150ms cubic-bezier(0.16,1,0.3,1), color 120ms; }
+  .search-clear.on { opacity: 1; transform: none; pointer-events: auto; }
+  .roster-search { transition: min-width 200ms cubic-bezier(0.16,1,0.3,1), border-color 120ms; }
+  .roster-search:focus { min-width: 240px; }
+
+  /* Spoilers on: wall reveal. "What was hidden?" A solid wall slides off
+     each finish, one card after the next, instead of text popping in. */
+  .wall { position: relative; }
+  .walls-in .wall { overflow: hidden; }
+  .walls-in .wall::after { content: ''; position: absolute; inset: 0; background: var(--ink); animation: wall-off 260ms cubic-bezier(0.645,0.045,0.355,1) forwards; animation-delay: calc(var(--match-index, 0) * 30ms); }
+  @keyframes wall-off { to { transform: translateX(101%); } }
+
+  /* Loading: bounce dots. "Is it working?" Three dots, 1s, staggered. */
+  .dots { display: inline-flex; gap: 4px; align-items: center; height: 1em; vertical-align: middle; }
+  .dots i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: dot-bounce 1s infinite; }
+  .dots i:nth-child(2) { animation-delay: 150ms; }
+  .dots i:nth-child(3) { animation-delay: 300ms; }
+  @keyframes dot-bounce { 0%, 100% { transform: translateY(0); animation-timing-function: cubic-bezier(0.8,0,1,1); } 50% { transform: translateY(-40%); animation-timing-function: cubic-bezier(0,0,0.2,1); } }
+  .status .dots { margin-right: 8px; }
+
+  /* Selection: dot ripple. "Did it take?" A ring leaves the dot that just
+     became current, 450ms. Same ring when Watched or Save turns on. */
+  .tn-row .st { position: relative; }
+  .tn-row .st.ripple::after, .watched-btn.just-on::after, .save-btn.just-on::after { content: ''; position: absolute; inset: -1px; border: 1px solid var(--ink); pointer-events: none; animation: dot-ripple 450ms cubic-bezier(0.16,1,0.3,1) forwards; }
+  .watched-btn, .save-btn { position: relative; }
+  @keyframes dot-ripple { to { transform: scale(1.8); opacity: 0; } }
+
+  /* Tonight: animate completed item. A line draws through a match once it
+     is behind you, 200ms. */
+  .tn-row .t { position: relative; }
+  .tn-row .t::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: var(--ink-dim); transform: scaleX(0); transform-origin: left; transition: transform 200ms cubic-bezier(0.16,1,0.3,1); }
+  .tn-row.done .t::after { transform: scaleX(1); }
+
+  /* Saved and watched rows: action slide-out. "How do I remove this?"
+     Remove slides out from the row's edge on hover or focus; on touch it
+     stays in view. */
+  @media (hover: hover) {
+    .saved-row .sr-remove, .watched-row .wr-remove { max-width: 0; padding-left: 0; padding-right: 0; opacity: 0; overflow: hidden; border-color: transparent; transition: max-width 180ms cubic-bezier(0.16,1,0.3,1), padding 180ms cubic-bezier(0.16,1,0.3,1), opacity 120ms, color 120ms, border-color 120ms; }
+    .saved-row:hover .sr-remove, .saved-row:focus-within .sr-remove, .saved-row:focus .sr-remove,
+    .watched-row:hover .wr-remove, .watched-row:focus-within .wr-remove, .watched-row:focus .wr-remove { max-width: 120px; padding-left: 8px; padding-right: 8px; opacity: 1; }
+  }
+
+  /* Links that go somewhere: icon nudge on hover (2px, 150ms). */
+  .nudge { display: inline-block; transition: transform 150ms cubic-bezier(0.16,1,0.3,1); }
+  .mh-link:hover .nudge, .crumb:hover .nudge { transform: translateX(2px); }
+  .month-nav { transition: transform 150ms cubic-bezier(0.16,1,0.3,1), background 120ms, color 120ms; }
+  #month-prev:hover { transform: translateX(-2px); }
+  #month-next:hover { transform: translateX(2px); }
+
+  /* Tonight rail: collapse persistent panel. "Can I give the video more
+     room?" The module folds to a 48px rail with its icon and the count;
+     the player takes the width. Remembered per device. */
+  .mh-ico { display: none; }
+  .mh-collapse { width: 32px; height: 32px; display: inline-grid; place-items: center; background: transparent; border: 1px solid transparent; color: var(--ink); cursor: pointer; margin: 0 -6px 0 0; transition: background 120ms, color 120ms, transform 200ms ease-out; }
+  .mh-collapse:hover { background: var(--ink); color: #FFF; transition-duration: 40ms; }
+  .mh-collapse:active { transform: scale(0.97); }
+  .mh-collapse:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .mh-collapse svg, .mh-ico svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: square; }
+  .mh-collapse svg { transition: transform 250ms cubic-bezier(0.16,1,0.3,1); }
+  .room-grid { transition: grid-template-columns 250ms cubic-bezier(0.16,1,0.3,1); }
+  .room-grid.rail { grid-template-columns: repeat(6, minmax(0, 1fr)) 48px; }
+  .room-grid.rail .room-player { grid-column: 1 / 7; }
+  .room-grid.rail .mod-tonight { grid-column: 7; }
+  .room-grid.rail .mod-tonight > :not(.mh) { display: none; }
+  .room-grid.rail .mod-tonight .mh { flex-direction: column; justify-content: flex-start; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 0; min-height: 0; }
+  .room-grid.rail .mod-tonight .mh b { display: none; }
+  .room-grid.rail .mod-tonight .mh-ico { display: inline-grid; place-items: center; }
+  .room-grid.rail .mod-tonight .mh-collapse { margin: 0; }
+  .room-grid.rail .mod-tonight .mh-collapse svg { transform: rotate(180deg); }
+  .room-grid.rail .mod-tonight .wc-count { writing-mode: vertical-rl; transform: rotate(180deg); }
+
+  /* Player controls. Nothing shows until the show plays; then the bar
+     rises on hover, focus or pause (200ms) and sits out of the way. */
+  .wc-ctrl { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: none; align-items: center; gap: 4px; padding: 28px 8px 6px; background: linear-gradient(transparent, rgba(0,0,0,0.74)); color: #FFF; opacity: 0; transition: opacity 200ms cubic-bezier(0.16,1,0.3,1); }
+  .wc-player.playing .wc-ctrl { display: flex; }
+  .wc-player:hover .wc-ctrl, .wc-player:focus-within .wc-ctrl, .wc-player.paused .wc-ctrl, .wc-player.scrubbing .wc-ctrl { opacity: 1; }
+  .wc-player.playing { cursor: pointer; }
+  .cb { position: relative; width: 44px; height: 44px; display: inline-grid; place-items: center; background: transparent; border: 0; color: #FFF; cursor: pointer; flex: 0 0 auto; transition: background 120ms, transform 200ms ease-out; }
+  .cb:hover { background: rgba(255,255,255,0.14); transition-duration: 40ms; }
+  .cb:active { transform: scale(0.97); }
+  .cb:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .cb svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+  .cb .ico-on, .cb .ico-off { grid-area: 1 / 1; display: grid; place-items: center; transition: transform 200ms cubic-bezier(0.16,1,0.3,1), opacity 160ms; }
+  .cb[aria-pressed="true"] .ico-off, .cb[aria-pressed="false"] .ico-on { opacity: 0; transform: rotate(90deg) scale(0.6); }
+  .wc-time { font-family: var(--font-mono); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; padding: 0 6px; }
+  .scrub { position: relative; flex: 1; min-width: 60px; height: 44px; display: flex; align-items: center; cursor: pointer; touch-action: none; }
+  .scrub:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  .scrub-track { position: relative; width: 100%; height: 4px; background: rgba(255,255,255,0.28); transition: transform 320ms cubic-bezier(0.2,0.8,0.2,1); }
+  .scrub.dragging .scrub-track { transition: none; }
+  .scrub-buf, .scrub-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; transform-origin: left; transform: scaleX(0); }
+  .scrub-buf { background: rgba(255,255,255,0.32); }
+  .scrub-fill { background: var(--red); }
+  .scrub-thumb { position: absolute; top: 50%; left: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; background: #FFF; border-radius: 50%; transform: scale(0.6); transition: transform 150ms cubic-bezier(0.16,1,0.3,1); }
+  .scrub:hover .scrub-thumb, .scrub:focus-visible .scrub-thumb, .scrub.dragging .scrub-thumb { transform: scale(1); }
+  /* Scrubber preview and tooltip thumb: one bubble. Hovering shows the frame
+     and time under the pointer; dragging pins it to the thumb. Rise and zoom
+     160ms, like a tooltip. */
+  .scrub-preview { position: absolute; bottom: 36px; left: 50%; width: 160px; transform: translate(-50%, 4px) scale(0.9); opacity: 0; background: #000; border: 1px solid rgba(255,255,255,0.5); pointer-events: none; transition: opacity 160ms cubic-bezier(0.16,1,0.3,1), transform 160ms cubic-bezier(0.16,1,0.3,1); }
+  .scrub-preview canvas { display: block; width: 158px; height: 89px; background: #111; }
+  .scrub-preview.nopic canvas { display: none; }
+  .scrub-preview.nopic { width: auto; padding: 0 8px; }
+  .scrub-preview span { display: block; text-align: center; font-family: var(--font-mono); font-size: 11px; font-weight: 600; padding: 3px 0; }
+  .scrub.hot .scrub-preview { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  .wc-vol { display: flex; align-items: center; flex: 0 0 auto; }
+  .vol-ico .w1, .vol-ico .w2 { transform-origin: 50% 50%; transform-box: fill-box; transition: opacity 150ms, transform 200ms cubic-bezier(0.16,1,0.3,1); }
+  .wc-vol[data-level="0"] .w1, .wc-vol[data-level="0"] .w2, .wc-vol[data-level="1"] .w2 { opacity: 0; transform: scale(0.8); }
+  .vol-range { width: 0; opacity: 0; margin: 0; accent-color: #FFF; transition: width 200ms cubic-bezier(0.16,1,0.3,1), opacity 150ms; }
+  .wc-vol:hover .vol-range, .wc-vol:focus-within .vol-range { width: 72px; opacity: 1; margin-right: 6px; }
+  .wc-buffer { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; color: #FFF; display: none; pointer-events: none; }
+  .wc-player.waiting:not(.paused) .wc-buffer { display: flex; }
+  .wc-player.waiting .wc-buffer .dots i { width: 8px; height: 8px; }
+  @media (max-width: 720px) {
+    .scrub-preview canvas { display: none; }
+    .scrub-preview { width: auto; padding: 0 8px; }
+    .vol-range { display: none; }
+    .wc-time .t-dur, .wc-time .t-sep { display: none; }
+  }
+  @media (max-width: 900px) {
+    .mh-collapse { display: none; }
+    .room-grid.rail { grid-template-columns: 1fr; }
+    .room-grid.rail .room-player, .room-grid.rail .mod-tonight { grid-column: auto; }
+    .room-grid.rail .mod-tonight > :not(.mh) { display: revert; }
+    .room-grid.rail .mod-tonight .mh { flex-direction: row; justify-content: space-between; padding: 6px 14px; border-bottom: 1px solid var(--border-strong); min-height: 44px; }
+    .room-grid.rail .mod-tonight .mh b { display: revert; }
+    .room-grid.rail .mod-tonight .mh-ico { display: none; }
+    .room-grid.rail .mod-tonight .wc-count { writing-mode: horizontal-tb; transform: none; }
+  }
+
+  /* Promise toast: pending spinner morphs into the check, the label rolls */
+  .undo-toast .pt-ico { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: 10px; vertical-align: middle; }
+  .undo-toast .pt-spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #FFF; border-radius: 50%; animation: wc-spin 900ms linear infinite; }
+  .undo-toast .pt-check { width: 16px; height: 16px; fill: none; stroke: #FFF; stroke-width: 2.5; stroke-linecap: square; animation: icon-pop 300ms cubic-bezier(0.2,0.8,0.2,1); }
+  .undo-toast .pt-label { display: inline-block; vertical-align: middle; }
+  .undo-toast button[hidden] { display: none; }
+
   @media (prefers-reduced-motion: reduce) {
     /* the check is drawn by animating its stroke; with motion off, show it whole */
     .modal-copylink.copied .cl-check path { stroke-dashoffset: 0; }
     /* the countdown line is motion too; the 4s timer behind it still runs */
     .undo-toast .drain { visibility: hidden; }
+    /* the watch card: labels swap in place, the strip and bar jump to their state */
+    .roll-up, .roll-down, .wc-endcard.in, .wc-endcard.in .wc-endbox { animation: none; }
+    .wc-player.loading .wc-play-icon { animation: none; border-top-color: #FFF; }
+    .wc-fill, .wc-next, .wc-back, .wc-play, .wc-play-icon, .wc-endplay, .wc-endclose, .room-full, .room-full-toggle .chev, .tn-row { transition: none; }
+    .menu-ico::before, .menu-ico::after, .search-panel, .search-clear, .roster-search, .room-grid, .scrub-track, .scrub-thumb, .scrub-preview, .vol-range, .cb .ico-on, .cb .ico-off, .nudge, .month-nav, .tn-row .t::after, .mh-collapse svg { transition: none; }
+    .rise-mirror > span.rise, .dots i, .st.ripple::after, .watched-btn.just-on::after, .save-btn.just-on::after, .undo-toast .pt-check { animation: none; }
+    .walls-in .wall::after { display: none; }
   }
 
+  /* ===========================================================
+     THEME: TypeUI's component system (zinc neutrals, 1px lines, 8/12px
+     radii, 13-14px/500 labels in sentence case, ink only for primary and
+     selected) in light and dark. Tokens first, then the components that
+     carried their own colors. Dark follows the device unless the Display
+     control in the menu says otherwise.
+     =========================================================== */
+  :root {
+    --bg: #FAFAFA;
+    --surface: #FFFFFF;
+    --surface-soft: #F4F4F5;
+    --surface-raised: #FFFFFF;
+    --ink: #09090B;
+    --ink-soft: #27272A;
+    --ink-dim: #52525B;
+    --ink-faint: #71717A;
+    --border: #E4E4E7;
+    --border-strong: #D4D4D8;
+    --on-ink: #FFFFFF;
+    --red: #C8102E;
+    --red-dark: #9F0C24;
+    --red-fill: #C8102E;
+    --red-soft: #FDE8EB;
+    --blue: #2F5FC4;
+    --blue-dark: #1E3F8A;
+    --blue-soft: #E3EBFA;
+    --card-radius: 10px;
+    --radius-sm: 6px;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 2px rgba(9,9,11,0.05);
+    --shadow-md: 0 4px 12px rgba(9,9,11,0.06), 0 1px 2px rgba(9,9,11,0.04);
+    --shadow-lg: 0 16px 40px rgba(9,9,11,0.10), 0 4px 12px rgba(9,9,11,0.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #09090B; --surface: #18181B; --surface-soft: #27272A; --surface-raised: #1C1C20; --ink: #FAFAFA; --ink-soft: #E4E4E7; --ink-dim: #A1A1AA; --ink-faint: #8B8B94; --border: #27272A; --border-strong: #3F3F46; --on-ink: #09090B; --red: #F0405A; --red-dark: #B8233C; --red-fill: #C2253E; --red-soft: rgba(240,64,90,0.16); --blue: #6B93F0; --blue-dark: #4F7AD8; --blue-soft: rgba(107,147,240,0.18); --shadow-sm: 0 1px 2px rgba(0,0,0,0.4); --shadow-md: 0 4px 12px rgba(0,0,0,0.45); --shadow-lg: 0 16px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4); color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #09090B; --surface: #18181B; --surface-soft: #27272A; --surface-raised: #1C1C20; --ink: #FAFAFA; --ink-soft: #E4E4E7; --ink-dim: #A1A1AA; --ink-faint: #8B8B94; --border: #27272A; --border-strong: #3F3F46; --on-ink: #09090B; --red: #F0405A; --red-dark: #B8233C; --red-fill: #C2253E; --red-soft: rgba(240,64,90,0.16); --blue: #6B93F0; --blue-dark: #4F7AD8; --blue-soft: rgba(107,147,240,0.18); --shadow-sm: 0 1px 2px rgba(0,0,0,0.4); --shadow-md: 0 4px 12px rgba(0,0,0,0.45); --shadow-lg: 0 16px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4); color-scheme: dark; }
+
+  body { background: var(--bg); color: var(--ink); }
+
+  /* ---- Surfaces: one line weight, soft corners, a whisper of shadow ---- */
+  .hero { border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); }
+  .modal { border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+  .search-panel { border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+  .nav-drawer { border-left: 1px solid var(--border); }
+  .mod, .watch-card, .show-end, .match-card, .moments-block { border: 1px solid var(--border); border-radius: var(--card-radius); background: var(--surface); }
+  .mod { box-shadow: var(--shadow-sm); }
+  .mh { border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 600; }
+  .wc-player { border: 1px solid var(--border); border-radius: var(--card-radius); }
+  .room-full-toggle { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+  .room-full-toggle:hover { background: var(--surface-soft); color: var(--ink); }
+  .room-full-toggle:hover .mono { color: var(--ink-dim); }
+  .hero-up-row { border-radius: var(--radius); border-color: var(--border); }
+  .mini-chip { border-radius: var(--radius-sm); }
+  .day { border: 1px solid var(--border); border-radius: var(--card-radius); background: var(--surface); }
+  .day.empty { border-color: transparent; background: var(--surface-soft); }
+  .day.has-events:hover { border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+  .day .weekday-tiny { display: none; }
+  .saved-row, .watched-row { border-radius: var(--radius); }
+  #wrestler-tooltip { border: 1px solid var(--border); border-radius: var(--card-radius); box-shadow: var(--shadow-lg); }
+  .undo-toast { border-radius: var(--radius); box-shadow: var(--shadow-lg); color: var(--on-ink); }
+  .undo-toast button { border-radius: var(--radius-sm); color: var(--on-ink); border-color: color-mix(in srgb, var(--on-ink) 50%, transparent); }
+  .undo-toast button:hover { background: var(--on-ink); color: var(--ink); }
+  .undo-toast .pt-spin { border-color: color-mix(in srgb, var(--on-ink) 35%, transparent); border-top-color: var(--on-ink); }
+  .undo-toast .pt-check { stroke: var(--on-ink); }
+  .scrub-preview { border-radius: var(--radius); overflow: hidden; }
+  .wc-endbox { border-radius: var(--radius); }
+
+  /* ---- Buttons: rounded-lg, 1px line, 13px/600 sentence case; primary = ink fill ---- */
+  .spoiler-btn, .search-btn, .menu-btn, .mark-month, .cv-btn, .month-nav, .watched-btn, .save-btn, .details-toggle, .wf-chip, .rmode, .crumb,
+  .search-esc, .nav-close, .modal-close, .wc-endclose, .wc-back, .mh-collapse, .cb, .hero-altlink, .wr-remove, .sr-remove, .cu-apply, .jump-date, .cv-select {
+    border-radius: var(--radius);
+  }
+  .spoiler-btn, .search-btn, .menu-btn, .mark-month, .month-nav, .details-toggle, .watched-btn, .save-btn, .wf-chip, .rmode, .crumb, .search-esc {
+    border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink);
+    text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 13px;
+  }
+  .spoiler-btn:hover, .search-btn:hover, .menu-btn:hover, .mark-month:hover, .month-nav:hover, .details-toggle:hover, .watched-btn:hover, .save-btn:hover, .wf-chip:hover, .rmode:hover, .crumb:hover {
+    background: var(--surface-soft); border-color: var(--border-strong); color: var(--ink);
+  }
+  .spoiler-btn[aria-pressed="true"] { background: var(--red-fill); border-color: var(--red-fill); color: #FFF; box-shadow: none; animation: none; }
+  .spoiler-btn[aria-pressed="true"]:hover { background: var(--red-dark); border-color: var(--red-dark); }
+  .spoiler-btn .eye { background: none; mask: none; -webkit-mask: none; width: 16px; height: 16px; display: inline-grid; place-items: center; color: inherit; }
+  .spoiler-btn .eye svg { width: 16px; height: 16px; display: block; }
+  .spoiler-btn .eye .i-on, .spoiler-btn[aria-pressed="true"] .eye .i-off { display: none; }
+  .spoiler-btn[aria-pressed="true"] .eye .i-on { display: block; }
+  .search-ico, .search-head-ico { background: none; mask: none; -webkit-mask: none; width: 18px; height: 18px; display: inline-grid; place-items: center; }
+  .search-ico svg, .search-head-ico svg { width: 18px; height: 18px; display: block; }
+  .modal-close svg, #search-clear svg, .month-nav svg { width: 18px; height: 18px; display: block; }
+  .modal-close, .search-clear { display: inline-grid; place-items: center; }
+  .nav-close svg { stroke-linecap: round; stroke-width: 2; }
+  .month-nav { display: inline-grid; place-items: center; }
+  .hero-resume, .wc-next, .wc-main, .se-next, .mark-month.active, .cu-apply { color: var(--on-ink); border-radius: var(--radius); }
+  .wc-next:hover, .se-next:hover, .hero-resume:hover { color: #FFF; }
+  .wc-back:hover, .mh-collapse:hover, .watched-btn.active, .save-btn.active, .wf-chip.active, .rmode.active { color: var(--on-ink); }
+  .seg-ind { border-radius: var(--radius-sm); }
+  .has-seg { border-radius: var(--radius); padding: 3px; background: var(--surface-soft); border: 1px solid var(--border); }
+  .has-seg .cv-btn, .has-seg .rmode { border: 0; background: transparent; }
+  .has-seg .cv-btn[aria-pressed="true"], .has-seg .rmode.active { color: var(--on-ink); }
+  .controls { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border-strong); }
+  .controls > * { border-radius: 0; border: 0; }
+  .controls > * + * { border-left: 1px solid var(--border-strong); }
+  .tn-row .st { border-radius: var(--radius-sm); border-color: var(--border-strong); }
+  .tn-row.cur .st { color: var(--on-ink); border-color: var(--ink); }
+  .tn-row.cur { box-shadow: inset 3px 0 0 var(--ink); }
+  .ch-rows .tag { border-radius: 999px; border-color: var(--border-strong); color: var(--ink-dim); font-family: var(--font-sans); letter-spacing: 0; text-transform: none; font-size: 12px; font-weight: 600; padding: 3px 8px; }
+  .wc-endplay, .wc-endclose { border-radius: var(--radius); }
+  .cb { border-radius: var(--radius); }
+  .wc-play-icon { background: rgba(255,255,255,0.08); }
+  .wc-play-icon svg { width: 26px; height: 26px; display: block; }
+  .wc-play-link .wc-play-icon { padding-left: 0; }
+  .wc-back svg, .mh-collapse svg, .mh-ico svg, .nudge svg { width: 16px; height: 16px; display: block; }
+  .nudge { vertical-align: middle; }
+  .mod-links a svg, .wc-alt svg { width: 13px; height: 13px; display: inline-block; vertical-align: -2px; margin-left: 2px; }
+
+  /* ---- Icons drawn by CSS: TypeUI's set, 2px round strokes ---- */
+  .watched-btn .wb-check, .wr-check { mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center / contain no-repeat; -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center / contain no-repeat; width: 14px; height: 14px; }
+  .save-btn .sv-ribbon { mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z'/></svg>") center / contain no-repeat; -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z'/></svg>") center / contain no-repeat; width: 14px; height: 14px; background: currentColor; }
+  .save-btn.active .sv-ribbon { mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' stroke='black' stroke-width='2' stroke-linejoin='round'><path d='M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z'/></svg>"); -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' stroke='black' stroke-width='2' stroke-linejoin='round'><path d='M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z'/></svg>"); }
+  .details-toggle .chev { width: 14px; height: 14px; border: 0; background: currentColor; mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") center / contain no-repeat; -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") center / contain no-repeat; transform: none; }
+  .match-card.open .details-toggle .chev { transform: rotate(180deg); }
+  .room-full-toggle .chev { width: 14px; height: 14px; border: 0; background: currentColor; mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") center / contain no-repeat; -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>") center / contain no-repeat; transform: none; }
+  .room-full-toggle[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+  /* ---- Type hierarchy: titles lead, labels in sentence case, mono only for numbers ---- */
+  .browse-title, .hero-title, .event-title-modal { letter-spacing: -0.02em; }
+  .mono, .mh-link, .se-label, .room-stat .mono, .hero-kicker, .weekdays > div, .jump-date-label, .hero-up-head, .moments-head, .wc-meta, .wc-endk, .browse-kicker, .hero-bar-label, .search-foot, .search-group-head, .event-meta-modal, .nav-drawer-title {
+    font-family: var(--font-sans); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 500; color: var(--ink-dim);
+  }
+  .wc-count, .wc-time, .scrub-preview span, .hb-overall, .room-stat .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .mh-link { font-weight: 600; color: var(--ink-dim); }
+  .mh-link:hover { color: var(--ink); }
+  .tn-row .x, .why-rows .x, .ch-rows .x, .who-txt .x, .wc-note, .mod-links a, .hu-date, .wc-endd, .se-next-name, .wc-sub, .watch-src, .wc-play .wc-meta { font-family: var(--font-sans); font-size: 12px; letter-spacing: 0; }
+  .wc-sub, .se-next-name, .wc-play .wc-meta, .wc-endd { opacity: 0.85; }
+  .page-footer { font-family: var(--font-sans); font-size: 12px; color: var(--ink-faint); letter-spacing: 0; line-height: 1.6; }
+  .footer-sources summary { cursor: pointer; color: var(--ink-dim); font-weight: 500; list-style: none; display: inline-block; padding: 6px 0; }
+  .footer-sources summary::-webkit-details-marker { display: none; }
+  .footer-sources summary::after { content: ' ›'; }
+  .footer-sources[open] summary::after { content: ' ‹'; }
+  .footer-sources[open] summary { margin-bottom: 6px; }
+
+  /* ---- Calm: nothing moves while you read ---- */
+  .hero-kicker .pulse { animation: none; border-radius: 50%; }
+  .walls-in .wall::after { animation-delay: calc(min(var(--match-index, 0), 6) * 30ms); }
+
+  /* ---- Images: a frame with a 1px edge, in both themes ---- */
+  .show-logo { background: #FFF; border-radius: 4px; outline: 1px solid rgba(0,0,0,0.08); outline-offset: -1px; }
+  .mc-av-img { background: var(--surface-soft); }
+
+  /* ---- Display control in the menu ---- */
+  .nav-display { padding: 16px 20px 20px; border-top: 1px solid var(--border); margin-top: auto; }
+  .nav-display-label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-dim); margin-bottom: 8px; }
+  .seg3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 3px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--radius); }
+  .seg3 button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink-dim); font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer; transition: background 120ms, color 120ms, transform 200ms ease-out; }
+  .seg3 button:hover { color: var(--ink); }
+  .seg3 button:active { transform: scale(0.97); }
+  .seg3 button[aria-checked="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+  .seg3 button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .seg3 svg { width: 16px; height: 16px; display: block; }
+
+  /* ---- Leftovers found in the browser: header line, brand mark, counts, segmented labels ---- */
+  header { border-bottom-color: var(--border); }
+  .logo { color: var(--on-ink); border-radius: var(--radius-sm); }
+  .browse-kicker { display: none; }
+  .browse-count { font-family: var(--font-sans); text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--ink-dim); }
+  .browse-count > * { font-family: inherit; }
+  .cv-btn, .rmode { text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 600; }
+  .hero-bar-label, .hb-overall { font-family: var(--font-sans); font-size: 12px; }
+  .modal-toolbar { border-bottom-color: var(--border); }
+  .event-hero-top .brand-chip, .chip { border-radius: var(--radius-sm); }
+
+  .brand .logo { color: var(--on-ink); }
+  .hero-resume .play { border-left-color: var(--on-ink); }
+  .hero-me-label { font-family: var(--font-sans); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 500; color: var(--ink-dim); }
+  .hero-meta, .hero-meta > * { font-family: var(--font-sans); font-size: 13px; letter-spacing: 0; color: var(--ink-dim); }
+
+  /* ===========================================================
+     TYPEUI 1:1. Values read off typeui.sh's own components on 10-22
+     (tokens from its :root and .dark rules; metrics from the live demos):
+     page / card / card-soft surfaces, heading / body / subtle text, line /
+     line-medium / line-strong, brand. Buttons 40px (10px 16px, 14/500,
+     radius 8), ghost icon buttons 40x40, list containers radius 8 with 48px
+     rows (0 16px, gap 12) and 24px number badges (radius 6, 13/500), cards
+     radius 12, toasts 64px (radius 8, 0 12px, gap 10, Undo 48x32), hint
+     bubbles rgba(0,0,0,.6) with a 10% white line (radius 8, 8px 12px,
+     14/500), sliders 6 to 8px tracks with a 20px thumb (2px brand ring),
+     progress bars 6px full-radius, 150 to 200ms ease.
+     =========================================================== */
+  :root {
+    --bg: #F4F4F5;            /* page */
+    --surface: #FFFFFF;       /* card */
+    --surface-soft: #FAFAFA;  /* brand-softer: hover and raised */
+    --surface-raised: #FFFFFF;
+    --ink: #09090B;           /* heading */
+    --ink-soft: #52525B;      /* body */
+    --ink-dim: #71717B;       /* subtle */
+    --ink-faint: #71717B;
+    --border: #E4E4E7;        /* line */
+    --border-strong: #D4D4D8; /* line-medium */
+    --line-strong: #BFBFC7;
+    --brand: #000000;
+    --brand-soft: #E4E4E7;
+    --on-ink: #FFFFFF;
+    --on-brand: #FFFFFF;
+    --hint-bg: rgba(0,0,0,0.6);
+    --hint-line: rgba(255,255,255,0.1);
+    --card-radius: 12px;
+    --radius-sm: 6px;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #18181B; --surface: #09090B; --surface-soft: #18181B; --surface-raised: #18181B; --ink: #FAFAFA; --ink-soft: #D4D4D8; --ink-dim: #A1A1AA; --ink-faint: #A1A1AA; --border: #27272A; --border-strong: #3F3F46; --line-strong: #52525B; --brand: #FFFFFF; --brand-soft: #3F3F46; --on-ink: #09090B; --on-brand: #09090B; --red: #F0405A; --red-dark: #B8233C; --red-fill: #C2253E; --red-soft: rgba(240,64,90,0.16); --blue: #6B93F0; --blue-dark: #4F7AD8; --blue-soft: rgba(107,147,240,0.18); --shadow-sm: 0 1px 2px rgba(0,0,0,0.4); --shadow-md: 0 4px 12px rgba(0,0,0,0.45); --shadow-lg: 0 16px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4); color-scheme: dark; } }
+  :root[data-theme="dark"] { --bg: #18181B; --surface: #09090B; --surface-soft: #18181B; --surface-raised: #18181B; --ink: #FAFAFA; --ink-soft: #D4D4D8; --ink-dim: #A1A1AA; --ink-faint: #A1A1AA; --border: #27272A; --border-strong: #3F3F46; --line-strong: #52525B; --brand: #FFFFFF; --brand-soft: #3F3F46; --on-ink: #09090B; --on-brand: #09090B; --red: #F0405A; --red-dark: #B8233C; --red-fill: #C2253E; --red-soft: rgba(240,64,90,0.16); --blue: #6B93F0; --blue-dark: #4F7AD8; --blue-soft: rgba(107,147,240,0.18); --shadow-sm: 0 1px 2px rgba(0,0,0,0.4); --shadow-md: 0 4px 12px rgba(0,0,0,0.45); --shadow-lg: 0 16px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4); color-scheme: dark; }
+
+  /* ---- Buttons ---- */
+  .spoiler-btn, .menu-btn, .mark-month, .details-toggle, .watched-btn, .save-btn, .wf-chip, .rmode, .crumb, .search-esc, .hero-altlink, .cu-apply, .room-full-toggle, .wc-endclose {
+    min-height: 40px; padding: 10px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 500; line-height: 20px; letter-spacing: 0;
+    border: 0; background: var(--brand-soft); color: var(--ink); transition: background 200ms ease, color 200ms ease, border-color 200ms ease, transform 200ms ease-out;
+  }
+  .spoiler-btn:hover, .menu-btn:hover, .mark-month:hover, .details-toggle:hover, .watched-btn:hover, .save-btn:hover, .wf-chip:hover, .rmode:hover, .crumb:hover, .search-esc:hover, .room-full-toggle:hover {
+    background: var(--border-strong); color: var(--ink);
+  }
+  .hero-resume, .wc-next, .wc-main, .se-next, .cu-apply, .mark-month.active, .watched-btn.active, .save-btn.active, .wf-chip.active {
+    background: var(--brand); color: var(--on-brand); border: 0; border-radius: var(--radius); font-size: 14px; font-weight: 500;
+  }
+  .hero-resume:hover, .wc-next:hover, .se-next:hover, .cu-apply:hover { background: var(--ink-soft); color: var(--on-brand); border-color: transparent; }
+  .wc-next { min-height: 40px; padding: 10px 16px; }
+  .wc-next.finish { padding: 6px 16px; }
+  .hero-resume { padding: 10px 16px; min-height: 40px; }
+  .hero-resume .play { border-left-color: var(--on-brand); }
+  .search-btn, .modal-close, .nav-close, .month-nav, .wc-back, .mh-collapse, .cb, .search-clear, .wr-remove, .sr-remove {
+    width: 40px; height: 40px; min-height: 40px; padding: 0; display: inline-grid; place-items: center; border: 0; border-radius: var(--radius);
+    background: transparent; color: var(--ink-dim); transition: background 150ms ease, color 150ms ease, transform 200ms ease-out;
+  }
+  .search-btn:hover, .modal-close:hover, .nav-close:hover, .month-nav:hover, .wc-back:hover, .mh-collapse:hover, .search-clear:hover, .wr-remove:hover, .sr-remove:hover { background: var(--surface-soft); color: var(--ink); }
+  .wr-remove, .sr-remove { width: auto; padding: 0 10px; font-size: 14px; font-weight: 500; }
+  .cb { color: #FFF; }
+  .cb:hover { background: rgba(255,255,255,0.14); color: #FFF; }
+  .wc-back:disabled { opacity: 0.35; }
+  .wc-back:disabled:hover { background: transparent; color: var(--ink-dim); }
+  .mod-foot { gap: 8px; }
+  .controls { border: 1px solid var(--border-strong); background: var(--surface); }
+  .controls > * + * { border-left: 1px solid var(--border-strong); }
+  .controls .month-nav { border-radius: 0; }
+
+  /* ---- Surfaces ---- */
+  .hero, .modal, .search-panel { border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); }
+  .mod, .watch-card, .show-end, .match-card, .moments-block, .day, #wrestler-tooltip, .wc-player { border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); box-shadow: none; }
+  .wc-player { background: #0A0A0A; }
+  .day.empty { background: var(--surface-soft); border-color: transparent; }
+  .mh { min-height: 45px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; color: var(--ink); }
+  .mh .mono, .mh-link, .wc-count { font-size: 14px; font-weight: 400; color: var(--ink-dim); text-transform: none; letter-spacing: 0; }
+  .wc-count { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .mh-link { font-weight: 500; }
+  .tn-row, .why-rows li a, .ch-rows li { min-height: 48px; padding: 6px 16px; gap: 12px; border-bottom: 1px solid var(--border); }
+  .tn-row .t, .why-rows .t, .ch-rows .t, .who-txt .wrestler-link, .who-txt .t { font-size: 14px; font-weight: 500; color: var(--ink); line-height: 20px; }
+  .tn-row .x, .why-rows .x, .ch-rows .x, .who-txt .x, .wc-note, .mod-links a, .hu-date { font-size: 13px; font-weight: 400; color: var(--ink-dim); line-height: 18px; }
+  .tn-row.done .t { color: var(--ink-dim); }
+  .tn-row .st { flex: 0 0 24px; width: 24px; height: 24px; border: 0; border-radius: var(--radius-sm); background: var(--surface-soft); color: var(--ink-dim); font-family: var(--font-sans); font-size: 13px; font-weight: 500; }
+  .tn-row.cur .st { background: var(--brand); color: var(--on-brand); }
+  .tn-row.done .st { background: var(--surface-soft); color: var(--ink-dim); }
+  .tn-row { position: relative; }
+  .tn-row.cur { box-shadow: none; }
+  .tn-row.cur::before { content: ''; position: absolute; left: 0; top: 50%; width: 2px; height: 35px; transform: translateY(-50%); background: var(--brand); border-radius: 999px; }
+  .match-card.now { border-color: var(--border); box-shadow: none; position: relative; }
+  .match-card.now::before { content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 2px; background: var(--brand); border-radius: 999px; }
+  .who-body, .why-rows, .ch-rows, .tn-rows { background: var(--surface); }
+  .who-body { padding: 16px; }
+  .wc-note { padding: 0 16px 12px; }
+  .mod-links { padding: 0 16px 8px; }
+  .mod-links a { text-decoration: none; color: var(--ink-dim); }
+  .mod-links a:hover { color: var(--ink); }
+
+  /* ---- Toast ---- */
+  .undo-toast { min-height: 64px; padding: 0 12px; gap: 10px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); color: var(--ink); box-shadow: var(--shadow-lg); font-size: 14px; font-weight: 400; }
+  .undo-toast button { min-height: 32px; height: 32px; padding: 0 12px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-dim); font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none; }
+  .undo-toast button:hover { background: var(--surface-soft); color: var(--ink); }
+  .undo-toast .drain { background: var(--brand); }
+  .undo-toast .pt-spin { border-color: color-mix(in srgb, var(--ink-dim) 40%, transparent); border-top-color: var(--ink-dim); }
+  .undo-toast .pt-check { stroke: var(--ink-dim); }
+  .undo-toast .pt-ico { color: var(--ink-dim); }
+
+  /* ---- Hints and the scrubber bubble ---- */
+  .scrub-preview { background: var(--hint-bg); border: 1px solid var(--hint-line); border-radius: var(--radius); backdrop-filter: none; }
+  .scrub-preview span { font-size: 14px; font-weight: 500; color: #FFF; padding: 8px 12px; }
+  .scrub-preview.nopic { padding: 0; }
+  .scrub-preview canvas { border-radius: var(--radius) var(--radius) 0 0; }
+
+  /* ---- Sliders and bars ---- */
+  .scrub-track { height: 8px; border-radius: 999px; background: #3F3F46; }
+  .scrub-buf, .scrub-fill { border-radius: 999px; }
+  .scrub-buf { background: #52525B; }
+  .scrub-fill { background: #FFF; }
+  .scrub-thumb { width: 20px; height: 20px; margin: -10px 0 0 -10px; background: #09090B; border: 2px solid #FFF; border-radius: 999px; transform: scale(0.7); }
+  .vol-range { accent-color: #FFF; }
+  .wc-progress { height: 6px; background: var(--brand-soft); }
+  .wc-fill { background: var(--brand); border-radius: 999px; }
+  .wc-progress, .room-stat .bar, .hero-bar { border-radius: 999px; overflow: hidden; }
+  .room-stat .bar { height: 6px; background: var(--brand-soft); }
+  .room-stat .bar i { background: var(--brand); }
+  .hero-bar { height: 6px; background: var(--brand-soft); }
+  .hero-bar-fill { background: var(--brand); }
+
+  /* ---- Accordion rows ---- */
+  .room-full-toggle { min-height: 48px; padding: 0 16px; gap: 12px; font-size: 14px; font-weight: 500; background: var(--surface); border: 1px solid var(--border); }
+  .room-full-toggle:hover { background: var(--surface-soft); }
+  .room-full-toggle .mono { font-size: 14px; font-weight: 400; color: var(--ink-dim); }
+  .room-full-toggle .chev { color: var(--ink-dim); }
+
+  /* ---- Inputs ---- */
+  .roster-search, .jump-date input, .cu-date, .cv-select { min-height: 40px; border-radius: var(--radius); border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); font-size: 14px; padding: 0 12px; }
+  .roster-search:focus, .jump-date input:focus, .cu-date:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 15%, transparent); }
+  .search-input { font-size: 16px; font-weight: 400; }
+
+  /* ---- Scrims: plain, no blur ---- */
+  .modal-backdrop, .search-backdrop, .nav-backdrop { background: rgba(0,0,0,0.6); backdrop-filter: none; -webkit-backdrop-filter: none; }
+
+  /* ---- The ten tells ---- */
+  .hero { background: var(--surface); }
+  .hero::before, .hero::after { display: none; }
+  .event-hero.ppv { background: none; }
+  .event-hero.ppv::before { display: none; }
+  .day.has-ppv { background: var(--surface); border-color: var(--border); }
+  .day.has-ppv:hover { border-color: var(--border-strong); }
+  .day.is-resume { border-color: var(--brand); }
+  .day.is-resume::before, .day.is-resume::after { animation: none; display: none; }
+  body.spoilers-on .team.winner, body.spoilers-on .team.right.winner { background: var(--red-soft); }
+  .nav-foot-line { display: none; }
+  .hero-kicker .pulse { display: none; }
+
+  .hero-up-row { border-radius: var(--radius); padding: 6px 8px; min-height: 48px; transition: background 150ms ease; }
+  .hero-up-row:hover { background: var(--surface-soft); }
+
+  /* ---- Audit fixes (10-22): 12px floor, sentence case, contrast, targets ---- */
+  :root { --ink-dim: #6B6B74; --ink-faint: #6B6B74; }
+  .mini-chip { min-height: 32px; padding: 4px 8px; }
+  .mini-chip .label { font-size: 13px; }
+  .mini-chip .ct { font-size: 12px; }
+  .crumb, .crumb-sep, .crumb-current { font-size: 13px; }
+  .crumbs { min-height: 40px; }
+  .cu-preview, .wf-n, .video-sub, .roster-asof-sub, .titles-note, .title-holder, .saved-sub, .hero-me-vs, .who-vs, .vs-text, .m-number, .label, .rating-scale, .star, .num, .watch-chip, .brand-badge, .bio-label, .profile-years, .team-meta, .profile-hint, .profile-section-title { font-size: 12px; }
+  .titles-group-label, .profile-section-title, .bio-label, .profile-years, .roster-asof-sub, .label, .team-meta { font-family: var(--font-sans); text-transform: none; letter-spacing: 0; font-weight: 500; color: var(--ink-dim); }
+  .titles-group-label, .profile-section-title { font-size: 14px; color: var(--ink); }
+  .page-footer__link { display: inline-block; padding: 8px 4px; }
+  .profile-back { min-height: 40px; padding: 0 12px; border-radius: var(--radius); font-size: 14px; }
+  .r-card-ph { color: var(--ink-dim); background: var(--surface-soft); }
+  .wc-play .wc-meta { opacity: 1; color: rgba(255,255,255,0.85); }
+  .wrestler-link { padding: 2px 0; }
+
+  /* ---- Audit round 2: stage vs card layering, 12px floor where a narrower rule won, chip blue contrast ---- */
+  :root { --stage: #FFFFFF; --blue: #2A55B5; --smackdown: #2A55B5; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --stage: #18181B; } }
+  :root[data-theme="dark"] { --stage: #18181B; }
+  .modal, .search-panel, .hero, .nav-drawer { background: var(--stage); }
+  .modal-toolbar { background: var(--stage); }
+  .match-card .label, .details-row .label, .match-card .star, .match-card .rating-scale, .match-card .rating-votes, .rating-votes, .champ-badge, .team-meta, .mo-meta, .promo-people, .wf-chip .wf-n, .wf-n, .profile-source, .profile-source a, .bio-label, .profile .bio-label, .bio-grid .bio-label, .roster-no-results { font-size: 12px; }
+  .bio-label, .roster-no-results, .team-meta { font-family: var(--font-sans); text-transform: none; letter-spacing: 0; }
+
 </style>
+<script>try{var t=localStorage.getItem('wrestling.theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;}catch(e){}</script>
 </head>
 <body>
 
@@ -3697,7 +4382,7 @@
 <section id="view-mylist" class="view" hidden>
   <div class="mylist-header">
     <h2>My List</h2>
-    <div class="mylist-sub">Your watch history and saved matches. Kept on this device, no account needed.</div>
+    <div class="mylist-sub">Your watched shows and saved matches, kept on this device.</div>
   </div>
 
   <!-- Watched shows: the history behind your Continue position -->
@@ -3817,6 +4502,14 @@
       <div class="nav-foot-line">Spoiler-safe. No account. Works in your browser.</div>
       <a class="nav-foot-link" href="https://github.com/warner-wvez/wrestling-dashboard" target="_blank" rel="noopener">GitHub</a>
     </div>
+    <div class="nav-display">
+      <span class="nav-display-label">Display</span>
+      <div class="seg3" role="radiogroup" aria-label="Display">
+        <button type="button" role="radio" data-theme="auto" aria-checked="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>Auto</button>
+        <button type="button" role="radio" data-theme="dark" aria-checked="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>Dark</button>
+        <button type="button" role="radio" data-theme="light" aria-checked="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>Light</button>
+      </div>
+    </div>
   </aside>
 </div>
 
@@ -3828,7 +4521,7 @@
       <input id="search-input" class="search-input" type="search" autocomplete="off" autocapitalize="off"
              spellcheck="false" placeholder="Search events, wrestlers, stipulations..."
              aria-label="Search" aria-controls="search-results">
-      <button class="search-clear" id="search-clear" type="button" aria-label="Clear search" hidden>&times;</button>
+      <button class="search-clear" id="search-clear" type="button" aria-label="Clear search">&times;</button>
       <button class="search-esc" id="search-esc" type="button" aria-label="Close search">Esc</button>
     </div>
     <div id="search-results" class="search-results" role="listbox" aria-label="Search results"></div>
@@ -3872,9 +4565,7 @@
 
 <div id="wrestler-tooltip" aria-hidden="true"></div>
 
-<footer class="page-footer">
-  <span id="page-footer-line"></span>
-</footer>
+<footer class="page-footer"><details class="footer-sources"><summary>About this data</summary><span id="page-footer-line"></span></details></footer>
 
 <script>
 (() => {
@@ -4060,6 +4751,24 @@
   }
   const mediaFor = (id) => (MEDIA && id != null && MEDIA[String(id)]) || null;
 
+  // Where to watch (optional sidecar): shards/where.json maps event id ->
+  // { archive: { item, file, min, how }, official: { platform, url } }, built
+  // by media-pipeline/where_map.py from the archive.org feed and the
+  // Peacock/Netflix sheet. Same seam as media.json: absent file, every lookup
+  // misses and the card falls back to the fan upload or a web search.
+  let WHERE = null;
+  let wherePromise = null;
+  function loadWhere() {
+    if (!wherePromise) {
+      wherePromise = fetch('shards/where.json')
+        .then(r => (r.ok ? r.json() : {}))
+        .catch(() => ({}))
+        .then(map => { WHERE = map; return map; });
+    }
+    return wherePromise;
+  }
+  const whereFor = (id) => (WHERE && id != null && WHERE[String(id)]) || null;
+
   // Cagematch-rated promos tied to this show: the mic-work companion to the
   // video Moments shelf. Same graceful seam as loadMedia; if shards/promos.json
   // is absent the shelf simply does not render and nothing else changes.
@@ -4230,7 +4939,7 @@
     const container = el('titles-content');
     if (!container) return;
     if (!TITLES_BOARD) {
-      container.innerHTML = '<div class="status">Loading titles...</div>';
+      container.innerHTML = loadingStatus('Loading titles');
       await Promise.all([loadTitlesBoard(), loadBelts()]);
     }
     const board = TITLES_BOARD || [];
@@ -4480,7 +5189,7 @@
       container.innerHTML = t ? titlePageHTML(t) : '<div class="status">Title not found.</div>';
     };
     if (!TITLES_BOARD || !BELTS) {
-      container.innerHTML = '<div class="status">Loading title...</div>';
+      container.innerHTML = loadingStatus('Loading the title');
       Promise.all([loadTitlesBoard(), loadBelts()]).then(paint);
     } else {
       paint();
@@ -4589,7 +5298,7 @@
     for (const btn of spoilerButtons) {
       btn.setAttribute('aria-pressed', spoilers ? 'true' : 'false');
       const label = btn.querySelector('.sp-label');
-      if (label) label.textContent = spoilers ? 'Spoilers On' : 'Spoilers Off';
+      if (label) rollText(label, spoilers ? 'Spoilers On' : 'Spoilers Off');
       btn.title = spoilers
         ? 'Spoilers are ON: winners and finishes are visible. Click to hide them.'
         : 'Spoilers are OFF: winners and finishes stay hidden. Click to reveal them.';
@@ -4599,6 +5308,10 @@
     spoilers = !spoilers;
     sessionStorage.setItem(SPOILER_KEY, spoilers ? '1' : '0');
     applySpoilerClass();
+    // Swap state icon: the eye turns in as the state flips. Wall reveal: the
+    // finishes that enter the DOM below slide out from under a wall.
+    if (!reduceMotion()) for (const btn of spoilerButtons) { const eye = btn.querySelector('.eye'); if (eye) eye.animate([{ transform: 'rotate(90deg) scale(0.6)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 220, easing: 'cubic-bezier(0.16,1,0.3,1)' }); }
+    if (spoilers && mContent) { mContent.classList.add('walls-in'); setTimeout(() => mContent.classList.remove('walls-in'), 1200); }
     // Re-render any view that renders outcomes so the result is added to (or
     // removed from) the DOM, rather than merely shown/hidden with CSS. These are
     // lightweight in-place updates, not the full open/route paths.
@@ -4758,7 +5471,7 @@
       if (!e) return '';
       const c = SHOW_CLASS[e.show_type] || '';
       const chip = e.show_type === 'PPV' ? 'PPV' : (e.show_type === 'SmackDown' ? 'SD' : 'Raw');
-      return `<button class="hero-up-row" type="button" data-go="${esc(id)}">
+      return `<button class="hero-up-row" type="button" data-go="${esc(id)}" data-flip="${esc(id)}">
           ${showBadge(e.logo, chip, c, 'xs', 'chip')}
           <span class="hu-main"><span class="hu-name">${esc(cleanName(e))}</span><span class="hu-date">${esc(fmtDateLong(e.air_date))}</span></span>
         </button>`;
@@ -4794,7 +5507,7 @@
       ? `<button class="hero-altlink" type="button" data-catchup>Already watched some? Pick up where you are</button>`
       : '';
 
-    heroEl.innerHTML = `
+    flipRows(heroEl, '.hero-up-row[data-flip]', () => { heroEl.innerHTML = `
       <div class="hero-main">
         <div class="hero-kicker"><span class="pulse"></span>${nothing ? 'Start from the beginning' : 'Continue watching'}</div>
         <div class="hero-title">${esc(cleanName(ev))}</div>
@@ -4811,7 +5524,7 @@
           <span class="play" aria-hidden="true"></span><span>${nothing ? 'Start watching' : 'Resume'}</span>
         </button>
         ${upBlock}
-      </div>`;
+      </div>`; });
     injectHeroMainEvent(ev);   // fills the billboard's open space, async from the shard
     markResumeDay(resumeId);
   }
@@ -4950,6 +5663,10 @@
     mContent.querySelectorAll('[data-finish]').forEach(btn => {
       const l = btn.querySelector('.se-next-label');
       if (l) l.textContent = watched.has(btn.dataset.finish) ? 'Next show' : 'Mark watched, next show';
+    });
+    mContent.querySelectorAll('[data-watch-card]').forEach(card => {
+      const l = card.querySelector('.wc-next.finish > span:first-child');
+      if (l) l.textContent = watched.has(card.dataset.watchCard) ? 'Next show' : 'Mark watched, next show';
     });
     markWatchedChips();
     updateMarkMonthBtn();
@@ -5453,7 +6170,7 @@
   async function renderVideo() {
     const container = el('video-view-content');
     if (!container) return;
-    container.innerHTML = '<div class="status">Loading video links...</div>';
+    container.innerHTML = loadingStatus('Loading video links');
     await loadMedia();
     // With spoilers off the library stops at the viewer's date: a list of every
     // year's clips names the matches and feuds still ahead of them.
@@ -5660,7 +6377,7 @@
   async function loadCalendar() {
     if (!anchorISO) anchorISO = `${yr[0]}-01-01`;
     syncSelectsToAnchor();
-    calEl.innerHTML = '<div class="status">Loading…</div>';
+    calEl.innerHTML = loadingStatus('Loading the calendar');
     try {
       let events, cells;
       if (calView === 'week') {
@@ -5877,7 +6594,7 @@
   async function openModal(events, iso, sourceSlug = null, scrollMatchId = null) {
     lastModalCtx = { events, iso, sourceSlug };
     if (iso) rosterViewISO = clampISO(iso);   // time-aware roster mirrors the show you're viewing
-    mContent.innerHTML = '<div class="status">Loading…</div>';
+    mContent.innerHTML = loadingStatus('Loading the show');
     clearTimeout(modalCloseTimer);
     mBackdrop.classList.remove('closing');
     mBackdrop.classList.add('open');
@@ -5888,6 +6605,9 @@
       const [details] = await Promise.all([
         Promise.all(events.map(e => getEventDetail(e.id))),
         loadMedia(),   // watch links render inline, so the map must be ready
+        loadWhere(),   // the player's where-to-watch map
+        loadProfiles(), // Who's who: roles and finishers
+        loadTitlesBoard(), // Champions going in
         loadPromos(),  // the promos shelf renders inline too
         loadFeuds(),   // and the storylines shelf
         loadTournaments(),  // and the tournaments shelf
@@ -5923,8 +6643,8 @@
           }
         }
       });
-      wireModalContent();
-      refreshResumeUI();
+      wireModalContent(details);
+refreshResumeUI();
       refreshWatchedUI();
       refreshSavedUI();
     } catch (err) {
@@ -5934,7 +6654,7 @@
 
   // Bind the per-match controls after the modal content is (re)rendered. Direct
   // binding is fine for the ~12 matches on a typical PPV card.
-  function wireModalContent() {
+  function wireModalContent(details = []) {
     mContent.querySelectorAll('[data-toggle-details]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -5962,16 +6682,10 @@
     mContent.querySelectorAll('[data-finish]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const id = btn.dataset.finish;
-        if (!watched.has(id)) {
-          watched.set(id, Date.now());
-          saveWatched(); refreshWatchedUI();
-          const name = fullShowName(BUNDLE.events[id]).replace(/^WW[EF]\s+/, '');
-          showUndo(`Marked ${name} watched`, () => { watched.delete(id); saveWatched(); refreshWatchedUI(); });
-        }
-        navigateToEvent(btn.dataset.next);
+        finishShow(btn.dataset.finish, btn.dataset.next);
       });
     });
+    details.forEach(d => wireWatchCard(mContent, d));
     mContent.querySelectorAll('[data-save-match]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -5998,7 +6712,12 @@
     );
 
     mContent.classList.add('instant-reveal');
+    // A playing file survives the re-render: the live player element is lifted
+    // out and put back into the fresh room for the same show.
+    const livePlayers = new Map();
+    mContent.querySelectorAll('.wc-player.playing').forEach(p => { const c = p.closest('[data-watch-card]'); if (c) livePlayers.set(c.dataset.watchCard, p); });
     mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
+    livePlayers.forEach((p, id) => { const fresh = mContent.querySelector(`[data-watch-card="${CSS.escape(id)}"] .wc-player`); if (fresh) fresh.replaceWith(p); });
     mContent.querySelectorAll('.match-card').forEach((m, i) => {
       m.style.setProperty('--match-index', i);
       const id = m.getAttribute('data-match-id');
@@ -6008,7 +6727,7 @@
         if (t) t.setAttribute('aria-expanded', 'true');
       }
     });
-    wireModalContent();
+    wireModalContent(details);
     refreshResumeUI();
     refreshWatchedUI();
     refreshSavedUI();
@@ -6156,11 +6875,12 @@
           <h3 class="event-title-modal">${esc(title)}</h3>
           ${subtitle ? `<div class="event-meta-modal"><span class="piece">${esc(subtitle)}</span></div>` : ''}
           ${meta ? `<div class="event-meta-modal">${meta}</div>` : ''}
-          ${renderWatchRow(d)}
+          ${renderRoomStat(d)}
         </div>
-        <div class="matches-list">
+        ${renderRoom(d)}
+        ${renderFullCard(d, `<div class="matches-list">
           ${airedFirst(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
-        </div>
+        </div>`)}
         ${renderShowEnd(d)}
         ${renderMoments(d)}
         ${renderPromos(d)}
@@ -6214,23 +6934,800 @@
       : `WWE ${d.show_type === 'Raw' ? 'RAW' : 'SMACKDOWN'} ${p[2] || ''} ${MEDIA_MONTHS[(p[1] || 1) - 1]} ${p[0] || ''} FULL SHOW`;
     return `https://www.google.com/search?q=${encodeURIComponent(q.trim())}`;
   }
-  function renderWatchRow(d) {
-    const em = mediaFor(d.id);
-    const shows = (em && em.show) || [];
-    if (shows.length) {
-      const links = shows.map(s => `
-        <a class="watch-btn${s.tier === 'official' ? ' official' : ''}" href="${esc(s.url)}" target="_blank" rel="noopener">
-          <span class="wb-play" aria-hidden="true">&#9654;</span>Watch this show
-          <span class="watch-src">${esc(s.platform || '')}${s.min ? ` &middot; ${Math.round(s.min)} min` : ''}${s.tier === 'official' ? ' &middot; Official' : ''}</span>
-        </a>`).join('');
-      const fan = shows.some(s => s.tier !== 'official');
-      return `<div class="watch-row">${links}${fan
-        ? '<span class="watch-note">Fan upload. Opens externally; quality varies and videos can go offline.</span>' : ''}</div>`;
+  // ===================== MICRO-INTERACTION HELPERS ========================
+  // Shared by every view (TypeUI patterns, Reflex timing). Each helper answers
+  // one question a press raises. Motion is cut by prefers-reduced-motion; the
+  // state change always happens.
+  const LUCIDE = (inner, sw = 2) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+  // TypeUI's icon set (Lucide, 24px, 2px round strokes), read off its demos 10-22
+  const ICON = {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor" stroke="none"/></svg>',
+    volume: '<svg class="vol-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="w1" d="M16 9.5a3.5 3.5 0 0 1 0 5"/><path class="w2" d="M18.5 7.5a7 7 0 0 1 0 9"/></svg>',
+    full: LUCIDE('<path d="M8 3H3v5m0-5 6 6M16 3h5v5m0-5-6 6M21 16v5h-5m5 0-6-6M8 21H3v-5m0 5 6-6"/>', 1.75),
+    chevron: LUCIDE('<path d="m9 18 6-6-6-6"/>'),
+    chevronRight: LUCIDE('<path d="m9 18 6-6-6-6"/>'),
+    chevronLeft: LUCIDE('<path d="m15 18-6-6 6-6"/>'),
+    chevronDown: LUCIDE('<path d="m6 9 6 6 6-6"/>'),
+    list: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M3 4h10M3 12h6"/></svg>',
+    check: '<svg class="pt-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',
+    search: LUCIDE('<path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/>'),
+    x: LUCIDE('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'),
+    eye: LUCIDE('<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>'),
+    eyeOff: LUCIDE('<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>'),
+    arrowRight: LUCIDE('<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>'),
+    arrowUpRight: LUCIDE('<path d="M7 7h10v10"/><path d="M7 17 17 7"/>'),
+    sun: LUCIDE('<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>'),
+    moon: LUCIDE('<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>'),
+    monitor: LUCIDE('<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>'),
+    undo: LUCIDE('<path d="M3 10a9 9 0 1 1 2.4 8.1M3 4v6h6"/>', 1.75),
+  };
+  const DOTS = '<span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+  const loadingStatus = (text) => `<div class="status" role="status">${DOTS}${esc(text)}</div>`;
+
+  // Label roll (TypeUI roll reveal): the text changes now; the new text rises
+  // in under the old one over 200ms.
+  function rollText(el, text, dir = 'up') {
+    if (!el || el.textContent === text) return;
+    el.textContent = text;
+    if (reduceMotion()) return;
+    el.classList.remove('roll-up', 'roll-down'); void el.offsetWidth; el.classList.add(dir === 'down' ? 'roll-down' : 'roll-up');
+  }
+
+  // Character rise + clear fade (TypeUI typing, inputs). The input's text is
+  // drawn by a mirror layer so each new character can rise in; the real input
+  // keeps the caret, selection and editing. The clear button fades with the
+  // first character and goes with the last.
+  function riseInput(input, clearBtn, inline = false) {
+    if (!input || input.dataset.rise) return;
+    input.dataset.rise = '1';
+    const cs = getComputedStyle(input);
+    const wrap = document.createElement('span');
+    wrap.className = 'rise-wrap' + (inline ? ' inline' : '');
+    input.replaceWith(wrap);
+    const mirror = document.createElement('span');
+    mirror.className = 'rise-mirror';
+    mirror.setAttribute('aria-hidden', 'true');
+    mirror.style.font = cs.font;
+    mirror.style.letterSpacing = cs.letterSpacing;
+    mirror.style.paddingLeft = cs.paddingLeft;
+    mirror.style.paddingRight = cs.paddingRight;
+    mirror.style.borderWidth = cs.borderWidth;
+    mirror.style.borderStyle = 'solid';
+    mirror.style.borderColor = 'transparent';
+    wrap.append(mirror, input);
+    let prev = '';
+    const paint = () => {
+      const v = input.value;
+      if (v !== prev) {
+        let i = 0;
+        while (i < prev.length && i < v.length && prev[i] === v[i]) i++;
+        while (mirror.childNodes.length > i) mirror.removeChild(mirror.lastChild);
+        const grew = v.length > prev.length;
+        for (; i < v.length; i++) {
+          const s = document.createElement('span');
+          s.textContent = v[i] === ' ' ? ' ' : v[i];
+          if (grew && !reduceMotion()) s.className = 'rise';
+          mirror.appendChild(s);
+        }
+        prev = v;
+      }
+      mirror.style.transform = `translateX(${-input.scrollLeft}px)`;
+      if (clearBtn) clearBtn.classList.toggle('on', v.length > 0);
+    };
+    input.addEventListener('input', paint);
+    input.addEventListener('scroll', paint);
+    input.addEventListener('focus', () => { if (clearBtn) clearBtn.classList.toggle('on', input.value.length > 0); });
+    input._risePaint = paint;
+    paint();
+  }
+  const repaintRise = (input) => { if (input && input._risePaint) input._risePaint(); };
+
+  // Promise toast morph (TypeUI toasts): one toast for a wait. Pending shows
+  // the spinner and the verb; done morphs the spinner into a check and rolls
+  // the label (2s, or Undo with the countdown when offered); failure keeps
+  // the message up for 5s.
+  function promiseToast(promise, { pending, done, fail, onUndo } = {}) {
+    showUndo('', null);
+    const t = el('undo-toast');
+    const msg = t.querySelector('.ut-msg');
+    const btn = t.querySelector('button');
+    if (undoState) { undoState.drain.cancel(); undoState = null; }
+    btn.hidden = true;
+    t.querySelector('.drain').style.transform = 'scaleX(0)';
+    msg.innerHTML = `<span class="pt-ico"><span class="pt-spin"></span></span><span class="pt-label">${esc(pending || 'Working')}</span>`;
+    let timer = null;
+    const finish = (text, ok) => {
+      if (!t.classList.contains('show')) return;
+      msg.querySelector('.pt-ico').innerHTML = ok ? ICON.check : '';
+      rollText(msg.querySelector('.pt-label'), text);
+      if (ok && onUndo) { showUndo(text, onUndo); return; }
+      timer = setTimeout(hideUndo, ok ? 2000 : 5000);
+    };
+    Promise.resolve(promise).then(() => finish(done || 'Done', true), () => finish(fail || 'Something went wrong', false));
+    return { cancel: () => { clearTimeout(timer); hideUndo(); } };
+  }
+
+  // Rebuild dependent steps (TypeUI selection controls): when a list is
+  // rebuilt, rows that stayed glide to their new place (240ms ease-in-out)
+  // and new rows rise in after them (200ms). Removed rows are simply gone.
+  function flipRows(container, selector, render) {
+    const before = new Map();
+    if (container && !reduceMotion()) {
+      container.querySelectorAll(selector).forEach(r => before.set(r.dataset.flip, r.getBoundingClientRect()));
     }
-    return `<div class="watch-row">
-      <a class="watch-btn find" href="${esc(watchSearchURL(d))}" target="_blank" rel="noopener">Find this show<span class="watch-src">web search</span></a>
-      <span class="watch-note">We don't host video. This searches the show on the open web.</span>
-    </div>`;
+    render();
+    if (!container || reduceMotion() || !before.size) return;
+    container.querySelectorAll(selector).forEach(r => {
+      const was = before.get(r.dataset.flip);
+      const now = r.getBoundingClientRect();
+      if (was) {
+        const dy = was.top - now.top;
+        if (Math.abs(dy) > 1) r.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 240, easing: 'cubic-bezier(0.645,0.045,0.355,1)' });
+      } else {
+        r.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 200, delay: 120, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'backwards' });
+      }
+    });
+  }
+
+  const fmtClock = (s) => {
+    s = Math.max(0, Math.floor(Number.isFinite(s) ? s : 0));
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return (h ? `${h}:${String(m).padStart(2, '0')}` : String(m)) + ':' + String(sec).padStart(2, '0');
+  };
+
+  // ===================== PLAYER CONTROLS ==================================
+  // Built once the file plays (the overlay handled the start). Scrubber with
+  // the frame preview under the pointer and the time pinned to the thumb
+  // while dragging; rubber band past either end; the volume icon's waves
+  // follow the level; buffering shows bounce dots over the picture.
+  function mountPlayerControls(player, v, { onEnded } = {}) {
+    if (player.querySelector('.wc-ctrl')) return;
+    const bar = document.createElement('div');
+    bar.className = 'wc-ctrl';
+    bar.innerHTML = `
+      <button class="cb cb-play" type="button" aria-label="Pause" aria-pressed="true"><span class="ico-on">${ICON.pause}</span><span class="ico-off">${ICON.play}</span></button>
+      <span class="wc-time"><span class="t-cur">0:00</span><span class="t-sep"> / </span><span class="t-dur">0:00</span></span>
+      <div class="scrub" role="slider" tabindex="0" aria-label="Playback position" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0" aria-valuetext="0:00">
+        <div class="scrub-track"><span class="scrub-buf"></span><span class="scrub-fill"></span><span class="scrub-thumb"></span></div>
+        <div class="scrub-preview" aria-hidden="true"><canvas width="160" height="90"></canvas><span>0:00</span></div>
+      </div>
+      <div class="wc-vol" data-level="2">
+        <input class="vol-range" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+        <button class="cb cb-vol" type="button" aria-label="Mute" aria-pressed="false">${ICON.volume}</button>
+      </div>
+      <button class="cb cb-full" type="button" aria-label="Full screen">${ICON.full}</button>`;
+    const buffer = document.createElement('div');
+    buffer.className = 'wc-buffer';
+    buffer.innerHTML = DOTS;
+    player.append(buffer, bar);
+    bar.addEventListener('click', (e) => e.stopPropagation());
+
+    const playBtn = bar.querySelector('.cb-play');
+    const cur = bar.querySelector('.t-cur'), dur = bar.querySelector('.t-dur');
+    const scrub = bar.querySelector('.scrub'), track = bar.querySelector('.scrub-track');
+    const fill = bar.querySelector('.scrub-fill'), buf = bar.querySelector('.scrub-buf'), thumb = bar.querySelector('.scrub-thumb');
+    const preview = bar.querySelector('.scrub-preview'), canvas = preview.querySelector('canvas'), ptime = preview.querySelector('span');
+    const vol = bar.querySelector('.wc-vol'), volBtn = bar.querySelector('.cb-vol'), volRange = bar.querySelector('.vol-range');
+    const fullBtn = bar.querySelector('.cb-full');
+
+    const paintTime = () => {
+      const d = v.duration || 0, t = v.currentTime || 0;
+      cur.textContent = fmtClock(t);
+      dur.textContent = fmtClock(d);
+      const pct = d ? t / d : 0;
+      fill.style.transform = `scaleX(${pct})`;
+      thumb.style.left = `${pct * 100}%`;
+      scrub.setAttribute('aria-valuemax', String(Math.floor(d)));
+      scrub.setAttribute('aria-valuenow', String(Math.floor(t)));
+      scrub.setAttribute('aria-valuetext', `${fmtClock(t)} of ${fmtClock(d)}`);
+      try { const b = v.buffered; if (b.length && d) buf.style.transform = `scaleX(${b.end(b.length - 1) / d})`; } catch (_) {}
+    };
+    const paintPlay = () => {
+      const paused = v.paused;
+      playBtn.setAttribute('aria-pressed', paused ? 'false' : 'true');
+      playBtn.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+      player.classList.toggle('paused', paused);
+    };
+    const paintVol = () => {
+      const lvl = v.muted || v.volume === 0 ? 0 : v.volume <= 0.5 ? 1 : 2;
+      vol.dataset.level = String(lvl);
+      volBtn.setAttribute('aria-pressed', v.muted ? 'true' : 'false');
+      volBtn.setAttribute('aria-label', v.muted ? 'Unmute' : 'Mute');
+      volRange.value = String(v.muted ? 0 : v.volume);
+    };
+    v.addEventListener('timeupdate', paintTime);
+    v.addEventListener('progress', paintTime);
+    v.addEventListener('durationchange', paintTime);
+    v.addEventListener('play', paintPlay);
+    v.addEventListener('pause', paintPlay);
+    v.addEventListener('volumechange', paintVol);
+    v.addEventListener('waiting', () => { if (!v.paused) player.classList.add('waiting'); });
+    ['playing', 'canplay', 'pause', 'seeked'].forEach(ev => v.addEventListener(ev, () => player.classList.remove('waiting')));
+    if (onEnded) v.addEventListener('ended', onEnded);
+    paintTime(); paintPlay(); paintVol();
+
+    const toggle = () => { if (v.paused) v.play().catch(() => {}); else v.pause(); };
+    playBtn.addEventListener('click', toggle);
+    player.addEventListener('click', (e) => { if (!e.target.closest('.wc-ctrl, .wc-endcard, .wc-play')) toggle(); });
+    volBtn.addEventListener('click', () => { v.muted = !v.muted; if (!v.muted && v.volume === 0) v.volume = 0.5; });
+    volRange.addEventListener('input', () => { v.volume = Number(volRange.value); v.muted = v.volume === 0; });
+    fullBtn.addEventListener('click', () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else if (player.requestFullscreen) player.requestFullscreen().catch(() => {});
+    });
+    player.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      const k = e.key.toLowerCase();
+      if (k === ' ' || k === 'k') { e.preventDefault(); toggle(); }
+      else if (k === 'm') { e.preventDefault(); volBtn.click(); }
+      else if (k === 'f') { e.preventDefault(); fullBtn.click(); }
+      else if (e.key === 'ArrowLeft' && e.target !== scrub) { e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 5); }
+      else if (e.key === 'ArrowRight' && e.target !== scrub) { e.preventDefault(); v.currentTime = Math.min(v.duration || 0, v.currentTime + 5); }
+    });
+
+    // The frame under the pointer comes from a second, muted copy of the file
+    // that seeks on hover (range requests make that cheap). If the browser will
+    // not draw it, the bubble shows the time alone.
+    let peek = null, peekReady = false, peekTimer = null, lastSeek = 0;
+    const ensurePeek = () => {
+      if (peek || window.matchMedia('(max-width: 720px)').matches) return;
+      peek = document.createElement('video');
+      peek.muted = true; peek.preload = 'metadata'; peek.playsInline = true;
+      peek.src = v.currentSrc || v.src;
+      peek.addEventListener('loadedmetadata', () => { peekReady = true; });
+      peek.addEventListener('seeked', () => {
+        try { canvas.getContext('2d').drawImage(peek, 0, 0, canvas.width, canvas.height); preview.classList.remove('nopic'); }
+        catch (_) { preview.classList.add('nopic'); }
+      });
+      peek.addEventListener('error', () => { preview.classList.add('nopic'); });
+    };
+    const pctAt = (clientX) => { const r = track.getBoundingClientRect(); return r.width ? (clientX - r.left) / r.width : 0; };
+    const showBubble = (pct, pinToThumb) => {
+      const d = v.duration || 0;
+      const p = Math.max(0, Math.min(1, pct));
+      ptime.textContent = fmtClock(p * d);
+      preview.style.left = `clamp(80px, ${p * 100}%, calc(100% - 80px))`;
+      scrub.classList.add('hot');
+      if (!pinToThumb) {
+        ensurePeek();
+        if (peek && peekReady && d) {
+          const now = Date.now();
+          clearTimeout(peekTimer);
+          const seek = () => { lastSeek = Date.now(); try { peek.currentTime = p * d; } catch (_) {} };
+          if (now - lastSeek > 140) seek(); else peekTimer = setTimeout(seek, 140);
+        }
+      }
+    };
+    scrub.addEventListener('pointermove', (e) => { if (!scrub.classList.contains('dragging')) showBubble(pctAt(e.clientX), false); });
+    scrub.addEventListener('pointerleave', () => { if (!scrub.classList.contains('dragging')) scrub.classList.remove('hot'); });
+    // Dragging: the value follows from the first pixel; past either end the
+    // track stretches with resistance and springs back on release.
+    let dragging = false;
+    scrub.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      scrub.setPointerCapture(e.pointerId);
+      scrub.classList.add('dragging'); player.classList.add('scrubbing');
+      const p = pctAt(e.clientX);
+      v.currentTime = Math.max(0, Math.min(1, p)) * (v.duration || 0);
+      paintTime(); showBubble(p, true);
+    });
+    scrub.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const p = pctAt(e.clientX);
+      const over = p < 0 ? p : p > 1 ? p - 1 : 0;
+      track.style.transform = over ? `translateX(${over * track.getBoundingClientRect().width * 0.35}px)` : '';
+      v.currentTime = Math.max(0, Math.min(1, p)) * (v.duration || 0);
+      paintTime(); showBubble(p, true);
+    });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      scrub.classList.remove('dragging'); player.classList.remove('scrubbing'); scrub.classList.remove('hot');
+      track.style.transform = '';
+    };
+    scrub.addEventListener('pointerup', release);
+    scrub.addEventListener('pointercancel', release);
+    scrub.addEventListener('keydown', (e) => {
+      const d = v.duration || 0;
+      let t = null;
+      if (e.key === 'ArrowLeft') t = v.currentTime - 5;
+      else if (e.key === 'ArrowRight') t = v.currentTime + 5;
+      else if (e.key === 'Home') t = 0;
+      else if (e.key === 'End') t = d;
+      if (t == null) return;
+      e.preventDefault();
+      v.currentTime = Math.max(0, Math.min(d, t));
+      paintTime(); showBubble(d ? v.currentTime / d : 0, true);
+      clearTimeout(scrub._hotTimer); scrub._hotTimer = setTimeout(() => scrub.classList.remove('hot'), 900);
+    });
+    return { paintTime };
+  }
+
+  // ===================== THEME + ICONS ======================================
+  // Display follows the device unless the menu's control says Dark or Light;
+  // the choice is kept on this device and applied before first paint by a
+  // two-line script in <head>.
+  const THEME_KEY = 'wrestling.theme';
+  function applyTheme(pref) {
+    const root = document.documentElement;
+    if (pref === 'dark' || pref === 'light') root.dataset.theme = pref; else delete root.dataset.theme;
+    try { localStorage.setItem(THEME_KEY, pref || 'auto'); } catch (_) {}
+    document.querySelectorAll('.seg3 [data-theme]').forEach(b => b.setAttribute('aria-checked', b.dataset.theme === (pref || 'auto') ? 'true' : 'false'));
+  }
+  (function initTheme() {
+    let pref = 'auto';
+    try { pref = localStorage.getItem(THEME_KEY) || 'auto'; } catch (_) {}
+    applyTheme(pref);
+    document.querySelectorAll('.seg3 [data-theme]').forEach(b => b.addEventListener('click', () => applyTheme(b.dataset.theme)));
+  })();
+  // Icons drawn in markup by CSS before are now TypeUI's set inline, so they
+  // take the text color in both themes and animate like any element.
+  (function placeIcons() {
+    const put = (sel, html) => document.querySelectorAll(sel).forEach(e => { e.innerHTML = html; });
+    put('.search-ico, .search-head-ico', ICON.search);
+    put('.spoiler-btn .eye', `<span class="i-off">${ICON.eyeOff}</span><span class="i-on">${ICON.eye}</span>`);
+    put('#modal-close', ICON.x);
+    put('#search-clear', ICON.x);
+    put('#month-prev', ICON.chevronLeft);
+    put('#month-next', ICON.chevronRight);
+  })();
+
+  // ===================== WATCH ROOM ========================================
+  // The show page is the watch room (layout A, decided 10-19): the player
+  // top-left, Tonight beside it, then Why they're fighting, Who's who and
+  // Champions going in. Each module reads at a glance; depth sits behind
+  // "All N" and the full card (10-14: only what is needed on screen).
+  // Player sources in order: the Internet Archive full show (free, plays in
+  // the page), a Dailymotion or YouTube upload (embed), then Peacock or
+  // Netflix as links (DRM blocks embedding), then a web search (Tesler:
+  // finding the show is the system's job).
+  const ARCHIVE_URL = (a) => `https://archive.org/details/${encodeURIComponent(a.item)}/${encodeURIComponent(a.file)}`;
+  const PLATFORM_NAME = { peacock: 'Peacock', netflix: 'Netflix' };
+  const cleanShow = (ev) => fullShowName(ev).replace(/^WW[EF]\s+/, '');
+  const slugOfName = (n) => (BUNDLE && BUNDLE.wrestlers_by_name && BUNDLE.wrestlers_by_name[n]) || null;
+  const normWords = (s) => String(s || '').toLowerCase().replace(/championship/g, 'title').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  function watchSources(d) {
+    const w = whereFor(d.id) || {};
+    const em = mediaFor(d.id);
+    const fan = ((em && em.show) || []).slice().sort((a, b) => (b.tier === 'official') - (a.tier === 'official'))[0];
+    const out = [];
+    if (w.archive) out.push({ kind: 'archive', eventId: d.id, url: ARCHIVE_URL(w.archive), label: 'Play the full show',
+      meta: w.archive.min ? `Internet Archive · ${w.archive.min} min` : 'Internet Archive', also: 'the Internet Archive' });
+    if (w.official) out.push({ kind: w.official.platform, url: w.official.url,
+      label: `Watch on ${PLATFORM_NAME[w.official.platform] || w.official.platform}`, meta: 'Official · subscription',
+      also: PLATFORM_NAME[w.official.platform] || w.official.platform });
+    if (fan) out.push({ kind: 'fan', eventId: d.id, url: fan.url, label: 'Play the full show',
+      meta: `${fan.platform || 'Fan upload'}${fan.min ? ` · ${Math.round(fan.min)} min` : ''}${fan.tier === 'official' ? ' · Official' : ''}`,
+      also: fan.platform || 'a fan upload' });
+    return out;
+  }
+
+  // What the in-page player can play. Nothing loads until Play is pressed
+  // (no blocking load on first use).
+  function playerEmbed(src) {
+    if (!src) return null;
+    if (src.kind === 'archive') {
+      const a = whereFor(src.eventId).archive;
+      return { type: 'video', src: `https://archive.org/download/${encodeURIComponent(a.item)}/${encodeURIComponent(a.file)}` };
+    }
+    let m = src.url.match(/dailymotion\.com\/video\/([a-z0-9]+)/i);
+    if (m) return { type: 'iframe', src: `https://www.dailymotion.com/embed/video/${m[1]}?autoplay=1` };
+    m = src.url.match(/(?:youtu\.be\/|[?&]v=|\/embed\/)([\w-]{11})/);
+    if (m) return { type: 'iframe', src: `https://www.youtube.com/embed/${m[1]}?autoplay=1&rel=0` };
+    return null;
+  }
+
+  const roomMatches = (d) => airedFirst(d.matches || []).filter(m => m.aired !== false);
+
+  function matchLabel(m) {
+    const side = (t) => ((t.participants && t.participants.length ? t.participants : [t.team_name]).filter(Boolean)).join(' & ');
+    let teams = m.teams || [];
+    if (teams.length === 2 && shouldSwapTeams(m)) teams = [teams[1], teams[0]];   // same order as the card
+    const sides = teams.map(side).filter(Boolean);
+    return sides.length ? sides.join(' vs ') : (m.match_type || 'Match');
+  }
+  // The second line of a Tonight row: the match type, plus the belt when the
+  // type does not already name it. Never a result.
+  function matchSub(m) {
+    const type = m.match_type || 'Match';
+    const belt = beltLabelOf(m);
+    return belt && !normWords(type).includes(normWords(belt)) ? `${type} · ${belt}` : type;
+  }
+
+  // Road to the next PPV (Goal-Gradient): the chapter the show sits in.
+  function renderRoomStat(d) {
+    const ch = chapterOf(d.id);
+    if (!ch) return '';
+    return `<div class="room-stat">
+        <span>Road to <b>${esc(cleanShow(ch.ppv))}</b></span>
+        <span class="mono">${ch.done} of ${ch.total} shows</span>
+        <div class="bar"><i style="transform: scaleX(${ch.total ? ch.done / ch.total : 0})"></i></div>
+      </div>`;
+  }
+
+  // Why they're fighting: storylines running this month, the ones with
+  // tonight's wrestlers first. With spoilers off the span only reaches back
+  // (same rule as the storylines shelf).
+  function renderWhy(d, matches) {
+    const month = String(d.air_date || '').slice(0, 7);
+    // A storyline that starts this month may start after tonight; with spoilers
+    // off only the ones already running are shown (the 10-14 audit's leak).
+    const active = (FEUDS || []).filter(f => f.start <= month && month <= f.end && (spoilers || f.start < month));
+    if (!active.length) return '';
+    const names = new Set();
+    matches.forEach(m => (m.teams || []).forEach(t => (t.participants || []).forEach(p => names.add(normWords(p)))));
+    const tonight = active.filter(f => { const fm = normWords(f.matchup); return [...names].some(nm => nm.length > 3 && fm.includes(nm)); });
+    const list = (tonight.length ? tonight : active).slice(0, 4);
+    const span = (f) => spoilers
+      ? (f.start === f.end ? fmtFeudMonth(f.start) : `${fmtFeudMonth(f.start)} &ndash; ${fmtFeudMonth(f.end)}`)
+      : (f.start === month ? `Starts ${fmtFeudMonth(f.start)}` : `Since ${fmtFeudMonth(f.start)}`);
+    return `<section class="mod mod-why" aria-label="Why they're fighting">
+        <div class="mh"><b>Why they're fighting</b>${active.length > list.length
+          ? `<button class="mh-link" type="button" data-wc-seeall="feuds">All ${active.length} <span class="nudge">${ICON.chevronRight}</span></button>` : ''}</div>
+        <ul class="why-rows">${list.map(f => `
+          <li><a href="${esc(f.url)}" target="_blank" rel="noopener"><span class="t">${esc(f.matchup)}</span><span class="x">${span(f)}</span></a></li>`).join('')}</ul>
+      </section>`;
+  }
+
+  // Champions going in: every belt's holder the day before the show, from the
+  // titles shard's reigns. A reign that starts tonight is tonight's result and
+  // stays out. Belts on the line tonight come first.
+  const shortTitle = (t) => String(t).replace(/^(WWE|WWF|WCW|ECW)\s+/, '').replace(/\s+Championship\b/, '').replace(/\s*\(\d{4}-\d{4}\)$/, '').trim();
+  function championsOn(dateISO) {
+    const all = [...(TITLES_BOARD || []), ...(TITLES_RETIRED || [])];
+    const out = [];
+    for (const t of all) {
+      const r = (t.reigns || []).find(x => x.start && x.start < dateISO && (!x.end || x.end >= dateISO));
+      if (r && r.champions && r.champions.length) {
+        out.push({ title: t.title, names: r.champions.map(c => c.name), since: r.start, rating: t.rating ? Number(t.rating) : 0 });
+      }
+    }
+    return out;
+  }
+  function renderChamps(d, matches) {
+    const champs = championsOn(d.air_date);
+    if (!champs.length) return '';
+    const stakes = matches.map(m => m.title_at_stake).filter(Boolean).map(normWords);
+    const onLine = (c) => { const n = normWords(c.title); return stakes.some(s => s.includes(n) || n.includes(s)); };
+    // Belts on the line first, then champions who are on tonight's card, then prestige.
+    const people = new Set();
+    matches.forEach(m => (m.teams || []).forEach(t => (t.participants || []).forEach(p => people.add(p))));
+    const onCard = (c) => c.names.some(nm => people.has(nm));
+    champs.sort((a, b) => (onLine(b) - onLine(a)) || (onCard(b) - onCard(a)) || (b.rating - a.rating));
+    const list = champs.slice(0, 5);
+    return `<section class="mod mod-champs" aria-label="Champions going in">
+        <div class="mh"><b>Champions going in</b>${champs.length > list.length ? `<a class="mh-link" href="#titles">All ${champs.length} <span class="nudge">${ICON.chevronRight}</span></a>` : ''}</div>
+        <ul class="ch-rows">${list.map(c => `
+          <li><div class="ch-txt"><span class="x">${esc(shortTitle(c.title))}</span><span class="t">${esc(c.names.join(' & '))}</span></div>
+            ${onLine(c) ? '<span class="tag">On the line tonight</span>' : `<span class="x">since ${esc(fmtDateLong(c.since))}</span>`}</li>`).join('')}</ul>
+      </section>`;
+  }
+
+  // Who's who: the people in the match you are on. Role from the profile's
+  // alignment history on that date (fan favorite or villain, in plain words),
+  // the finisher under the name. Painted again every time the match changes.
+  function roleOn(prof, dateISO) {
+    if (!prof || !prof.alignment_history) return '';
+    const t = Date.parse(dateISO);
+    const a = prof.alignment_history.find(x => {
+      const from = parseSDHDate(x.from), to = parseSDHDate(x.to);
+      return (from == null || from <= t) && (to == null || to >= t) && (from != null || to != null);
+    });
+    if (!a) return '';
+    return /heel/i.test(a.alignment) ? 'Villain' : /face/i.test(a.alignment) ? 'Fan favorite' : '';
+  }
+  function whoHtml(m, dateISO) {
+    if (!m) return '';
+    let teams = m.teams || [];
+    if (teams.length === 2 && shouldSwapTeams(m)) teams = [teams[1], teams[0]];
+    const person = (name) => {
+      const slug = slugOfName(name);
+      const prof = slug ? profileFor(slug) : null;
+      const role = roleOn(prof, dateISO);
+      const f0 = prof && prof.finishers && prof.finishers[0];
+      const fin = f0 ? (typeof f0 === 'string' ? f0 : (f0.name || f0.move || '')) : '';
+      return `<div class="who-person">${slug ? wrestlerAvatar(slug, name, 'md') : ''}<div class="who-txt">
+          ${slug ? `<button class="wrestler-link" type="button" data-slug="${esc(slug)}">${esc(name)}</button>` : `<span class="t">${esc(name)}</span>`}
+          ${role ? `<span class="x">${role}</span>` : ''}${fin ? `<span class="x">${esc(fin)}</span>` : ''}</div></div>`;
+    };
+    return teams.map(t => `<div class="who-side">${(t.participants && t.participants.length ? t.participants : [t.team_name])
+      .filter(Boolean).slice(0, 3).map(person).join('')}</div>`).join('<div class="who-vs">vs</div>');
+  }
+
+  function renderRoom(d) {
+    const [main, alt] = watchSources(d);
+    const embed = playerEmbed(main);
+    const id = esc(String(d.id ?? ''));
+    const matches = roomMatches(d);
+    const n = matches.length;
+    const at = ORDERED_IDS.indexOf(String(d.id));
+    const next = at >= 0 ? BUNDLE.events[ORDERED_IDS[at + 1]] : null;
+
+    // The player slot. With a file: Play loads it. Without: the slot says
+    // where the show is (watch along) and the strip still follows the card.
+    const playBtn = embed
+      ? `<button class="wc-play" type="button" data-wc-play>
+          <span class="wc-play-icon" aria-hidden="true">${ICON.play}</span>
+          <span class="wc-roll"><span class="wc-label">${esc(main.label)}</span></span>
+          <span class="wc-meta">${esc(main.meta)}</span></button>`
+      : main
+        ? `<a class="wc-play wc-play-link" href="${esc(main.url)}" target="_blank" rel="noopener" data-wc-open>
+            <span class="wc-play-icon" aria-hidden="true">${ICON.arrowUpRight}</span>
+            <span class="wc-roll"><span class="wc-label">${esc(main.label)}</span></span>
+            <span class="wc-meta">${esc(main.meta)} · then follow along here</span></a>`
+        : `<a class="wc-play wc-play-link" href="${esc(watchSearchURL(d))}" target="_blank" rel="noopener" data-wc-open>
+            <span class="wc-play-icon" aria-hidden="true">${ICON.arrowUpRight}</span>
+            <span class="wc-roll"><span class="wc-label">Find this show</span></span>
+            <span class="wc-meta">Not on the Internet Archive, Peacock or Netflix yet · web search</span></a>`;
+    const endcard = next
+      ? `<div class="wc-endcard" data-wc-endcard>
+          <div class="wc-endbox">
+            <span class="wc-endk">Up next</span>
+            <span class="wc-endn">${esc(cleanShow(next))}</span>
+            <span class="wc-endd">${esc(fmtDateLong(next.air_date))}</span>
+            <div class="wc-endbtns">
+              <button class="wc-endplay" type="button" data-wc-endplay>${ICON.play} Play</button>
+              <button class="wc-endclose" type="button" data-wc-endclose>Not now</button>
+            </div>
+            <div class="wc-endundo"><span>Marked watched</span><button type="button" data-wc-endundo>Undo</button></div>
+          </div></div>`
+      : '';
+    const player = `<div class="wc-player${embed ? '' : ' no-video'}" data-wc-player data-embed-type="${embed ? embed.type : ''}" data-embed-src="${embed ? esc(embed.src) : ''}">
+        ${embed && embed.type === 'video' ? '<video class="wc-video" preload="none" playsinline hidden></video>' : ''}
+        ${playBtn}${endcard}</div>`;
+
+    // Tonight: the running order, the Now mark, the one step. Links to the
+    // full show and the runner-up source sit under the rows.
+    const links = [
+      main && embed ? { url: main.url, text: `Full show on ${main.also}` } : null,
+      alt ? { url: alt.url, text: `Also on ${alt.also}` } : null,
+    ].filter(Boolean);
+    const fanNote = main && (main.kind === 'archive' || main.kind === 'fan')
+      ? '<span class="wc-note">Fan upload. Quality varies and videos can go offline.</span>' : '';
+    const rows = matches.map((m, i) => `
+        <li class="tn-row" data-row="${i}"><span class="st">${i + 1}</span>
+          <div class="tn-txt"><span class="t">${esc(matchLabel(m))}</span><span class="x">${esc(matchSub(m))}</span></div></li>`).join('');
+    const tonight = `<section class="mod mod-tonight" data-wc-strip aria-label="Tonight">
+        <div class="mh"><span class="mh-ico">${ICON.list}</span><b>Tonight</b><span class="mono wc-count"></span><button class="mh-collapse" type="button" data-wc-rail aria-label="Collapse Tonight" aria-expanded="true">${ICON.chevron}</button></div>
+        <div class="wc-progress"><span class="wc-fill"></span></div>
+        <ol class="tn-rows">${rows || '<li class="tn-empty">No match list recorded.</li>'}</ol>
+        ${n ? `<div class="mod-foot">
+          <button class="wc-back" type="button" data-wc-back aria-label="Back one match">${ICON.chevronLeft}</button>
+          <button class="wc-next" type="button" data-wc-next></button></div>` : ''}
+        ${links.length ? `<div class="mod-links">${links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.text)}${ICON.arrowUpRight}</a>`).join('')}</div>` : ''}
+        ${fanNote}
+      </section>`;
+    const who = n ? `<section class="mod mod-who" aria-label="Who's who">
+        <div class="mh"><b>Who's who</b><span class="mono" data-wc-who-sub></span></div>
+        <div class="who-body" data-wc-who-body></div></section>` : '';
+    return `<div class="room" data-watch-card="${id}">
+        <div class="room-grid"><div class="room-player">${player}</div>${tonight}${renderWhy(d, matches)}${who}${renderChamps(d, matches)}</div>
+      </div>`;
+  }
+
+  // The full card with headshots, details, ratings and Save: depth on demand
+  // (Reflex accordion). It opens on its own when a link points at a match.
+  function renderFullCard(d, inner) {
+    const n = (d.matches || []).length;
+    const id = esc(String(d.id ?? ''));
+    return `<button class="room-full-toggle" type="button" data-wc-full aria-expanded="false" aria-controls="room-full-${id}">
+        Full card with details<span class="mono">${n} ${n === 1 ? 'match' : 'matches'}</span><span class="chev" aria-hidden="true"></span></button>
+      <div class="room-full" id="room-full-${id}" data-wc-fullpanel><div class="room-full-inner">${inner}</div></div>`;
+  }
+
+  // ------------------ Position, finish, wiring ---------------------------
+  // The position is per show and remembered (Zeigarnik, Working Memory): the
+  // room reopens on "Match 3 of 7". Every press changes the state in the same
+  // frame (Instant selection); the roll, the bar and the Now mark follow.
+  const WATCHPOS_KEY = 'wrestling.watchpos.v1';
+  let watchPos = {};
+  try { watchPos = JSON.parse(localStorage.getItem(WATCHPOS_KEY) || '{}') || {}; } catch (_) {}
+  function saveWatchPos() { try { localStorage.setItem(WATCHPOS_KEY, JSON.stringify(watchPos)); } catch (_) {} }
+  let roomAutoplay = null;   // the show id whose player should start on open (Up next · Play)
+
+  // One finish for the end-of-card block: mark the show watched (Undo in the
+  // toast) and open the next show in order.
+  function finishShow(id, nextId, onUndo) {
+    if (!watched.has(id)) {
+      watched.set(id, Date.now());
+      saveWatched(); refreshWatchedUI();
+      showUndo(`Marked ${cleanShow(BUNDLE.events[id])} watched`, () => {
+        watched.delete(id); saveWatched(); refreshWatchedUI();
+        if (onUndo) onUndo();
+      });
+    }
+    if (nextId) navigateToEvent(nextId);
+  }
+
+  function wireWatchCard(root, d) {
+    const card = root.querySelector(`[data-watch-card="${CSS.escape(String(d.id))}"]`);
+    if (!card) return;
+    const id = String(d.id);
+    const block = card.closest('.event-block') || root;
+    const matches = roomMatches(d);
+    const n = matches.length;
+    const cards = [...block.querySelectorAll('.matches-list .match-card:not(.not-aired)')];
+    const rows = [...card.querySelectorAll('.tn-row')];
+    const player = card.querySelector('[data-wc-player]');
+    const play = card.querySelector('[data-wc-play]');
+    const endcard = card.querySelector('[data-wc-endcard]');
+    const whoBody = card.querySelector('[data-wc-who-body]');
+    const whoSub = card.querySelector('[data-wc-who-sub]');
+    const grid = card.querySelector('.room-grid');
+    const at = ORDERED_IDS.indexOf(id);
+    const next = at >= 0 ? BUNDLE.events[ORDERED_IDS[at + 1]] : null;
+    const roll = (el, dir) => { if (!el || reduceMotion()) return; el.classList.remove('roll-up', 'roll-down'); void el.offsetWidth; el.classList.add(dir === 'down' ? 'roll-down' : 'roll-up'); };
+    const pos = () => Math.min(Math.max(watchPos[id] ?? 0, 0), n);
+    const following = () => watchPos[id] != null;
+
+    function paint(dir) {
+      const p = pos();
+      const cur = Math.min(p, n - 1);
+      const on = following();
+      cards.forEach((c, i) => c.classList.toggle('now', on && i === cur && p < n));
+      rows.forEach((r, i) => {
+        const done = on && i < p, isCur = on && i === cur && p < n;
+        r.classList.toggle('done', done);
+        if (isCur && !r.classList.contains('cur')) { const st = r.querySelector('.st'); st.classList.remove('ripple'); void st.offsetWidth; st.classList.add('ripple'); }   // dot ripple
+        r.classList.toggle('cur', isCur);
+        r.setAttribute('aria-current', isCur ? 'true' : 'false');
+        r.querySelector('.st').innerHTML = done ? '&#10003;' : isCur ? '&#9654;' : String(i + 1);
+      });
+      const count = card.querySelector('.wc-count');
+      const rail = grid && grid.classList.contains('rail');
+      if (count) count.textContent = !on ? (rail ? `${n}` : `${n} ${n === 1 ? 'match' : 'matches'}`) : p < n ? (rail ? `${cur + 1}/${n}` : `Match ${cur + 1} of ${n}`) : (rail ? `${n}/${n}` : `All ${n} watched`);
+      const fill = card.querySelector('.wc-fill');
+      if (fill) fill.style.transform = `scaleX(${on ? p / n : 0})`;
+      const back = card.querySelector('[data-wc-back]');
+      if (back) back.disabled = !on || p === 0;
+      const btn = card.querySelector('[data-wc-next]');
+      if (btn) {
+        const last = on && p >= n - 1;
+        btn.classList.toggle('finish', last && Boolean(next));
+        btn.innerHTML = !on ? '<span>Follow along</span>'
+          : last && next ? `<span>${watched.has(id) ? 'Next show' : 'Mark watched, next show'}</span><span class="wc-sub">${esc(cleanShow(next))} · ${esc(fmtDateLong(next.air_date))}</span>`
+          : last ? '<span>Mark watched</span>' : '<span>Next match</span>';
+      }
+      if (whoBody) {
+        whoBody.innerHTML = whoHtml(matches[cur], d.air_date);
+        if (whoSub) whoSub.textContent = n ? `Match ${cur + 1}` : '';
+        if (dir && !reduceMotion()) whoBody.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: 150, easing: 'ease-out' });
+      }
+      if (dir && rows[cur]) roll(rows[cur].querySelector('.tn-txt'), dir);
+    }
+    function startFollowing() {
+      if (watchPos[id] == null) { watchPos[id] = 0; saveWatchPos(); }
+    }
+    function showCurrent() {
+      const panel = block.querySelector('[data-wc-fullpanel]');
+      if (!panel || !panel.classList.contains('open')) return;
+      const c = cards[Math.min(pos(), n - 1)];
+      if (c) c.scrollIntoView({ block: 'center', behavior: reduceMotion() ? 'auto' : 'smooth' });
+    }
+    function goTo(i, dir) {
+      startFollowing();
+      watchPos[id] = Math.max(0, Math.min(i, n));
+      saveWatchPos();
+      paint(dir); showCurrent();
+    }
+    // The show's end (Peak-End): mark watched, and the Up next card takes the
+    // player with Undo inside it, so the Undo is never missed (10-19).
+    function finishRoom() {
+      watchPos[id] = n; saveWatchPos();
+      if (!watched.has(id)) { watched.set(id, Date.now()); saveWatched(); refreshWatchedUI(); }
+      const v = player && player.querySelector('video');
+      if (v && !v.paused) v.pause();
+      if (endcard) endcard.classList.add('in');
+      else showUndo(`Marked ${cleanShow(BUNDLE.events[id])} watched`, () => {
+        watched.delete(id); saveWatched(); refreshWatchedUI();
+        watchPos[id] = Math.max(n - 1, 0); saveWatchPos(); paint();
+      });
+      paint('up');
+    }
+
+    // Collapse persistent panel: Tonight folds to a rail and the player takes
+    // the width; the choice is remembered on this device.
+    const railBtn = card.querySelector('[data-wc-rail]');
+    const RAIL_KEY = 'wrestling.room.rail';
+    const setRail = (on) => {
+      grid.classList.toggle('rail', on);
+      railBtn.setAttribute('aria-expanded', on ? 'false' : 'true');
+      railBtn.setAttribute('aria-label', on ? 'Expand Tonight' : 'Collapse Tonight');
+      try { localStorage.setItem(RAIL_KEY, on ? '1' : '0'); } catch (_) {}
+      paint();
+    };
+    if (railBtn && grid) {
+      let on = false;
+      try { on = localStorage.getItem(RAIL_KEY) === '1'; } catch (_) {}
+      if (on) { grid.classList.add('rail'); railBtn.setAttribute('aria-expanded', 'false'); railBtn.setAttribute('aria-label', 'Expand Tonight'); }
+      railBtn.addEventListener('click', () => setRail(!grid.classList.contains('rail')));
+    }
+    paint();
+    rows.forEach((r, i) => r.addEventListener('click', () => goTo(i, i < pos() ? 'down' : 'up')));
+    const nextBtn = card.querySelector('[data-wc-next]');
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+      if (!following()) { goTo(0, 'up'); return; }
+      const p = pos();
+      if (p >= n - 1) { finishRoom(); return; }
+      goTo(p + 1, 'up');
+    });
+    const backBtn = card.querySelector('[data-wc-back]');
+    if (backBtn) backBtn.addEventListener('click', () => { if (pos() > 0) goTo(pos() - 1, 'down'); });
+
+    if (endcard) {
+      endcard.querySelector('[data-wc-endclose]').addEventListener('click', () => endcard.classList.remove('in'));
+      endcard.querySelector('[data-wc-endplay]').addEventListener('click', () => { roomAutoplay = String(next.id); navigateToEvent(String(next.id)); });
+      endcard.querySelector('[data-wc-endundo]').addEventListener('click', () => {
+        watched.delete(id); saveWatched(); refreshWatchedUI();
+        watchPos[id] = Math.max(n - 1, 0); saveWatchPos();
+        endcard.classList.remove('in');
+        paint('down');
+      });
+    }
+
+    // Open the full card when a link points at one of its matches.
+    const toggle = block.querySelector('[data-wc-full]');
+    const panel = block.querySelector('[data-wc-fullpanel]');
+    if (toggle && panel) {
+      const setOpen = (open) => { panel.classList.toggle('open', open); panel.inert = !open; toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+      toggle.addEventListener('click', () => { setOpen(!panel.classList.contains('open')); if (panel.classList.contains('open')) setTimeout(showCurrent, 260); });
+      setOpen(Boolean(block.querySelector('.match-card.flash, .match-card.open')));
+    }
+    const seeFeuds = card.querySelector('[data-wc-seeall="feuds"]');
+    if (seeFeuds) seeFeuds.addEventListener('click', () => {
+      const head = [...block.querySelectorAll('.moments-head')].find(h => /storylines/i.test(h.textContent));
+      if (head) head.closest('.moments-block').scrollIntoView({ block: 'start', behavior: reduceMotion() ? 'auto' : 'smooth' });
+    });
+
+    // Press Play: the label morphs to Loading, the file loads only now, and
+    // when it plays the overlay fades and the room starts following the card.
+    // The file's end hands off to the Up next card.
+    const open = card.querySelector('[data-wc-open]');
+    if (open) open.addEventListener('click', () => {
+      const lbl = open.querySelector('.wc-label');
+      const was = lbl.textContent;
+      lbl.textContent = 'Opening in a new tab';
+      roll(lbl.parentElement, 'up');
+      setTimeout(() => { lbl.textContent = was; roll(lbl.parentElement, 'up'); }, 1500);
+      startFollowing(); paint();
+    });
+    if (player && play) {
+      const lbl = play.querySelector('.wc-label');
+      const started = () => { player.classList.add('playing'); player.classList.remove('loading'); startFollowing(); paint(); };
+      const failed = (msg) => { player.classList.remove('loading'); lbl.textContent = msg; roll(lbl.parentElement, 'up'); };
+      play.addEventListener('click', () => {
+        if (player.classList.contains('loading')) return;
+        player.classList.add('loading');
+        lbl.innerHTML = 'Loading ' + DOTS;   // bounce dots while the file comes in
+        roll(lbl.parentElement, 'up');
+        if (player.dataset.embedType === 'video') {
+          const v = player.querySelector('video');
+          v.hidden = false;
+          if (!v.src) {
+            v.src = player.dataset.embedSrc;
+            v.addEventListener('playing', started, { once: true });
+            v.addEventListener('ended', finishRoom);
+            mountPlayerControls(player, v);
+            v.addEventListener('error', () => { v.hidden = true; v.removeAttribute('src'); failed('Could not load it here. Open it on the archive instead'); }, { once: true });
+          }
+          v.play().catch((e) => { if (e && e.name === 'NotAllowedError') failed('Press play'); });   // a bad file reports through its own error event
+          const arch = (whereFor(id) || {}).archive;
+          promiseToast(new Promise((res, rej) => { v.addEventListener('playing', res, { once: true }); v.addEventListener('error', rej, { once: true }); }),
+            { pending: 'Loading the full show', done: arch && arch.min ? `Playing · ${arch.min} min` : 'Playing', fail: 'Could not load it here. Open it on the archive instead' });
+        } else {
+          const f = document.createElement('iframe');
+          f.src = player.dataset.embedSrc;
+          f.allow = 'autoplay; fullscreen; picture-in-picture';
+          f.allowFullscreen = true;
+          f.title = 'Full show';
+          player.appendChild(f);
+          started();
+        }
+      });
+      if (roomAutoplay === id) { roomAutoplay = null; play.click(); }
+    }
   }
 
   // Short, dated backstage and story clips tied to this show: the bonus-content
@@ -6295,7 +7792,9 @@
     if (!FEUDS || !FEUDS.length) return '';
     const month = String(d.air_date || '').slice(0, 7);
     if (!month) return '';
-    const active = FEUDS.filter(f => f.start <= month && month <= f.end).slice(0, 6);
+    // With spoilers off a storyline that starts this month stays out: it may
+    // start after tonight (Triple H vs. Jericho on the Jan 7, 2002 Raw).
+    const active = FEUDS.filter(f => f.start <= month && month <= f.end && (spoilers || f.start < month)).slice(0, 6);
     if (!active.length) return '';
     return `
       <div class="moments-block">
@@ -6479,7 +7978,7 @@
       // so it cannot leak via the a11y tree, selection, reader mode, or disabled
       // CSS. The modal re-renders on toggle (see toggleSpoilers).
       const report = spoilers
-        ? `<span class="value mono">${esc(plainWikiLinks(m.raw_description))}</span>`
+        ? `<span class="value mono wall">${esc(plainWikiLinks(m.raw_description))}</span>`
         : `<span class="value mono report-hidden">Result hidden. Turn spoilers on to read the finish.</span>`;
       rows.push(`
         <div class="details-row">
@@ -6628,7 +8127,7 @@
       const leftCls = winnerSide === 'left' ? 'winner' : winnerSide === 'right' ? 'loser' : '';
       const rightCls = winnerSide === 'right' ? 'winner' : winnerSide === 'left' ? 'loser' : '';
       const defText = winnerSide
-        ? `<span class="def-text">${winnerSide === 'left' ? '<span class="def-arrow">←</span> DEF' : 'DEF <span class="def-arrow">→</span>'}</span>`
+        ? `<span class="def-text wall">${winnerSide === 'left' ? '<span class="def-arrow">←</span> DEF' : 'DEF <span class="def-arrow">→</span>'}</span>`
         : '';
       return `
         <div class="match-body">
@@ -6772,7 +8271,7 @@
     else if (anyOutcome('dq-win')) bits.push(`<span class="outcome-flag dq">By DQ</span>`);
     else if (anyOutcome('countout-win')) bits.push(`<span class="outcome-flag co">By Count-out</span>`);
     if (!bits.length) return '';
-    return `<div class="match-footer">${bits.join('')}</div>`;
+    return `<div class="match-footer wall">${bits.join('')}</div>`;
   }
 
   // ------------------------------------------------------------------
@@ -7223,6 +8722,7 @@
       renderRosterBody();
     });
     const searchEl = document.getElementById('roster-search');
+    riseInput(searchEl, null, true);   // character rise in the roster filter
     if (searchEl) searchEl.addEventListener('input', renderRosterBody);
     const container = document.getElementById('roster-view-content');
     if (container) container.addEventListener('click', (e) => {
@@ -8320,7 +9820,7 @@
 
   function runSearch(raw) {
     const q = (raw || '').trim();
-    searchClearBtn.hidden = !q;
+    searchClearBtn.classList.toggle('on', !!q);
     if (!q) { renderSearchEmpty(); return; }
     buildSearchIndexes();
     if (!searchAliases.size) buildSearchAliases();
@@ -8501,9 +10001,9 @@
         if (searchBackdrop.classList.contains('open') && searchInput.value.trim()) runSearch(searchInput.value);
       });
     }
-    searchInput.value = '';
+    searchInput.value = ''; repaintRise(searchInput);
     renderSearchEmpty();
-    searchClearBtn.hidden = true;
+    searchClearBtn.classList.remove('on');
     searchBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
     requestAnimationFrame(() => searchInput.focus());
@@ -8521,9 +10021,10 @@
     if (!searchBackdrop || !searchInput) return;
 
     searchBtn.addEventListener('click', openSearch);
+    riseInput(searchInput, searchClearBtn);   // character rise + clear fade
     el('search-esc').addEventListener('click', closeSearch);
     searchClearBtn.addEventListener('click', () => {
-      searchInput.value = '';
+      searchInput.value = ''; repaintRise(searchInput);
       runSearch('');
       searchInput.focus();
     });
@@ -8541,7 +10042,7 @@
     searchResults.addEventListener('click', (e) => {
       const sug = e.target.closest('[data-suggest]');
       if (sug) {
-        searchInput.value = sug.dataset.suggest;
+        searchInput.value = sug.dataset.suggest; repaintRise(searchInput);
         runSearch(searchInput.value);
         searchInput.focus();
         return;
