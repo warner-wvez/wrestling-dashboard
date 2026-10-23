@@ -3414,6 +3414,29 @@
     .moment-row { flex-direction: column; gap: 3px; }
   }
   /* ===========================================================
+     WATCH ALONG: the end of the card and the road to the next PPV
+     =========================================================== */
+  /* Peak-End and watch along: the end of the card is the end of the show */
+  .show-end {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    gap: 12px; margin: 0 20px 24px; padding: 14px 16px;
+    border: 1px solid var(--ink); background: var(--surface);
+  }
+  .se-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); }
+  .se-next {
+    display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    min-height: 44px; padding: 8px 16px; border: 1px solid var(--ink); background: var(--ink); color: #FFF;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 700; text-align: left; cursor: pointer;
+    transition: background 120ms, color 120ms;
+  }
+  .se-next:hover { background: var(--red); border-color: var(--red); transition-duration: 40ms; }
+  .se-next:active { filter: contrast(0.82) saturate(1.2) brightness(1.16); }
+  .se-next:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .se-next-name { font-family: var(--font-mono); font-size: 11px; font-weight: 500; opacity: 0.85; }
+  .hb-overall { color: var(--ink-dim); }
+  @media (max-width: 720px) { .show-end { margin: 0 14px 20px; } .se-next { width: 100%; } }
+
+  /* ===========================================================
      MOTION
      Values copied from Reflex's own components (Radix Themes 3.3, Vaul 1.1,
      Sonner 2.0) so clicks and state changes share one feel without a
@@ -4658,6 +4681,23 @@
   // answers "where am I and what do I press" the moment you open the app.
   // Rendered from watched state (not the browsed month) so it stays put as you
   // flip through the calendar below.
+  // Goal gradient: the next pay-per-view is a goal you can see getting closer,
+  // where the whole journey (2 of 3,116 shows) barely moves. A chapter runs from
+  // the show after one PPV through the next; naming that PPV is the schedule,
+  // which the calendar already shows, not a result.
+  function chapterOf(resumeId) {
+    const at = ORDERED_IDS.indexOf(String(resumeId));
+    if (at < 0) return null;
+    const isPPV = (id) => (BUNDLE.events[id] || {}).show_type === 'PPV';
+    let end = at;
+    while (end < ORDERED_IDS.length && !isPPV(ORDERED_IDS[end])) end++;
+    if (end >= ORDERED_IDS.length) return null;
+    let start = at - 1;
+    while (start >= 0 && !isPPV(ORDERED_IDS[start])) start--;
+    const ids = ORDERED_IDS.slice(start + 1, end + 1);
+    return { ppv: BUNDLE.events[ORDERED_IDS[end]], total: ids.length, done: ids.filter(id => watched.has(id)).length };
+  }
+
   function renderResumeHero() {
     if (!heroEl || !BUNDLE) return;
     const resumeId = computeResumeId();
@@ -4735,9 +4775,13 @@
       `<span>${ev.match_count} ${ev.match_count === 1 ? 'match' : 'matches'}</span>`,
     ];
 
-    const progressLabel = nothing
-      ? `The very beginning · <strong>0</strong> of ${nf(total)} shows`
-      : `You're up to <strong>${esc(upTo)}</strong> · <strong>${nf(watched.size)}</strong> of ${nf(total)} shows · ${pctLabel}%`;
+    const ch = chapterOf(resumeId);
+    const barPct = ch ? ch.done / ch.total * 100 : pct;
+    const progressLabel = ch
+      ? `Road to <strong>${esc(cleanName(ch.ppv))}</strong> · <strong>${ch.done}</strong> of ${ch.total} shows<span class="hb-overall"> · ${nf(watched.size)} of ${nf(total)} overall</span>`
+      : nothing
+        ? `The very beginning · <strong>0</strong> of ${nf(total)} shows`
+        : `You're up to <strong>${esc(upTo)}</strong> · <strong>${nf(watched.size)}</strong> of ${nf(total)} shows · ${pctLabel}%`;
     const altLink = nothing
       ? `<button class="hero-altlink" type="button" data-catchup>Already watched some? Pick up where you are</button>`
       : '';
@@ -4749,7 +4793,7 @@
         <div class="hero-meta">${metaBits.join('')}</div>
         <div class="hero-mainevent" id="hero-mainevent" hidden></div>
         <div class="hero-progress">
-          <div class="hero-bar"><div class="hero-bar-fill" style="width:${pct}%"></div></div>
+          <div class="hero-bar"><div class="hero-bar-fill" style="width:${barPct}%"></div></div>
           <div class="hero-bar-label">${progressLabel}</div>
           ${altLink}
         </div>
@@ -4894,6 +4938,10 @@
       const lbl = btn.querySelector('.wb-label');
       if (lbl) lbl.textContent = on ? 'Watched' : 'Mark watched';
       btn.title = on ? 'Mark as not watched' : 'Mark this show watched';
+    });
+    mContent.querySelectorAll('[data-finish]').forEach(btn => {
+      const l = btn.querySelector('.se-next-label');
+      if (l) l.textContent = watched.has(btn.dataset.finish) ? 'Next show' : 'Mark watched, next show';
     });
     markWatchedChips();
     updateMarkMonthBtn();
@@ -5838,6 +5886,7 @@
       ]);
       mContent.classList.remove('instant-reveal'); // fresh open: animate the reveal
       mContent.innerHTML = details.map(d => renderEvent(d, sourceSlug)).join('');
+      prefetchNextShow(events[events.length - 1]);
       // Defer stagger index assignment so first paint isn't blocked.
       requestAnimationFrame(() => {
         mContent.querySelectorAll('.match-card').forEach((m, i) => m.style.setProperty('--match-index', i));
@@ -5899,6 +5948,19 @@
         e.stopPropagation();
         toggleWatched(btn.getAttribute('data-watched-id'));
         popOn(btn);
+      });
+    });
+    mContent.querySelectorAll('[data-finish]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.finish;
+        if (!watched.has(id)) {
+          watched.set(id, Date.now());
+          saveWatched(); refreshWatchedUI();
+          const name = fullShowName(BUNDLE.events[id]).replace(/^WW[EF]\s+/, '');
+          showUndo(`Marked ${name} watched`, () => { watched.delete(id); saveWatched(); refreshWatchedUI(); });
+        }
+        navigateToEvent(btn.dataset.next);
       });
     });
     mContent.querySelectorAll('[data-save-match]').forEach(btn => {
@@ -6090,12 +6152,44 @@
         <div class="matches-list">
           ${airedFirst(d.matches || []).map(m => renderMatch(m, d.air_date, sourceSlug, d.id)).join('') || '<div class="status">No match list recorded.</div>'}
         </div>
+        ${renderShowEnd(d)}
         ${renderMoments(d)}
         ${renderPromos(d)}
         ${renderFeuds(d)}
         ${renderTournaments(d)}
       </div>
     `;
+  }
+
+  // Watch along: the viewer follows the show somewhere else, so the end of the
+  // card is the end of the show for them too. One step marks it watched and
+  // opens the next show in order, with Undo in the toast (Peak-End: a show ends
+  // on a finish, not on the extras shelf).
+  function renderShowEnd(d) {
+    if (d.id == null || !BUNDLE) return '';
+    const id = String(d.id);
+    const at = ORDERED_IDS.indexOf(id);
+    const next = at >= 0 ? BUNDLE.events[ORDERED_IDS[at + 1]] : null;
+    if (!next) return '';
+    const isW = watched.has(id);
+    return `<div class="show-end">
+        <span class="se-label">End of the card</span>
+        <button class="se-next" type="button" data-finish="${esc(id)}" data-next="${esc(String(next.id))}">
+          <span class="se-next-label">${isW ? 'Next show' : 'Mark watched, next show'}</span>
+          <span class="se-next-name">${esc(fullShowName(next).replace(/^WW[EF]\s+/, ''))} · ${esc(fmtDateLong(next.air_date))}</span>
+        </button>
+      </div>`;
+  }
+
+  // Doherty: the next show's era file loads while this one is read, so the
+  // step to it opens at once instead of waiting on a 1 to 2 MB shard.
+  function prefetchNextShow(ev) {
+    const at = ev ? ORDERED_IDS.indexOf(String(ev.id)) : -1;
+    const next = at >= 0 ? BUNDLE.events[ORDERED_IDS[at + 1]] : null;
+    if (!next) return;
+    const go = () => { ensureMatches(next).catch(() => {}); };
+    if ('requestIdleCallback' in window) requestIdleCallback(go, { timeout: 2000 });
+    else setTimeout(go, 600);
   }
 
   // "Where do I actually watch this?" answered on every event, always. A
