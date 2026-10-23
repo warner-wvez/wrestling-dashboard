@@ -51,6 +51,9 @@ SHARED_SURNAME = {
     "Singh": {"Sunil", "Samir"},
     "Americano": {"Bravo", "Rayo", "Bruto", "Julio"},
     "Mysterio": {"Rey", "Dominik"},
+    # The MFTs' brothers, written "Tama & Talla Tonga" from August 2026 on;
+    # without this "Tama" became a roster entry of his own.
+    "Tonga": {"Tama", "Talla"},
 }
 
 # Team names that themselves contain a separator, written 'Team (a & b)'. The

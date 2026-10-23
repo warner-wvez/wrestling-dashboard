@@ -18,7 +18,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.add_new_shows import (  # noqa: E402
     PREEMPTION_ALLOWANCE, aired_dates, already_have, apply_aired_date, bump_cache,
-    ppv_name_key, title_changes, usual_airings, weekly_problems)
+    fix_spellings, list_rows, near_miss, ppv_name_key, title_changes, usual_airings,
+    weekly_problems)
 
 
 def ev(air_date, show_type, title=None, ppv_name=None):
@@ -116,6 +117,43 @@ class TestAiredDates(unittest.TestCase):
         two = [{"air_date": "2026-08-01"}, {"air_date": "2026-08-02"}]
         self.assertEqual([e["air_date"] for e in apply_aired_date(two, "2026-08-05")],
                          ["2026-08-01", "2026-08-02"])
+
+
+class TestSpelling(unittest.TestCase):
+    KNOWN = {"Damian Priest": 120, "R-Truth": 300, "Tamina": 80, "Jey Uso": 400, "Jimmy Uso": 400,
+             "Rare Name": 3}
+
+    def test_one_letter_off_a_regular(self):
+        self.assertEqual(near_miss("Damien Priest", self.KNOWN), "Damian Priest")
+
+    def test_short_names_need_a_closer_match(self):
+        self.assertIsNone(near_miss("Tama", self.KNOWN))          # Tamina is two letters off
+
+    def test_ambiguous_or_rare_is_left_alone(self):
+        two = {**self.KNOWN, "Jay Uso": 50}
+        self.assertIsNone(near_miss("Joy Uso", two))              # Jey Uso and Jay Uso both 1 off
+        self.assertIsNone(near_miss("Rare Nane", self.KNOWN))     # under 10 cards
+
+    def test_rewrites_card_and_team_name(self):
+        ev = {"air_date": "2026-09-11", "show_type": "SmackDown", "episode_number": 1413,
+              "matches": [{"teams": [{"team_name": "Damien Priest & R-Truth",
+                                      "participants": ["Damien Priest", "R-Truth"]}]}]}
+        fixes = fix_spellings([ev], self.KNOWN)
+        team = ev["matches"][0]["teams"][0]
+        self.assertEqual(team["participants"], ["Damian Priest", "R-Truth"])
+        self.assertEqual(team["team_name"], "Damian Priest & R-Truth")
+        self.assertEqual(len(fixes), 1)
+
+
+class TestListRows(unittest.TestCase):
+    TEXT = ("\n====2026====\n{| class=wikitable\n|-\n|July 18\n|[[Saturday Night's Main Event XLV|"
+            "Saturday Night's Main Event]]\n|-\n|August 1\n|[[SummerSlam (2026)|SummerSlam]]\n|}\n"
+            "==Upcoming event schedule==\n|-\n|December 5\n|[[Future Event]]\n")
+
+    def test_dated_rows_of_the_year(self):
+        self.assertEqual(list_rows(self.TEXT, [2026]),
+                         [("2026-07-18", "Saturday Night's Main Event XLV"),
+                          ("2026-08-01", "SummerSlam (2026)")])
 
 
 if __name__ == "__main__":

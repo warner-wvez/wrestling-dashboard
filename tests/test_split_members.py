@@ -16,6 +16,7 @@ def test_shared_surname_family_is_rejoined():
     assert split_members("Jimmy & Jey Uso") == ["Jimmy Uso", "Jey Uso"]
     assert split_members("Nikki & Brie Bella") == ["Nikki Bella", "Brie Bella"]
     assert split_members("Matt & Jeff Hardy") == ["Matt Hardy", "Jeff Hardy"]
+    assert split_members("Tama & Talla Tonga") == ["Tama Tonga", "Talla Tonga"]
 
 
 # ---- the lend must NOT fire on a complete mononym + two-word partner --------

@@ -35,6 +35,7 @@ Run from repo root:
 from __future__ import annotations
 
 import argparse
+import collections
 import re
 import subprocess
 import sys
@@ -139,6 +140,79 @@ def apply_aired_date(evs: list[dict], aired: str | None) -> list[dict]:
     return evs
 
 
+def _lev(a: str, b: str) -> int:
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        cur = [i]
+        for j, cb in enumerate(b, 1):
+            cur.append(min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ca != cb)))
+        prev = cur
+    return prev[-1]
+
+
+def near_miss(name: str, known: dict, min_cards: int = 10) -> str | None:
+    """The one established name a new name is a misspelling of, or None.
+
+    A source that misspells a regular once ("Damien Priest" on the 2026-09-11
+    SmackDown) would otherwise mint a roster entry. A candidate has the same
+    number of words, differs in one word only, by one letter (two in a name
+    of 10 letters or more), and sits on at least `min_cards` cards. Two or
+    more candidates means it is not clear, so the name is left alone."""
+    words = name.split()
+    limit = 2 if len(name) >= 10 else 1
+    hits = []
+    for other, n in known.items():
+        if n < min_cards or other == name:
+            continue
+        ow = other.split()
+        if len(ow) != len(words):
+            continue
+        diff = [(a, b) for a, b in zip(words, ow) if a != b]
+        if len(diff) == 1 and _lev(diff[0][0].lower(), diff[0][1].lower()) <= limit:
+            hits.append(other)
+    return hits[0] if len(hits) == 1 else None
+
+
+def fix_spellings(new_events: list[dict], known: dict) -> list[str]:
+    """Rewrite near-miss names on the new cards to the established spelling.
+    The source's own text stays in raw_description."""
+    fixes, cache = [], {}
+    for ev in new_events:
+        for m in ev["matches"]:
+            for t in m["teams"]:
+                for i, p in enumerate(t.get("participants") or []):
+                    if not p or p in known:
+                        continue
+                    if p not in cache:
+                        cache[p] = near_miss(p, known)
+                    good = cache[p]
+                    if good:
+                        t["participants"][i] = good
+                        if t.get("team_name"):
+                            t["team_name"] = t["team_name"].replace(p, good)
+                        fixes.append(f"{ev['air_date']} {show_label(ev)}: {p} -> {good}")
+    return fixes
+
+
+def list_rows(list_wikitext: str, years) -> list[tuple[str, str]]:
+    """(air date, event name) for each dated row in the given years' sections
+    of the PPV list page."""
+    out = []
+    for y in years:
+        m = re.search(rf"\n====\s*{y}\s*====", list_wikitext)
+        if not m:
+            continue
+        nxt = re.search(r"\n====\s*\d{4}\s*====|\n==[^=]", list_wikitext[m.end():])
+        seg = list_wikitext[m.end():m.end() + nxt.start()] if nxt else list_wikitext[m.end():]
+        for row in seg.split("\n|-")[1:]:
+            d = re.search(r"\|\s*(" + "|".join(MONTHS) + r")\s+(\d{1,2})\b", row)
+            link = re.search(r"\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]", row)
+            if d and link:
+                iso = f"{y}-{MONTHS.index(d.group(1)) + 1:02d}-{int(d.group(2)):02d}"
+                out.append((iso, link.group(1).strip()))
+    return out
+
+
 def show_label(ev: dict) -> str:
     if ev["show_type"] == "PPV":
         return ev.get("title") or ev.get("ppv_name") or "PPV"
@@ -214,10 +288,11 @@ def main(argv=None) -> int:
         failures.append("PPV discovery found no events on the list page")
     try:
         time.sleep(1)                       # discovery just fetched this page
-        aired = aired_dates(fetch_wikitext(PPV_LIST_PAGE))
+        list_text = fetch_wikitext(PPV_LIST_PAGE)
     except Exception as ex:
-        aired = {}
-        failures.append(f"{PPV_LIST_PAGE} (aired dates): {ex}")
+        list_text = ""
+        failures.append(f"{PPV_LIST_PAGE}: {ex}")
+    aired = aired_dates(list_text)
     for title in titles:
         try:
             parsed = parse_event(fetch_wikitext(title))
@@ -236,12 +311,27 @@ def main(argv=None) -> int:
         time.sleep(1)                       # MediaWiki etiquette: serial, >=1s
 
     new.sort(key=lambda e: (e["air_date"], e["show_type"]))
+    known = collections.Counter(p for e in existing for m in e["matches"]
+                                for t in m["teams"] for p in t.get("participants") or [] if p)
+    spelling = fix_spellings(new, known)
+    # Events on Wikipedia's list in the window with no PPV of ours that day:
+    # TV specials and AAA shows the calendar leaves out, but also any one-off
+    # PLE whose page has no (year) in its name, which discovery cannot see
+    # (Clash in Italy 2026 was missed that way and added by migration 0024).
+    have_ppv_days = {d for e in existing + new if e.get("show_type") == "PPV"
+                     for d in (e.get("air_date"), e.get("tape_date")) if d}
+    not_added = [f"{d} {name}" for d, name in list_rows(list_text, years)
+                 if start <= d <= through and d > newest and d not in have_ppv_days]
     problems = [f"fetch failed: {f}" for f in failures] + weekly_problems(found, start, through)
     print(f"\n{len(new)} new show(s); {len(empty)} listed without results yet", flush=True)
     for ev in new:
         print(f"  + {ev['air_date']} {show_label(ev)} ({len(ev['matches'])} matches)", flush=True)
     for e in empty:
         print(f"  - {e}: no results posted, left for the next run", flush=True)
+    for f in spelling:
+        print(f"  spelling: {f}", flush=True)
+    for n in not_added:
+        print(f"  on Wikipedia's list, not added: {n}", flush=True)
     if problems:
         print(f"\n=== SHIP BLOCKED ({len(problems)} problem(s), nothing written) ===", flush=True)
         for p in problems:
@@ -299,6 +389,12 @@ def main(argv=None) -> int:
     ]
     if board_lines:
         lines += ["", "Titles page:", *[f"- {b}" for b in board_lines]]
+    if spelling:
+        lines += ["", "Names corrected to their usual spelling:", *[f"- {f}" for f in spelling]]
+    if not_added:
+        lines += ["", "On Wikipedia's PPV list in this span but not added (TV specials and AAA "
+                  "shows are left out on purpose; a one-off PLE needs adding by hand):",
+                  *[f"- {n}" for n in not_added]]
     if empty:
         lines += ["", "Listed without results yet (next run picks them up):", *[f"- {e}" for e in empty]]
     lines += ["", f"Service worker cache v{version}. Every show already on file is unchanged."]
