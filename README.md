@@ -48,7 +48,7 @@ To add the shows that aired since the newest one on file and rebuild every artif
 uv run --with requests --with beautifulsoup4 src/add_new_shows.py [--dry-run] [--summary summary.md]
 ```
 
-It never changes a show already on file, so every correction in `src/migrations/` carries through. `src/build_update.py --refetch` still re-fetches 2020 on from scratch, for a parser fix; it drops those corrections, so the migrations that touch 2020 on have to run again after it.
+It never changes a show already on file, so every correction in `src/migrations/` carries through. A GitHub Actions job (`.github/workflows/weekly-shows.yml`) runs it every Tuesday and Saturday, refreshes title changes on shows we don't carry, audits every belt against Wikipedia, and opens one pull request to read and merge; the site only changes when that pull request is merged. `src/build_update.py --refetch` still re-fetches 2020 on from scratch, for a parser fix; it drops those corrections, so the migrations that touch 2020 on have to run again after it.
 
 To regenerate the single-file build from the historical SQLite database at `data/wrestling.db`:
 

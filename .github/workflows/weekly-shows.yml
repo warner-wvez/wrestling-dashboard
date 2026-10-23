@@ -1,0 +1,38 @@
+# Adds the week's Raw, SmackDown and PPV shows and opens a pull request to
+# review. Merging it publishes (GitHub Pages builds from main). The steps and
+# their gates are described in .github/scripts/weekly-shows.sh.
+#
+# Needs one repository setting: Settings > Actions > General > Workflow
+# permissions > "Allow GitHub Actions to create and approve pull requests".
+name: Weekly shows
+
+on:
+  schedule:
+    # 14:00 UTC Tuesday and Saturday: Raw (Monday night US time) and SmackDown
+    # (Friday night) have aired and their results are posted by then.
+    - cron: "0 14 * * 2,6"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: weekly-shows
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests beautifulsoup4
+      - run: bash .github/scripts/weekly-shows.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
