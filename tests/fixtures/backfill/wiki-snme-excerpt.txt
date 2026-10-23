@@ -1,0 +1,148 @@
+== Events ==
+The following table lists the dates and locations of televised events; they do not include the 2022 house shows.
+{| class="wikitable sortable plainrowheaders" style="text-align:center; width:100%; font-size:85%"
+! rowspan=2 width="15%" scope="col" | Event
+! colspan=2 width="18%"             | Date
+! rowspan=2 width="11%" scope="col" | City
+! rowspan=2 width="12%" scope="col" | Venue
+! rowspan=2 width="25%"scope="col"  | Main Event
+! rowspan=2 width="1%" scope="col"  | Ref
+|-
+! scope="col" width="9%" | Taping
+! scope="col" width="9%" | Aired
+|-
+!scope="row" | [[Saturday Night's Main Event I]]
+|May 10, 1985
+|May 11, 1985
+|[[Uniondale, New York]]
+|[[Nassau Veterans Memorial Coliseum]]
+|[[Hulk Hogan]] (c) vs. [[Bob Orton Jr|Bob Orton]] for the [[WWF World Heavyweight Championship]]
+|<ref name=snme85>{{cite web | url=http://www.thehistoryofwwe.com/85.htm | title=1985 | publisher=The History of WWE | access-date=May 17, 2015 | archive-date=October 21, 2007 | archive-url=https://web.archive.org/web/20071021180216/http://thehistoryofwwe.com/85.htm | url-status=live }}</ref>
+|-
+!scope="row" | [[Saturday Night's Main Event II]]
+|October 3, 1985
+|October 5, 1985
+|[[East Rutherford, New Jersey]]
+|[[Brendan Byrne Arena]]
+|[[Hulk Hogan]] (c) vs. [[Nikolai Volkoff]] in a [[Flag match]] for the [[WWF World Heavyweight Championship]]
+|<ref name="snme85" />
+|-
+!scope="row" | [[Saturday Night's Main Event III]]
+|October 31, 1985
+|November 2, 1985
+|[[Hershey, Pennsylvania]]
+|[[Hersheypark Arena]]
+|[[Hulk Hogan]] and [[Andre the Giant]] vs. [[King Kong Bundy]] and [[Big John Studd]]
+|<ref name="snme85" />
+|-
+|}
+
+==Results==
+The following lists the match results for ''Saturday Night's Main Event''{{'}}s televised shows, and do not include results for any of the 2022 house shows.
+
+===1980s===
+====Saturday Night's Main Event I====
+{{Main|Saturday Night's Main Event I}}
+'''Saturday Night's Main Event I''' took place May 10, 1985, from [[Uniondale, New York]], in [[Nassau Veterans Memorial Coliseum]], and aired May 11, 1985, this was the first event for the Superstars that would be escorted to the ring by the host city's [[list of largest local police departments in the United States|local police]] and since 1985, this has become a main staple for SNME.<ref name=snme1>{{cite web|title=Saturday Night's Main Event: May 10, 1985|publisher=World Wrestling Entertainment|url=http://www.wwe.com/shows/snme/history/1985to1992/may111985|access-date=2007-10-05|archive-date=March 29, 2008|archive-url=https://web.archive.org/web/20080329070003/http://www.wwe.com/shows/snme/history/1985to1992/may111985|url-status=live}}</ref><ref name=WWF6389Book>{{cite book | first=Graham | last=Cawthon | title=the History of Professional Wrestling|volume=1: WWF 1963–1989 | publisher=CreateSpace Independent Publishing Platform | year= 2013 | isbn=978-1492825975}}</ref> The event aired on [[NBC]] and drew an 8.8 rating.<ref>{{Cite web|url=https://www.cagematch.net/?id=1&nr=2985|title=WWF Saturday Night's Main Event #1 « Events Database « CAGEMATCH - The Internet Wrestling Database|website=www.cagematch.net|access-date=2019-09-17|archive-date=October 6, 2020|archive-url=https://web.archive.org/web/20201006053358/https://www.cagematch.net/?id=1&nr=2985|url-status=live}}</ref>
+
+====Saturday Night's Main Event II====
+{{Infobox Wrestling event
+|name = Saturday Night's Main Event II
+|promotion = [[World Wrestling Federation]]
+|date = October 3, 1985
+|date_aired = October 5, 1985
+|city = [[East Rutherford, New Jersey]]
+|venue = [[Brendan Byrne Arena]]
+|attendance = 8,000<ref name=snme85 />
+|event      = ''Saturday Night's Main Event''
+|lastevent2 = [[Saturday Night's Main Event I|I]]
+|nextevent2 = [[Saturday Night's Main Event III|III]]
+}}
+'''Saturday Night's Main Event II''' took place on October 3, 1985, from [[East Rutherford, New Jersey]], at the [[Brendan Byrne Arena]], and aired on October 5, 1985.<ref name=WWF6389Book/><ref name=snme2>{{cite web|title=Saturday Night's Main Event: October 3, 1985|publisher=World Wrestling Entertainment|url=http://www.wwe.com/shows/snme/history/1985to1992/oct051985|access-date=2007-10-05|archive-date=February 21, 2008|archive-url=https://web.archive.org/web/20080221200020/http://www.wwe.com/shows/snme/history/1985to1992/oct051985|url-status=live}}</ref> The event aired on [[NBC]] and drew an 8.3 rating.<ref>{{Cite web|url=https://www.cagematch.net/?id=1&nr=2986|title=WWF Saturday Night's Main Event #2 « Events Database « CAGEMATCH - The Internet Wrestling Database|website=www.cagematch.net|access-date=2019-09-17|archive-date=October 5, 2020|archive-url=https://web.archive.org/web/20201005023835/https://www.cagematch.net/?id=1&nr=2986|url-status=live}}</ref>
+
+During the broadcast, [[Uncle Elmer]] was [[Legit (professional wrestling)|legitimately]] married to Joyce Stazko.
+
+{{Pro Wrestling results table
+|results = <ref>{{cite web|title=Saturday Night's Main Event #2|work=Pro Wrestling History|url=http://www.prowrestlinghistory.com/supercards/usa/wwf/snme.html#2|access-date=2007-10-05|archive-date=August 9, 2017|archive-url=https://web.archive.org/web/20170809183006/http://www.prowrestlinghistory.com/supercards/usa/wwf/snme.html#2|url-status=live}}</ref>
+|times = <ref name="snme85" />
+|match1 = [[Hulk Hogan]] (c) defeated [[Nikolai Volkoff]] (with [[Freddie Blassie]])
+|stip1 = [[Flag match]] for the [[WWF World Heavyweight Championship]]
+|time1 = 5:17
+|match2 = [[Uncle Elmer]] (with [[Hillbilly Jim]] and [[Cousin Junior]]) defeated [[Jerry Valiant]]
+|stip2 = [[Singles match (professional wrestling)|Singles match]]
+|time2 = 0:12
+|match3 = [[Paul Orndorff]] vs. [[Roddy Piper]] ended in a double [[countout]]
+|stip3 = [[Singles match (professional wrestling)|Singles match]]
+|time3 = 4:01
+|match4 = [[André the Giant]] and [[Tony Atlas]] (with [[Lou Albano]]) defeated [[King Kong Bundy]] and [[Big John Studd]] (with [[Bobby Heenan]]) by [[Disqualification (professional wrestling)|disqualification]]
+|stip4 = [[Tag team match]]
+|time4 = 4:26
+|match5 = [[The Dream Team (professional wrestling)|The Dream Team]] ([[Brutus Beefcake]] and [[Greg Valentine]]) (c) (with [[Johnny Valiant]]) defeated [[Lanny Poffo]] and [[Tony Garea]]
+|stip5 = [[Tag team match]] for the [[WWF Tag Team Championship]]
+|time5 = 3:30
+}}
+
+====Saturday Night's Main Event III====
+{{Infobox Wrestling event
+|name = Saturday Night's Main Event III
+|promotion = [[World Wrestling Federation]]
+|date = October 31, 1985
+|date_aired = November 2, 1985
+|city = [[Hershey, Pennsylvania]]
+|venue = [[Hersheypark Arena]]
+|attendance = 8,000<ref name=snme85 />
+|event      = ''Saturday Night's Main Event''
+|lastevent2 = [[Saturday Night's Main Event II|II]]
+|nextevent2 = [[Saturday Night's Main Event IV|IV]]
+}}
+'''Saturday Night's Main Event III''' took place on October 31, 1985, from [[Hershey, Pennsylvania]], at the [[Hersheypark Arena]], and aired on November 2, 1985.<ref name=WWF6389Book/><ref>{{cite web | access-date=May 17, 2015 | publisher=WWE | url=http://www.wwe.com/shows/snme/history/1985to1992/nov021985 | title=Saturday Night Main Event – Nov. 2, 1985 | archive-date=March 24, 2012 | archive-url=https://web.archive.org/web/20120324105654/http://www.wwe.com/shows/snme/history/1985to1992/nov021985 | url-status=live }}</ref> The event aired on [[NBC]] and drew a 6.3 rating.<ref name="snme85" />
+
+{{Pro Wrestling results table
+|times = <ref name="snme85" />
+|match1 = [[Terry Funk]] (with [[Jimmy Hart]]) defeated [[Junkyard Dog]]
+|stip1 = [[Singles match (professional wrestling)|Singles match]]
+|time1 = 5:16
+|match2 = [[Hulk Hogan]] and [[André the Giant]] (with [[Lou Albano]]) defeated [[King Kong Bundy]] and [[Big John Studd]] (with [[Bobby Heenan]]) by [[Disqualification (professional wrestling)|disqualification]]
+|stip2 = [[Tag team match]]
+|time2 = 8:00
+|match3 = [[Randy Savage]] (with [[Miss Elizabeth]]) vs. [[Tito Santana]] (c) ended in a double [[countout]]
+|stip3 = [[Singles match (professional wrestling)|Singles match]] for the [[WWF Intercontinental Championship]]
+|time3 = 4:08
+|match4 = [[Ricky Steamboat]] defeated [[Mr. Fuji]] (with [[The Magnificent Muraco]])
+|stip4 = Kung Fu Challenge
+|time4 = 3:16
+}}
+
+====Saturday Night's Main Event IV====
+{{Infobox Wrestling event
+|name = Saturday Night's Main Event IV
+|promotion = [[World Wrestling Federation]]
+|date = December 19, 1985
+|date_aired = January 4, 1986
+|city = [[Tampa, Florida]]
+|venue = [[USF Sun Dome]]
+|attendance =
+|event      = ''Saturday Night's Main Event''
+|lastevent2 = [[Saturday Night's Main Event III|III]]
+|nextevent2 = [[Saturday Night's Main Event V|V]]
+}}
+'''Saturday Night's Main Event IV''' took place on December 19, 1985, from [[Tampa, Florida]], at the [[USF Sun Dome]], and aired on January 4, 1986.<ref name=WWF6389Book/><ref>{{cite web | access-date=May 17, 2015 | publisher=WWE | url=http://www.wwe.com/shows/snme/history/1985to1992/jan041986 | title=Saturday Night Main Event – Jan. 4, 1986 | archive-date=March 31, 2008 | archive-url=https://web.archive.org/web/20080331193445/http://www.wwe.com/shows/snme/history/1985to1992/jan041986 | url-status=live }}</ref> The event aired on [[NBC]] and drew a 10.4 rating.<ref>{{Cite web|url=https://www.cagematch.net/?id=1&nr=3212|title=WWF Saturday Night's Main Event #4 « Events Database « CAGEMATCH - The Internet Wrestling Database|website=www.cagematch.net|access-date=2019-09-17|archive-date=October 6, 2020|archive-url=https://web.archive.org/web/20201006210709/https://www.cagematch.net/?id=1&nr=3212|url-status=live}}</ref>
+
+{{Pro Wrestling results table
+|times = <ref name="snme85" />
+|match1 = [[Jesse Ventura]], [[Roddy Piper]], and [[Bob Orton Jr.|Bob Orton]] defeated [[Hillbilly Jim]], [[Uncle Elmer]], and [[Cousin Luke]]
+|stip1 = [[Six-man tag team match]]
+|time1 = 8:00
+|match2 = [[Hulk Hogan]] (c) (with [[Junkyard Dog]]) defeated [[Terry Funk]] (with [[Jimmy Hart]])
+|stip2 = [[Singles match (professional wrestling)|Singles match]] for the [[WWF World Heavyweight Championship]]
+|time2 = 8:30
+|match3 = [[Randy Savage]] (with [[Miss Elizabeth]]) defeated [[George Steele]] (with [[Lou Albano]])
+|stip3 = [[Singles match (professional wrestling)|Singles match]]
+|time3 = 4:06
+|match4 = [[Nikolai Volkoff]] (with [[Freddie Blassie]] and [[The Iron Sheik]]) defeated [[Corporal Kirchner]]
+|stip4 = Peace Match
+|time4 = 4:32
+|match5 = [[Junkyard Dog]] and [[Ricky Steamboat]] defeated [[Mr. Fuji]] and [[The Magnificent Muraco]]
+|stip5 = [[Tag team match]]
+|time5 = 5:19
+}}
