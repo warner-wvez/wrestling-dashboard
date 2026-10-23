@@ -177,13 +177,18 @@ def main():
 
     pairs = [(lin["name"], lin["wiki_list"]) for lin in LINEAGES] + list(EXTRA.items())
     only = set(sys.argv[1:])
+    newest = max(e["air_date"] for e in data["events"].values() if e.get("air_date"))
     for name, page in pairs:
         if only and name not in only:
             continue
         ours = tr.get(name) or []
         if not ours:
             continue
-        lo, hi = ours[0]["start"], max(r["end"] or r["start"] for r in ours)
+        # A belt still held runs to the newest show on file, not to the start of
+        # our last reign: clipping there hid every change after it (Chelsea
+        # Green's 2026-08-02 reign never showed while Rhea Ripley's stayed open).
+        lo = ours[0]["start"]
+        hi = newest if any(r["end"] is None for r in ours) else max(r["end"] for r in ours)
         rows = [r for r in wiki_reigns(fetch(page)["text"]) if r["champion"]]
         # From the reign in force when our history starts. A first reign we
         # found already running is dated from the first match we have, often

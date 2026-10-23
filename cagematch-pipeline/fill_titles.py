@@ -188,7 +188,12 @@ def main() -> None:
         top_names = {normkey(c["name"]) for c in top["champions"]} if top else set()
         holder = {"names": t["champions"], "team_name": t["team_name"], "since": t["since"],
                   "days_held": t["days_held"], "as_of": None}
-        if top and not top.get("end") and top_names == snap_names:
+        # The same champion only keeps the snapshot's start date if nobody else
+        # held the belt since: Trick Williams lost the US title in August 2026
+        # and won it back in September, which is a new reign, not the April one.
+        lost_since = any({normkey(c["name"]) for c in r["champions"]} != snap_names
+                         for r in reigns if r["start"] > (t["since"] or ""))
+        if top and not top.get("end") and top_names == snap_names and not lost_since:
             holder["days_held"] = days_between(t["since"], newest_show)
         elif top and not top.get("end") and top["start"] >= (t["since"] or ""):
             holder = {"names": [c["name"] for c in top["champions"]], "team_name": None,
