@@ -44,3 +44,6 @@ docs/superpowers/
 
 # Wikipedia wikitext the missing-shows planner fetched
 lineup-check/wiki-cache/
+
+# Backfill 1985-2000: keep the tool + reports, drop the fetched pages
+backfill/cache/
