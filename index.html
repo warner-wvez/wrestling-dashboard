@@ -50,7 +50,7 @@
     --ink: #0A0A0A;
     --ink-soft: #2A2A2A;
     --ink-dim: #5F5F5F;
-    --ink-faint: #9A9A9A;
+    --ink-faint: #6B6B6B;   /* 5.33:1 on white, 4.89:1 on the #F5F5F5 panels */
     --border: #E5E5E5;
     --border-strong: #CCCCCC;
 
@@ -1027,6 +1027,16 @@
   }
   .browse-count strong { color: var(--ink); font-weight: 700; }
 
+  /* One height for the whole calendar control row (it measured 32, 38, 32 and
+     29px). Vertical padding goes so the text centers in the fixed height. */
+  .browse-toolbar .calview-toggle,
+  .browse-toolbar .controls,
+  .browse-toolbar .jump-date-input,
+  .browse-toolbar .mark-month { height: 36px; box-sizing: border-box; }
+  .browse-toolbar .cv-btn,
+  .browse-toolbar .controls select,
+  .browse-toolbar .month-nav { padding-top: 0; padding-bottom: 0; }
+
   /* Week / Month segmented toggle. Default is Week (less on screen at once). */
   .calview-toggle { display: inline-flex; border: 1px solid var(--ink); flex: 0 0 auto; }
   .cv-btn {
@@ -1081,7 +1091,7 @@
 
   .weekdays {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     padding: 0 0 8px;
     font-family: var(--font-mono);
     font-size: 10px;
@@ -1098,7 +1108,7 @@
 
   .calendar {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));   /* minmax: a busy week can no longer push the grid wider than a phone */
     gap: 6px;
     padding-top: 8px;
   }
@@ -1107,6 +1117,7 @@
     border: 1px solid var(--border);
     border-radius: var(--card-radius);
     min-height: 96px;
+    min-width: 0;
     position: relative;
     padding: 10px 10px 8px;
     display: flex;
@@ -1196,6 +1207,14 @@
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.01em;
+    /* a button, so Tab reaches every show on the calendar */
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    margin: 0;
+    text-align: left;
+    line-height: inherit;
+    cursor: pointer;
   }
   .mini-chip .label {
     overflow: hidden;
@@ -1213,6 +1232,7 @@
   .mini-chip.smackdown { background: var(--blue-soft); color: var(--blue); }
   .mini-chip.ppv { background: var(--red); color: #FFF; }
   .mini-chip.ppv .ct { opacity: 0.9; }
+  .mini-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
 
   .status {
     grid-column: 1 / -1;
@@ -2544,7 +2564,22 @@
   button.wrestler-link:focus-visible {
     text-decoration-color: var(--red);
     color: var(--red);
-    outline: none;
+  }
+  /* the color change alone is easy to lose in a card of 30 names */
+  button.wrestler-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* Hit areas past the visible edge: small controls reach the 24px floor on a
+     mouse and 44px on touch without changing how they look. */
+  button.wrestler-link, .details-toggle, .save-btn, .modal-close, .menu-btn { position: relative; }
+  button.wrestler-link::after, .details-toggle::after, .save-btn::after,
+  .modal-close::after, .menu-btn::after { content: ''; position: absolute; }
+  button.wrestler-link::after { inset: -2px -1px; }
+  .details-toggle::after, .save-btn::after { inset: -6px -3px; }
+  .modal-close::after { inset: -7px; }
+  .menu-btn::after { inset: -2px; }
+  @media (pointer: coarse) {
+    .details-toggle::after, .save-btn::after { inset: -12px -4px; }
+    .menu-btn::after { inset: -11px -2px; }
   }
   button.wrestler-link.source {
     color: var(--red);
@@ -3447,8 +3482,8 @@
   <div class="roster-view-header">
     <h2>Roster</h2>
     <div class="roster-modes" id="roster-modes" role="tablist" aria-label="Roster view">
-      <button class="rmode active" type="button" data-mode="time" role="tab">As of your date</button>
-      <button class="rmode" type="button" data-mode="all" role="tab">All-time</button>
+      <button class="rmode active" type="button" data-mode="time" role="tab" aria-selected="true">As of your date</button>
+      <button class="rmode" type="button" data-mode="all" role="tab" aria-selected="false">All-time</button>
     </div>
     <div class="roster-controls">
       <input class="roster-search" id="roster-search" type="search" placeholder="Filter by name..." autocomplete="off">
@@ -4215,8 +4250,8 @@
         <div class="tp-body">
           <div class="tp-main">
             <div class="title-modes" role="tablist">
-              <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab">As of your date</button>
-              <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab">All-time</button>
+              <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab" aria-selected="${titleMode === 'time'}">As of your date</button>
+              <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab" aria-selected="${titleMode === 'all'}">All-time</button>
             </div>
             <div class="tp-state">${stateLine}</div>
             <div class="tp-timeline">${timeline}</div>
@@ -5358,7 +5393,10 @@
         const markers = document.createElement('div');
         markers.className = 'day-markers';
         for (const ev of c.events) {
-          const m = document.createElement('div');
+          // A button so the keyboard can open shows too; its click bubbles to
+          // the day cell, which opens the day just as a mouse click on the cell does.
+          const m = document.createElement('button');
+          m.type = 'button';
           const cls = SHOW_CLASS[ev.show_type] || '';
           m.className = `mini-chip ${cls}`;
           m.dataset.eventId = ev.id;
@@ -5366,6 +5404,7 @@
           if (ev.show_type === 'PPV') label = (ev.ppv_name || 'PPV').replace(/^WW[EF]\s+/, '');
           else if (ev.show_type === 'Raw') label = 'Raw';
           else label = 'SmackDown';
+          m.setAttribute('aria-label', `${label}, ${fmtDateLong(c.iso)}, ${ev.match_count} matches`);
           // The era logo rides the day marker, so scrolling the calendar through
           // the years shows the brand actually changing under you.
           const era = ev.logo
@@ -6711,7 +6750,10 @@
       const btn = e.target.closest('.rmode');
       if (!btn || btn.dataset.mode === rosterMode) return;
       rosterMode = btn.dataset.mode;
-      modes.querySelectorAll('.rmode').forEach(b => b.classList.toggle('active', b.dataset.mode === rosterMode));
+      modes.querySelectorAll('.rmode').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === rosterMode);
+        b.setAttribute('aria-selected', b.dataset.mode === rosterMode ? 'true' : 'false');
+      });
       renderRosterBody();
     });
     const searchEl = document.getElementById('roster-search');
