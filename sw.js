@@ -141,7 +141,7 @@
 // From v45 on, src/add_new_shows.py bumps this number itself each time it adds
 // shows (new core, the latest era's match shard, titles), so those bumps carry
 // no note here; the pull request that ships them lists the shows.
-const CACHE = 'wrestling-dashboard-v44';
+const CACHE = 'wrestling-dashboard-v45';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
