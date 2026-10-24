@@ -108,6 +108,11 @@ def logo_stem(logo: str | None) -> str | None:
 def classify(logo: str | None, title: str, ctype: str):
     if ctype in ("House Show", "Event"):
         return ("SKIP", None)
+    # A foreign-market cut of a show ("WWF Superstars (Quebec Version)", "WWF
+    # Sunday Night Heat (International Version)") is not the US broadcast the
+    # families follow, and it landed on the calendar beside the US episode.
+    if re.search(r"\((?:Quebec|International|French|German|UK) Version\)", title):
+        return ("SKIP", None)
     fam = LOGO_FAMILIES.get(logo_stem(logo) or "")
     if fam:
         return fam
