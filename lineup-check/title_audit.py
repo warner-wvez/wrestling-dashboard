@@ -34,6 +34,8 @@ from offshow_titles import BELTS as OFFSHOW_BELTS, same as same_reign, wwe_com  
 # Titles keyed by words (not in the lineage map) and their lists.
 EXTRA = {
     "WWE Intercontinental Title": "List of WWE Intercontinental Champions",
+    "WWF Intercontinental Title": "List of WWE Intercontinental Champions",
+    "WWF Light Heavyweight Title": "List of WWF Light Heavyweight Champions",
     "WWE United States Title": "List of WWE United States Champions",
     "WWF European Title": "List of WWE European Champions",
     "ECW World Heavyweight Title": "List of ECW World Heavyweight Champions",

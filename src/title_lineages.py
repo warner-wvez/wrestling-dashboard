@@ -60,7 +60,8 @@ LINEAGES = [
      "strings": [("WWF World Women's Title", None, None),
                  ("WWE World Women's Title", None, None),
                  ("World Women's Title", None, None),
-                 ("WWE Women's Title", None, "2010-12-31")]},
+                 ("WWE Women's Title", None, "2010-12-31"),
+                 ("WWF Women's Title", None, "2010-12-31")]},
     # In June 2023 WWE swapped the two women's belts between brands: the
     # Raw lineage (Charlotte's 2016 WWE Women's title, then Raw Women's) went
     # to SmackDown as the WWE Women's Championship, and the SmackDown lineage
@@ -107,6 +108,10 @@ LINEAGES = [
      "wiki_list": "List of WWE Cruiserweight Champions",
      "strings": [("WWE Cruiserweight Title", "2016-01-01", None),
                  ("NXT Cruiserweight Title", None, None)]},
+    # Ted DiBiase's own belt, 1989 to 1992 and again 1995 to 1996 and 2010.
+    {"key": "lineage::million-dollar", "name": "Million Dollar Championship", "cagematch": 4994,
+     "wiki_list": "Million Dollar Championship",
+     "strings": [("Million Dollar Title", None, None), ("WWF Million Dollar Title", None, None)]},
 ]
 
 _BY_STRING: dict[str, list[tuple[str | None, str | None, dict]]] = {}

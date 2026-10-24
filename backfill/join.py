@@ -240,6 +240,28 @@ def expand_groups(ev, groups):
     return ev
 
 
+_TITLE_WORD = re.compile(r"\b(?:Championship|Title)s?\b", re.I)
+
+
+def clean_stakes(ev):
+    """Wikipedia's stipulation column leaves referees and notes on the title
+    string ("WWF Championship / Mr. Perfect / special guest referee", "vacant /
+    WWF Championship"). Keep the belt parts only; a bare belt name gets its word
+    back ("WWF Intercontinental / WWF European")."""
+    for m in ev["matches"]:
+        t = m.get("title_at_stake")
+        if not t or " / " not in t:
+            continue
+        keep = []
+        for part in [x.strip() for x in t.split(" / ")]:
+            if _TITLE_WORD.search(part):
+                keep.append(part)
+            elif part.startswith(("WWF ", "WWE ")) and len(part.split()) >= 2 and not re.search(r"special|referee|enforcer|vacant", part, re.I):
+                keep.append(part + " Championship")
+        m["title_at_stake"] = " / ".join(keep) or None
+    return ev
+
+
 def as_matches(lines):
     """Cawthon line dicts -> the bundle-like matches compare_show takes as a third vote."""
     out = []
@@ -399,7 +421,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
                       primary_source="wikipedia", id=0)
             caw = cawthon.get(f"wwf-results-{ev['air_date'][:4]}", {}).get(ev["air_date"]) if art["show_type"] == "PPV" else None
             caw_lines = cawthon_lines(caw["ppv"]) if caw and caw.get("ppv") else []
-            label_multi(expand_groups(ev, groups))
+            label_multi(expand_groups(clean_stakes(ev), groups))
             caw_lines = with_ring_names(caw_lines, _people(ev))
             rows = compare_show(ev, as_lines(cmev["matches"]), groups, sdh_matches=as_matches(caw_lines) or None)
             ev["verification_status"] = bucket(rows)

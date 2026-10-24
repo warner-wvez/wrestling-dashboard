@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from backfill.common import fresh_event, fresh_match  # noqa: E402
-from backfill.join import as_lines, as_matches, bucket, cawthon_match, join_all, pair_dates, with_ring_names  # noqa: E402
+from backfill.join import as_lines, as_matches, bucket, cawthon_match, clean_stakes, join_all, pair_dates, with_ring_names  # noqa: E402
 
 
 def _cm(show_type, tape, people, nr=1, derivation="cagematch-taping"):
@@ -169,3 +169,13 @@ def test_show_without_cawthon_is_dated_by_smackdown_hotel_when_people_match():
     heat = cards[0]
     assert heat["air_date"] == "2000-03-12" and heat["tape_date"] == "2000-03-07" and heat["date_derivation"] == "sdh-air-date"
     assert heat["verification_status"] == "verified" and not any(r["class"] == "date_unconfirmed" for r in review)
+
+
+def test_clean_stakes_keeps_belts_and_drops_referee_notes():
+    def ev(title):
+        return {"matches": [fresh_match(1, [{"participants": ["A"], "was_winner": True}, {"participants": ["B"], "was_winner": False}], title_at_stake=title)]}
+    assert clean_stakes(ev("WWF Championship / Mr. Perfect / special guest referee"))["matches"][0]["title_at_stake"] == "WWF Championship"
+    assert clean_stakes(ev("vacant / WWF Championship"))["matches"][0]["title_at_stake"] == "WWF Championship"
+    assert clean_stakes(ev("WWF Intercontinental / WWF European"))["matches"][0]["title_at_stake"] == "WWF Intercontinental Championship / WWF European Championship"
+    assert clean_stakes(ev("WWF Championship / WrestleMania XII"))["matches"][0]["title_at_stake"] == "WWF Championship"
+    assert clean_stakes(ev("WWF Intercontinental Title"))["matches"][0]["title_at_stake"] == "WWF Intercontinental Title"
