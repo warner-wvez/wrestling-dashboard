@@ -39,10 +39,13 @@ def test_gate_rejects_a_card_without_a_date_family_or_match():
     assert any("no air_date" in p for p in gate([nodate], OK, {}))
 
 
-def test_index_counts_skip_studio_shows_and_matchless_rows():
-    cm = [_card("Challenge", "1988-08-28"), _card("PrimeTime", "1988-01-04"), _card("Challenge", "1988-09-04")]
+def test_index_counts_skip_studio_shows_and_matchless_rows_and_pool_ppv():
+    cm = [_card("Challenge", "1988-08-28"), _card("PrimeTime", "1988-01-04"), _card("Challenge", "1988-09-04"),
+          _card("PPV", "1988-03-27"), _card("SNME", "1985-12-19")]
     cm[2]["matches"] = []
-    assert index_counts_from(cm) == {("Challenge", 1988): 1}
+    assert index_counts_from(cm) == {("Challenge", 1988): 1, ("PPV", "all"): 1, ("SNME", "all"): 1}
+    cards = [_card("Challenge", "1988-08-28"), _card("PPV", "1988-03-27"), _card("SNME", "1986-01-04")]
+    assert gate(cards, OK, index_counts_from(cm)) == []
 
 
 def test_merge_gives_fresh_ids_and_sets_family_everywhere():

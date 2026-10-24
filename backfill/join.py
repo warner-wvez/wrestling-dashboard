@@ -398,7 +398,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             for d in {e["air_date"], e.get("tape_date")}:
                 if d:
                     cm_main[(e["show_type"], d)].append(e)
-    taken = set()
+    taken, held = set(), set()
     for art in wiki:
         for ev in art["events"]:
             cands = [c for d in {ev["air_date"], ev.get("tape_date")} if d
@@ -406,6 +406,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             if not cands:
                 near = [c for c in in_range if c["show_type"] == art["show_type"]
                         and _days(c["air_date"], ev["air_date"]) <= 3]
+                held.update(c["cagematch_nr"] for c in near)      # a date split holds both sides
                 review.append({"class": "date_split", "vote": "split", "event_key": f"{art['show_type']}|{ev['air_date']}|wiki",
                                "air_date": ev["air_date"], "show_type": art["show_type"], "title": ev["title"],
                                "ours": art["title"], "cawthon": ", ".join(f"{c['title']} {c['air_date']}" for c in near)})
@@ -429,9 +430,10 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
                 _fill_from_cawthon(ev, caw_lines)
             review += _review_rows(rows, f"{art['show_type']}|{ev['air_date']}|{cmev['cagematch_nr']}")
             cards.append(_strip(ev))
-    # SNME rows Wikipedia has no article for (Friday Night's Main Event 1997) stand on Cagematch alone.
+    # PPV and SNME rows Wikipedia has no card for (Friday Night's Main Event
+    # 1997, a special the list skips) stand on Cagematch alone, never dropped.
     for e in in_range:
-        if e["show_type"] == "SNME" and e["cagematch_nr"] not in taken:
+        if e["show_type"] in ("PPV", "SNME") and e["cagematch_nr"] not in taken and e["cagematch_nr"] not in held:
             ev = dict(e, id=0, verification_status="single-source")
             cards.append(_strip(ev))
     if rulings:

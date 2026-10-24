@@ -43,6 +43,10 @@ _SECTION_RE = re.compile(r"====\s*(\d{4})\s*====")
 _DATE_RE = re.compile(r"([A-Z][a-z]+)\s+(\d{1,2})")
 _LONG_DATE_RE = re.compile(r"([A-Z][a-z]+) (\d{1,2}), (\d{4})")
 
+# Shows the PPV list leaves out because they aired on cable, with the article
+# that holds their card. Cagematch files them with the pay-per-views.
+EXTRA_PPV_TITLES = [("1988-01-24", "Royal Rumble (1988)")]
+
 SNME_ARTICLES = [("Saturday Night's Main Event", r"Saturday Night's Main Event [IVXL]+"),
                  ("WWF The Main Event", r"The Main Event(?: [IVX]+)?")]
 
@@ -202,7 +206,7 @@ def _split_city(city: str | None):
 def main():
     list_wt = _wikitext(PPV_LIST_PAGE)
     cards, problems = [], []
-    for when, title in ppv_titles(list_wt):
+    for when, title in ppv_titles(list_wt) + EXTRA_PPV_TITLES:
         try:
             parsed = parse_event(_wikitext(title))
         except Exception as ex:

@@ -43,7 +43,9 @@ def index_counts_from(cm_cards) -> dict:
     for e in cm_cards:
         year = int(e["air_date"][:4])
         if year in YEARS and e["matches"] and e["show_type"] not in CAWTHON_SPINE:
-            c[(e["show_type"], year)] += 1
+            # A PPV or SNME row carries the taping night, which can fall in the
+            # year before the broadcast, so those two are floored over the range.
+            c[(e["show_type"], "all" if e["show_type"] in ("PPV", "SNME") else year)] += 1
     return dict(c)
 
 
@@ -64,7 +66,10 @@ def gate(cards, status, index_counts) -> list[str]:
             problems.append(f"{label}: show_type outside the family table")
         if not c.get("matches"):
             problems.append(f"{label}: no match")
-    have = collections.Counter((c["show_type"], int(c["air_date"][:4])) for c in cards if c.get("air_date"))
+    have = collections.Counter()
+    for c in cards:
+        if c.get("air_date"):
+            have[(c["show_type"], "all" if c["show_type"] in ("PPV", "SNME") else int(c["air_date"][:4]))] += 1
     for key, floor in sorted(index_counts.items()):
         n = have.get(key, 0)
         if n < floor * 0.9:
