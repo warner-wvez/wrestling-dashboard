@@ -594,9 +594,13 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
                 continue
             cmev = max(cands, key=lambda c: len(_people(c) & _people(ev)))
             taken.add(cmev["cagematch_nr"])
+            state = ev.get("state_province") or cmev.get("state_province")
+            city = ev.get("city") or cmev.get("city")
+            if city and state and city.endswith(", " + state):
+                city = city[: -len(", " + state)]       # Wikipedia's "Atlantic City, New Jersey"
             ev = dict(ev, cagematch_nr=cmev["cagematch_nr"], cagematch_url=cmev["cagematch_url"],
                       logo=cmev["logo"], venue=ev.get("venue") or cmev.get("venue"),
-                      city=ev.get("city") or cmev.get("city"),
+                      city=city,
                       state_province=ev.get("state_province") or cmev.get("state_province"),
                       country=ev.get("country") or cmev.get("country"),
                       episode_number=cmev.get("episode_number"), family="main",
