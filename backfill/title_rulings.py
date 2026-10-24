@@ -114,6 +114,33 @@ RULINGS = [
 ]
 
 
+# Matches Cagematch bills as title matches that two other records call
+# non-title: Cawthon ("in a non-title match") and a third (SmackDown Hotel, KB
+# Wrestling Reviews). Checked by web search 2026-10-24. Five more Cawthon
+# calls non-title stay title matches: there two records say the belt was on
+# the line. Superstars 1987-01-10 (Sheik and Volkoff over the Bulldogs by DQ)
+# is one record each and stays as Cagematch bills it.
+SDH = "https://www.thesmackdownhotel.com/events-results/wwe/"
+CAWTHON = "https://thehistoryofwwe.com/"
+NON_TITLE = [
+    {"night": ("Superstars", "1997-01-26"), "people": {"Ahmed Johnson", "Hunter Hearst Helmsley"},
+     "why": "non-title: Cawthon and KB Wrestling Reviews' recap of the episode",
+     "source": f"{CAWTHON}wwf-superstars-1997/ ; https://kbwrestlingreviews.com/2026/02/02/"
+               "superstars-january-26-1997-review-superstars-bowl/"},
+    {"night": ("Raw", "1997-03-10"), "people": {"Owen Hart", "The British Bulldog"},
+     "why": "non-title: Cawthon, SmackDown Hotel's results and KB Wrestling Reviews' recap",
+     "source": f"{CAWTHON}wwf-raw-1997/ ; {SDH}raw-is-war-1997 ; https://kbwrestlingreviews.com/2015/01/28/"
+               "monday-night-raw-march-10-1997-the-skeleton-of-greatness/"},
+    {"night": ("SmackDown", "1999-10-28"), "people": {"Al Snow"},
+     "why": "non-title: Cawthon and SmackDown Hotel's results",
+     "source": f"{CAWTHON}wwf-smackdown-1999/ ; {SDH}smackdown-1999"},
+    {"night": ("SmackDown", "2000-06-01"), "people": {"Kane", "Triple H"},
+     "stipulation": "#1 contender for the WWF Championship",
+     "why": "a #1 contender match, not a title defense: Cawthon and SmackDown Hotel's results",
+     "source": f"{CAWTHON}wwf-smackdown-2000/ ; {SDH}smackdown-2000"},
+]
+
+
 def apply_title_rulings(cards: list[dict]) -> int:
     """Set each ruling's title_result on its match; halt when a ruling finds
     no match or more than one, or names a belt the match does not carry, so a
@@ -140,6 +167,17 @@ def apply_title_rulings(cards: list[dict]) -> int:
         m["title_result"] = [{"title": b, "champions": holders, "why": r["why"], "source": r["source"],
                               **({"within": [[n] for n in r["within"][b]]} if b in r.get("within", {}) else {})}
                              for b, holders in r["belts"].items()]
+    for r in NON_TITLE:
+        hits = [m for c in by_night.get(r["night"], []) for m in c["matches"]
+                if m.get("title_at_stake") and r["people"] <= {p for t in m["teams"] for p in t["participants"]}]
+        if len(hits) != 1:
+            misses.append(f"non-title {r['night']} {sorted(r['people'])}: {len(hits)} matches")
+            continue
+        m = hits[0]
+        m["title_at_stake"] = None
+        if r.get("stipulation"):
+            m["stipulation"] = r["stipulation"]
+        m["stake_ruling"] = {"why": r["why"], "source": r["source"]}
     if misses:
         raise SystemExit("title rulings that found no single match:\n  " + "\n  ".join(misses))
-    return len(RULINGS)
+    return len(RULINGS) + len(NON_TITLE)
