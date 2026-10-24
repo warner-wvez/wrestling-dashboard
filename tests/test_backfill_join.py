@@ -190,17 +190,30 @@ def test_result_row_across_two_matches_becomes_a_lineup_difference():
     assert [r["class"] for r in out] == ["different_opponent", "result"]
 
 
-def test_studio_vote_only_counts_lines_with_the_same_people():
+def _studio(opponents):
     caw = {"wwf-prime-time-wrestling-1985": [
         {"air_date": "1985-01-15", "tape_date": None, "city": None, "venue": None,
          "matches": [{"kind": "match", "winners": ["Adrian Adonis", "Dick Murdoch"], "losers": ["Afa", "Sika"], "result": "no contest",
                       "sub_for": [], "notes": [], "line": "Adonis & Murdoch fought the Wild Samoans to a double DQ", "duration_seconds": None, "method": "no-contest"}]}]}
     cm = [_cm("PrimeTime", "1985-01-15", ["Adrian Adonis", "Dick Murdoch"], 3)]
     cm[0]["matches"][0]["teams"][0]["participants"] = ["Adrian Adonis", "Dick Murdoch"]
-    cm[0]["matches"][0]["teams"][1]["participants"] = ["Jack Brisco", "Jerry Brisco"]
+    cm[0]["matches"][0]["teams"][1]["participants"] = opponents
+    for t in cm[0]["matches"][0]["teams"]:
+        t["was_winner"] = None                      # a double DQ on both records
+    cm[0]["matches"][0]["result_method"] = "Double DQ"
     cards, review, report = join_all(cm, caw, [], {}, {})
-    pt = next(c for c in cards if c["show_type"] == "PrimeTime")
-    assert pt["verification_status"] == "verified" and review == []
+    return next(c for c in cards if c["show_type"] == "PrimeTime"), review
+
+
+def test_studio_vote_only_counts_lines_with_the_same_people():
+    pt, review = _studio(["Afa", "Sika"])
+    assert pt["verification_status"] == "verified" and pt["cagematch_url"] and review == []
+
+
+def test_a_studio_vote_sharing_no_match_confirms_nothing():
+    # Two names in common, no bout in common: no second source, no link.
+    pt, review = _studio(["Jack Brisco", "Jerry Brisco"])
+    assert pt["verification_status"] == "single-source" and not pt.get("cagematch_url") and review == []
 
 
 def test_two_sources_against_the_spine_change_the_card():

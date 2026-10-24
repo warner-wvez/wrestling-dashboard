@@ -154,31 +154,54 @@ def _assign(evs, cands, show_type, tape):
 
 
 def pair_dates(cm_events, cawthon):
-    """Give every TV show Cawthon's air date, pairing tapings by shared people."""
+    """Give every TV show Cawthon's air date, pairing tapings by shared people.
+    A taping with no Cawthon episode on its night gets a second try at the
+    episodes taped a day either side, once every exact night has paired:
+    Cagematch and Cawthon put a few whole tapings a day apart (Wrestling
+    Challenge in Phoenix, 4/5/93 on Cagematch, 4/6/93 on Cawthon, aired 5/2)."""
     used, paired, unpaired = set(), [], []
     by_key = defaultdict(list)
     for ev in cm_events:
         by_key[(ev["show_type"], ev["tape_date"] or ev["air_date"])].append(ev)
-    for (show_type, tape), evs in by_key.items():
+
+    def episodes(show_type, tape):
         # A December taping airs into January, on the next year's page.
         slugs = [s for s in (_cawthon_slug(show_type, int(tape[:4]) + k) for k in (0, 1)) if s]
-        eps_all = [((s, i), e) for s in slugs for i, e in enumerate(cawthon.get(s, []))]
+        return [((s, i), e) for s in slugs for i, e in enumerate(cawthon.get(s, []))]
+
+    def pair(show_type, tape, evs, cands, day_off=False):
+        for ev, (i, ep), shared, n_cands, by_order in _assign(evs, cands, show_type, tape):
+            if ep is None or (n_cands > 1 and shared == 0 and not by_order) \
+                    or (show_type in COMPILATION and shared < 2) or (day_off and shared < 2):
+                unpaired.append(ev)
+                continue
+            used.add(i)
+            how = "cawthon-air-date-by-order" if by_order else "cawthon-air-date"
+            ev = dict(ev, air_date=ep["air_date"], tape_date=tape,
+                      date_derivation="cawthon-air-date-taping-day-off" if day_off else how, cawthon=ep)
+            if not ev.get("city") and ep.get("city"):
+                ev["city"] = ep["city"].split(",")[0].strip()
+            paired.append(ev)
+
+    later = []
+    for (show_type, tape), evs in by_key.items():
+        eps_all = episodes(show_type, tape)
         if show_type in COMPILATION:
             cands = [(i, e) for i, e in eps_all
                      if i not in used and e.get("air_date") and _days(e["air_date"], tape) <= 10]
         else:
             cands = [(i, e) for i, e in eps_all if e.get("tape_date") == tape and i not in used]
-        for ev, (i, ep), shared, n_cands, by_order in _assign(evs, cands, show_type, tape):
-            if ep is None or (n_cands > 1 and shared == 0 and not by_order) \
-                    or (show_type in COMPILATION and shared < 2):
-                unpaired.append(ev)
+            if not cands:
+                later.append((show_type, tape, evs))
                 continue
-            used.add(i)
-            ev = dict(ev, air_date=ep["air_date"], tape_date=tape,
-                      date_derivation="cawthon-air-date-by-order" if by_order else "cawthon-air-date", cawthon=ep)
-            if not ev.get("city") and ep.get("city"):
-                ev["city"] = ep["city"].split(",")[0].strip()
-            paired.append(ev)
+        pair(show_type, tape, evs, cands)
+    for show_type, tape, evs in later:
+        cands = [(i, e) for i, e in episodes(show_type, tape)
+                 if i not in used and e.get("tape_date") and _days(e["tape_date"], tape) == 1]
+        if cands:
+            pair(show_type, tape, evs, cands, day_off=True)
+        else:
+            unpaired.extend(evs)
     return paired, unpaired
 
 
@@ -514,11 +537,14 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         key = f"{show_type}|{day}|cawthon"
         ev["id"] = 0
         vote = studio_votes.get((show_type, day))
-        if vote:
+        ours = [{p for t in m["teams"] for p in t["participants"]} for m in ev["matches"]]
+        same = [ln for ln in as_lines(vote["matches"]) if set(ln["winners"] + ln["losers"]) in ours] if vote else []
+        if vote and same:
             # The taping lists other matches than the broadcast; only a result
-            # that differs on the very same people is a disagreement here.
-            ours = [{p for t in m["teams"] for p in t["participants"]} for m in ev["matches"]]
-            same = [ln for ln in as_lines(vote["matches"]) if set(ln["winners"] + ln["losers"]) in ours]
+            # that differs on the very same people is a disagreement here. A
+            # row sharing no match with the broadcast confirms nothing (Prime
+            # Time 1986-01-27 and a Landover taping that shared two names), so
+            # it is no vote and lends the card no Cagematch link.
             rows = [r for r in compare_show(ev, same, groups) if r.get("class") == "result"]
             ev["verification_status"] = bucket(rows)
             ev["cagematch_nr"], ev["cagematch_url"], ev["logo"] = vote["cagematch_nr"], vote["cagematch_url"], vote["logo"]
