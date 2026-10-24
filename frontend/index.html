@@ -6489,7 +6489,8 @@
           let label;
           if (ev.show_type === 'PPV') label = (ev.ppv_name || 'PPV').replace(/^WW[EF]\s+/, '');
           else if (ev.show_type === 'Raw') label = 'Raw';
-          else label = 'SmackDown';
+          else if (ev.show_type === 'SmackDown') label = 'SmackDown';
+          else label = chipLabelOf(ev.show_type);     // Superstars, Prime Time, SNME...
           m.setAttribute('aria-label', `${label}, ${fmtDateLong(c.iso)}, ${ev.match_count} matches`);
           // The era logo rides the day marker, so scrolling the calendar through
           // the years shows the brand actually changing under you.
