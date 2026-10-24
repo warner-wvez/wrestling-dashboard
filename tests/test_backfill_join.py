@@ -255,3 +255,17 @@ def test_expand_groups_drops_a_team_label_kept_beside_its_members():
     assert out["matches"][0]["teams"][1]["participants"] == ["Brutus Beefcake", "Greg Valentine"]
     solo = {"air_date": "1986-04-07", "matches": [fresh_match(1, [{"participants": ["The Rock"], "was_winner": True}, {"participants": ["Mankind"], "was_winner": False}])]}
     assert expand_groups(solo, {})["matches"][0]["teams"][0]["participants"] == ["The Rock"]
+
+
+def test_a_show_cawthon_lacks_takes_cagematchs_broadcast_date():
+    cm = [_cm("Jakked", "2000-01-17", ["Crash Holly", "Pete Gas"], 14362)]
+    cards, review, _ = join_all(cm, {}, [], {}, {}, broadcast={"14362": "2000-01-22"})
+    j = cards[0]
+    assert (j["air_date"], j["tape_date"], j["date_derivation"]) == ("2000-01-22", "2000-01-17", "cagematch-broadcast-date")
+    assert not [r for r in review if r["class"] == "date_unconfirmed"]
+
+
+def test_a_broadcast_date_before_the_taping_is_ignored():
+    cm = [_cm("Jakked", "2000-01-17", ["Crash Holly", "Pete Gas"], 14362)]
+    cards, review, _ = join_all(cm, {}, [], {}, {}, broadcast={"14362": "2000-01-10"})
+    assert cards[0]["air_date"] == "2000-01-17" and [r for r in review if r["class"] == "date_unconfirmed"]

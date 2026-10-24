@@ -66,10 +66,13 @@ def gate(cards, status, index_counts) -> list[str]:
             problems.append(f"{label}: show_type outside the family table")
         if not c.get("matches"):
             problems.append(f"{label}: no match")
+    # Counted by the taping night, as Cagematch's index counts its rows: a show
+    # taped in late 1994 and aired in 1995 is one of 1994's rows.
     have = collections.Counter()
     for c in cards:
-        if c.get("air_date"):
-            have[(c["show_type"], "all" if c["show_type"] in ("PPV", "SNME") else int(c["air_date"][:4]))] += 1
+        night = c.get("tape_date") or c.get("air_date")
+        if night:
+            have[(c["show_type"], "all" if c["show_type"] in ("PPV", "SNME") else int(night[:4]))] += 1
     for key, floor in sorted(index_counts.items()):
         n = have.get(key, 0)
         if n < floor * 0.9:

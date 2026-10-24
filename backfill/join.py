@@ -69,6 +69,9 @@ RING_NAMES = {"Davey Boy Smith": ["The British Bulldog"], "Billy Gunn": ["Mr. As
 METHOD_OF = {"pin": "defeated", "submission": "by Submission", "dq": "by DQ", "countout": "by Count Out",
              "ko": "by KO", "win": "defeated", "no-contest": "No Contest", "draw": "Draw"}
 SDH_SLUG = {"Raw": "raw-{y}", "SmackDown": "smackdown-{y}", "Heat": "heat-{y}"}
+# Cagematch event pages' "Broadcast date", keyed by event number
+# (backfill/cagematch_broadcast.js; gitignored like the other caches).
+BROADCAST = ROOT / "backfill" / "cache" / "cagematch_broadcast.json"
 REVIEW_CLASSES = {"result", "missing_match", "unpaired", "extra_name", "different_opponent",
                   "cawthon_only_name", "possible_second_bout", "dark_but_televised", "cawthon_says_dark"}
 AUTO_VOTES = {"keep", "aired", "not_aired", "add_wrestler"}
@@ -93,6 +96,10 @@ def _cawthon_slug(show_type, year):
 
 def _ep_people(ep):
     return {n for m in ep["matches"] for n in m["winners"] + m["losers"]}
+
+
+def _signed_days(a, b):
+    return (date.fromisoformat(b) - date.fromisoformat(a)).days
 
 
 def _days(a, b):
@@ -510,7 +517,7 @@ def _review_rows(rows, event_key):
     return out
 
 
-def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
+def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset(), broadcast=None):
     cards, review, applied = [], [], []
     report = {"by_status": Counter(), "by_family": Counter(), "unpaired_dates": 0,
               "out_of_range": 0, "no_match": 0, "ruled": 0, "same_night_arenas": 0}
@@ -561,6 +568,13 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
     for ev in paired + unpaired:
         ev = dict(ev)
         ep = ev.get("cawthon")
+        aired = (broadcast or {}).get(str(ev.get("cagematch_nr")))
+        if ep is None and aired and 0 <= _signed_days(ev["air_date"], aired) <= 60:
+            # No Cawthon episode: Cagematch's own event page gives the night
+            # it aired (Jakked #22, taped 2000-01-17, aired 01-22), read by
+            # backfill/cagematch_broadcast.js into the broadcast cache.
+            ev["tape_date"], ev["air_date"] = ev["air_date"], aired
+            ev["date_derivation"] = "cagematch-broadcast-date"
         key = f"{ev['show_type']}|{ev['air_date']}|{ev.get('cagematch_nr')}"
         year = ev["air_date"][:4]
         # A late-December taping airs on next year's page.
@@ -594,7 +608,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         else:
             rows = []
             ev["verification_status"] = "single-source"
-        if not ep and ev["date_derivation"] != "sdh-air-date":
+        if not ep and ev["date_derivation"] not in ("sdh-air-date", "cagematch-broadcast-date"):
             rows.append({"class": "date_unconfirmed", "vote": "split", "air_date": ev["air_date"],
                          "show_type": ev["show_type"], "title": ev["title"], "ours": "", "cawthon": ""})
         review += _review_rows(_reclass_results(rows, ev), key)
@@ -683,7 +697,13 @@ def main():
     if (OUT / "rulings.csv").exists():
         with (OUT / "rulings.csv").open(encoding="utf-8") as f:
             rulings = {r["event_key"] for r in csv.DictReader(f)}
-    cards, review, report = join_all(cm, cawthon, wiki, sdh, fandom, rulings)
+    broadcast = {}
+    if BROADCAST.exists():
+        for nr, box in read_json(BROADCAST).items():
+            d = box.get("Broadcast date") or ""
+            if re.fullmatch(r"\d\d\.\d\d\.\d{4}", d):
+                broadcast[nr] = f"{d[6:]}-{d[3:5]}-{d[:2]}"
+    cards, review, report = join_all(cm, cawthon, wiki, sdh, fandom, rulings, broadcast)
     report["title_rulings"] = apply_title_rulings(cards)
     cards.sort(key=lambda c: (c["air_date"], c["show_type"], c.get("cagematch_nr") or 0))
     write_json(OUT / "cards.json", cards)
