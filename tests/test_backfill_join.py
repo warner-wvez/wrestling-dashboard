@@ -179,3 +179,25 @@ def test_clean_stakes_keeps_belts_and_drops_referee_notes():
     assert clean_stakes(ev("WWF Intercontinental / WWF European"))["matches"][0]["title_at_stake"] == "WWF Intercontinental Championship / WWF European Championship"
     assert clean_stakes(ev("WWF Championship / WrestleMania XII"))["matches"][0]["title_at_stake"] == "WWF Championship"
     assert clean_stakes(ev("WWF Intercontinental Title"))["matches"][0]["title_at_stake"] == "WWF Intercontinental Title"
+
+
+def test_result_row_across_two_matches_becomes_a_lineup_difference():
+    from backfill.join import _reclass_results
+    ev = {"matches": [fresh_match(1, [{"participants": ["Jim Duggan"], "was_winner": True}, {"participants": ["Ron Bass"], "was_winner": False}])]}
+    rows = [{"class": "result", "match_order": 1, "cawthon": "Ron Bass defeats Rick Hunter (2:31)"},
+            {"class": "result", "match_order": 1, "cawthon": "Ron Bass pinned Jim Duggan at 9:00"}]
+    out = _reclass_results(rows, ev)
+    assert [r["class"] for r in out] == ["different_opponent", "result"]
+
+
+def test_studio_vote_only_counts_lines_with_the_same_people():
+    caw = {"wwf-prime-time-wrestling-1985": [
+        {"air_date": "1985-01-15", "tape_date": None, "city": None, "venue": None,
+         "matches": [{"kind": "match", "winners": ["Adrian Adonis", "Dick Murdoch"], "losers": ["Afa", "Sika"], "result": "no contest",
+                      "sub_for": [], "notes": [], "line": "Adonis & Murdoch fought the Wild Samoans to a double DQ", "duration_seconds": None, "method": "no-contest"}]}]}
+    cm = [_cm("PrimeTime", "1985-01-15", ["Adrian Adonis", "Dick Murdoch"], 3)]
+    cm[0]["matches"][0]["teams"][0]["participants"] = ["Adrian Adonis", "Dick Murdoch"]
+    cm[0]["matches"][0]["teams"][1]["participants"] = ["Jack Brisco", "Jerry Brisco"]
+    cards, review, report = join_all(cm, caw, [], {}, {})
+    pt = next(c for c in cards if c["show_type"] == "PrimeTime")
+    assert pt["verification_status"] == "verified" and review == []

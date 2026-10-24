@@ -306,6 +306,19 @@ def _strip(ev):
     return ev
 
 
+def _reclass_results(rows, ev):
+    """A result row only means "same match, different winner" when the other
+    source's line names everyone on our match; otherwise the pairing crossed
+    two matches that share a person, and that is a lineup difference."""
+    people = {m["match_order"]: {p.lower() for t in m["teams"] for p in t["participants"]} for m in ev["matches"]}
+    for r in rows:
+        if r.get("class") == "result" and r.get("match_order") in people:
+            his = (r.get("cawthon") or "").lower()
+            if not all(n in his for n in people[r["match_order"]]):
+                r["class"] = "different_opponent"
+    return rows
+
+
 def _review_rows(rows, event_key):
     out = []
     for r in rows:
@@ -344,8 +357,10 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         vote = studio_votes.get((show_type, day))
         if vote:
             # The taping lists other matches than the broadcast; only a result
-            # that differs on the same people is a disagreement here.
-            rows = [r for r in compare_show(ev, as_lines(vote["matches"]), groups) if r.get("class") == "result"]
+            # that differs on the very same people is a disagreement here.
+            ours = [{p for t in m["teams"] for p in t["participants"]} for m in ev["matches"]]
+            same = [ln for ln in as_lines(vote["matches"]) if set(ln["winners"] + ln["losers"]) in ours]
+            rows = [r for r in compare_show(ev, same, groups) if r.get("class") == "result"]
             ev["verification_status"] = bucket(rows)
             ev["cagematch_nr"], ev["cagematch_url"], ev["logo"] = vote["cagematch_nr"], vote["cagematch_url"], vote["logo"]
             ev["tape_date"] = vote["tape_date"] if vote["tape_date"] != day else None
@@ -354,7 +369,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         else:
             rows = []
             ev["verification_status"] = "single-source"
-        review += _review_rows(rows, key)
+        review += _review_rows(_reclass_results(rows, ev), key)
         cards.append(_strip(ev))
     for ev in paired + unpaired:
         ev = dict(ev)
@@ -390,7 +405,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         if not ep and ev["date_derivation"] != "sdh-air-date":
             rows.append({"class": "date_unconfirmed", "vote": "split", "air_date": ev["air_date"],
                          "show_type": ev["show_type"], "title": ev["title"], "ours": "", "cawthon": ""})
-        review += _review_rows(rows, key)
+        review += _review_rows(_reclass_results(rows, ev), key)
         cards.append(_strip(ev))
     cm_main = defaultdict(list)
     for e in in_range:
@@ -428,7 +443,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             ev["verification_status"] = bucket(rows)
             if caw_lines:
                 _fill_from_cawthon(ev, caw_lines)
-            review += _review_rows(rows, f"{art['show_type']}|{ev['air_date']}|{cmev['cagematch_nr']}")
+            review += _review_rows(_reclass_results(rows, ev), f"{art['show_type']}|{ev['air_date']}|{cmev['cagematch_nr']}")
             cards.append(_strip(ev))
     # PPV and SNME rows Wikipedia has no card for (Friday Night's Main Event
     # 1997, a special the list skips) stand on Cagematch alone, never dropped.
