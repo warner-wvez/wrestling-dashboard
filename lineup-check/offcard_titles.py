@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Title changes no card of ours carries: house shows, 2001-2002 Hardcore title.
+"""Title changes no card of ours carries: house shows, the Hardcore title 1998-2002.
 
 Under the 24/7 rule the Hardcore title changed hands about 150 times at house
-shows in 2001 and 2002. No card holds them, so the reign walk never saw them
+shows from 2000 to 2002. No card holds them, so the reign walk never saw them
 and the title history ran one reign straight across a week of swaps. This
 builds data/offcard-title-changes.json, which the walk merges in by date.
 
@@ -48,12 +48,13 @@ WIKI_URL = "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions"
 SOLIE_URL = "http://web.archive.org/web/2008/http://www.solie.org/titlehistories/whcwwf.html"
 WWE_PATH = "titlehistory/hardcore-championship"
 DW_PAGE = "wwf-hc.html"
-WINDOW = ("2001-01-01", "2002-08-26")        # corpus start to the title's unification
+WINDOW = ("1998-11-02", "2002-08-26")        # the title's creation to its unification
 # A TV show or pay-per-view in any of the three records' wording; those changes
 # are on our cards (migration 0013), never here.
-TV = re.compile(r"Raw is War|\bRAW\b|Monday Night|SmackDown|Smackdown|program\)|WrestleMania|No Way Out|"
+TV = re.compile(r"Raw is War|\bRAW\b|Monday Night|SmackDown|Smackdown|Shotgun|Jakked|program\)|WrestleMania|No Way Out|"
                 r"SummerSlam|Invasion|Vengeance|Insurrextion|Backlash|Judgment Day|King of the Ring|"
-                r"Survivor Series|Armageddon|Unforgiven|No Mercy|Rebellion|Royal Rumble|Heat", re.I)
+                r"Survivor Series|Armageddon|Unforgiven|No Mercy|Rebellion|Royal Rumble|Heat|"
+                r"Fully Loaded|Over the Edge|Valentine|Rock Bottom|Capital Carnage|In Your House|Breakdown", re.I)
 WIN = re.compile(r"^(.*?)\s+(?:pinned|defeated|won)\b.*?Hardcore.*?to (?:win|regain) the (?:Hardcore )?(?:title|belt)",
                  re.I)
 
@@ -99,7 +100,8 @@ def solie():
 
 def cawthon():
     nights = []
-    for f in ("wwf-results-2001.html", "wwe-results-2002.html"):
+    for f in ("wwf-results-1998.html", "wwf-results-1999.html", "wwf-results-2000.html",
+              "wwf-results-2001.html", "wwe-results-2002.html"):
         for e in parse_events((HERE / "cache" / f).read_text(encoding="utf-8")):
             # His headers do not mark a TV taping ("WWF @ Nashville, TN" is a
             # SmackDown taping), so a TV night is kept here and drops out below:
@@ -128,6 +130,14 @@ def tv_dates():
     for e in load_existing()["events"].values():
         if e["show_type"] in ("Raw", "SmackDown", "PPV"):
             out |= {e["air_date"], e.get("tape_date") or e["air_date"]}
+        elif e["air_date"] < "2001-01-01":
+            out |= {e["air_date"], e.get("tape_date") or e["air_date"]}
+        if e["air_date"] < "2001-01-01" and e.get("city"):
+            # Cagematch dates a few 2000 SmackDown tapings a day late
+            # (Hartford, 2000-06-28 for the 27th): the same town a day off is
+            # that taping.
+            day = date.fromisoformat(e.get("tape_date") or e["air_date"])
+            out |= {((day + timedelta(days=k)).isoformat(), city(e["city"])) for k in (-1, 0, 1)}
     return out
 
 
@@ -196,7 +206,7 @@ def build():
         if w is None and s is None:
             disputed.append(("cawthon", n["date"], n["place"], names))
             continue
-        if w is None and n["date"] in tv:
+        if w is None and (n["date"] in tv or (n["date"], city(n["place"])) in tv):
             continue        # a TV taping: those changes are on our cards
         if w:
             used_w.add(w)

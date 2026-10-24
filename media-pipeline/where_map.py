@@ -136,8 +136,15 @@ def _our_ppv_key(ev):
     return " ".join(w for w in s.split() if w not in NOISE and w != year)
 
 
+# Under 40 minutes is not trusted as a full show: the shortest 1993 Raw (an
+# hour on air, about 40 minutes without breaks) runs 40, and one file of 36
+# (1993-03-22) may be missing a segment. An item that lists no length passes.
+MIN_FULL_SHOW = 40
+
+
 def _video_files(files):
-    return [f for f in files if f.get("name", "").lower().endswith(VIDEO) and not f["name"].endswith(".ia.mp4")]
+    return [f for f in files if f.get("name", "").lower().endswith(VIDEO) and not f["name"].endswith(".ia.mp4")
+            and not (0 < float(f.get("length") or 0) / 60 < MIN_FULL_SHOW - 0.5)]
 
 
 def _rec(item, f, how):

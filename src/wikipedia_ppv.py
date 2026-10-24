@@ -90,6 +90,23 @@ def link_display(target, disp):
     return re.sub(r"\s*\([^)]*\)\s*$", "", target).strip()
 
 
+def member_names(s):
+    """A team's members as listed. Brothers are piped to first names
+    ("[[Rick Steiner|Rick]] and [[Scott Steiner|Scott]]", "[[Henry O.
+    Godwinn|Henry O.]]"), which would each read as a wrestler of their own,
+    so when every member shows part of a linked name and the linked names
+    share a surname, the linked names are used. Anything else stays as
+    shown: "[[Christian Cage|Christian]]" beside "[[Edge (wrestler)|Edge]]"
+    was billed Christian."""
+    links = [(re.sub(r"\s*\([^)]*\)\s*$", "", m.group(1)).strip(), m.group(2))
+             for m in WIKILINK_RE.finditer(s or "")]
+    words = lambda x: re.findall(r"[a-z0-9]+", x.lower())
+    short = [disp and set(words(disp)) < set(words(name)) for name, disp in links]
+    if len(links) >= 2 and all(short) and len({words(name)[-1] for name, _ in links}) == 1:
+        return [name for name, _ in links]
+    return [link_display(name, disp) for name, disp in links]
+
+
 def links_in(s):
     return [link_display(m.group(1), m.group(2)) for m in WIKILINK_RE.finditer(s or "")]
 
@@ -275,7 +292,7 @@ def parse_side(side):
                 if depth == 0:
                     break
             j += 1
-        inner_links = links_in(side[tm.end():j])
+        inner_links = member_names(side[tm.end():j])
         if inner_links and all(BRAND_OR_TITLE_RE.search(x) for x in inner_links):
             # Brand/belt descriptor: cut the paren so the leading wikilink alone
             # is the side, and no brand ever becomes a participant.

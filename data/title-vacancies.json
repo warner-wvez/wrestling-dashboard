@@ -2,6 +2,169 @@
  "about": "Title vacancies from Wikipedia's title histories, kept where the champion the list names is who our history has holding the belt. Built by lineup-check/title_vacancies.py.",
  "vacancies": [
   {
+   "lineage": "lineage::wwe-championship",
+   "date": "1988-02-05",
+   "vacate": true,
+   "vacated_by": "André the Giant",
+   "why": "WWF President Jack Tunney refused to recognize Ted DiBiase as champion and vacated the title. WWE recognizes the vacancy as starting on February 5, 1988, the date of the controversy, rather than when the decision aired on tape delay on February 13, 1988.",
+   "source": "List of WWE Champions",
+   "end_of_day": true
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "1990-04-03",
+   "vacate": true,
+   "vacated_by": "Ultimate Warrior",
+   "why": "Warrior relinquished the title after winning the WWF Championship in order to focus on defending the latter. WWE recognizes the title as being vacated on April 1, 1990 at WrestleMania VI.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "1991-12-04",
+   "vacate": true,
+   "vacated_by": "Hulk Hogan",
+   "why": "Hulk Hogan was stripped of the title by WWF President Jack Tunney due to the controversy surrounding both of the previous title changes. Aired on tape delay on December 7, 1991.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "1993-09-27",
+   "vacate": true,
+   "vacated_by": "Shawn Michaels",
+   "why": "Shawn Michaels was stripped of the title for failing to defend it within 30 days. In reality, Michaels was suspended for testing positive for steroids.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "1994-11-23",
+   "vacate": true,
+   "vacated_by": "Two Dudes with Attitudes<br />",
+   "why": "The championship was vacated when Diesel and Michaels could not function as a tag team.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "1995-04-26",
+   "vacate": true,
+   "vacated_by": "Jeff Jarrett",
+   "why": "Held up when match between Jeff Jarrett and Bob \"Spark Plug\" Holly ended in controversy.<br />Aired on tape delay on April 30, 1995.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::million-dollar",
+   "date": "1996-01-08",
+   "order": -1,
+   "champions": [
+    "The Ringmaster/Stone Cold Steve Austin"
+   ],
+   "awarded": true,
+   "why": "Awarded the championship by Ted DiBiase during a segment of \"The Brother Love Show\". This episode aired on tape delay on January 8, 1996. Shortly after, The Ringmaster became known as Stone Cold Steve Austin.",
+   "source": "Million Dollar Championship"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "1996-02-15",
+   "vacate": true,
+   "vacated_by": "Smoking Gunns<br />",
+   "why": "The championship was vacated when Billy Gunn suffered a neck injury.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "1996-04-01",
+   "vacate": true,
+   "vacated_by": "Goldust",
+   "why": "Held up when a title defense against Savio Vega ended in a no contest.<br />Aired on tape delay on April 15, 1996.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "1997-07-14",
+   "vacate": true,
+   "vacated_by": "\"Stone Cold\" Steve Austin and Shawn Michaels",
+   "why": "The championship was vacated when Michaels was suspended after a backstage fight with Bret Hart on June 9, 1997.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "1997-09-07",
+   "vacate": true,
+   "vacated_by": "Dude Love and \"Stone Cold\" Steve Austin",
+   "why": "The championship was vacated when Stone Cold Steve Austin suffered a neck injury.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "1997-09-08",
+   "vacate": true,
+   "vacated_by": "\"Stone Cold\" Steve Austin",
+   "why": "Vacated due to a neck injury that Stone Cold Steve Austin suffered in winning the championship.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "date": "1998-03-30",
+   "vacate": true,
+   "vacated_by": "Cactus Jack and Chainsaw Charlie",
+   "why": "Held up on account of the wrong dumpster being used.",
+   "source": "List of World Tag Team Champions (WWE, 1971–2010)"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "1998-09-27",
+   "vacate": true,
+   "vacated_by": "\"Stone Cold\" Steve Austin",
+   "why": "The title was vacated after Kane and The Undertaker simultaneously pinned \"Stone Cold\" Steve Austin in a triple threat match.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "1998-10-09",
+   "vacate": true,
+   "vacated_by": "Triple H",
+   "why": "Vacated due to a knee injury.",
+   "source": "List of WWE Intercontinental Champions"
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "1999-02-14",
+   "vacate": true,
+   "vacated_by": "Road Dogg",
+   "why": "Road Dogg was forced to vacate title on February 14, 1999 due to injuries sustained during a backstage attack. }}",
+   "source": "List of WWE Hardcore Champions"
+  },
+  {
+   "title": "WWF European Title",
+   "date": "1999-06-21",
+   "order": -1,
+   "champions": [
+    "Mideon"
+   ],
+   "awarded": true,
+   "why": "Shane McMahon awarded Mideon the title after he found it in McMahon's travel bag.",
+   "source": "List of WWE European Champions"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "date": "1999-09-20",
+   "vacate": true,
+   "vacated_by": "Vince McMahon",
+   "why": "Vince McMahon voluntarily vacated the title.",
+   "source": "List of WWE Champions"
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "date": "2000-01-03",
+   "vacate": true,
+   "vacated_by": "Chris Jericho",
+   "why": "On December 28, 1999 (aired December 30, 1999) on SmackDown!, a title match between Chyna and Jericho ended in a double pinfall; as a result they were recognized as co-champions. WWE does not recognize this period as an official reign but as a vacancy.",
+   "source": "List of WWE Intercontinental Champions",
+   "unrecognized_holders": [
+    "Chris Jericho",
+    "Chyna"
+   ]
+  },
+  {
    "lineage": "lineage::womens-1956",
    "date": "2001-11-01",
    "vacate": true,
@@ -15,7 +178,8 @@
    "vacate": true,
    "vacated_by": "Triple H",
    "why": "Unified with Triple H's World Heavyweight Championship; the Intercontinental Championship was deactivated.",
-   "source": "List of WWE Intercontinental Champions"
+   "source": "List of WWE Intercontinental Champions",
+   "end_of_day": true
   },
   {
    "lineage": "lineage::world-tag-1971",
@@ -143,6 +307,17 @@
    "vacated_by": "Melina",
    "why": "The title was vacated after Melina sustained a torn anterior cruciate ligament.",
    "source": "List of WWE Divas Champions"
+  },
+  {
+   "lineage": "lineage::million-dollar",
+   "date": "2010-04-05",
+   "order": -1,
+   "champions": [
+    "Ted DiBiase Jr."
+   ],
+   "awarded": true,
+   "why": "Awarded the championship by his father, Ted DiBiase. WWE billed him just as Ted DiBiase.",
+   "source": "Million Dollar Championship"
   },
   {
    "title": "WWE United States Title",

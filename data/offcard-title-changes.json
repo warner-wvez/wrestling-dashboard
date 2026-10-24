@@ -10,6 +10,34 @@
  "changes": [
   {
    "title": "WWF Hardcore Title",
+   "date": "2000-07-02",
+   "order": 0,
+   "champions": [
+    "Crash Holly"
+   ],
+   "place": "Tampa, Florida",
+   "sources": [
+    "Wikipedia #44",
+    "Solie"
+   ],
+   "cawthon": null
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "date": "2000-07-02",
+   "order": 1,
+   "champions": [
+    "Steve Blackman"
+   ],
+   "place": "Tampa, Florida",
+   "sources": [
+    "Wikipedia #45",
+    "Solie"
+   ],
+   "cawthon": null
+  },
+  {
+   "title": "WWF Hardcore Title",
    "date": "2001-02-03",
    "order": 0,
    "champions": [

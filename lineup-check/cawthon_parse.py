@@ -104,9 +104,18 @@ def _loose_heads(page_html, strict):
         yield m.start(1), end, g[:7] + (air or (None, None, None))
 
 
+def _normalize(page_html):
+    """Cawthon italicizes an air date with <em> on a few episodes (Wrestling
+    Challenge 4/1/90) and once breaks it ("<i>2/2/</i>2/2/92", Challenge
+    1992); read both as the usual <i>date</i>."""
+    page_html = re.sub(r"<(/?)em>", r"<\1i>", page_html)
+    return re.sub(r"<i>(\d{1,2}/\d{1,2}/)</i>\1(\d{2})", r"<i>\1\2</i>", page_html)
+
+
 def parse_show_page(page_html):
     """Episodes on a Raw or SmackDown year page: [{air_date, tape_date,
     header_date, date_conflict, city, venue, lines}] in page order."""
+    page_html = _normalize(page_html)
     strict = list(_EPISODE_RE.finditer(page_html))
     heads = sorted([(h.start(), h.end(), (None, None) + h.groups()[1:]) for h in strict] +
                    [(s, e, (None,) + g) for s, e, g in _loose_heads(page_html, strict)])
@@ -148,6 +157,7 @@ def parse_ppv_page(page_html):
     and ppv are match lines from those sections. Every event starts with a
     "Name - City - Venue - Month D, YYYY" line; only events with a
     pay-per-view section are kept (house shows and TV are skipped)."""
+    page_html = _normalize(page_html)
     heads = [h for h in _EVENT_HEAD_RE.finditer(page_html) if h.group(2).split()[0] in MONTHS]
     out = {}
     for n, h in enumerate(heads):
@@ -183,6 +193,7 @@ def parse_events(page_html):
     """Every dated event on a results year page, house shows included:
     [{date, head, lines}]. Each event starts at a bold dated header and runs to
     the next one."""
+    page_html = _normalize(page_html)
     heads = [b for b in _PPV_HEAD_RE.finditer(page_html) if b.group(2).split()[0] in MONTHS]
     out = []
     for n, h in enumerate(heads):
@@ -224,10 +235,14 @@ _SUB_RE = re.compile(r"\(\s*sub\.?\s+for\s+([^()]*)\)", re.I)
 # "WWF Tag Team Champions - the Dudley Boyz". It must start on a promotion or a
 # title word, so a partner named before it ("Steve Austin & WWF World Champion
 # the Rock") is never eaten.
+# Other promotions' and other belts' champions bill the same way in the
+# 1985 to 2000 pages ("SMW Tag Team Champions Ricky Morton & Robert Gibson",
+# "Million $ Champion Virgil", "Canadian Heavyweight Champion Dino Bravo").
 _TITLE_PREFIX_RE = re.compile(
-    r"\b(?:former\s+)?(?:WWF|WWE|WCW|ECW|World|Unified|Undisputed|Intercontinental|"
-    r"United|US|IC|Women's|Divas|Hardcore|European|Cruiserweight|Light|Tag|Raw|SmackDown)\b"
-    r"(?:(?:\s+|\s*[/&]\s*)(?:[A-Z][\w'.-]*|IC|US))*?\s+Champions?\b\s*(?:[-\u2013]\s*)?")
+    r"\b(?:former\s+)?(?:WWF|WWE|WCW|ECW|SMW|USWA|NWA|AWA|UWF|World|Unified|Undisputed|Intercontinental|"
+    r"United|US|IC|Women's|Divas|Hardcore|European|Cruiserweight|Light|Tag|Raw|SmackDown|Million|"
+    r"Canadian|North|Junior|Television|TV)\b"
+    r"(?:(?:\s+|\s*[/&]\s*)(?:[A-Z][\w'.-]*|IC|US|\$))*?\s+Champions?\b\s*(?:[-\u2013]\s*)?")
 _NOTE_RE = re.compile(r"\(([^()]*)\)")
 _PREFIX_RE = re.compile(r"^[^:]{2,90}?\s:\s+|^[^:]{2,90}?:\s+(?=[A-Z])")
 _SPLIT_RE = re.compile(r"\s*,\s*&\s*|\s*,\s*and\s+|\s*,\s*|\s+&\s+|\s+and\s+")
@@ -292,3 +307,96 @@ def parse_match_line(line):
     b = _FINISH_RE.split(rest, maxsplit=1)[0]
     return {"kind": "match", "winners": split_side(a), "losers": split_side(b),
             "result": "win", "sub_for": subs, "notes": notes, "line": line}
+
+
+# ---------- finishes and the special-show pages (1985 to 2000 backfill) ----------
+
+_AT_TIME_RE = re.compile(r"\bat (?:around |about )?(?:the )?(\d{1,2}):(\d{2})\b")
+_SECOND_MARK_RE = re.compile(r"\bat the (\d{1,3})[- ]second mark\b", re.I)
+_IN_SECONDS_RE = re.compile(r"\bin (\d{1,3}) seconds?\b", re.I)
+
+
+def finish_of(line):
+    """Seconds and how a match ended, from Cawthon's prose: "pinned X at
+    1:45", "via submission ... at the 59-second mark", "in 47 seconds",
+    "fought ... to a no contest at 5:00". method is one of pin, submission,
+    dq, countout, no-contest, draw, ko or win."""
+    low = (line or "").lower()
+    dur = None
+    m = _AT_TIME_RE.search(low)
+    if m:
+        dur = int(m.group(1)) * 60 + int(m.group(2))
+    else:
+        m = _SECOND_MARK_RE.search(low) or _IN_SECONDS_RE.search(low)
+        if m:
+            dur = int(m.group(1))
+    if re.search(r"fought .*to an? (?:no contest|double (?:count[- ]?out|disqualification|dq))", low):
+        method = "no-contest"
+    elif re.search(r"fought .*to an? (?:time[- ]limit )?draw", low):
+        method = "draw"
+    elif "disqualification" in low or "reverse decision" in low:
+        method = "dq"
+    elif re.search(r"count[- ]?out", low):
+        method = "countout"
+    elif "submission" in low or "submitted" in low:
+        method = "submission"
+    elif re.search(r"\bvia ko\b|\bknock(?:ed|out)\b", low):
+        method = "ko"
+    elif re.search(r"\bpinned\b|\bpinfall\b|scored the pin\b", low):
+        method = "pin"
+    else:
+        method = "win"
+    return {"duration_seconds": dur, "method": method}
+
+
+_SPECIAL_HEAD_RE = re.compile(
+    r"<b>\s*WWF\s*@\s*([^<]*?)\s*(?:&#8211;|–|-)\s*([^<]*?)\s*(?:&#8211;|–|-)\s*"
+    r"([A-Z][a-z]+ \d{1,2}, \d{4})[^<]*</b>", re.S)
+_SPECIAL_AIR_RE = re.compile(r"<i>\s*([^<]*?)(?:&#8211;|–|-)\s*(\d{1,2})/(\d{1,2})/(\d{2})\b")
+
+
+def parse_special_page(page_html):
+    """SNME, The Main Event, Mania and Sunday Night Slam pages: each show is
+    "<b>WWF @ City – Venue – Month D, YYYY (att)</b>" (the taping) followed by
+    an italic "<i>Show name – M/D/YY on NBC ..." line (the air date), then
+    match lines. [{air_date, tape_date, city, venue, label, lines}]."""
+    page_html = _normalize(page_html)
+    heads = [h for h in _SPECIAL_HEAD_RE.finditer(page_html) if h.group(3).split()[0] in MONTHS]
+    out = []
+    for n, h in enumerate(heads):
+        end = heads[n + 1].start() if n + 1 < len(heads) else len(page_html)
+        body = page_html[h.end():end]
+        month, rest = h.group(3).split(" ", 1)
+        dd, yyyy = rest.replace(",", "").split()
+        tape = date(int(yyyy), MONTHS[month], int(dd)).isoformat()
+        air_m = _SPECIAL_AIR_RE.search(body)
+        air = _iso(air_m.group(2), air_m.group(3), air_m.group(4)) if air_m else tape
+        label = _text(air_m.group(1)).strip(" -") if air_m else ""
+        out.append({"air_date": air, "tape_date": tape, "city": _text(h.group(1)),
+                    "venue": _text(h.group(2)), "label": label, "lines": _lines(body)})
+    return out
+
+
+_COMPILATION_HEAD_RE = re.compile(
+    r"<p>\s*<i>\s*(\d{1,2})/(\d{1,2})/(\d{2})((?:[^<]|<(?!/i>))*)</i>\s*:", re.I)
+
+
+def parse_compilation_page(page_html):
+    """Prime Time Wrestling, All-American Wrestling and Mania pages: studio
+    shows built from matches taped elsewhere. Each episode is a paragraph that
+    opens "<p><i>M/D/YY[ – note]</i>:" with one match per line, and every
+    match ends with its origin "(<i>12/26/87; Madison Square Garden</i>)",
+    which _text strips. [{air_date, tape_date, city, venue, lines}] with
+    tape_date, city and venue None: the episode itself has no single taping."""
+    page_html = _normalize(page_html)
+    heads = list(_COMPILATION_HEAD_RE.finditer(page_html))
+    out = []
+    for n, h in enumerate(heads):
+        end = heads[n + 1].start() if n + 1 < len(heads) else len(page_html)
+        body = page_html[h.end():end]
+        body = body.split("</p>", 1)[0]
+        # Prime Time bullets its lines with an en dash ("– Jim Duggan pinned ...").
+        lines = [re.sub(r"^[–—-]\s*", "", ln) for ln in _lines(body)]
+        out.append({"air_date": _iso(h.group(1), h.group(2), h.group(3)), "tape_date": None,
+                    "city": None, "venue": None, "lines": lines})
+    return out

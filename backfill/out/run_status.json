@@ -1,0 +1,32 @@
+{
+ "cm_results": {
+  "ok": true,
+  "detail": "2226 events, 2 unparsed",
+  "at": "2026-10-24T21:47:22+00:00"
+ },
+ "cawthon": {
+  "ok": true,
+  "detail": "75 pages; missing: none",
+  "at": "2026-10-24T21:11:58+00:00"
+ },
+ "wiki": {
+  "ok": true,
+  "detail": "149 cards; problems: 0",
+  "at": "2026-10-24T19:40:15+00:00"
+ },
+ "sdh": {
+  "ok": true,
+  "detail": "13 pages; failures: none",
+  "at": "2026-10-23T23:44:23+00:00"
+ },
+ "fandom": {
+  "ok": true,
+  "detail": "334 votes, 139 misses",
+  "at": "2026-10-24T12:41:07+00:00"
+ },
+ "join": {
+  "ok": true,
+  "detail": "2554 cards, 533 review rows",
+  "at": "2026-10-24T23:10:15+00:00"
+ }
+}

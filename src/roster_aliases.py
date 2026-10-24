@@ -8,7 +8,7 @@ Sources, in priority order:
      `<a href="/wrestlers/walter" title="Gunther">` encodes WALTER -> Gunther.
      This auto-captures every current-roster rename without hand-curation.
   2. A small curated map for notable renames of wrestlers no longer on the live
-     roster (not derivable from the page).
+     roster (not derivable from the page), back to 1985.
   3. Automatic normalized-key grouping for pure spelling variants (caps, a
      leading "The", apostrophes/diacritics): "IYO SKY"/"Iyo Sky",
      "Big Show"/"The Big Show". Canonical display = the roster name when any
@@ -36,7 +36,7 @@ ROSTER_URL = "https://www.thesmackdownhotel.com/roster/wwe/"
 
 # Curated renames the live roster page cannot supply: wrestlers who changed
 # names while in WWE but are off the current roster, where BOTH names appear in
-# the 2001-2026 data. Keep the best-established WWE name as canonical for a WWE
+# the data. Keep the best-established WWE name as canonical for a WWE
 # dashboard. Every entry was verified against the corpus (both names present,
 # same person, plausible non-overlapping runs) before being added; do not add
 # a pair from memory without checking the data first. Names that only differ
@@ -169,6 +169,24 @@ CURATED = {
     'Seth "Freakin" Rollins': "Seth Rollins",
     "Diego": "Primo",
     "Fernando": "Epico",
+    # --- 1985-2000 era renames, from the WWF backfill. Each pair checked in
+    # the corpus: the old name's run ends where the new one starts, give or
+    # take the weeks two sources bill the same night differently. ---
+    "Rocky Maivia": "The Rock",             # 1996-11 to 1997-12, The Rock from 1997-12
+    "Mr. Ass": "Billy Gunn",                # Cagematch's 1999-2000 billing
+    "Duane Gill": "Gillberg",               # 1990 to 1998-12, Gillberg from 1998-12
+    "TAFKA Goldust": "Goldust",             # "The Artist Formerly Known As Goldust", 1997-12 to 1998-04
+    "Miss Kitty": "The Kat",                # 1999-10 to 1999-12, The Kat from 1999-12
+    "Hervina": "Harvey Wippleman",          # Raw 2000-01-31, the Women's title in a dress
+    "Road Warrior Hawk": "Hawk",            # Road Warrior Animal already folds into Animal
+    "Sparky Plugg": "Hardcore Holly",       # 1994
+    "Bob Holly": "Hardcore Holly",          # to 1999-02, Hardcore Holly from 1999-03
+    "Quebecer Jacques": "Jacques",          # Wikipedia's billing at Survivor Series 1993
+    "Quebecer Pierre": "Pierre",
+    # Edge and Christian masked as Los Conquistadores to win the tag titles at
+    # No Mercy 2000; the only Uno and Dos in the corpus are that night.
+    "Uno": "Edge",
+    "Dos": "Christian",
     # --- gimmick-era billings and short forms (unquoted, so normkey's
     # quoted-nickname stripping cannot catch them) ---
     "Broken Matt Hardy": "Matt Hardy",

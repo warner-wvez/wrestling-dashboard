@@ -861,7 +861,7 @@
   .chip.ppv { background: var(--ink); color: #FFF; }
   .hero-meta .dot { width: 3px; height: 3px; background: var(--ink-faint); display: inline-block; }
 
-  /* Journey progress: how far through 2001-2019 the viewer is. */
+  /* Journey progress: how far through the shows on the path the viewer is. */
   .hero-progress { margin-top: auto; padding-top: 24px; }
   .hero-bar {
     height: 6px;
@@ -1695,6 +1695,7 @@
   .brand-chip.raw { background: var(--red-soft); color: var(--red); }
   .brand-chip.smackdown { background: var(--blue-soft); color: var(--blue); }
   .brand-chip.ppv { background: var(--ink); color: #FFF; }
+  .brand-chip.other { background: var(--surface-soft); color: var(--ink-soft); }
 
   .event-title-modal {
     font-family: var(--font-sans);
@@ -4479,7 +4480,7 @@
     <nav class="nav-links" aria-label="Primary">
       <button class="nav-link" data-nav="calendar" type="button">
         <span class="nav-link-name">Calendar</span>
-        <span class="nav-link-sub">Watch every WWE show in order, from 2001</span>
+        <span class="nav-link-sub">Watch every WWE show in order, from <span data-first-year>2001</span></span>
       </button>
       <button class="nav-link" data-nav="mylist" type="button">
         <span class="nav-link-name">My List</span>
@@ -4573,7 +4574,13 @@
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const SHOW_CLASS = { Raw: 'raw', SmackDown: 'smackdown', PPV: 'ppv' };
+  const SHOW_CLASS = { Raw: 'raw', SmackDown: 'smackdown', PPV: 'ppv', SNME: 'ppv' };
+  // Syndicated families (Superstars, Challenge, Prime Time, Heat, Shotgun...) wear the
+  // neutral chip: red and blue mean Raw, PPV and SmackDown only.
+  const showClass = (t) => SHOW_CLASS[t] || 'other';
+  const CHIP_LABEL = { PPV: 'PPV', SmackDown: 'SD', SNME: 'SNME', PrimeTime: 'Prime Time', AllAmerican: 'All-American',
+                       SundaySlam: 'Sunday Slam', ActionZone: 'Action Zone' };
+  const chipLabelOf = (t) => CHIP_LABEL[t] || t || '';
   const SPOILER_KEY = 'wvez_wrestling_spoilers';
 
   const el = (id) => document.getElementById(id);
@@ -5356,11 +5363,18 @@
           const sb = (BUNDLE.events[String(b)] || {}).show_type || '';
           return sa.localeCompare(sb);
         });
-        for (const id of ids) out.push(String(id));
+        for (const id of ids) {
+          const e = BUNDLE.events[String(id)] || {};
+          if (e.family === 'syndicated') continue;   // no path runs through a show with no footage
+          out.push(String(id));
+        }
       }
     }
     return out;
   })();
+
+  // Watched shows that sit on the path (the meters never count syndicated TV).
+  const journeySeen = () => ORDERED_IDS.reduce((n, id) => n + (watched.has(id) ? 1 : 0), 0);
 
   let resumeTargetId = null; // last computed resume id, used by the pill click
 
@@ -5423,12 +5437,14 @@
     if (!heroEl || !BUNDLE) return;
     const resumeId = computeResumeId();
     resumeTargetId = resumeId;
-    const total = (BUNDLE.meta && BUNDLE.meta.event_count) || ORDERED_IDS.length || watched.size;
+    const total = ORDERED_IDS.length || watched.size;
+    const seen = journeySeen();
     const yr = (BUNDLE.meta && BUNDLE.meta.year_range) || [2001, 2019];
+    document.querySelectorAll('[data-first-year]').forEach(n => { n.textContent = String(yr[0]); });
     const done = resumeId == null;
     const nothing = watched.size === 0;
-    const pct = total ? Math.min(100, watched.size / total * 100) : 0;
-    const pctLabel = total ? Math.round(watched.size / total * 100) : 0;
+    const pct = total ? Math.min(100, seen / total * 100) : 0;
+    const pctLabel = total ? Math.round(seen / total * 100) : 0;
     const nf = (n) => Number(n).toLocaleString('en-US');
     // Drop the redundant promotion prefix on the billboard; the brand chip
     // already says RAW/SmackDown/PPV. Keeps the era flavor ("RAW is WAR #398").
@@ -5462,15 +5478,15 @@
 
     // ---- Resume show + the shared "Up next" queue ----------------------
     const ev = BUNDLE.events[String(resumeId)];
-    const cls = SHOW_CLASS[ev.show_type] || '';
-    const brandCls = ev.show_type === 'SmackDown' ? 'smackdown' : (ev.show_type === 'PPV' ? 'ppv' : 'raw');
+    const cls = showClass(ev.show_type);
+    const brandCls = showClass(ev.show_type);
     const chipLabel = ev.show_type === 'PPV' ? 'Pay-Per-View' : ev.show_type;
 
     const upRows = upcomingFrom(resumeId, 4).slice(1).map(id => {
       const e = BUNDLE.events[String(id)];
       if (!e) return '';
-      const c = SHOW_CLASS[e.show_type] || '';
-      const chip = e.show_type === 'PPV' ? 'PPV' : (e.show_type === 'SmackDown' ? 'SD' : 'Raw');
+      const c = showClass(e.show_type);
+      const chip = chipLabelOf(e.show_type);
       return `<button class="hero-up-row" type="button" data-go="${esc(id)}" data-flip="${esc(id)}">
           ${showBadge(e.logo, chip, c, 'xs', 'chip')}
           <span class="hu-main"><span class="hu-name">${esc(cleanName(e))}</span><span class="hu-date">${esc(fmtDateLong(e.air_date))}</span></span>
@@ -5643,12 +5659,12 @@
   }
 
   function refreshWatchedUI() {
-    const total = (BUNDLE && BUNDLE.meta && BUNDLE.meta.event_count) || watched.size;
+    const total = ORDERED_IDS.length || watched.size;
     const countEl = el('watched-count'), totalEl = el('watched-total'), fill = el('wp-fill');
-    if (countEl) countEl.textContent = watched.size.toLocaleString('en-US');
+    if (countEl) countEl.textContent = journeySeen().toLocaleString('en-US');
     if (totalEl) totalEl.textContent = Number(total).toLocaleString('en-US');
     if (fill) {
-      const pct = total ? Math.min(100, (watched.size / total) * 100) : 0;
+      const pct = total ? Math.min(100, (journeySeen() / total) * 100) : 0;
       fill.style.width = pct + '%';
       fill.style.minWidth = watched.size > 0 ? '3px' : '0';
     }
@@ -5891,16 +5907,16 @@
   function renderWatched() {
     const container = el('watched-view-content');
     if (!container) return;
-    const total = (BUNDLE && BUNDLE.meta && BUNDLE.meta.event_count) || watched.size;
+    const total = ORDERED_IDS.length || watched.size;
     const items = [];
     for (const [id, ts] of watched) {
       const ev = BUNDLE && BUNDLE.events && BUNDLE.events[id];
       if (ev) items.push({ ev, ts });
     }
     const sub = el('watched-sub');
-    if (sub) sub.textContent = `${watched.size.toLocaleString('en-US')} of ${Number(total).toLocaleString('en-US')} shows watched`;
+    if (sub) sub.textContent = `${journeySeen().toLocaleString('en-US')} of ${Number(total).toLocaleString('en-US')} shows watched`;
     const fill = el('watched-view-fill');
-    if (fill) fill.style.width = (total ? Math.min(100, watched.size / total * 100) : 0) + '%';
+    if (fill) fill.style.width = (total ? Math.min(100, journeySeen() / total * 100) : 0) + '%';
     updateCatchUpPreview();
 
     const counts = { all: items.length, Raw: 0, SmackDown: 0, PPV: 0 };
@@ -5925,7 +5941,7 @@
     }
     container.innerHTML = list.map(({ ev }) => {
       const showName = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
-      const cls = SHOW_CLASS[ev.show_type] || '';
+      const cls = showClass(ev.show_type);
       return `
         <button class="watched-row" type="button" data-go-event="${esc(String(ev.id))}">
           <span class="wr-check" aria-hidden="true"></span>
@@ -6041,7 +6057,7 @@
     );
     container.innerHTML = items.map(({ ev, match }) => {
       const showName = ev.show_type === 'PPV' ? (ev.ppv_name || ev.title) : (ev.title || 'Event');
-      const cls = SHOW_CLASS[ev.show_type] || '';
+      const cls = showClass(ev.show_type);
       const rating = match.match_guide_rating != null
         ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${match.match_guide_rating.toFixed(1)}</span></span>` : '';
       const tags = (beltLabelOf(match) ? `<span class="m-tag title">${esc(beltLabelOf(match))}</span>` : '')
@@ -6136,7 +6152,7 @@
 
   function renderVideoRow(row) {
     const { ev, showName, shows, matches } = row;
-    const cls = SHOW_CLASS[ev.show_type] || '';
+    const cls = showClass(ev.show_type);
     const showLinks = shows.map(s => `
       <a class="watch-btn${s.tier === 'official' ? ' official' : ''}" href="${esc(s.url)}" target="_blank" rel="noopener">
         <span class="wb-play" aria-hidden="true">&#9654;</span>Watch full show
@@ -6467,13 +6483,14 @@
           // the day cell, which opens the day just as a mouse click on the cell does.
           const m = document.createElement('button');
           m.type = 'button';
-          const cls = SHOW_CLASS[ev.show_type] || '';
+          const cls = showClass(ev.show_type);
           m.className = `mini-chip ${cls}`;
           m.dataset.eventId = ev.id;
           let label;
           if (ev.show_type === 'PPV') label = (ev.ppv_name || 'PPV').replace(/^WW[EF]\s+/, '');
           else if (ev.show_type === 'Raw') label = 'Raw';
-          else label = 'SmackDown';
+          else if (ev.show_type === 'SmackDown') label = 'SmackDown';
+          else label = chipLabelOf(ev.show_type);     // Superstars, Prime Time, SNME...
           m.setAttribute('aria-label', `${label}, ${fmtDateLong(c.iso)}, ${ev.match_count} matches`);
           // The era logo rides the day marker, so scrolling the calendar through
           // the years shows the brand actually changing under you.
@@ -6851,7 +6868,7 @@ refreshResumeUI();
 
   function renderEvent(d, sourceSlug = null) {
     const showType = d.show_type;
-    const cls = SHOW_CLASS[showType] || '';
+    const cls = showClass(showType);
     const isPPV = showType === 'PPV';
     const title = isPPV ? (d.ppv_name || d.title) : (d.title || 'Event');
     const chipLabel = isPPV ? 'Pay-Per-View' : showType;
@@ -9883,7 +9900,7 @@ refreshResumeUI();
     ? null : (BUNDLE.events[String(id)] || null);
 
   function brandChip(show, logo) {
-    const cls = SHOW_CLASS[show] || '';
+    const cls = showClass(show);
     const label = show === 'PPV' ? 'PPV' : show;
     return showBadge(logo, label, cls, 'sm');
   }

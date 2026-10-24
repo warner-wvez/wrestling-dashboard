@@ -2,6 +2,269 @@
  "about": "Title changes on shows we don't carry (the Cruiserweight Classic, 205 Live, NXT, Velocity, Main Event, ECW) and on the pre-shows of pay-per-views we do, and changes outside a match on a Raw or SmackDown we carry. Each is listed by at least two of the belt's Wikipedia list, Duncan and Will's title history and WWE.com's. A pre-show change names its event and sorts ahead of the card. Built by lineup-check/offshow_titles.py.",
  "changes": [
   {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1985-06-17",
+   "order": 0,
+   "champions": [
+    "Barry Windham",
+    "Mike Rotundo"
+   ],
+   "event": "Championship Wrestling",
+   "place": "Poughkeepsie, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE,_1971–2010) #36",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/world-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1986-02-08",
+   "order": 0,
+   "champions": [
+    "Randy Savage"
+   ],
+   "event": "WWF on NESN",
+   "place": "Boston, MA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Intercontinental_Champions #10",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/intercontinental-championship"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1988-10-07",
+   "order": 0,
+   "champions": [
+    "Rockin' Robin"
+   ],
+   "event": "Prime Time Wrestling",
+   "place": "Paris, France",
+   "why": "Aired November 8, 1988.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Champions_(1956–2010) #15",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::million-dollar",
+   "title_name": "Million Dollar Championship",
+   "date": "1991-11-24",
+   "order": 0,
+   "champions": [
+    "Ted DiBiase"
+   ],
+   "event": "Survivor Series Showdown",
+   "place": "Utica, NY",
+   "why": "This program aired on tape delay on November 24, 1991.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/Million_Dollar_Championship #3",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/million-dollar-championship"
+   },
+   "happened": "1991-11-11"
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "title_name": "WWE Championship",
+   "date": "1992-09-01",
+   "order": 0,
+   "champions": [
+    "Ric Flair"
+   ],
+   "event": "Prime Time Wrestling",
+   "place": "Hershey, PA",
+   "why": "Aired on tape delay on September 14, 1992.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Champions #24",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-h.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/wwe-championship"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1993-06-16",
+   "order": 0,
+   "champions": [
+    "Irwin R. Schyster",
+    "Ted DiBiase"
+   ],
+   "event": "House Show",
+   "place": "Rockford, IL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE,_1971–2010) #54",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/world-tag-team-championship"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1993-07-04",
+   "order": 0,
+   "champions": [
+    "Rick Steiner",
+    "Scott Steiner"
+   ],
+   "event": "Wrestling Challenge",
+   "place": "Columbus, OH",
+   "why": "Changed hands on WWF Wrestling Challenge #357 outside a match.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE,_1971–2010) #53",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   },
+   "event_id": 4463,
+   "taped": "1993-06-14"
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1993-12-13",
+   "order": 0,
+   "champions": [
+    "Alundra Blayze"
+   ],
+   "event": "All American Wrestling",
+   "place": "Poughkeepsie, NY",
+   "why": "Aired December 26, 1993. Defeated Heidi Lee Morgan in a tournament final to win the vacant championship. WWE mistakenly recognizes Blayze's reign as lasting 348 days, ending on November 27, 1994.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Champions_(1956–2010) #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1994-11-20",
+   "order": 0,
+   "champions": [
+    "Bull Nakano"
+   ],
+   "event": "Big Egg Wrestling Universe",
+   "place": "Tokyo, Japan",
+   "why": "WWE mistakenly recognizes Nakano's reign as lasting 126 days, beginning on November 27, 1994.}}",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Champions_(1956–2010) #17",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1995-09-24",
+   "order": 0,
+   "champions": [
+    "Diesel",
+    "Shawn Michaels"
+   ],
+   "event": "In Your House: Triple Header",
+   "place": "Saginaw, MI",
+   "why": "This match was also for Diesel's WWF Championship and Michaels' Intercontinental Championship. However, as Owen Hart failed to show up for the match, the British Bulldog substituted as Yokozuna's partner. During the match, Hart ran down to the ring, only to be pinned, despite not officially being in",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE,_1971–2010) #66",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/world-tag-team-championship"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1995-09-25",
+   "order": 0,
+   "champions": [
+    "Owen Hart",
+    "Yokozuna"
+   ],
+   "event": "Raw",
+   "place": "Grand Rapids, MI",
+   "why": "Due to the ensuing controversy around the previous title change, the championships were restored to Hart and Yokozuna the following night on Raw.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_World_Tag_Team_Champions_(WWE,_1971–2010) #67",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/world-tag-team-championship"
+   },
+   "event_id": 4871
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1997-12-08",
+   "order": 0,
+   "champions": [
+    "Rocky Maivia"
+   ],
+   "event": "Raw",
+   "place": "Portland, ME",
+   "why": "Stone Cold Steve Austin handed the championship belt to The Rock, who was formerly known as Rocky Maivia.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Intercontinental_Champions #47",
+    "WWE.com": "https://www.wwe.com/titlehistory/intercontinental-championship"
+   },
+   "event_id": 5133
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "title_name": "WWF Hardcore Title",
+   "date": "1999-09-09",
+   "order": 0,
+   "champions": [
+    "Al Snow"
+   ],
+   "event": "SmackDown!",
+   "place": "Albany, New York",
+   "why": "The British Bulldog awarded the title to Al Snow. Aired on tape delay on September 9, 1999. }}",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions #12",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-hc.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/hardcore-championship"
+   },
+   "happened": "1999-09-07",
+   "event_id": 5398
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "title_name": "WWF Hardcore Title",
+   "date": "2000-03-13",
+   "order": 0,
+   "champions": [
+    "Pete Gas"
+   ],
+   "event": "Raw is War",
+   "place": "Newark, New Jersey",
+   "why": "Won in Newark Airport. The first title change under the 24/7 rule. }}",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions #16",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-hc.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/hardcore-championship"
+   },
+   "event_id": 5511
+  },
+  {
+   "title": "WWF Hardcore Title",
+   "title_name": "WWF Hardcore Title",
+   "date": "2000-03-13",
+   "order": 0,
+   "champions": [
+    "Crash Holly"
+   ],
+   "event": "Raw is War",
+   "place": "Newark, New Jersey",
+   "why": "Won in Newark Airport. }}",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Hardcore_Champions #17",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-hc.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/hardcore-championship"
+   },
+   "event_id": 5511
+  },
+  {
    "lineage": "lineage::cruiserweight-1991",
    "title_name": "WWE Cruiserweight Championship",
    "date": "2005-08-06",
@@ -1315,6 +1578,22 @@
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_Tag_Team_Champions #3",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-wt.html",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-womens-tag-team-championship"
+   }
+  },
+  {
+   "lineage": "lineage::million-dollar",
+   "title_name": "Million Dollar Championship",
+   "date": "2021-08-22",
+   "order": 0,
+   "champions": [
+    "Cameron Grimes"
+   ],
+   "event": "TakeOver 36",
+   "place": "Orlando, FL",
+   "why": "If Grimes had lost, Ted DiBiase would have become LA Knight's butler.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/Million_Dollar_Championship #7",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/million-dollar-championship"
    }
   },
   {

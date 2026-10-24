@@ -16,7 +16,7 @@ picked up at the champion's next match on a card of ours.
     uv run --with requests --with beautifulsoup4 lineup-check/title_audit.py [title name ...]
 """
 import difflib
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import re
 import sys
 import unicodedata
@@ -34,6 +34,8 @@ from offshow_titles import BELTS as OFFSHOW_BELTS, same as same_reign, wwe_com  
 # Titles keyed by words (not in the lineage map) and their lists.
 EXTRA = {
     "WWE Intercontinental Title": "List of WWE Intercontinental Champions",
+    "WWF Intercontinental Title": "List of WWE Intercontinental Champions",
+    "WWF Light Heavyweight Title": "List of WWF Light Heavyweight Champions",
     "WWE United States Title": "List of WWE United States Champions",
     "WWF European Title": "List of WWE European Champions",
     "ECW World Heavyweight Title": "List of ECW World Heavyweight Champions",
@@ -75,9 +77,10 @@ WWE_COM = {
     "WWE 24/7 Title": "classics/titlehistory/24-7-championship",
     "WWF Hardcore Title": "titlehistory/hardcore-championship",
     "WWE Women's Tag Team Title": "classics/titlehistory/wwe-womens-tag-team-championship",
-    **{name: cfg["wwe"] for name, cfg in OFFSHOW_BELTS.items()},
+    **{name: cfg["wwe"] for name, cfg in OFFSHOW_BELTS.items() if cfg.get("wwe")},
 }
 SLACK = 7           # days a start may sit from the histories' date
+NOTED_DATE = re.compile(r"(?:[Aa]ired on tape delay on|reign as beginning on) ([A-Z][a-z]+ \d{1,2}, \d{4})")
 AIRED_WITHIN = 35   # WWE.com's air date for a taped change (NXT taped a month ahead until 2019;
                     # a belt's own "taped_within" in offshow_titles.BELTS overrides it)
 
@@ -86,18 +89,30 @@ def _days(a, b):
     return (date.fromisoformat(b) - date.fromisoformat(a)).days
 
 
-def off_dates(ours, wiki, ops, aired, window=AIRED_WITHIN):
+def off_dates(ours, wiki, ops, aired, window=AIRED_WITHIN, taped=None):
     """Each reign both lists share whose start is more than SLACK days from
     Wikipedia's date and from every WWE.com air date for that change. Our
     first reign of a belt is dated from the first match we have, so it is
     skipped; a later reign the walk found already running (no title change on
-    any card, so it starts at the champion's next match) is not."""
+    any card, so it starts at the champion's next match) is not.
+
+    `taped` maps an event id to its taping date: a reign that starts on the
+    air date of a show taped on the list's date is on time (before 2001 every
+    title history dates a taped change by its taping, and our cards by air)."""
     out = []
     for tag, i1, i2, j1, j2 in ops:
         if tag != "equal":
             continue
         for o, w in zip(ours[i1:i2], wiki[j1:j2]):
             if (o is ours[0] and o.get("pre_corpus")) or abs(_days(w["date"], o["start"])) <= SLACK:
+                continue
+            tape = (taped or {}).get(o.get("start_event_id"))
+            if tape and abs(_days(w["date"], tape)) <= SLACK:
+                continue
+            # The list's own note on when it aired, or when WWE dates it from.
+            noted = [datetime.strptime(d, "%B %d, %Y").date().isoformat()
+                     for d in NOTED_DATE.findall(re.sub(r"<[^>]+>", " ", w.get("notes") or ""))]
+            if any(abs(_days(d, o["start"])) <= SLACK for d in noted):
                 continue
             # A list's team name ends in markup ("British Ambition<br />").
             named = {"champion": re.sub(r"<[^>]+>", " ", w["champion"]).strip(), "members": w["members"]}
@@ -116,7 +131,8 @@ ALIASES = {"Hollywood Hulk Hogan": "Hulk Hogan", "Chavo Classic": "Chavo Guerrer
            # He won the interim title masked and unmasked a week later; our
            # roster knows him only as Santos Escobar.
            "El Hijo del Fantasma/Santos Escobar": "Santos Escobar",
-           'Andrade "Cien" Almas': "Andrade Almas"}
+           'Andrade "Cien" Almas': "Andrade Almas",
+           "Grand Master Sexay": "Grandmaster Sexay"}
 
 
 def _plain(s):
@@ -178,6 +194,7 @@ def main():
     pairs = [(lin["name"], lin["wiki_list"]) for lin in LINEAGES] + list(EXTRA.items())
     only = set(sys.argv[1:])
     newest = max(e["air_date"] for e in data["events"].values() if e.get("air_date"))
+    taped = {int(k): e["tape_date"] for k, e in data["events"].items() if e.get("tape_date")}
     for name, page in pairs:
         if only and name not in only:
             continue
@@ -207,6 +224,13 @@ def main():
             first = min([i for i, r in enumerate(rows)
                          if r["date"] >= (date.fromisoformat(lo) - timedelta(days=35)).isoformat()] or [0])
         wiki = [r for r in rows[first:] if r["date"] <= hi]
+        # A reign the list marks unrecognized (DiBiase handed the belt in 1988,
+        # Jericho and Chyna's co-reign of January 2000, which WWE counts as a
+        # vacancy) is not in WWE's lineage: ours may carry it or not.
+        wiki = [r for r in wiki if r.get("type") != "unrecognized" or any(
+            abs(_days(r["date"], o["start"])) <= SLACK
+            and {key(n) for n in o["champion_names"]} & {key(n) for n in (r["members"] or [r["champion"]])}
+            for o in ours)]
         if not wiki:
             print(f"## {name}: no parsable reigns on {page}")
             continue
@@ -225,7 +249,7 @@ def main():
             ops = difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes()
         diffs = [op for op in ops if op[0] != "equal"]
         off = off_dates(ours, wiki, ops, wwe_com(WWE_COM[name]) if name in WWE_COM else [],
-                        OFFSHOW_BELTS.get(name, {}).get("taped_within", AIRED_WITHIN))
+                        OFFSHOW_BELTS.get(name, {}).get("taped_within", AIRED_WITHIN), taped)
         print(f"## {name}: ours {len(ours)} reigns, Wikipedia {len(wiki)} in {lo}..{hi}, "
               f"{sum(op[2]-op[1] for op in ops if op[0]=='equal')} matched, "
               f"{len(diffs)} differences, {len(off)} off by date")

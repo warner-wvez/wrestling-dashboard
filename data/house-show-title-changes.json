@@ -4,6 +4,348 @@
   {
    "title": "WWE Intercontinental Title",
    "title_name": "WWE Intercontinental Title",
+   "date": "1985-07-06",
+   "order": 0,
+   "champions": [
+    "Tito Santana"
+   ],
+   "place": "Baltimore, MD",
+   "why": "This was a steel cage match.",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #9: House show, Baltimore, MD",
+    "Cawthon": "WWF @ Baltimore, MD – Arena – July 6, 1985 (13,300): Prime Time Wrestling – 7/23/85 : Tito Santana defeated WWF IC Champion Greg Valentine (w/ Jimmy Hart) in a steel cage match to win the title at 10:25 by escaping over the top and kicking the door in V",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1985-08-24",
+   "order": 0,
+   "champions": [
+    "Brutus Beefcake",
+    "Greg Valentine"
+   ],
+   "place": "Philadelphia, PA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #40: House show, Philadelphia, PA",
+    "Cawthon": "WWF @ Philadelphia, PA – Spectrum – August 24, 1985 (9,886): Championship Wrestling – 9/7/85 : Brutus Beefcake & Greg Valentine (w/ Johnny V) defeated WWF Tag Team Champions Barry Windham & Mike Rotundo (w/ Capt. Lou Albano) to win the titles at the 19-minute m",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1985-11-25",
+   "order": 0,
+   "champions": [
+    "The Fabulous Moolah"
+   ],
+   "place": "New York, NY",
+   "why": "Moolah was disguised as \"The Spider Lady\".",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Champions (1956–2010) #11: Live event, New York, NY",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1986-07-03",
+   "order": 0,
+   "champions": [
+    "Velvet McIntyre"
+   ],
+   "place": "Brisbane, Australia",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Champions (1956–2010) #12: Live event, Brisbane, Australia",
+    "Cawthon": "WWF @ Brisbane, Australia – Festival Hall – July 3, 1986: Velvet McIntyre defeated WWF Women's Champion the Fabulous Moolah to win the title",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1986-07-09",
+   "order": 0,
+   "champions": [
+    "The Fabulous Moolah"
+   ],
+   "place": "Sydney, Australia",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Champions (1956–2010) #13: Live event, Sydney, Australia",
+    "Cawthon": "WWF @ Sydney, Australia – Homebush Sports Centre – July 9, 1986: The Fabulous Moolah defeated WWF Women's Champion Velvet McIntyre to win the title",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-1956",
+   "title_name": "WWE Women's Championship (1956-2010)",
+   "date": "1987-07-24",
+   "order": 0,
+   "champions": [
+    "Sensational Sherri"
+   ],
+   "place": "Houston, TX",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Women's Champions (1956–2010) #14: Live event, Houston, TX",
+    "Cawthon": "WWF @ Houston, TX – Sam Houston Coliseum – July 24, 1987 (2,704): Sherri Martel pinned WWF Women's Champion the Fabulous Moolah to win the title at 7:56 by blocking an attempted slam into the ring and reversing it into a cradle; after the match, Moolah knocked down ",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wm.html"
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1992-01-17",
+   "order": 0,
+   "champions": [
+    "The Mountie"
+   ],
+   "place": "Springfield, MA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #21: House show, Springfield, MA",
+    "Cawthon": "WWF @ Springfield, MA – Civic Center – January 17, 1992 (4,500): The Mountie pinned WWF IC Champion Bret Hart at 8:00 to win the title by reversing an inside cradle; after the bout, Roddy Piper made the save after the Mountie repeatedly hit Hart with the title belt",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1992-02-07",
+   "order": 0,
+   "champions": [
+    "Irwin R. Schyster",
+    "Ted DiBiase"
+   ],
+   "place": "Denver, CO",
+   "why": "Schyster was previously known as Mike Rotundo.",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #53: House show, Denver, CO",
+    "Cawthon": "WWF @ Denver, CO – Coliseum – February 7, 1992 (4,500): Ted Dibiase (w/ Sensational Sherri) & IRS defeated WWF Tag Team Champions the Legion of Doom to win the titles at 11:49 when Dibiase pinned Road Warrior Hawk after the Natural Disasters came ringside ",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "title_name": "WWE Championship",
+   "date": "1992-10-12",
+   "order": 0,
+   "champions": [
+    "Bret Hart"
+   ],
+   "place": "Saskatoon, SK, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Champions #28: House show, Saskatoon, SK, Canada",
+    "Cawthon": "WWF @ Saskatoon, Saskatchewan – Saskatchewan Center – October 12, 1992: Bret Hart defeated WWF World Champion Ric Flair (w/ Mr. Perfect) via submission with the Sharpshooter following a superplex to win the title at 26:29"
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1993-06-06",
+   "order": 0,
+   "champions": [
+    "Shawn Michaels"
+   ],
+   "place": "Albany, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #27: House show, Albany, NY",
+    "Cawthon": "WWF @ Albany, NY – Knickerbocker Arena – June 6, 1993 (3,000): Shawn Michaels (w/ Diesel) pinned WWF IC Champion Marty Jannetty (sub. for Mr. Perfect) to win the title with the superkick after Jannetty was distracted by Diesel at ringside (Diesel's debut)",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1993-06-16",
+   "order": 0,
+   "champions": [
+    "Irwin R. Schyster",
+    "Ted DiBiase"
+   ],
+   "place": "Rockford, IL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #57: House Show, Rockford, IL",
+    "Cawthon": "WWF @ Rockford, IL – Metro Centre – June 16, 1993: Ted Dibiase & IRS defeated WWF Tag Team Champions Rick & Scott Steiner to win the titles after the challengers used IRS' steel briefcase as a weapon",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1993-06-19",
+   "order": 0,
+   "champions": [
+    "Rick Steiner",
+    "Scott Steiner"
+   ],
+   "place": "St. Louis, MO",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #58: House show, St. Louis, MO",
+    "Cawthon": "WWF @ St. Louis, MO – Arena – June 19, 1993 (2,200): Rick & Scott Steiner defeated WWF Tag Team Champions Ted Dibiase & IRS to win the titles when Scott pinned Dibiase with the Frankensteiner",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1994-01-17",
+   "order": 0,
+   "champions": [
+    "Jacques",
+    "Pierre"
+   ],
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #61: House show, New York, NY",
+    "Cawthon": "WWF @ New York City, NY – Madison Square Garden – January 17, 1994 (9,000): The Quebecers defeated WWF Tag Team Champions Marty Jannetty & the 1-2-3 Kid at 21:24 to win the titles following the Tower of Quebec on the Kid after Johnny Polo interfered and caused the Kid to crot",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1994-03-29",
+   "order": 0,
+   "champions": [
+    "Mabel",
+    "Mo"
+   ],
+   "place": "London, England",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #62: House show, London, England",
+    "Cawthon": "WWF @ London, England – Royal Albert Hall – March 29, 1994 (3,000): Men on a Mission defeated WWF Tag Team Champions the Quebecers to win the titles when Mabel scored the pin",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1994-03-31",
+   "order": 0,
+   "champions": [
+    "Jacques",
+    "Pierre"
+   ],
+   "place": "Sheffield, England",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #63: House show, Sheffield, England",
+    "Cawthon": "WWF @ Sheffield, England – Arena – March 31, 1994: The Quebecers defeated WWF Tag Team Champions Men on a Mission to win the titles",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1994-08-28",
+   "order": 0,
+   "champions": [
+    "Diesel",
+    "Shawn Michaels"
+   ],
+   "place": "Indianapolis, IN",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #65: House show, Indianapolis, IN",
+    "Cawthon": "WWF @ Indianapolis, IN – Market Square Arena – August 28, 1994: Shawn Michaels & WWF IC Champion Diesel defeated WWF Tag Team Champions the Headshrinkers to win the titles after Diesel hit the jacknife on Samu and put Michaels arm on top of Samu for the pin",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "lineage": "lineage::wwe-championship",
+   "title_name": "WWE Championship",
+   "date": "1994-11-26",
+   "order": 0,
+   "champions": [
+    "Diesel"
+   ],
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Champions #34: House show, New York, NY",
+    "Cawthon": "WWF @ New York City, NY – Madison Square Garden – November 26, 1994 (7,300): Action Zone – 11/27/94 : Diesel (sub. for Bret Hart) pinned WWF World Champion Bob Backlund in a No DQ, no count-out, no time-limit match to win the title at the 9-second mark following a boot to the "
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1995-05-19",
+   "order": 0,
+   "champions": [
+    "Razor Ramon"
+   ],
+   "place": "Montreal QC, Canada",
+   "why": "This was a ladder match.<br />WWE recognizes Ramon's reign as ending on May 22, 1995.",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #35: House show, Montreal QC, Canada",
+    "Cawthon": "WWF @ Montreal, Quebec – Forum – May 19, 1995 (8,500): Razor Ramon defeated WWF IC Champion Jeff Jarrett to win the title in a ladder match",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1995-05-21",
+   "order": 0,
+   "champions": [
+    "Jeff Jarrett"
+   ],
+   "place": "Trois-Rivières, QC, Canada",
+   "why": "WWE recognizes Jarrett's reign as beginning on May 22, 1995.",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #36: House show, Trois-Rivières, QC, Canada",
+    "Cawthon": "WWF @ Trois-Rivieres, Quebec – Colisee – May 21, 1995: Jeff Jarrett defeated WWF IC Champion Razor Ramon to win the title",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "lineage": "lineage::world-tag-1971",
+   "title_name": "World Tag Team Championship (1971-2010)",
+   "date": "1996-05-19",
+   "order": 0,
+   "champions": [
+    "Henry O. Godwinn",
+    "Phineas I. Godwinn"
+   ],
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #75: House show, New York, NY",
+    "Cawthon": "WWF @ New York City, NY – Madison Square Garden – May 19, 1996 (18,800; 16,564 paid; sell out): Henry & Phinneas Godwinn defeated WWF Tag Team Champions Skip & Zip to win the titles at 10:56 when Phinneas pinned Skip with a kick to the midsection and the Slop Drop after kissing Sunny on the ring",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
+   "date": "1999-07-24",
+   "order": 0,
+   "champions": [
+    "Edge"
+   ],
+   "place": "Toronto, ON, Canada",
+   "why": "",
+   "sources": {
+    "Wikipedia": "List of WWE Intercontinental Champions #62: House show, Toronto, ON, Canada",
+    "Cawthon": "WWF @ Toronto, Ontario – Skydome – July 24, 1999 (15,220): Edge (sub. for Ken Shamrock) pinned WWF IC Champion Jeff Jarrett (w/ Debra) to win the title at 4:38 with the spear after Jarrett narrowly avoided knocking Debra off the apron; prior to the bout, Howa",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/ic.html"
+   }
+  },
+  {
+   "title": "WWE Intercontinental Title",
+   "title_name": "WWE Intercontinental Title",
    "date": "2003-08-10",
    "order": 0,
    "champions": [
@@ -30,7 +372,8 @@
    "why": "Jonathan Coachman replaced Eugene in this match due to injury.",
    "sources": {
     "Wikipedia": "List of World Tag Team Champions (WWE, 1971–2010) #162: House show, Winnipeg, MB, Canada",
-    "Cawthon": "WWE (Raw) @ Winnipeg, Manitoba – MTS Centre – January 16, 2005 (matinee) (6,500): Rob Conway & Sylvian Grenier defeated Jonathan Coachman (sub. for an injured Eugene) & WWE Raw Tag Team Champion William Regal to win the titles when Regal was pinned with the Aur Reviour after Regal "
+    "Cawthon": "WWE (Raw) @ Winnipeg, Manitoba – MTS Centre – January 16, 2005 (matinee) (6,500): Rob Conway & Sylvian Grenier defeated Jonathan Coachman (sub. for an injured Eugene) & WWE Raw Tag Team Champion William Regal to win the titles when Regal was pinned with the Aur Reviour after Regal ",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-world-t.html"
    }
   },
   {

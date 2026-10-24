@@ -530,6 +530,26 @@ CLIP_SHOWS = {
     831: "WWE SmackDown #436 - The Greatest Matches Of 2007 (2007-12-28)",
 }
 
+# Before this date a taped show aired up to five weeks after its taping
+# (Superstars and Wrestling Challenge about 24 days, Raw's 1993 to 1997 double
+# tapings up to 35), and its "(c)" marks say who held a belt on the taping
+# night. Walked by air date, the Wrestling Challenge taped before the 1995
+# Royal Rumble and aired after it handed Razor Ramon the Intercontinental belt
+# back from Jeff Jarrett. Every title history of that era dates a change by
+# its taping too.
+TAPED_ORDER_BEFORE = '2001-01-01'
+
+
+def _wrestled_on(ev: dict) -> str:
+    """The date the reign walk orders a show's matches by: the taping night
+    before TAPED_ORDER_BEFORE, the air date after (and wherever no taping
+    date is known). A reign still starts on the air date of the show that
+    carries the change, so a card never badges a champion before its match."""
+    air, tape = ev.get('air_date'), ev.get('tape_date')
+    if tape and tape < air < TAPED_ORDER_BEFORE:
+        return tape
+    return air
+
 
 # A match type that declares how many SIDES it has. Cagematch writes a triple
 # threat as "A defeats B and C", the parser splits on the verb, and everything
@@ -1261,12 +1281,14 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
     # Intercontinental collapse to one chain displayed as "WWE Intercontinental
     # Title", the name still in use.
     spelling_stats: dict[str, dict[str, list]] = defaultdict(lambda: defaultdict(lambda: [0, '']))
+    modern_spellings: dict[str, Counter] = defaultdict(Counter)
     # Per lineage, how often each wrestler appears in its title matches. A singles
     # belt has one holder, so when a title match's winning team lists several
     # people this disambiguates the real champion (the one who wrestles for the
     # belt) from a valet, handicap partner, or the winner of the OTHER belt in a
     # multi-belt match. See _pick_singles_champion.
     lineage_appearances: dict[str, Counter] = defaultdict(Counter)
+    wrestled_on: dict[int, str] = {}
     for eid_str, ev in events.items():
         air_date = ev.get('air_date')
         if not air_date:
@@ -1274,7 +1296,10 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
         eid = int(eid_str)
         if eid in CLIP_SHOWS:      # a replayed title change is not a title change
             continue
+        wrestled = wrestled_on[eid] = _wrestled_on(ev)
         for match in ev.get('matches', []):
+            if match.get('replay_of'):      # a clip of a change made on another night
+                continue
             components = _get_component_titles(match.get('title_at_stake'), match)
             match_type = match.get('match_type') or ''
             raw = match.get('raw_description') or ''
@@ -1299,6 +1324,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                     entered.add(lk)
                     timelines[lk].append({
                         'air_date': air_date,
+                        'wrestled': wrestled,
+                        # its "(c)" marks are not trusted (see the walk below)
+                        'syndicated': ev.get('family') == 'syndicated',
                         'event_id': eid,
                         'match_order': match.get('match_order') or 0,
                         'teams': match.get('teams', []),
@@ -1306,8 +1334,12 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                         'raw_description': raw,
                         # Did the source say a belt changed hands, and can that claim
                         # be pinned to THIS belt? On a composite stake it cannot: the
-                        # marker may belong to the other belt on the line.
-                        'title_change': 'TITLE CHANGE' in raw.upper() or bool(_WIN_TITLE_RE.search(raw)),
+                        # marker may belong to the other belt on the line. A card
+                        # from Wikipedia's results table writes no marker, so a
+                        # second record's marker is carried as
+                        # title_change_source (backfill/join.py).
+                        'title_change': ('TITLE CHANGE' in raw.upper() or bool(_WIN_TITLE_RE.search(raw))
+                                         or bool(match.get('title_change_source'))),
                         'composite_stake': len(components) > 1,
                         'component_count': len(components),
                         # Who holds the belt after this match, set by a migration
@@ -1319,6 +1351,8 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                     st[0] += 1
                     if air_date > st[1]:
                         st[1] = air_date
+                    if air_date >= TAPED_ORDER_BEFORE:
+                        modern_spellings[lk][title] += 1
                     for t in match.get('teams', []):
                         for p in t.get('participants', []):
                             if p:
@@ -1342,6 +1376,9 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             continue
         timelines[lk].append({
             'air_date': change['date'],
+            # A taped change starts on its show's air date and is ordered by
+            # its taping (lineup-check/offshow_titles.py).
+            'wrestled': change.get('taped') or change['date'],
             'event_id': change.get('event_id'),
             'match_order': change.get('order', 0),
             'teams': [],
@@ -1352,7 +1389,12 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             'title_result': None if change.get('vacate') else {'champions': list(change['champions'])},
             'vacate': bool(change.get('vacate')),
             'vacated_by': change.get('vacated_by') or '',
+            'unrecognized_holders': change.get('unrecognized_holders') or [],
             'previous_holds_until': change.get('previous_holds_until'),
+            # A vacancy of a reign won that same night sorts after the card
+            # (André the Giant won the belt on The Main Event, 1988-02-05, and
+            # it was vacated that night when he handed it to DiBiase).
+            'end_of_day': bool(change.get('end_of_day')),
             # A title history lists this as the belt's next change, so the
             # belt lived through any gap before it (see _is_lineage_era_break).
             'from_history': True,
@@ -1362,16 +1404,23 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
     # matches, tie-broken by most recent match then name. The dominant name is
     # stable and unsurprising (an active belt still reads under its modern name,
     # since that spelling owns the most matches) and avoids latching onto a
-    # short-lived late rename the way "most recent spelling" would.
+    # short-lived late rename the way "most recent spelling" would. Counted over
+    # the matches from TAPED_ORDER_BEFORE on where a belt has any: sixteen years
+    # of WWF-era cards outnumber the Intercontinental title's WWE spellings and
+    # would rename today's belt "WWF Intercontinental Title". A belt that ended
+    # before then is named by all of its spellings.
     canon_name: dict[str, str] = {
         lk: (LINEAGE_BY_KEY[lk]['name'] if lk in LINEAGE_BY_KEY else
-             max(spellings.items(), key=lambda kv: (kv[1][0], kv[1][1], kv[0]))[0])
+             max(spellings.items(), key=lambda kv: (modern_spellings[lk][kv[0]] if modern_spellings[lk] else 0,
+                                                    kv[1][0], kv[1][1], kv[0]))[0])
         for lk, spellings in spelling_stats.items()
     }
 
     for lk in timelines:
-        # A house show (no event) sorts before a card on the same date.
-        timelines[lk].sort(key=lambda m: (m['air_date'], m['event_id'] or 0, m['match_order']))
+        # In the order the matches were wrestled (see _wrestled_on); a house
+        # show (no event) sorts before a card on the same date.
+        timelines[lk].sort(key=lambda m: (m['wrestled'], m['event_id'] or (10 ** 9 if m.get('end_of_day') else 0),
+                                          m['match_order']))
 
     # How far the corpus reaches, to judge which belts have gone quiet against.
     # Taken from the events rather than today's clock so a rebuild is
@@ -1409,12 +1458,24 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
                 first = True
             prev = m
 
+            # The syndicated shows of 1985 to 2000 (Superstars, Wrestling
+            # Challenge, Heat and the rest) were taped weeks ahead and bill a
+            # champion as of the taping or as of the broadcast, inconsistently:
+            # Challenge taped 1994-04-28 has the Quebecers defending two days
+            # after they lost the belts on a Raw taping. Their "(c)" marks
+            # neither start nor keep a reign there; only a marked change or a
+            # ruling moves a belt on those shows.
+            if m.get('syndicated') and not m.get('title_change') and not (m.get('title_result') or {}).get('champions') \
+                    and not m.get('vacate'):
+                continue
+
             # A vacancy from the title history: the reign ends here and the
             # belt stays empty until a TITLE CHANGE, a (c) or a ruling fills
             # it, so a contender match in the gap crowns nobody.
             if m.get('vacate'):
                 if current is not None:
-                    vacated_from = (m['air_date'], list(current['champion_names']))
+                    vacated_from = (m['wrestled'], list(current['champion_names']),
+                                    list(m.get('unrecognized_holders') or []))
                     current['end'] = m['air_date']
                     current['end_event_id'] = None
                     current['vacated'] = True
@@ -1426,9 +1487,17 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             # defend as "(c)" earlier on the show that strips him (John Cena,
             # SmackDown 2004-07-08). That defense does not give him the belt
             # back.
-            if vacant and vacated_from and m['air_date'] == vacated_from[0] and champ_team \
+            if vacant and vacated_from and m['wrestled'] == vacated_from[0] and champ_team \
                     and _champions_overlap(vacated_from[1], champ_team.get('participants') or [], canon_fn) \
                     and not m.get('title_change'):
+                continue
+            # A co-reign WWE counts as a vacancy: Jericho and Chyna defended
+            # as "(c)" through January 2000 (Chyna beat Hardcore Holly on Raw
+            # 2000-01-03), and WWE has the belt empty until the Royal Rumble.
+            # Their defenses fill nothing; a ruling or a marked change does.
+            if vacant and vacated_from and vacated_from[2] and champ_team \
+                    and _champions_overlap(vacated_from[2], champ_team.get('participants') or [], canon_fn) \
+                    and not m.get('title_change') and not (m.get('title_result') or {}).get('champions'):
                 continue
 
             if first:
@@ -1673,6 +1742,19 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
 
         if current is not None:
             reigns.append(current)
+        # A reign starts on the air date of the show that carries the change,
+        # but before TAPED_ORDER_BEFORE that show can air after the next change
+        # did: the Steiners' Superstars defense taped 1993-08-31 aired on
+        # 09-25, twelve days after the Quebecers beat them on Raw. Such a reign
+        # starts on its taping night instead, and the one before ends there
+        # (latest first, so that one is checked against its new end).
+        for i in range(len(reigns) - 1, -1, -1):
+            r = reigns[i]
+            if r['end'] is not None and r['start'] > r['end'] and r['start_event_id'] in wrestled_on:
+                taped = wrestled_on[r['start_event_id']]
+                if i and reigns[i - 1]['end'] == r['start']:
+                    reigns[i - 1]['end'] = taped
+                r['start'] = taped
         if reigns:
             _close_reign_at_retirement(reigns, matches, corpus_end)
         reigns_by_title[canon_name[lk]] = reigns

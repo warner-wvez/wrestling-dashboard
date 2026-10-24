@@ -205,7 +205,8 @@ def compare_show(ev, cawthon_lines, groups, heat_lines=(), unreadable=0, sdh_mat
         return bool(won and his and his <= won[0])
 
     def labelled_dark(o):
-        return "dark" in (o.get("match_type") or "").lower()
+        # The backfill's Cagematch parser moves the "Dark" label into aired=False.
+        return o.get("aired") is False or "dark" in (o.get("match_type") or "").lower()
 
     pairs = []
     for i, o in enumerate(ours):
