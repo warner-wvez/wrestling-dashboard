@@ -30,6 +30,7 @@ Outputs: cards.json (bundle-shaped events), review.csv, join_report.json.
 from __future__ import annotations
 
 import csv
+import itertools
 import re
 import sys
 from collections import Counter, defaultdict
@@ -44,6 +45,7 @@ from lineup_match import MULTI_MATCH, compare_show, group_members  # noqa: E402
 import src.fandom_scraper as fs  # noqa: E402
 from cawthon_parse import finish_of, parse_match_line  # noqa: E402
 from backfill.common import OUT, YEARS, fresh_event, fresh_match, read_json, record_status, write_json  # noqa: E402
+from backfill.title_rulings import apply_title_rulings  # noqa: E402
 
 SLUG_OF = {"Raw": "wwf-raw-{y}", "SmackDown": "wwf-smackdown-{y}", "Superstars": "wwf-superstars-{y}",
            "Challenge": "wwf-wrestling-challenge-{y}", "PrimeTime": "wwf-prime-time-wrestling-{y}",
@@ -97,6 +99,60 @@ def _days(a, b):
     return abs((date.fromisoformat(a) - date.fromisoformat(b)).days)
 
 
+def _assign(evs, cands, show_type, tape):
+    """Pair one taping's Cagematch shows with Cawthon's episodes: the
+    assignment sharing the most people in all, then the one that keeps
+    Cagematch's episode numbers in air order. Taken one show at a time, Raw
+    #96 (the live 1995-01-23 show, mostly dark matches on Cagematch) took the
+    02-06 episode on four shared names and pushed #98 onto 01-23.
+    Yields (event, (key, episode or None), shared, candidates, by_order):
+    by_order marks a show that shares no one with its episode but is the one
+    left when every other show of the taping paired on names and the episode
+    numbers stay in air order (Raw #34, the second of three taped 1993-09-27,
+    whose 10-04 episode Cawthon describes in a line or two)."""
+    if not cands:
+        for ev in evs:
+            yield ev, (None, None), 0, 0, False
+        return
+    if show_type in COMPILATION or len(evs) * len(cands) > 36:
+        left = list(cands)
+        for ev in evs:
+            mine = _people(ev)
+
+            def score(item):
+                i, e = item
+                exact = 1 if (show_type in COMPILATION and e["air_date"] == tape) else 0
+                return (len(mine & _ep_people(e)), exact)
+            if not left:
+                yield ev, (None, None), 0, 0, False
+                continue
+            best = max(left, key=score)
+            n, sc = len(left), score(best)[0]
+            if not ((n > 1 and sc == 0) or (show_type in COMPILATION and sc < 2)):
+                left.remove(best)           # taken; a rejected episode stays for the next show
+            yield ev, best, sc, n, False
+        return
+    order = sorted(range(len(evs)), key=lambda k: (evs[k].get("episode_number") is None, evs[k].get("episode_number") or 0))
+    shared = [[len(_people(evs[k]) & _ep_people(e)) for _, e in cands] for k in range(len(evs))]
+    slots = list(range(len(cands))) + [None] * max(0, len(evs) - len(cands))
+    best = None
+    for perm in itertools.permutations(slots, len(evs)):
+        total = sum(shared[k][c] for k, c in zip(range(len(evs)), perm) if c is not None)
+        airs = [cands[perm[k]][1]["air_date"] for k in order if perm[k] is not None]
+        in_order = sum(1 for a, b in zip(airs, airs[1:]) if a <= b)
+        key = (total, in_order)
+        if best is None or key > best[0]:
+            best = (key, perm)
+    perm = best[1]
+    placed = [k for k in range(len(evs)) if perm[k] is not None]
+    in_order = best[0][1] == len(placed) - 1
+    named = [k for k in placed if shared[k][perm[k]] > 0]
+    for k, c in enumerate(perm):
+        sc = shared[k][c] if c is not None else 0
+        by_order = c is not None and sc == 0 and in_order and len(named) == len(placed) - 1 and len(placed) > 1
+        yield evs[k], (cands[c] if c is not None else (None, None)), sc, len(cands), by_order
+
+
 def pair_dates(cm_events, cawthon):
     """Give every TV show Cawthon's air date, pairing tapings by shared people."""
     used, paired, unpaired = set(), [], []
@@ -104,33 +160,22 @@ def pair_dates(cm_events, cawthon):
     for ev in cm_events:
         by_key[(ev["show_type"], ev["tape_date"] or ev["air_date"])].append(ev)
     for (show_type, tape), evs in by_key.items():
-        slug = _cawthon_slug(show_type, int(tape[:4]))
-        eps_all = cawthon.get(slug, []) if slug else []
+        # A December taping airs into January, on the next year's page.
+        slugs = [s for s in (_cawthon_slug(show_type, int(tape[:4]) + k) for k in (0, 1)) if s]
+        eps_all = [((s, i), e) for s in slugs for i, e in enumerate(cawthon.get(s, []))]
         if show_type in COMPILATION:
-            cands = [(i, e) for i, e in enumerate(eps_all)
-                     if (slug, i) not in used and e.get("air_date") and _days(e["air_date"], tape) <= 10]
+            cands = [(i, e) for i, e in eps_all
+                     if i not in used and e.get("air_date") and _days(e["air_date"], tape) <= 10]
         else:
-            cands = [(i, e) for i, e in enumerate(eps_all) if e.get("tape_date") == tape and (slug, i) not in used]
-        for ev in evs:
-            if not cands:
+            cands = [(i, e) for i, e in eps_all if e.get("tape_date") == tape and i not in used]
+        for ev, (i, ep), shared, n_cands, by_order in _assign(evs, cands, show_type, tape):
+            if ep is None or (n_cands > 1 and shared == 0 and not by_order) \
+                    or (show_type in COMPILATION and shared < 2):
                 unpaired.append(ev)
                 continue
-            mine = _people(ev)
-
-            def score(item):
-                i, e = item
-                shared = len(mine & _ep_people(e))
-                exact = 1 if (show_type in COMPILATION and e["air_date"] == tape) else 0
-                return (shared, exact)
-            i, ep = max(cands, key=score)
-            shared, exact = score((i, ep))
-            if (len(cands) > 1 and shared == 0) or (show_type in COMPILATION and shared < 2):
-                unpaired.append(ev)
-                continue
-            cands.remove((i, ep))
-            used.add((slug, i))
+            used.add(i)
             ev = dict(ev, air_date=ep["air_date"], tape_date=tape,
-                      date_derivation="cawthon-air-date", cawthon=ep)
+                      date_derivation="cawthon-air-date-by-order" if by_order else "cawthon-air-date", cawthon=ep)
             if not ev.get("city") and ep.get("city"):
                 ev["city"] = ep["city"].split(",")[0].strip()
             paired.append(ev)
@@ -272,6 +317,45 @@ def clean_stakes(ev):
     return ev
 
 
+def _surnames(m):
+    return {re.sub(r"^the ", "", p.lower()).split()[-1] for t in m["teams"] for p in t["participants"] if p.strip()}
+
+
+def take_cagematch_marks(ev, cmev):
+    """Wikipedia's results tables write no TITLE CHANGE marker; Cagematch's
+    row for the same night writes one on every change. Each single-belt title
+    match on a Wikipedia card takes Cagematch's word from the one title line
+    that shares the most people with it (a tie decides nothing):
+    - marked there: the belt changed hands (`title_change_source`). Not when
+      a team wins a singles belt: the mark cannot say which of them took it
+      (King of the Ring 2000, The Rock pinned Vince McMahon in a six-man), so
+      that takes a ruling in TITLE_RULINGS.
+    - not marked, though our line has the champion losing cleanly: a ruling
+      that the champion kept it (The Main Event IV 1990, the Rockers' win
+      over the Hart Foundation that WWF never recognized)."""
+    titled = [c for c in cmev["matches"] if c.get("title_at_stake")]
+    for m in ev["matches"]:
+        stake = m.get("title_at_stake") or ""
+        if not stake or " / " in stake:
+            continue
+        mine = _surnames(m)
+        scored = sorted(((len(mine & _surnames(c)), i) for i, c in enumerate(titled)), reverse=True)
+        if not scored or scored[0][0] < min(2, len(mine)) or (len(scored) > 1 and scored[1][0] == scored[0][0]):
+            continue
+        cm = titled[scored[0][1]]
+        champ = [t for t in m["teams"] if t.get("was_champion_entering")]
+        won = [t for t in m["teams"] if t.get("was_winner")]
+        if "TITLE CHANGE" in (cm.get("raw_description") or "").upper():
+            if "tag" in stake.lower() or (len(won) == 1 and len(won[0]["participants"]) == 1):
+                m["title_change_source"] = cmev["cagematch_url"]
+            continue
+        if len(champ) == 1 and len(won) == 1 and won[0] is not champ[0] and won[0].get("match_outcome") == "win":
+            m["title_result"] = {"title": stake, "champions": list(champ[0]["participants"]),
+                                 "why": "Cagematch marks every title change it records and marks none on this match",
+                                 "source": cmev["cagematch_url"]}
+    return ev
+
+
 def as_matches(lines):
     """Cawthon line dicts -> the bundle-like matches compare_show takes as a third vote."""
     out = []
@@ -339,10 +423,18 @@ def apply_votes(ev, rows, applied, event_key=""):
             his = {RING_NAMES.get(n, [n])[0] if n not in _people(ev) and any(x in _people(ev) for x in RING_NAMES.get(n, [])) else n for n in his}
             winner = [t for t in m["teams"] if set(t["participants"]) & his]
             if len(winner) == 1:
+                # The finish comes with the winner: Marc Mero beat HHH by
+                # count-out on Raw (1996-12-23), and a swap that left the
+                # spine's clean "defeats" crowned him Intercontinental champion.
+                how = finish_of(r.get("cawthon") or "")["method"]
+                kind = {"dq": "dq-", "countout": "countout-"}.get(how, "")
                 for t in m["teams"]:
                     t["was_winner"] = t is winner[0]
-                    t["match_outcome"] = "win" if t is winner[0] else "loss"
-                m["result_method"] = "defeated" if m.get("result_method") in (None, "No Contest", "Draw", "No Result") else m["result_method"]
+                    t["match_outcome"] = kind + ("win" if t is winner[0] else "loss")
+                if kind:
+                    m["result_method"] = {"dq": "by DQ", "countout": "by Count Out"}[how]
+                else:
+                    m["result_method"] = "defeated" if m.get("result_method") in (None, "No Contest", "Draw", "No Result", "by DQ", "by Count Out") else m["result_method"]
                 done = True
         elif vote in ("add_match", "add_match_same_people") and cls == "missing_match":
             sm = r.get("sdh_match")
@@ -430,7 +522,9 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             rows = [r for r in compare_show(ev, same, groups) if r.get("class") == "result"]
             ev["verification_status"] = bucket(rows)
             ev["cagematch_nr"], ev["cagematch_url"], ev["logo"] = vote["cagematch_nr"], vote["cagematch_url"], vote["logo"]
-            ev["tape_date"] = vote["tape_date"] if vote["tape_date"] != day else None
+            # A recap show airs matches from many tapings, so it has no one
+            # taping night (the vote's own night can fall after the broadcast).
+            ev["tape_date"] = None
             ev["venue"], ev["city"] = vote.get("venue"), vote.get("city")
             ev["state_province"], ev["country"] = vote.get("state_province"), vote.get("country")
         else:
@@ -443,14 +537,18 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         ep = ev.get("cawthon")
         key = f"{ev['show_type']}|{ev['air_date']}|{ev.get('cagematch_nr')}"
         year = ev["air_date"][:4]
-        sdh_eps = sdh.get(SDH_SLUG.get(ev["show_type"], "").format(y=year), []) if ev["show_type"] in SDH_SLUG else []
+        # A late-December taping airs on next year's page.
+        sdh_eps = [e for y in (int(year), int(year) + 1)
+                   for e in sdh.get(SDH_SLUG[ev["show_type"]].format(y=y), [])] if ev["show_type"] in SDH_SLUG else []
         sdh_match = next((e for e in sdh_eps if e["date"] == ev["air_date"]), None)
         if ep is None and sdh_match is None and sdh_eps:
             # No Cawthon episode: SmackDown Hotel's episode within a week that
             # shares two people dates the show (Heat 2000 tapes days ahead).
             mine = _people(ev)
+            # A show airs on or after its taping, never before it.
             near = [(len(mine & {p for m in e["matches"] for t in m["teams"] for p in t.get("participants") or []}), e)
-                    for e in sdh_eps if _days(e["date"], ev["air_date"]) <= 7]
+                    for e in sdh_eps
+                    if 0 <= (date.fromisoformat(e["date"]) - date.fromisoformat(ev["air_date"])).days <= 7]
             best = max(near, key=lambda x: x[0], default=(0, None))
             if best[0] >= 2:
                 sdh_match = best[1]
@@ -506,6 +604,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             caw = cawthon.get(f"wwf-results-{ev['air_date'][:4]}", {}).get(ev["air_date"]) if art["show_type"] == "PPV" else None
             caw_lines = cawthon_lines(caw["ppv"]) if caw and caw.get("ppv") else []
             label_multi(expand_groups(clean_stakes(ev), groups))
+            take_cagematch_marks(ev, cmev)
             caw_lines = with_ring_names(caw_lines, _people(ev))
             rows = compare_show(ev, as_lines(cmev["matches"]), groups, sdh_matches=as_matches(caw_lines) or None)
             rows = apply_votes(ev, _reclass_results(rows, ev), applied,
@@ -555,6 +654,7 @@ def main():
         with (OUT / "rulings.csv").open(encoding="utf-8") as f:
             rulings = {r["event_key"] for r in csv.DictReader(f)}
     cards, review, report = join_all(cm, cawthon, wiki, sdh, fandom, rulings)
+    report["title_rulings"] = apply_title_rulings(cards)
     cards.sort(key=lambda c: (c["air_date"], c["show_type"], c.get("cagematch_nr") or 0))
     write_json(OUT / "cards.json", cards)
     cols = ["event_key", "air_date", "show_type", "title", "class", "vote", "match_order", "ours", "cawthon", "sdh"]

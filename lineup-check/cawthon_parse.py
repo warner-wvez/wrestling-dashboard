@@ -104,9 +104,18 @@ def _loose_heads(page_html, strict):
         yield m.start(1), end, g[:7] + (air or (None, None, None))
 
 
+def _normalize(page_html):
+    """Cawthon italicizes an air date with <em> on a few episodes (Wrestling
+    Challenge 4/1/90) and once breaks it ("<i>2/2/</i>2/2/92", Challenge
+    1992); read both as the usual <i>date</i>."""
+    page_html = re.sub(r"<(/?)em>", r"<\1i>", page_html)
+    return re.sub(r"<i>(\d{1,2}/\d{1,2}/)</i>\1(\d{2})", r"<i>\1\2</i>", page_html)
+
+
 def parse_show_page(page_html):
     """Episodes on a Raw or SmackDown year page: [{air_date, tape_date,
     header_date, date_conflict, city, venue, lines}] in page order."""
+    page_html = _normalize(page_html)
     strict = list(_EPISODE_RE.finditer(page_html))
     heads = sorted([(h.start(), h.end(), (None, None) + h.groups()[1:]) for h in strict] +
                    [(s, e, (None,) + g) for s, e, g in _loose_heads(page_html, strict)])
@@ -148,6 +157,7 @@ def parse_ppv_page(page_html):
     and ppv are match lines from those sections. Every event starts with a
     "Name - City - Venue - Month D, YYYY" line; only events with a
     pay-per-view section are kept (house shows and TV are skipped)."""
+    page_html = _normalize(page_html)
     heads = [h for h in _EVENT_HEAD_RE.finditer(page_html) if h.group(2).split()[0] in MONTHS]
     out = {}
     for n, h in enumerate(heads):
@@ -183,6 +193,7 @@ def parse_events(page_html):
     """Every dated event on a results year page, house shows included:
     [{date, head, lines}]. Each event starts at a bold dated header and runs to
     the next one."""
+    page_html = _normalize(page_html)
     heads = [b for b in _PPV_HEAD_RE.finditer(page_html) if b.group(2).split()[0] in MONTHS]
     out = []
     for n, h in enumerate(heads):
@@ -345,6 +356,7 @@ def parse_special_page(page_html):
     "<b>WWF @ City – Venue – Month D, YYYY (att)</b>" (the taping) followed by
     an italic "<i>Show name – M/D/YY on NBC ..." line (the air date), then
     match lines. [{air_date, tape_date, city, venue, label, lines}]."""
+    page_html = _normalize(page_html)
     heads = [h for h in _SPECIAL_HEAD_RE.finditer(page_html) if h.group(3).split()[0] in MONTHS]
     out = []
     for n, h in enumerate(heads):
@@ -372,6 +384,7 @@ def parse_compilation_page(page_html):
     match ends with its origin "(<i>12/26/87; Madison Square Garden</i>)",
     which _text strips. [{air_date, tape_date, city, venue, lines}] with
     tape_date, city and venue None: the episode itself has no single taping."""
+    page_html = _normalize(page_html)
     heads = list(_COMPILATION_HEAD_RE.finditer(page_html))
     out = []
     for n, h in enumerate(heads):

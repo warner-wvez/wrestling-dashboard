@@ -213,7 +213,9 @@ def test_two_sources_against_the_spine_change_the_card():
     applied = []
     kept = apply_votes(ev, rows, applied)
     m = ev["matches"][0]
-    assert [t["was_winner"] for t in m["teams"]] == [False, True] and m["teams"][1]["match_outcome"] == "win"
+    # The finish comes with the winner: a win by disqualification moves no belt.
+    assert [t["was_winner"] for t in m["teams"]] == [False, True] and m["teams"][1]["match_outcome"] == "dq-win"
+    assert m["result_method"] == "by DQ"
     assert len(ev["matches"]) == 2 and ev["matches"][1]["teams"][0]["participants"] == ["Edge"] and ev["match_count"] == 2
     assert [r["class"] for r in kept] == ["unpaired"] and len(applied) == 2
 

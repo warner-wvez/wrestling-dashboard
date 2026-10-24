@@ -48,12 +48,31 @@ def test_index_counts_skip_studio_shows_and_matchless_rows_and_pool_ppv():
     assert gate(cards, OK, index_counts_from(cm)) == []
 
 
-def test_merge_gives_fresh_ids_and_sets_family_everywhere():
+def _base():
     old = {"id": 3127, "air_date": "2026-10-19", "show_type": "Raw", "title": "Raw", "matches": [{"id": 19999, "teams": []}]}
-    data = {"events": {"3127": old}, "events_by_date": {"2026-10-19": [3127]}}
-    added = merge(data, [_card("Challenge", "1988-08-28"), _card("PPV", "1988-03-27")])
+    return {"events": {"3127": old}, "events_by_date": {"2026-10-19": [3127]}}
+
+
+def test_merge_gives_fresh_ids_and_sets_family_everywhere(tmp_path):
+    data = _base()
+    added = merge(data, [_card("Challenge", "1988-08-28"), _card("PPV", "1988-03-27")], id_map=tmp_path / "ids.json")
     assert [e["id"] for e in added] == [3128, 3129]
     assert added[0]["matches"][0]["id"] == 20000
     assert data["events"]["3127"]["family"] == "main"
     assert data["events"]["3128"]["family"] == "syndicated" and data["events"]["3129"]["family"] == "main"
     assert data["events_by_date"]["1988-08-28"] == [3128]
+
+
+def test_a_card_keeps_its_ids_when_the_next_apply_adds_one_ahead_of_it(tmp_path):
+    ids = tmp_path / "ids.json"
+    first = _card("Raw", "1995-01-30")
+    first["cagematch_nr"] = 1917
+    merge(_base(), [first], id_map=ids)
+    again = _card("Raw", "1995-02-06")      # the join moved its air date
+    again["cagematch_nr"] = 1917
+    early = _card("Raw", "1995-01-23")
+    early["cagematch_nr"] = 1916
+    added = merge(_base(), [early, again], id_map=ids)
+    by_nr = {e["cagematch_nr"]: e for e in added}
+    assert by_nr[1917]["id"] == 3128 and by_nr[1917]["matches"][0]["id"] == 20000
+    assert by_nr[1916]["id"] == 3129 and by_nr[1916]["matches"][0]["id"] == 20001

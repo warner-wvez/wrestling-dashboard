@@ -26,7 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from src.build_update import load_existing, restore_stable_ids  # noqa: E402
+from src.build_update import load_existing  # noqa: E402
 from src.add_new_shows import bump_cache  # noqa: E402
 from src.ship_guard import atomic_write_text  # noqa: E402
 from backfill.common import FAMILIES, OUT, YEARS, read_json, write_json  # noqa: E402
@@ -77,14 +77,58 @@ def gate(cards, status, index_counts) -> list[str]:
     return problems
 
 
-def merge(data, cards) -> list[dict]:
+ID_MAP = OUT / "event_ids.json"
+
+
+def backfill_key(card) -> str:
+    """A card's identity across applies: its Cagematch row where Cagematch is
+    the spine, else its source, show and night. Not the air date of a
+    Cagematch card, which the join can still correct (Raw #96, 1995)."""
+    if card.get("primary_source") == "cagematch" and card.get("cagematch_nr"):
+        return f"cm:{card['cagematch_nr']}"
+    return f"{card.get('primary_source')}:{card['show_type']}:{card['air_date']}:{card['title']}"
+
+
+def stable_ids(new, events, id_map=ID_MAP) -> None:
+    """Give each card the event and match IDs it had in the last apply, so
+    viewers' watched history and saved matches (localStorage, keyed by ID) and
+    the title files that name a show by ID stay pointed at the same card.
+    Matches keep their IDs by position on the card. A card seen for the first
+    time gets IDs above every ID ever used, and the map grows."""
+    known = read_json(id_map) if id_map.exists() else {}
+    used_e = {int(k) for k in events} | {v["id"] for v in known.values()}
+    used_m = {m["id"] for e in events.values() for m in e["matches"]} | \
+             {i for v in known.values() for i in v["matches"]}
+    next_e, next_m = max(used_e) + 1, max(used_m) + 1
+    kept = 0
+    for ev in new:
+        k = backfill_key(ev)
+        prior = known.get(k)
+        if prior:
+            ev["id"], kept = prior["id"], kept + 1
+        else:
+            ev["id"], next_e = next_e, next_e + 1
+        mids = list(prior["matches"]) if prior else []
+        for i, m in enumerate(ev["matches"]):
+            if i < len(mids):
+                m["id"] = mids[i]
+            else:
+                m["id"], next_m = next_m, next_m + 1
+                mids.append(m["id"])
+        known[k] = {"id": ev["id"], "matches": mids}
+    write_json(id_map, known)
+    print(f"  stable IDs: {kept} cards kept their IDs, {len(new) - kept} new", flush=True)
+
+
+def merge(data, cards, id_map=ID_MAP) -> list[dict]:
     events = data["events"]
     for e in events.values():
         e.setdefault("family", FAMILIES.get(e.get("show_type"), "main"))
     new = [dict(c) for c in cards]
     for ev in new:
         ev["family"] = FAMILIES[ev["show_type"]]
-    new = restore_stable_ids(new, {}, events)
+    stable_ids(new, events, id_map)
+    new.sort(key=lambda ev: ev["id"])
     for ev in new:
         events[str(ev["id"])] = ev
         data["events_by_date"].setdefault(ev["air_date"], []).append(ev["id"])
