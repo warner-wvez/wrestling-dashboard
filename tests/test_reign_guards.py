@@ -660,6 +660,34 @@ def test_a_champions_defense_the_night_he_is_stripped_does_not_recrown_him():
         ("2004-07-29", None, ["Booker T"])], reigns
 
 
+def test_a_co_reign_wwe_counts_as_a_vacancy_crowns_neither_co_holder():
+    """Intercontinental title, January 2000: Jericho and Chyna were declared
+    co-champions on Raw 2000-01-03 and both defended as "(c)". WWE.com ends
+    Jericho's reign on 01-03 and starts his next at the Royal Rumble (01-23),
+    so the belt is empty between, and Chyna's defense that night gives her no
+    reign."""
+    t = "WWF Intercontinental Title"
+    events = {}
+    events.update(_ev(1, "1999-12-12", [
+        _m(1, ["Chris Jericho"], ["Chyna"], "Chris Jericho defeats Chyna (c) - TITLE CHANGE !!!",
+           title=t, champ_side="loser")]))
+    events.update(_ev(2, "2000-01-03", [
+        _m(1, ["Chyna"], ["Hardcore Holly"], "Chyna (c) defeats Hardcore Holly", title=t, champ_side="winner")]))
+    events.update(_ev(3, "2000-01-17", [
+        _m(1, ["Rikishi Phatu"], ["Chris Jericho"], "Rikishi Phatu defeats Chris Jericho (c) by DQ",
+           title=t, champ_side="loser", win_outcome="dq-win", lose_outcome="dq-loss")]))
+    rumble = _m(1, ["Chris Jericho"], ["Chyna", "Hardcore Holly"], "Chris Jericho (c) defeats Chyna (c) and Hardcore Holly",
+                title=t, champ_side="both")
+    rumble["title_result"] = {"title": t, "champions": ["Chris Jericho"]}
+    events.update(_ev(4, "2000-01-23", [rumble]))
+    vacancy = [{"title": t, "date": "2000-01-03", "vacate": True, "vacated_by": "Chris Jericho",
+                "unrecognized_holders": ["Chris Jericho", "Chyna"]}]
+    reigns = build_title_reigns(events, offcard=vacancy)[lineage_name(t, "1999-12-12")]
+    assert [(r["start"], r["end"], r["champion_names"]) for r in reigns][1:] == [
+        ("1999-12-12", "2000-01-03", ["Chris Jericho"]),
+        ("2000-01-23", None, ["Chris Jericho"])], reigns
+
+
 def test_a_no_disqualification_title_match_is_not_a_qualifier():
     """SmackDown 2001-04-19: Kane and The Undertaker won the WWF tag titles
     from Edge and Christian in a "No Disqualification Match". The belt filter

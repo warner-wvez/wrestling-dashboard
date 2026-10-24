@@ -1389,6 +1389,7 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             'title_result': None if change.get('vacate') else {'champions': list(change['champions'])},
             'vacate': bool(change.get('vacate')),
             'vacated_by': change.get('vacated_by') or '',
+            'unrecognized_holders': change.get('unrecognized_holders') or [],
             'previous_holds_until': change.get('previous_holds_until'),
             # A vacancy of a reign won that same night sorts after the card
             # (André the Giant won the belt on The Main Event, 1988-02-05, and
@@ -1473,7 +1474,8 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             # it, so a contender match in the gap crowns nobody.
             if m.get('vacate'):
                 if current is not None:
-                    vacated_from = (m['wrestled'], list(current['champion_names']))
+                    vacated_from = (m['wrestled'], list(current['champion_names']),
+                                    list(m.get('unrecognized_holders') or []))
                     current['end'] = m['air_date']
                     current['end_event_id'] = None
                     current['vacated'] = True
@@ -1488,6 +1490,14 @@ def build_title_reigns(events: dict, canon=None, offcard=None) -> dict[str, list
             if vacant and vacated_from and m['wrestled'] == vacated_from[0] and champ_team \
                     and _champions_overlap(vacated_from[1], champ_team.get('participants') or [], canon_fn) \
                     and not m.get('title_change'):
+                continue
+            # A co-reign WWE counts as a vacancy: Jericho and Chyna defended
+            # as "(c)" through January 2000 (Chyna beat Hardcore Holly on Raw
+            # 2000-01-03), and WWE has the belt empty until the Royal Rumble.
+            # Their defenses fill nothing; a ruling or a marked change does.
+            if vacant and vacated_from and vacated_from[2] and champ_team \
+                    and _champions_overlap(vacated_from[2], champ_team.get('participants') or [], canon_fn) \
+                    and not m.get('title_change') and not (m.get('title_result') or {}).get('champions'):
                 continue
 
             if first:

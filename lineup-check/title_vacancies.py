@@ -49,6 +49,10 @@ NOT_RECOGNIZED = re.compile(r"no longer recognized", re.I)
 AIRED = re.compile(r"[Aa]ired on tape delay on ([A-Z][a-z]+ \d{1,2}, \d{4})")
 # "WWE recognizes the vacancy as starting on February 5, 1988": WWE's day wins.
 VACANCY_STARTS = re.compile(r"recognizes the vacancy as starting on ([A-Z][a-z]+ \d{1,2}, \d{4})")
+# "WWE does not recognize this period as an official reign but as a vacancy":
+# Jericho and Chyna's co-reign of January 2000 (WWE.com ends Jericho's reign
+# on 2000-01-03 and starts his next at the Royal Rumble, 01-23).
+AS_VACANCY = re.compile(r"\bbut as a vacancy\b", re.I)
 
 
 # Teams a list names where our cards name the members.
@@ -95,8 +99,11 @@ def main():
                 keep.append({**where, "date": day, "order": -1, "champions": champs, "awarded": True,
                              "why": r["notes"][:300], "source": page})
                 continue
-            if r["champion"] or not (lo < r["date"] <= hi) or not VACATED.search(r["notes"]) \
-                    or NOT_RECOGNIZED.search(r["notes"]):
+            # An unrecognized reign WWE counts as a vacancy is one: the list
+            # names co-holders, WWE an empty belt.
+            as_vacancy = r.get("type") == "unrecognized" and bool(AS_VACANCY.search(r["notes"]))
+            if (r["champion"] and not as_vacancy) or not (lo < r["date"] <= hi) \
+                    or not (as_vacancy or VACATED.search(r["notes"])) or NOT_RECOGNIZED.search(r["notes"]):
                 continue
             aired = VACANCY_STARTS.search(r["notes"]) or AIRED.search(r["notes"])
             day = datetime.strptime(aired.group(1), "%B %d, %Y").date().isoformat() if aired else r["date"]
@@ -117,6 +124,9 @@ def main():
                 continue
             entry = {**where, "date": day, "vacate": True, "vacated_by": lost,
                      "why": r["notes"][:300], "source": page}
+            if as_vacancy:
+                # Their "(c)" defenses in the gap fill nothing (the walk).
+                entry["unrecognized_holders"] = [CORPUS_NAMES.get(n, n) for n in r["members"]]
             # Won and vacated the same night (André the Giant, 1988-02-05): the
             # vacancy follows that night's card. A belt held up and refilled
             # the same night (Jarrett and Holly, 1995-04-26) precedes it.

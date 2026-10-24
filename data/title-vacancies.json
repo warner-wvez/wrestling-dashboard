@@ -153,6 +153,18 @@
    "source": "List of WWE Champions"
   },
   {
+   "title": "WWE Intercontinental Title",
+   "date": "2000-01-03",
+   "vacate": true,
+   "vacated_by": "Chris Jericho",
+   "why": "On December 28, 1999 (aired December 30, 1999) on SmackDown!, a title match between Chyna and Jericho ended in a double pinfall; as a result they were recognized as co-champions. WWE does not recognize this period as an official reign but as a vacancy.",
+   "source": "List of WWE Intercontinental Champions",
+   "unrecognized_holders": [
+    "Chris Jericho",
+    "Chyna"
+   ]
+  },
+  {
    "lineage": "lineage::womens-1956",
    "date": "2001-11-01",
    "vacate": true,
