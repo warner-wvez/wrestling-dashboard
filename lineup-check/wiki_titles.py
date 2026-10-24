@@ -46,6 +46,9 @@ def _unlink(s):
     s = re.sub(r"<ref[^>]*/>|<ref.*?</ref>|<ref[^>]*>.*$", "", s, flags=re.S)
     s = re.sub(r"\{\{(?:sortname|Sortname)\|([^|}]*)\|([^|}]*)(?:\|[^}]*)?\}\}", r"\1 \2", s)
     s = re.sub(r"\{\{sort\|[^|}]*\|([^}]*)\}\}", r"\1", s)
+    # A one-argument sort is its own display ("{{sort|The Iron Sheik and
+    # Nikolai Volkoff}}", the tag title won at WrestleMania I).
+    s = re.sub(r"\{\{sort\|([^|{}]*)\}\}", r"\1", s)
     s = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]*)\]\]", r"\1", s)
     s = re.sub(r"\{\{[^{}]*\}\}", "", s)
     return re.sub(r"\s+", " ", s.replace("''", "")).strip(" |")
@@ -118,7 +121,7 @@ def reigns(text):
             f.setdefault(mk.group(1), b[mk.end():end].split("\n|")[0].strip())
         d = _date(f.get("date", ""))
         if d:
-            out.append({"date": d, "champion": _unlink(f.get("champion", "")),
+            out.append({"date": d, "type": f.get("type", "").strip(), "champion": _unlink(f.get("champion", "")),
                         "members": _members(f.get("champion", "")), "event": _unlink(f.get("event", "")),
                         "location": _unlink(f.get("location", "")), "notes": _unlink(f.get("notes", ""))})
     return out
