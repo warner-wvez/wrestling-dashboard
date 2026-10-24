@@ -236,7 +236,17 @@ def expand_groups(ev, groups):
                     parts.extend(_nearest(groups[key], ev["air_date"]))
                 else:
                     parts.append(p)
-            t["participants"] = parts
+            # Wikipedia writes "The British Bulldogs (Davey Boy Smith and Dynamite
+            # Kid)" and the parser keeps the label beside the members; a label
+            # is never a wrestler, so it goes once the members are there.
+            label = t.get("team_name")
+            parts = [p for p in parts if not (len(parts) >= 3 and (nkey(p) in groups or p == label)
+                                              and any(q != p for q in parts))]
+            seen, out = set(), []
+            for p in parts:
+                if p not in seen:
+                    seen.add(p); out.append(p)
+            t["participants"] = out
     return ev
 
 
@@ -388,7 +398,7 @@ def _review_rows(rows, event_key):
 def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
     cards, review, applied = [], [], []
     report = {"by_status": Counter(), "by_family": Counter(), "unpaired_dates": 0,
-              "out_of_range": 0, "no_match": 0, "ruled": 0}
+              "out_of_range": 0, "no_match": 0, "ruled": 0, "same_night_arenas": 0}
     in_range = []
     for e in cm:
         if int(e["air_date"][:4]) not in YEARS:
@@ -507,8 +517,15 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             cards.append(_strip(ev))
     # PPV and SNME rows Wikipedia has no card for (Friday Night's Main Event
     # 1997, a special the list skips) stand on Cagematch alone, never dropped.
+    # A row on the same night as a claimed Wikipedia card of the same kind is
+    # that card's other arena (Cagematch files WrestleMania 2 as three shows),
+    # not a second show: counted, not shipped.
+    wiki_nights = {(c["show_type"], c["air_date"]) for c in cards if c["primary_source"] == "wikipedia"}
     for e in in_range:
         if e["show_type"] in ("PPV", "SNME") and e["cagematch_nr"] not in taken and e["cagematch_nr"] not in held:
+            if (e["show_type"], e["air_date"]) in wiki_nights or (e["show_type"], e.get("tape_date")) in wiki_nights:
+                report["same_night_arenas"] += 1
+                continue
             ev = dict(e, id=0, verification_status="single-source")
             cards.append(_strip(ev))
     if rulings:

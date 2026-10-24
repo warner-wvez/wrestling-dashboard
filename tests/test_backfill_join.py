@@ -216,3 +216,27 @@ def test_two_sources_against_the_spine_change_the_card():
     assert [t["was_winner"] for t in m["teams"]] == [False, True] and m["teams"][1]["match_outcome"] == "win"
     assert len(ev["matches"]) == 2 and ev["matches"][1]["teams"][0]["participants"] == ["Edge"] and ev["match_count"] == 2
     assert [r["class"] for r in kept] == ["unpaired"] and len(applied) == 2
+
+
+def test_other_arenas_of_a_claimed_ppv_night_are_not_second_shows():
+    wiki = [{"title": "WrestleMania 2", "show_type": "PPV", "list_date": "1986-04-07",
+             "events": [fresh_event(air_date="1986-04-07", show_type="PPV", title="WrestleMania 2", ppv_name="WrestleMania 2", primary_source="wikipedia",
+                                    matches=[fresh_match(1, [{"participants": ["Hulk Hogan"], "was_winner": True}, {"participants": ["King Kong Bundy"], "was_winner": False}])])]}]
+    cm = [_cm("PPV", "1986-04-07", ["Hulk Hogan", "King Kong Bundy"], 1, derivation="live-broadcast"),
+          _cm("PPV", "1986-04-07", ["Davey Boy Smith", "Greg Valentine"], 2, derivation="live-broadcast"),
+          _cm("PPV", "1986-04-07", ["Mr. T", "Roddy Piper"], 3, derivation="live-broadcast")]
+    cards, review, report = join_all(cm, {}, wiki, {}, {})
+    assert len(cards) == 1 and cards[0]["primary_source"] == "wikipedia" and report["same_night_arenas"] == 2
+
+
+def test_expand_groups_drops_a_team_label_kept_beside_its_members():
+    from backfill.join import expand_groups
+    ev = {"air_date": "1986-04-07", "matches": [fresh_match(1, [
+        {"participants": ["British Bulldogs", "Davey Boy Smith", "Dynamite Kid"], "was_winner": True, "team_name": "British Bulldogs"},
+        {"participants": ["Dream Team", "Brutus Beefcake", "Greg Valentine"], "was_winner": False, "team_name": "Dream Team"}])]}
+    groups = {"british bulldogs": [("1986-04-07", ["Davey Boy Smith", "Dynamite Kid"])]}
+    out = expand_groups(ev, groups)
+    assert out["matches"][0]["teams"][0]["participants"] == ["Davey Boy Smith", "Dynamite Kid"]
+    assert out["matches"][0]["teams"][1]["participants"] == ["Brutus Beefcake", "Greg Valentine"]
+    solo = {"air_date": "1986-04-07", "matches": [fresh_match(1, [{"participants": ["The Rock"], "was_winner": True}, {"participants": ["Mankind"], "was_winner": False}])]}
+    assert expand_groups(solo, {})["matches"][0]["teams"][0]["participants"] == ["The Rock"]
