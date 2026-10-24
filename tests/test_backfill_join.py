@@ -269,3 +269,9 @@ def test_a_broadcast_date_before_the_taping_is_ignored():
     cm = [_cm("Jakked", "2000-01-17", ["Crash Holly", "Pete Gas"], 14362)]
     cards, review, _ = join_all(cm, {}, [], {}, {}, broadcast={"14362": "2000-01-10"})
     assert cards[0]["air_date"] == "2000-01-17" and [r for r in review if r["class"] == "date_unconfirmed"]
+
+
+def test_a_show_that_airs_after_2000_leaves_the_backfill():
+    cm = [_cm("Raw", "2000-12-29", ["Raven", "Tazz"], 2205)]
+    cards, review, report = join_all(cm, {}, [], {}, {}, broadcast={"2205": "2001-01-01"})
+    assert cards == [] and report["aired_after_range"] == 1

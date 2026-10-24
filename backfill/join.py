@@ -671,6 +671,13 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset(), broadcast=None
                 continue
             ev = dict(e, id=0, verification_status="single-source")
             cards.append(_strip(ev))
+    # A show taped in late December 2000 can air in January 2001 (Raw #397,
+    # taped 12-29, aired 2001-01-01), which the 2001 corpus already carries or
+    # leaves out: the backfill ends with what aired in 2000.
+    late = {c.get("cagematch_nr") for c in cards if int(c["air_date"][:4]) not in YEARS}
+    report["aired_after_range"] = len(late)
+    cards = [c for c in cards if int(c["air_date"][:4]) in YEARS]
+    review = [r for r in review if not r.get("air_date") or int(r["air_date"][:4]) in YEARS]
     if rulings:
         before = len(review)
         review = [r for r in review if r["event_key"] not in rulings
