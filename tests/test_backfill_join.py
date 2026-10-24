@@ -201,3 +201,18 @@ def test_studio_vote_only_counts_lines_with_the_same_people():
     cards, review, report = join_all(cm, caw, [], {}, {})
     pt = next(c for c in cards if c["show_type"] == "PrimeTime")
     assert pt["verification_status"] == "verified" and review == []
+
+
+def test_two_sources_against_the_spine_change_the_card():
+    from backfill.join import apply_votes
+    ev = {"air_date": "1998-12-28", "matches": [fresh_match(1, [{"participants": ["Road Dogg"], "was_winner": True}, {"participants": ["Val Venis"], "was_winner": False}], result_method="by DQ")]}
+    rows = [{"class": "result", "vote": "fix_result_same_people", "match_order": 1, "his_winners": ["Val Venis"], "event_key": "k", "cawthon": "Val Venis defeated Road Dogg via disqualification"},
+            {"class": "missing_match", "vote": "add_match", "match_order": "", "event_key": "k",
+             "cawthon": "Edge pinned Al Snow at 3:00", "sdh_match": None},
+            {"class": "unpaired", "vote": "split", "match_order": 1, "event_key": "k"}]
+    applied = []
+    kept = apply_votes(ev, rows, applied)
+    m = ev["matches"][0]
+    assert [t["was_winner"] for t in m["teams"]] == [False, True] and m["teams"][1]["match_outcome"] == "win"
+    assert len(ev["matches"]) == 2 and ev["matches"][1]["teams"][0]["participants"] == ["Edge"] and ev["match_count"] == 2
+    assert [r["class"] for r in kept] == ["unpaired"] and len(applied) == 2

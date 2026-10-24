@@ -306,6 +306,63 @@ def _strip(ev):
     return ev
 
 
+APPLIED_VOTES = {"fix_result", "fix_result_same_people", "add_match", "add_match_same_people", "fix_lineup"}
+
+
+def apply_votes(ev, rows, applied, event_key=""):
+    """Two sources against the spine: the comparer's vote says the third
+    source agrees with the other record, so the card takes that reading
+    (the spec's two-sources-agree rule). A winner is swapped, a missing match
+    appended, an extra name dropped. Every change lands in `applied` so the
+    run report lists it, and the row leaves the sheet."""
+    kept = []
+    by_order = {m["match_order"]: m for m in ev["matches"]}
+    for r in rows:
+        vote, cls = r.get("vote"), r.get("class")
+        done = False
+        if vote in ("fix_result", "fix_result_same_people") and cls == "result" and r.get("match_order") in by_order:
+            m = by_order[r["match_order"]]
+            his = set(r.get("his_winners") or [])
+            if not his:
+                c = cawthon_lines([r.get("cawthon") or ""])
+                his = set(c[0]["winners"]) if c and c[0].get("result") == "win" else set()
+            his = {RING_NAMES.get(n, [n])[0] if n not in _people(ev) and any(x in _people(ev) for x in RING_NAMES.get(n, [])) else n for n in his}
+            winner = [t for t in m["teams"] if set(t["participants"]) & his]
+            if len(winner) == 1:
+                for t in m["teams"]:
+                    t["was_winner"] = t is winner[0]
+                    t["match_outcome"] = "win" if t is winner[0] else "loss"
+                m["result_method"] = "defeated" if m.get("result_method") in (None, "No Contest", "Draw", "No Result") else m["result_method"]
+                done = True
+        elif vote in ("add_match", "add_match_same_people") and cls == "missing_match":
+            sm = r.get("sdh_match")
+            if sm and sm.get("teams"):
+                new = fresh_match(len(ev["matches"]) + 1, [{"participants": t["participants"], "was_winner": t.get("was_winner")} for t in sm["teams"]],
+                                  match_type=sm.get("match_type"), title_at_stake=sm.get("title_at_stake"),
+                                  raw_description=r.get("cawthon") or "")
+            else:
+                c = cawthon_lines([r.get("cawthon") or ""])
+                new = cawthon_match(c[0], len(ev["matches"]) + 1) if c else None
+            if new and any(t["participants"] for t in new["teams"]):
+                ev["matches"].append(new)
+                by_order[new["match_order"]] = new
+                done = True
+        elif vote == "fix_lineup" and cls == "extra_name" and r.get("name") and r.get("match_order") in by_order:
+            m = by_order[r["match_order"]]
+            for t in m["teams"]:
+                if t.get("team_number") == r.get("team_number") and r["name"] in t["participants"] and len(t["participants"]) > 1:
+                    t["participants"] = [x for x in t["participants"] if x != r["name"]]
+                    t["team_name"] = " & ".join(t["participants"])
+                    done = True
+        if done:
+            applied.append({"event_key": r.get("event_key") or event_key, "match_order": r.get("match_order", ""), "class": cls,
+                            "vote": vote, "ours": r.get("ours", ""), "other": r.get("cawthon", ""), "third": r.get("sdh", "")})
+        else:
+            kept.append(r)
+    ev["match_count"] = len(ev["matches"])
+    return kept
+
+
 def _reclass_results(rows, ev):
     """A result row only means "same match, different winner" when the other
     source's line names everyone on our match; otherwise the pairing crossed
@@ -329,7 +386,7 @@ def _review_rows(rows, event_key):
 
 
 def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
-    cards, review = [], []
+    cards, review, applied = [], [], []
     report = {"by_status": Counter(), "by_family": Counter(), "unpaired_dates": 0,
               "out_of_range": 0, "no_match": 0, "ruled": 0}
     in_range = []
@@ -394,6 +451,7 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
         ev["id"] = ev.get("id") or 0
         if ep:
             rows = compare_show(ev, with_ring_names(ep["matches"], _people(ev)), groups, sdh_matches=third)
+            rows = apply_votes(ev, _reclass_results(rows, ev), applied, key)
             ev["verification_status"] = bucket(rows)
             _fill_from_cawthon(ev, ep["matches"])
         elif third:
@@ -440,6 +498,8 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
             label_multi(expand_groups(clean_stakes(ev), groups))
             caw_lines = with_ring_names(caw_lines, _people(ev))
             rows = compare_show(ev, as_lines(cmev["matches"]), groups, sdh_matches=as_matches(caw_lines) or None)
+            rows = apply_votes(ev, _reclass_results(rows, ev), applied,
+                               f"{art['show_type']}|{ev['air_date']}|{cmev['cagematch_nr']}")
             ev["verification_status"] = bucket(rows)
             if caw_lines:
                 _fill_from_cawthon(ev, caw_lines)
@@ -459,6 +519,8 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset()):
     for c in cards:
         report["by_status"][c["verification_status"]] += 1
         report["by_family"][c["show_type"]] += 1
+    report["applied_votes"] = len(applied)
+    report["_applied"] = applied
     return cards, review, report
 
 
@@ -484,6 +546,11 @@ def main():
         w.writeheader()
         for r in sorted(review, key=lambda r: (r.get("class", ""), r.get("air_date", ""))):
             w.writerow({k: r.get(k, "") for k in cols})
+    applied = report.pop("_applied", [])
+    with (OUT / "applied_votes.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=["event_key", "match_order", "class", "vote", "ours", "other", "third"])
+        w.writeheader()
+        w.writerows(applied)
     report["by_status"] = dict(report["by_status"])
     report["by_family"] = dict(report["by_family"])
     report["review_rows"] = len(review)
