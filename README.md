@@ -42,11 +42,13 @@ Open `dist/wrestling-dashboard.html` directly in a browser. It inlines the entir
 
 The live site (`index.html` plus the `shards/` directory) is served statically, e.g. `python3 -m http.server` from the repo root, then open `http://localhost:8000/`.
 
-To extend the corpus toward the present day and rebuild every artifact (lean core, era shards, and the single-file build):
+To add the shows that aired since the newest one on file and rebuild every artifact (lean core, era shards, the single-file build, the titles and belts sidecars, and the service worker cache version):
 
 ```bash
-uv run --with requests --with beautifulsoup4 src/build_update.py
+uv run --with requests --with beautifulsoup4 src/add_new_shows.py [--dry-run] [--summary summary.md]
 ```
+
+It never changes a show already on file, so every correction in `src/migrations/` carries through. A GitHub Actions job (`.github/workflows/weekly-shows.yml`) runs it every Tuesday and Saturday, refreshes title changes on shows we don't carry, audits every belt against Wikipedia, and opens one pull request to read and merge; the site only changes when that pull request is merged. `src/build_update.py --refetch` still re-fetches 2020 on from scratch, for a parser fix; it drops those corrections, so the migrations that touch 2020 on have to run again after it.
 
 To regenerate the single-file build from the historical SQLite database at `data/wrestling.db`:
 
@@ -144,7 +146,7 @@ Historical (2001-2019)            Present day (2020 to now)
                                                  Browser (static, offline-capable)
 ```
 
-`build_update.py` is idempotent: each run drops everything from 2020 on, keeps the clean pre-2020 base (with its event IDs), and re-ingests the present-day range with the current parsers, so an improved parse fully replaces the prior one instead of de-duping against it.
+`build_update.py` is idempotent: each run drops everything from 2020 on, keeps the clean pre-2020 base (with its event IDs), and re-ingests the present-day range with the current parsers, so an improved parse fully replaces the prior one instead of de-duping against it. Because it drops 2020 on, it also drops the migrations' corrections to that range, so it only runs with `--refetch`. Weekly updates go through `add_new_shows.py`, which adds shows after the newest one and leaves everything already on file alone.
 
 ### Why a lean core plus lazy era shards
 

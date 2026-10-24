@@ -1815,7 +1815,7 @@
    ],
    "event": "NXT",
    "place": "Orlando, FL",
-   "why": "Had Mysterio lost, he would've been forced to leave the Judgement Day.",
+   "why": "Had Mysterio lost, he would've been forced to leave The Judgment Day.",
    "sources": {
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_North_American_Champions #20",
     "WWE.com": "https://www.wwe.com/titlehistory/nxt-north-american-championship"
@@ -2282,6 +2282,75 @@
    "sources": {
     "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Women's_North_American_Champions #9",
     "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-na-wm.html"
+   }
+  },
+  {
+   "title": "WWE Women's Tag Team Title",
+   "title_name": "WWE Women's Tag Team Title",
+   "date": "2026-07-18",
+   "order": 0,
+   "champions": [
+    "Fallon Henley",
+    "Lainey Reid"
+   ],
+   "event": "Saturday Night's Main Event XLV",
+   "place": "New York, NY",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_Women's_Tag_Team_Champions #37",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-wt.html",
+    "WWE.com": "https://www.wwe.com/classics/titlehistory/wwe-womens-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE NXT Tag Team Title",
+   "title_name": "WWE NXT Tag Team Title",
+   "date": "2026-08-04",
+   "order": 0,
+   "champions": [
+    "Myles Borne",
+    "Tavion Heights"
+   ],
+   "event": "NXT",
+   "place": "Orlando, FL",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_NXT_Tag_Team_Champions #44",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/nxt/wwe-nxt-t.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/nxt-tag-team-championship"
+   }
+  },
+  {
+   "title": "WWE United States Title",
+   "title_name": "WWE United States Title",
+   "date": "2026-09-06",
+   "order": 0,
+   "champions": [
+    "Trick Williams"
+   ],
+   "event": "Sunday Night's Main Event",
+   "place": "Atlanta, GA",
+   "why": "",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_WWE_United_States_Champions #195",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwf-us-h.html"
+   }
+  },
+  {
+   "lineage": "lineage::womens-world",
+   "title_name": "WWE Women's World Championship",
+   "date": "2026-09-12",
+   "order": 0,
+   "champions": [
+    "Stephanie Vaquer"
+   ],
+   "event": "WWE South America Live Tour",
+   "place": "Santiago, Chile",
+   "why": "Becky Lynch was the special guest referee.",
+   "sources": {
+    "Wikipedia": "https://en.wikipedia.org/wiki/List_of_Women's_World_Champions_(WWE) #34",
+    "Duncan & Will": "https://www.wrestling-titles.com/wwe/wwe-sd-wm.html",
+    "WWE.com": "https://www.wwe.com/titlehistory/smackdown-womens-championship"
    }
   }
  ]

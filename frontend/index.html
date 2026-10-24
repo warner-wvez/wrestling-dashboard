@@ -4117,11 +4117,11 @@
     return `${d} ${TITLE_MONTHS[(m || 1) - 1]} ${y}`;
   }
   function titleChampHTML(t) {
-    // A champion in the corpus links to their profile; an NXT/EVOLVE/ID holder
-    // who is not in it renders as plain text. A tag title names the team.
-    const links = t.champions.map(c => c.slug
-      ? `<a class="title-champ-link" href="#wrestler/${esc(c.slug)}">${esc(c.name)}</a>`
-      : `<span>${esc(c.name)}</span>`).join(' & ');
+    // Plain text: the whole row is already a link to the belt page, and a link
+    // inside it made the browser close the row early, so the champion fell out
+    // of the card onto a line of its own. The belt page links each champion.
+    // A tag title names the team.
+    const links = t.champions.map(c => `<span>${esc(c.name)}</span>`).join(' & ');
     return t.team_name ? `${esc(t.team_name)} <span class="title-team">(${links})</span>` : links;
   }
   function reignDate(iso) {
@@ -4218,8 +4218,10 @@
       <div class="titles-note">Champions and reign counts stay hidden while spoilers are off, and belts that don't exist yet at your date are left out.</div>`;
     const activeRow = (t) => {
       if (spoilers) {
+        // A belt with no shows on file keeps the holder from the last titles
+        // snapshot, so it says when that was instead of a frozen day count.
         const since = t.since
-          ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.days_held ? `, ${t.days_held} days` : ''}</span>`
+          ? ` <span class="title-since">&middot; since ${esc(fmtTitleSince(t.since))}${t.as_of ? `, last checked ${esc(fmtTitleSince(t.as_of))}` : t.days_held ? `, ${t.days_held} days` : ''}</span>`
           : '';
         return titleRowHTML(t, `held by ${titleChampHTML(t)}${since}`);
       }

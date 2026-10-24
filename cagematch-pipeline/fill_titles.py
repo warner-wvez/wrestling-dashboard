@@ -22,6 +22,7 @@ import json
 import re
 import sys
 from collections import Counter, defaultdict
+from datetime import date, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -160,12 +161,51 @@ def main() -> None:
         })
     retired.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
 
-    board, linked, unlinked = [], 0, 0
+    # The holder on cm_titles.json is a snapshot of the Cagematch titles page,
+    # and it goes stale the day after the scrape (Cagematch also blocks scripts
+    # from some networks, so it cannot simply be re-scraped). Our own reign
+    # history moves with every show added, so where we carry the belt it
+    # decides: a newer champion replaces the snapshot's, the same champion keeps
+    # the snapshot's start date, and days held count to the newest show on file.
+    # A belt we carry no shows for (EVOLVE, ID, Speed) keeps the snapshot holder
+    # and says the date it was taken, instead of a day count frozen at scrape time.
+    newest_show = max((e["air_date"] for e in bundle["events"].values() if e.get("air_date")), default=None)
+    snap_dates = Counter(
+        (date.fromisoformat(t["since"]) + timedelta(days=t["days_held"])).isoformat()
+        for t in titles if t["champions"] and t["since"] and t["days_held"] is not None)
+    snapshot_date = snap_dates.most_common(1)[0][0] if snap_dates else None
+
+    def days_between(start, end):
+        return (date.fromisoformat(end) - date.fromisoformat(start)).days if start and end else None
+
+    board, linked, unlinked, from_corpus, stale = [], 0, 0, [], []
     for t in titles:
         if not t["champions"]:                       # retired lineage (INACTIVE)
             continue
+        reigns = reigns_by_lineage.get(page_key(t), [])
+        top = reigns[0] if reigns else None
+        snap_names = {normkey(n) for n in t["champions"]}
+        top_names = {normkey(c["name"]) for c in top["champions"]} if top else set()
+        holder = {"names": t["champions"], "team_name": t["team_name"], "since": t["since"],
+                  "days_held": t["days_held"], "as_of": None}
+        # The same champion only keeps the snapshot's start date if nobody else
+        # held the belt since: Trick Williams lost the US title in August 2026
+        # and won it back in September, which is a new reign, not the April one.
+        lost_since = any({normkey(c["name"]) for c in r["champions"]} != snap_names
+                         for r in reigns if r["start"] > (t["since"] or ""))
+        if top and not top.get("end") and top_names == snap_names and not lost_since:
+            holder["days_held"] = days_between(t["since"], newest_show)
+        elif top and not top.get("end") and top["start"] >= (t["since"] or ""):
+            holder = {"names": [c["name"] for c in top["champions"]], "team_name": None,
+                      "since": top["start"], "days_held": days_between(top["start"], newest_show),
+                      "as_of": None}
+            from_corpus.append(f"{t['title']}: {' & '.join(t['champions'])} -> {' & '.join(holder['names'])} ({top['start']})")
+        else:
+            holder["days_held"] = None
+            holder["as_of"] = snapshot_date
+            stale.append(t["title"])
         champs = []
-        for name in t["champions"]:
+        for name in holder["names"]:
             slug = slug_for(name)
             champs.append({"name": name, "slug": slug})
             if slug:
@@ -181,14 +221,20 @@ def main() -> None:
             "title": t["title"],
             "belt": belt,
             "champions": champs,
-            "team_name": t["team_name"],
-            "since": t["since"],
-            "days_held": t["days_held"],
+            "team_name": holder["team_name"],
+            "since": holder["since"],
+            "days_held": holder["days_held"],
+            "as_of": holder["as_of"],
             "rating": t["rating"],
             "votes": t["votes"],
             "url": TITLE_URL.format(t["cagematch_title_nr"]),
-            "reigns": reigns_by_lineage.get(page_key(t), []),
+            "reigns": reigns,
         })
+    print(f"holders: snapshot taken {snapshot_date}, newest show {newest_show}")
+    for line in from_corpus:
+        print(f"  newer champion from our shows: {line}")
+    if stale:
+        print(f"  {len(stale)} belt(s) we carry no current reign for keep the snapshot holder: {', '.join(stale)}")
 
     board.sort(key=lambda t: (t["rating"] is not None, t["rating"] or 0), reverse=True)
 
