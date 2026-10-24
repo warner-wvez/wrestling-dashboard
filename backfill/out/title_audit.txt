@@ -1,0 +1,14 @@
+## WWE Championship: ours 146 reigns, Wikipedia 146 in 1985-05-11..2026-10-19, 146 matched, 0 differences, 0 off by date
+## WWE Women's Championship (1956-2010): ours 57 reigns, Wikipedia 57 in 1985-03-31..2010-09-19, 57 matched, 0 differences, 0 off by date
+## World Tag Team Championship (1971-2010): ours 143 reigns, Wikipedia 143 in 1985-03-31..2010-07-18, 143 matched, 0 differences, 0 off by date
+## Million Dollar Championship: ours 7 reigns, Wikipedia 7 in 1990-04-01..2021-08-22, 7 matched, 0 differences, 0 off by date
+## WWE Intercontinental Title: ours 186 reigns, Wikipedia 186 in 1985-03-31..2026-10-19, 185 matched, 1 differences, 0 off by date
+   replace ours [('2000-01-03', 'Chyna')]
+           wiki [('2000-01-03', 'Chris Jericho and Chyna', 'Raw')]
+## WWF Light Heavyweight Title: ours 12 reigns, Wikipedia 13 in 1997-12-07..2001-10-08, 12 matched, 1 differences, 0 off by date
+   insert  ours []
+           wiki [('2001-03-13', 'Crash Holly', 'Heat')]
+## WWF European Title: ours 37 reigns, Wikipedia 37 in 1997-03-03..2002-07-22, 37 matched, 0 differences, 0 off by date
+## WWF Hardcore Title: ours 238 reigns, Wikipedia 230 in 1998-11-09..2002-08-26, 230 matched, 1 differences, 0 off by date
+   delete  ours [('2002-04-06', 'Bubba Ray Dudley'), ('2002-04-07', 'William Regal'), ('2002-04-07', 'Goldust'), ('2002-04-07', 'Raven'), ('2002-04-07', 'Bubba Ray Dudley'), ('2002-04-12', 'William Regal'), ('2002-04-12', 'Spike Dudley'), ('2002-04-12', 'Goldust')]
+           wiki []
