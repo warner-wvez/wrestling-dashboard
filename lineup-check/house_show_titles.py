@@ -128,17 +128,19 @@ def main():
         wt = wrestling_titles(WT_PAGES[name]) if name in WT_PAGES else ""
         rows = reigns(fetch(page)["text"])
         for i, r in enumerate(rows):
-            if not r["champion"] or not (lo < r["date"] <= hi):
+            if not r["champion"] or not (lo < r["date"] <= hi) or r.get("type") == "unrecognized":
                 continue
             if not (HOUSE.search(r["event"]) or RECOGNIZED.search(r["notes"])):
                 continue
             names = [corpus_name(n) for n in (r["members"] if "Tag" in name else [r["champion"]])]
             order = sum(1 for x in rows[:i] if x["date"] == r["date"])
             seen = {"Wikipedia": f"{page} #{i + 1}: {r['event']}, {r['location']}"}
-            line = cawthon_lists(cawthon, r["date"], names)
+            # A team is often written by its name alone ("The Quebecers").
+            said = names + ([re.sub(r"<[^>]+>|\(.*?\)", " ", r["champion"]).strip()] if "Tag" in name else [])
+            line = cawthon_lists(cawthon, r["date"], said)
             if line:
                 seen["Cawthon"] = line
-            if wt and wt_lists(wt, r["date"], names):
+            if wt and wt_lists(wt, r["date"], said):
                 seen["Duncan & Will"] = WT + WT_PAGES[name]
             entry = {**where, "title_name": name, "date": r["date"], "order": order, "champions": names,
                      "place": r["location"], "why": r["notes"][:300], "sources": seen}

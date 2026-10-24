@@ -32,6 +32,7 @@ for p in (str(HERE), str(ROOT)):
 
 from title_audit import EXTRA  # noqa: E402
 from wiki_titles import fetch, reigns  # noqa: E402
+from src.export_to_html import TAPED_ORDER_BEFORE  # noqa: E402
 
 OUT = ROOT / "data" / "title-vacancies.json"
 MORE = {   # word-keyed titles beyond the audit's, our title string -> list
@@ -43,13 +44,16 @@ MORE = {   # word-keyed titles beyond the audit's, our title string -> list
 }
 AWARDED = re.compile(r"\bawarded\b", re.I)
 CORPUS_NAMES = {}   # a list's spelling -> the corpus's, where they differ
-VACATED = re.compile(r"vacat|stripped|relinquish|deactivat|left the .*belt in the ring", re.I)
+VACATED = re.compile(r"vacat|stripped|relinquish|deactivat|left the .*belt in the ring|held up", re.I)
 NOT_RECOGNIZED = re.compile(r"no longer recognized", re.I)
 AIRED = re.compile(r"[Aa]ired on tape delay on ([A-Z][a-z]+ \d{1,2}, \d{4})")
+# "WWE recognizes the vacancy as starting on February 5, 1988": WWE's day wins.
+VACANCY_STARTS = re.compile(r"recognizes the vacancy as starting on ([A-Z][a-z]+ \d{1,2}, \d{4})")
 
 
 # Teams a list names where our cards name the members.
-TEAMS = {"war raiders": ["Hanson", "Rowe"], "msk": ["Nash Carter", "Wes Lee"]}
+TEAMS = {"war raiders": ["Hanson", "Rowe"], "msk": ["Nash Carter", "Wes Lee"],
+         "two dudes with attitudes": ["Diesel", "Shawn Michaels"]}
 
 
 def _plain(s):
@@ -94,9 +98,16 @@ def main():
             if r["champion"] or not (lo < r["date"] <= hi) or not VACATED.search(r["notes"]) \
                     or NOT_RECOGNIZED.search(r["notes"]):
                 continue
-            aired = AIRED.search(r["notes"])
+            aired = VACANCY_STARTS.search(r["notes"]) or AIRED.search(r["notes"])
             day = datetime.strptime(aired.group(1), "%B %d, %Y").date().isoformat() if aired else r["date"]
-            lost = rows[i - 1]["champion"] if i else ""
+            if r["date"] < TAPED_ORDER_BEFORE and not VACANCY_STARTS.search(r["notes"]):
+                # Before 2001 the walk orders a taped show by its taping, and the
+                # night a belt was held up is where the rematch fills it.
+                day = r["date"]
+            # The belt is vacated from the last recognized champion: WWF never
+            # recognized the reign DiBiase was handed in 1988, so André's ends.
+            prev = [x for x in rows[:i] if x.get("type") != "unrecognized"]
+            lost = prev[-1]["champion"] if prev else ""
             # Every reign that touches the day: a belt can change hands and be
             # deactivated the same night (No Mercy 2002, the IC title).
             holders = [c for c in chain if c["start"] <= day and (c["end"] is None or c["end"] >= day)]
@@ -104,8 +115,14 @@ def main():
             if not _lost_by(lost, names):
                 rejected.append((name, day, lost, names, r["notes"][:100]))
                 continue
-            keep.append({**where, "date": day, "vacate": True, "vacated_by": lost,
-                         "why": r["notes"][:300], "source": page})
+            entry = {**where, "date": day, "vacate": True, "vacated_by": lost,
+                     "why": r["notes"][:300], "source": page}
+            # Won and vacated the same night (André the Giant, 1988-02-05): the
+            # vacancy follows that night's card. A belt held up and refilled
+            # the same night (Jarrett and Holly, 1995-04-26) precedes it.
+            if prev and prev[-1]["date"] == day:
+                entry["end_of_day"] = True
+            keep.append(entry)
     keep.sort(key=lambda v: (v["date"], v.get("lineage") or v.get("title"), v.get("order", 0)))
     OUT.write_text(json.dumps({"about": "Title vacancies from Wikipedia's title histories, kept where the "
                                         "champion the list names is who our history has holding the belt. "

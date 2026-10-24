@@ -45,6 +45,7 @@ for p in (str(HERE), str(ROOT)):
 
 from title_247 import _days, _get, align, plain  # noqa: E402
 from wiki_titles import _unlink, fetch, reigns  # noqa: E402
+from src.export_to_html import TAPED_ORDER_BEFORE  # noqa: E402
 
 OUT = ROOT / "data" / "offshow-title-changes.json"
 WIKI = "https://en.wikipedia.org/wiki/"
@@ -145,6 +146,20 @@ BELTS = {
                            "dw": "wwf-eu-h.html", "wwe": "titlehistory/european-championship"},
     "ECW World Heavyweight Title": {"wiki": "List of ECW World Heavyweight Champions",
                                     "wwe": "titlehistory/ecw-championship"},
+    # WWE.com has no page for the 1956 Women's title, so Wikipedia and Duncan
+    # and Will must both list a change.
+    "WWE Women's Championship (1956-2010)": {
+        "lineage": "lineage::womens-1956", "wiki": "List of WWE Women's Champions (1956–2010)",
+        "dw": "wwf-wm.html"},
+    # DiBiase took his belt back from Virgil on Survivor Series Showdown, a
+    # USA special we don't carry (taped 1991-11-11, aired 11-24).
+    "Million Dollar Championship": {"lineage": "lineage::million-dollar", "wiki": "Million Dollar Championship",
+                                    "wwe": "classics/titlehistory/million-dollar-championship"},
+    # The Hardcore title's changes outside a match on a Raw or SmackDown of
+    # 2000 (Pete Gas at Newark Airport). Its house-show swaps are
+    # offcard_titles.py's, and from 2001 its TV changes are migration 0013's.
+    "WWF Hardcore Title": {"wiki": "List of WWE Hardcore Champions", "dw": "wwf-hc.html",
+                           "wwe": "titlehistory/hardcore-championship", "until": "2001-01-01"},
     "WWE Women's Tag Team Title": {"wiki": "List of WWE Women's Tag Team Champions",
                                    "dw": "wwf-wt.html", "wwe": "classics/titlehistory/wwe-womens-tag-team-championship"},
 }
@@ -164,10 +179,16 @@ RECOGNIZED_START = re.compile(r"WWE recognizes [^.]*?reign as beginning on ([A-Z
 # name or a short one (JD McDonagh was Jordan Devlin; "TJP", "Angel", "Murphy").
 ALIASES = {"jdmcdonagh": "jordandevlin", "tjp": "tjperkins", "angel": "angelgarza",
            "murphy": "buddymurphy", "elhijodelfantasma": "santosescobar",
-           "andradecienalmas": "andradealmas"}
+           "andradecienalmas": "andradealmas", "alundrablaze": "alundrablayze",
+           # WWE.com's Million Dollar history names the man by his gimmick.
+           "milliondollarman": "teddibiase"}
 INTERIM = re.compile(r"\binterim\b", re.I)
 # A history's event for a weekly show, never one of our pay-per-view cards.
-WEEKLY = {"nxt", "nxt20", "nxtlevelup", "nxtuk", "205live", "raw", "smackdown", "mainevent"}
+WEEKLY = {"nxt", "nxt20", "nxtlevelup", "nxtuk", "205live", "raw", "smackdown", "mainevent",
+          # the WWF era's, as the histories write them
+          "rawiswar", "mondaynightraw", "superstars", "superstarsofwrestling", "wrestlingchallenge",
+          "primetimewrestling", "allamericanwrestling", "shotgun", "shotgunsaturdaynight", "sundaynightheat",
+          "heat", "smackdown"}
 
 
 def key(name):
@@ -245,7 +266,7 @@ def confirm(name, cfg):
     taped one by its air date, up to five weeks later (NXT taped a month of
     shows at a time at Full Sail until 2019), or the belt's own "taped_within"
     days (NXT UK, three months)."""
-    wiki, wwe = wikipedia(cfg["wiki"]), wwe_com(cfg["wwe"])
+    wiki, wwe = wikipedia(cfg["wiki"]), (wwe_com(cfg["wwe"]) if cfg.get("wwe") else [])
     dw = duncan_will(cfg["dw"]) if cfg.get("dw") else []
     for r in wiki:
         r["sources"] = {"Wikipedia": f"{WIKI}{cfg['wiki'].replace(' ', '_')} #{r['n']}"}
@@ -288,7 +309,10 @@ def won_on_card(card, r):
     (Worlds Collide 2022) leaves the belt off, so the walk never crowns the
     winner there."""
     won = [m for m in card["matches"] for t in m["teams"]
-           if t.get("was_winner") and same({"champion": " & ".join(p for p in t["participants"] if p)}, r)]
+           if t.get("was_winner") and same({"champion": " & ".join(p for p in t["participants"] if p)}, r)
+           # A WWF-era weekly show is found by its taping night, which holds
+           # other matches the champion won; only a title match counts there.
+           and (m.get("title_at_stake") or (card.get("air_date") or TAPED_ORDER_BEFORE) >= TAPED_ORDER_BEFORE)]
     if len(won) > 1:
         won = [m for m in won if m.get("title_at_stake")]
     return won[0] if len(won) == 1 else None
@@ -342,12 +366,27 @@ def main():
     cards_by_date = {}
     for e in events.values():
         cards_by_date.setdefault(e["air_date"], []).append(e)
+    # Before 2001 the histories date a taped change by its taping and our
+    # cards by air: a reign of ours that starts on the air date of a show
+    # taped on the history's date is that change, and the change's weekly
+    # show is found by its taping.
+    taped = {int(k): e["tape_date"] for k, e in events.items()
+             if e.get("tape_date") and e["air_date"] < TAPED_ORDER_BEFORE}
+    cards_by_tape = {}
+    for e in events.values():
+        if e.get("tape_date") and e["air_date"] < TAPED_ORDER_BEFORE:
+            cards_by_tape.setdefault(e["tape_date"], []).append(e)
+
+    def starts(o):
+        return [d for d in (o["start"], taped.get(o["start_event_id"])) if d]
     for name, cfg in BELTS.items():
         rows = confirm(name, cfg)
         reigns = walk.get(name, [])
         ours = carried(reigns)
         main_roster = name in MAIN_ROSTER
         for k, r in enumerate(rows):
+            if r.get("type") == "unrecognized":
+                continue        # not in WWE's lineage (DiBiase, handed the belt in 1988)
             day = r["wwe"]["date"] if r.get("wwe") else r["date"]
             if main_roster:
                 day = recognized_start(r["notes"]) or day
@@ -355,7 +394,7 @@ def main():
                 # starts; anything before it is outside the corpus.
                 if not reigns or day <= reigns[0]["start"]:
                     continue
-            if day > corpus_end:
+            if day > corpus_end or day >= cfg.get("until", "9999"):
                 continue
             if len(r["sources"]) < 2:
                 print(f"only {', '.join(r['sources'])} lists it, not applied: {r['date']} {name}: {r['champion']}")
@@ -365,10 +404,10 @@ def main():
                 if same({"champion": " & ".join(o["champion_names"]), "members": o["champion_names"]}, r):
                     return True
                 return main_roster and bool({profile(n) for n in o["champion_names"]} & profiles(r))
-            if any(o["start"] in (r["date"], day) and held_by(o) for o in (reigns if main_roster else ours)):
+            if any(set(starts(o)) & {r["date"], day} and held_by(o) for o in (reigns if main_roster else ours)):
                 continue
-            if main_roster and any(held_by(o) and min(abs(_days(o["start"], d)) for d in (r["date"], day)) <= SLACK
-                                   for o in ours):
+            if main_roster and any(held_by(o) and min(abs(_days(s, d)) for s in starts(o) for d in (r["date"], day))
+                                   <= SLACK for o in ours):
                 continue
             # A team by its members; a wrestler by the name he wrestled under
             # later ("El Hijo del Fantasma/Santos Escobar").
@@ -394,7 +433,8 @@ def main():
             weekly = None
             if main_roster and card is None and ek in WEEKLY:
                 # A Raw or SmackDown we carry: the change goes on that show.
-                weekly = next((e for e in cards_by_date.get(day, []) if ek in event_key(e["title"])), None)
+                weekly = next((e for e in cards_by_date.get(day, []) + cards_by_tape.get(day, [])
+                               if ek in event_key(e["title"])), None)
             won = (card or weekly) and won_on_card(card or weekly, r)
             if won and main_roster:
                 print(f"won on our card without the walk seeing it, rule the match instead: {day} {name}: "
@@ -403,6 +443,10 @@ def main():
             if weekly and not won:
                 entry.update(event_id=weekly["id"], order=0,
                              why=(r["notes"][:300] or f"Changed hands on {weekly['title']} outside a match."))
+                if weekly["air_date"] != day:
+                    # Taped: the reign starts the night it aired, and the walk
+                    # orders it by the taping.
+                    entry.update(date=weekly["air_date"], taped=day)
             elif won:
                 entry.update(event_id=card["id"], order=won["match_order"] + 0.5,
                              why=f"Won in match {won['match_order']} of {card['title']}, which our card does not "
