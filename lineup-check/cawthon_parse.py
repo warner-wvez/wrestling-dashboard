@@ -235,10 +235,14 @@ _SUB_RE = re.compile(r"\(\s*sub\.?\s+for\s+([^()]*)\)", re.I)
 # "WWF Tag Team Champions - the Dudley Boyz". It must start on a promotion or a
 # title word, so a partner named before it ("Steve Austin & WWF World Champion
 # the Rock") is never eaten.
+# Other promotions' and other belts' champions bill the same way in the
+# 1985 to 2000 pages ("SMW Tag Team Champions Ricky Morton & Robert Gibson",
+# "Million $ Champion Virgil", "Canadian Heavyweight Champion Dino Bravo").
 _TITLE_PREFIX_RE = re.compile(
-    r"\b(?:former\s+)?(?:WWF|WWE|WCW|ECW|World|Unified|Undisputed|Intercontinental|"
-    r"United|US|IC|Women's|Divas|Hardcore|European|Cruiserweight|Light|Tag|Raw|SmackDown)\b"
-    r"(?:(?:\s+|\s*[/&]\s*)(?:[A-Z][\w'.-]*|IC|US))*?\s+Champions?\b\s*(?:[-\u2013]\s*)?")
+    r"\b(?:former\s+)?(?:WWF|WWE|WCW|ECW|SMW|USWA|NWA|AWA|UWF|World|Unified|Undisputed|Intercontinental|"
+    r"United|US|IC|Women's|Divas|Hardcore|European|Cruiserweight|Light|Tag|Raw|SmackDown|Million|"
+    r"Canadian|North|Junior|Television|TV)\b"
+    r"(?:(?:\s+|\s*[/&]\s*)(?:[A-Z][\w'.-]*|IC|US|\$))*?\s+Champions?\b\s*(?:[-\u2013]\s*)?")
 _NOTE_RE = re.compile(r"\(([^()]*)\)")
 _PREFIX_RE = re.compile(r"^[^:]{2,90}?\s:\s+|^[^:]{2,90}?:\s+(?=[A-Z])")
 _SPLIT_RE = re.compile(r"\s*,\s*&\s*|\s*,\s*and\s+|\s*,\s*|\s+&\s+|\s+and\s+")
