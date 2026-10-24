@@ -608289,7 +608289,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 8,
   "matches": [
    {
@@ -608546,7 +608546,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 408,
-    "result_method": "defeated",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Two On One Handicap Lumberjack Table:The Dudley Boyz ( Buh Buh Ray Dudley & D-Von Dudley) defeat The Rock (6:48)",
     "teams": [
@@ -608554,8 +608554,8 @@
       "team_number": 1,
       "team_name": "The Dudley Boyz",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Buh Buh Ray Dudley",
@@ -608566,8 +608566,8 @@
       "team_number": 2,
       "team_name": "The Rock",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "The Rock"

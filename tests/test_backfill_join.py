@@ -255,6 +255,24 @@ def test_two_sources_saying_no_contest_take_the_spines_winner_away():
     assert ev["matches"][0]["teams"][0]["was_winner"] is True
 
 
+def test_a_no_contest_vote_counts_a_later_spelling_as_the_same_person():
+    # SmackDown 2000-05-18: the card bills "Buh Buh Ray", SmackDown Hotel writes "Bubba Ray".
+    from backfill.join import apply_no_decision
+    ev = {"air_date": "2000-05-18", "matches": [fresh_match(8, [
+        {"participants": ["Buh Buh Ray Dudley", "D-Von Dudley"], "was_winner": True},
+        {"participants": ["The Rock"], "was_winner": False}])]}
+    line = "WWF World Champion the Rock fought Buh Buh Ray Dudley & D-Von Dudley to a no contest"
+    lines = [{"kind": "match", "winners": ["The Rock"], "losers": ["Buh Buh Ray Dudley", "D-Von Dudley"],
+              "result": "no contest", "line": line, "method": "no-contest"}]
+    sdh = [{"result_method": "no-decision", "raw_description": "The Dudley Boyz vs. The Rock ends in a No Contest",
+            "teams": [{"participants": ["Bubba Ray Dudley", "D-Von Dudley"], "was_winner": None},
+                      {"participants": ["The Rock"], "was_winner": None}]}]
+    row = {"class": "different_opponent", "vote": "split", "match_order": 8, "event_key": "k", "cawthon": line}
+    applied = []
+    assert apply_no_decision(ev, [row], lines, sdh, {}, applied) == [] and len(applied) == 1
+    assert {t["match_outcome"] for t in ev["matches"][0]["teams"]} == {"no-contest"}
+
+
 def test_other_arenas_of_a_claimed_ppv_night_are_not_second_shows():
     wiki = [{"title": "WrestleMania 2", "show_type": "PPV", "list_date": "1986-04-07",
              "events": [fresh_event(air_date="1986-04-07", show_type="PPV", title="WrestleMania 2", ppv_name="WrestleMania 2", primary_source="wikipedia",

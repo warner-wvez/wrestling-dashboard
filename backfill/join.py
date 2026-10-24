@@ -528,6 +528,13 @@ def apply_no_decision(ev, rows, lines, third, groups, applied, event_key=""):
     match Cagematch marks as a title change keeps its winner for a person."""
     from lineup_match import resolve_side
     from lineup_vote import _sdh_people, _sdh_winners, find
+    from src.roster_aliases import CURATED, normkey
+
+    def who(people):
+        # One person under the era's billing and a later spelling: SmackDown
+        # Hotel writes "Bubba Ray Dudley" where the card bills "Buh Buh Ray"
+        # (SmackDown 2000-05-18), and the roster already counts them as one.
+        return {normkey(CURATED.get(p, p)) for p in people}
     by_order = {m["match_order"]: m for m in ev["matches"]}
     by_line = {c.get("line"): c for c in lines if c.get("line")}
     names = sorted(_people(ev))
@@ -548,7 +555,8 @@ def apply_no_decision(ev, rows, lines, third, groups, applied, event_key=""):
             s = find(third, mine, names)
             kind = "draw" if "draw" in (c.get("result") or "") else "no contest"
             s_text = " ".join(x for x in ((s or {}).get("result_method"), (s or {}).get("raw_description")) if x)
-            if (not loose and his == mine and s and _sdh_people(s, names) == mine and not _sdh_winners(s, names)
+            if (not loose and who(his) == who(mine) and s and who(_sdh_people(s, names)) == who(mine)
+                    and not _sdh_winners(s, names)
                     and _no_decision_kind(s_text) == kind):
                 method = _no_decision_method(c.get("line") or c.get("method"), s_text)
                 for t in m["teams"]:
