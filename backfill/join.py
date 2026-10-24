@@ -396,7 +396,9 @@ def as_matches(lines):
         else:
             teams = [{"participants": c["winners"], "was_winner": None},
                      {"participants": c["losers"], "was_winner": None}]
-        out.append({"match_type": None, "title_at_stake": None, "teams": [t for t in teams if t["participants"]]})
+        out.append({"match_type": None, "title_at_stake": None, "teams": [t for t in teams if t["participants"]],
+                    "result_method": METHOD_OF.get(c.get("method")) if c.get("result") != "win" else None,
+                    "raw_description": c.get("line") or ""})
     return out
 
 
@@ -492,6 +494,73 @@ def apply_votes(ev, rows, applied, event_key=""):
         else:
             kept.append(r)
     ev["match_count"] = len(ev["matches"])
+    return kept
+
+
+_NO_DECISION_RE = re.compile(r"no contest|no result|double (?:dq|disqualification|count|pin)|\bdraw\b", re.I)
+
+
+def _no_decision_kind(text):
+    """"draw", "no contest" or None for a line or result_method."""
+    low = (text or "").lower()
+    if not _NO_DECISION_RE.search(low):
+        return None
+    return "draw" if re.search(r"\bdraw\b", low) else "no contest"
+
+
+def _no_decision_method(a, b):
+    """The finish both lines name: the specific one only when both say it."""
+    a, b = (a or "").lower(), (b or "").lower()
+    for pat, method in ((r"double (?:dq|disqualification)", "Double DQ"), (r"double count", "Double Count Out"),
+                        (r"time[- ]limit draw", "Time Limit Draw")):
+        if re.search(pat, a) and re.search(pat, b):
+            return method
+    return "Draw" if _no_decision_kind(a) == "draw" else "No Contest"
+
+
+def apply_no_decision(ev, rows, lines, third, groups, applied, event_key=""):
+    """Two sources against the spine on a finish: our card has a winner, and
+    the other record and the third vote both say the very same people went to
+    a no contest (or both a draw). Cagematch bills Chyna over Hardcore Holly
+    by DQ (SmackDown 1999-09-09); Cawthon and SmackDown Hotel both have a no
+    contest after Jarrett, Gunn and Crash ran in. apply_votes only swaps
+    winners, so this is its other half: the card takes the no decision. A
+    match Cagematch marks as a title change keeps its winner for a person."""
+    from lineup_match import resolve_side
+    from lineup_vote import _sdh_people, _sdh_winners, find
+    by_order = {m["match_order"]: m for m in ev["matches"]}
+    by_line = {c.get("line"): c for c in lines if c.get("line")}
+    names = sorted(_people(ev))
+    kept = []
+    for r in rows:
+        m = by_order.get(r.get("match_order"))
+        c = by_line.get(r.get("cawthon"))
+        done = False
+        if (r.get("vote") == "split" and r.get("class") in ("result", "different_opponent") and m and c and third
+                and c.get("result") != "win" and any(t.get("was_winner") for t in m["teams"])
+                and not m.get("title_change_source")):
+            mine = {p for t in m["teams"] for p in t["participants"]}
+            his, loose = set(), False
+            for side in ("winners", "losers"):
+                exp, grp, unres = resolve_side(c.get(side) or [], names, groups, ev["air_date"])
+                his |= set(exp + grp)
+                loose = loose or bool(unres)
+            s = find(third, mine, names)
+            kind = "draw" if "draw" in (c.get("result") or "") else "no contest"
+            s_text = " ".join(x for x in ((s or {}).get("result_method"), (s or {}).get("raw_description")) if x)
+            if (not loose and his == mine and s and _sdh_people(s, names) == mine and not _sdh_winners(s, names)
+                    and _no_decision_kind(s_text) == kind):
+                method = _no_decision_method(c.get("line") or c.get("method"), s_text)
+                for t in m["teams"]:
+                    t["was_winner"], t["match_outcome"] = None, "no-contest"
+                m["result_method"] = method
+                done = True
+        if done:
+            applied.append({"event_key": r.get("event_key") or event_key, "match_order": r.get("match_order", ""),
+                            "class": r.get("class"), "vote": "fix_no_decision", "ours": r.get("ours", ""),
+                            "other": r.get("cawthon", ""), "third": r.get("sdh", "")})
+        else:
+            kept.append(r)
     return kept
 
 
@@ -598,8 +667,10 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset(), broadcast=None
         third = (sdh_match or {}).get("matches") or (fan or {}).get("matches")
         ev["id"] = ev.get("id") or 0
         if ep:
-            rows = compare_show(ev, with_ring_names(ep["matches"], _people(ev)), groups, sdh_matches=third)
+            his_lines = with_ring_names(ep["matches"], _people(ev))
+            rows = compare_show(ev, his_lines, groups, sdh_matches=third)
             rows = apply_votes(ev, _reclass_results(rows, ev), applied, key)
+            rows = apply_no_decision(ev, rows, his_lines, third, groups, applied, key)
             ev["verification_status"] = bucket(rows)
             _fill_from_cawthon(ev, ep["matches"])
         elif third:
@@ -650,9 +721,12 @@ def join_all(cm, cawthon, wiki, sdh, fandom, rulings=frozenset(), broadcast=None
             label_multi(expand_groups(clean_stakes(ev), groups))
             take_cagematch_marks(ev, cmev)
             caw_lines = with_ring_names(caw_lines, _people(ev))
-            rows = compare_show(ev, as_lines(cmev["matches"]), groups, sdh_matches=as_matches(caw_lines) or None)
+            cm_lines, caw_third = as_lines(cmev["matches"]), as_matches(caw_lines) or None
+            rows = compare_show(ev, cm_lines, groups, sdh_matches=caw_third)
             rows = apply_votes(ev, _reclass_results(rows, ev), applied,
                                f"{art['show_type']}|{ev['air_date']}|{cmev['cagematch_nr']}")
+            rows = apply_no_decision(ev, rows, cm_lines, caw_third, groups, applied,
+                                     f"{art['show_type']}|{ev['air_date']}|{cmev['cagematch_nr']}")
             ev["verification_status"] = bucket(rows)
             if caw_lines:
                 _fill_from_cawthon(ev, caw_lines)

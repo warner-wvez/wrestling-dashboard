@@ -233,6 +233,28 @@ def test_two_sources_against_the_spine_change_the_card():
     assert [r["class"] for r in kept] == ["unpaired"] and len(applied) == 2
 
 
+def test_two_sources_saying_no_contest_take_the_spines_winner_away():
+    from backfill.join import apply_no_decision
+    def card():
+        return {"air_date": "1999-09-09", "matches": [fresh_match(3, [{"participants": ["Chyna"], "was_winner": True}, {"participants": ["Hardcore Holly"], "was_winner": False}], result_method="by DQ")]}
+    line = "Hardcore Holly (w/ Crash Holly) fought Chyna to a no contest after Jeff Jarrett, Billy Gunn, and Crash interfered"
+    lines = [{"kind": "match", "winners": ["Hardcore Holly"], "losers": ["Chyna"], "result": "no contest", "line": line, "method": "no-contest"}]
+    sdh = [{"result_method": "no-decision", "raw_description": "Hardcore Holly vs. Chyna ends in a No Contest",
+            "teams": [{"participants": ["Hardcore Holly"], "was_winner": None}, {"participants": ["Chyna"], "was_winner": None}]}]
+    row = {"class": "result", "vote": "split", "match_order": 3, "event_key": "k", "cawthon": line}
+    ev, applied = card(), []
+    assert apply_no_decision(ev, [dict(row)], lines, sdh, {}, applied) == []
+    m = ev["matches"][0]
+    assert [t["was_winner"] for t in m["teams"]] == [None, None] and m["result_method"] == "No Contest"
+    assert {t["match_outcome"] for t in m["teams"]} == {"no-contest"} and applied[0]["vote"] == "fix_no_decision"
+    # The third vote crowning someone is no agreement: the row stays for a person.
+    sdh[0]["teams"][1]["was_winner"], sdh[0]["result_method"] = True, "by DQ"
+    sdh[0]["raw_description"] = "Chyna defeats Hardcore Holly via DQ"
+    ev, applied = card(), []
+    assert len(apply_no_decision(ev, [dict(row)], lines, sdh, {}, applied)) == 1 and applied == []
+    assert ev["matches"][0]["teams"][0]["was_winner"] is True
+
+
 def test_other_arenas_of_a_claimed_ppv_night_are_not_second_shows():
     wiki = [{"title": "WrestleMania 2", "show_type": "PPV", "list_date": "1986-04-07",
              "events": [fresh_event(air_date="1986-04-07", show_type="PPV", title="WrestleMania 2", ppv_name="WrestleMania 2", primary_source="wikipedia",

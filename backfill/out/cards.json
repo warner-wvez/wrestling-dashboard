@@ -362048,7 +362048,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 4,
   "matches": [
    {
@@ -362058,7 +362058,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 900,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Shawn Michaels defeats The 1-2-3 Kid by DQ (15:00)",
     "teams": [
@@ -362066,8 +362066,8 @@
       "team_number": 1,
       "team_name": "Shawn Michaels",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Shawn Michaels"
@@ -362077,8 +362077,8 @@
       "team_number": 2,
       "team_name": "The 1-2-3 Kid",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "The 1-2-3 Kid"
@@ -511820,7 +511820,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 9,
   "matches": [
    {
@@ -512175,7 +512175,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 600,
-    "result_method": "defeated",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Hell In A Cell Tag Team:Steve Austin & The Undertaker defeat Kane & Mankind (w/ Paul Bearer) (10:00)",
     "teams": [
@@ -512183,8 +512183,8 @@
       "team_number": 1,
       "team_name": "Steve Austin & The Undertaker",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Steve Austin",
@@ -512195,8 +512195,8 @@
       "team_number": 2,
       "team_name": "Kane & Mankind",
       "accompaniment": "Paul Bearer",
-      "was_winner": false,
-      "match_outcome": "loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Kane",
@@ -517737,7 +517737,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 5,
   "matches": [
    {
@@ -517819,7 +517819,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 154,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Bart Gunn defeats Vader by DQ (2:34)",
     "teams": [
@@ -517827,8 +517827,8 @@
       "team_number": 1,
       "team_name": "Bart Gunn",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Bart Gunn"
@@ -517838,8 +517838,8 @@
       "team_number": 2,
       "team_name": "Vader",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Vader"
@@ -524840,7 +524840,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 10,
   "matches": [
    {
@@ -525170,7 +525170,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 673,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Steve Austin & The Rock defeat Kane & The Undertaker by DQ (11:13)",
     "teams": [
@@ -525178,8 +525178,8 @@
       "team_number": 1,
       "team_name": "Steve Austin & The Rock",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Steve Austin",
@@ -525190,8 +525190,8 @@
       "team_number": 2,
       "team_name": "Kane & The Undertaker",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Kane",
@@ -555001,7 +555001,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 9,
   "matches": [
    {
@@ -555271,7 +555271,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 145,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Gerald Brisco & Pat Patterson defeat Shane McMahon & Vince McMahon by DQ (2:25)",
     "teams": [
@@ -555279,8 +555279,8 @@
       "team_number": 1,
       "team_name": "Gerald Brisco & Pat Patterson",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Gerald Brisco",
@@ -555291,8 +555291,8 @@
       "team_number": 2,
       "team_name": "Shane McMahon & Vince McMahon",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Shane McMahon",
@@ -565222,7 +565222,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 7,
   "matches": [
    {
@@ -565304,7 +565304,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 56,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Chyna defeats Hardcore Holly (w/ Crash Holly) by DQ (0:56)",
     "teams": [
@@ -565312,8 +565312,8 @@
       "team_number": 1,
       "team_name": "Chyna",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Chyna"
@@ -565323,8 +565323,8 @@
       "team_number": 2,
       "team_name": "Hardcore Holly",
       "accompaniment": "Crash Holly",
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Hardcore Holly"
@@ -568342,7 +568342,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 5,
   "matches": [
    {
@@ -568424,7 +568424,7 @@
     "stipulation": null,
     "title_at_stake": "WWF European Title",
     "duration_seconds": 148,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "WWF European Title:The Big Show defeats D-Lo Brown (c) by DQ (2:28)",
     "teams": [
@@ -568432,8 +568432,8 @@
       "team_number": 1,
       "team_name": "The Big Show",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "The Big Show"
@@ -568443,8 +568443,8 @@
       "team_number": 2,
       "team_name": "D-Lo Brown",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": true,
       "participants": [
        "D-Lo Brown"
@@ -571943,7 +571943,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 7,
   "matches": [
    {
@@ -572063,7 +572063,7 @@
     "stipulation": null,
     "title_at_stake": "WWF World Women's Title",
     "duration_seconds": 177,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "WWF World Women's Title:The Fabulous Moolah (c) defeats Mae Young by DQ (2:57)",
     "teams": [
@@ -572071,8 +572071,8 @@
       "team_number": 1,
       "team_name": "The Fabulous Moolah",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": true,
       "participants": [
        "The Fabulous Moolah"
@@ -572082,8 +572082,8 @@
       "team_number": 2,
       "team_name": "Mae Young",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Mae Young"
@@ -575125,7 +575125,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 12,
   "matches": [
    {
@@ -575387,7 +575387,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 74,
-    "result_method": "by DQ",
+    "result_method": "No Contest",
     "match_guide_rating": null,
     "raw_description": "Val Venis defeats The British Bulldog (w/ Joey Abs, Pete Gas & Rodney) by DQ (1:14)",
     "teams": [
@@ -575395,8 +575395,8 @@
       "team_number": 1,
       "team_name": "Val Venis",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Val Venis"
@@ -575406,8 +575406,8 @@
       "team_number": 2,
       "team_name": "The British Bulldog",
       "accompaniment": "Joey Abs, Pete Gas & Rodney",
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "The British Bulldog"
@@ -597981,7 +597981,7 @@
   "fandom_slug": null,
   "fandom_url": null,
   "primary_source": "cagematch",
-  "verification_status": "flagged",
+  "verification_status": "verified",
   "match_count": 6,
   "matches": [
    {
@@ -597991,7 +597991,7 @@
     "stipulation": null,
     "title_at_stake": null,
     "duration_seconds": 198,
-    "result_method": "by DQ",
+    "result_method": "Double DQ",
     "match_guide_rating": null,
     "raw_description": "Kurt Angle defeats Chris Benoit by DQ (3:18)",
     "teams": [
@@ -597999,8 +597999,8 @@
       "team_number": 1,
       "team_name": "Kurt Angle",
       "accompaniment": null,
-      "was_winner": true,
-      "match_outcome": "dq-win",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Kurt Angle"
@@ -598010,8 +598010,8 @@
       "team_number": 2,
       "team_name": "Chris Benoit",
       "accompaniment": null,
-      "was_winner": false,
-      "match_outcome": "dq-loss",
+      "was_winner": null,
+      "match_outcome": "no-contest",
       "was_champion_entering": false,
       "participants": [
        "Chris Benoit"

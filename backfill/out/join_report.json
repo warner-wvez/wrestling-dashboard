@@ -1,8 +1,8 @@
 {
  "by_status": {
   "single-source": 647,
-  "verified": 1548,
-  "flagged": 359
+  "verified": 1558,
+  "flagged": 349
  },
  "by_family": {
   "AllAmerican": 141,
@@ -27,17 +27,17 @@
  "same_night_arenas": 0,
  "studio_tapings_unpaired": 70,
  "aired_after_range": 3,
- "applied_votes": 21,
+ "applied_votes": 31,
  "title_rulings": 21,
- "review_rows": 544,
+ "review_rows": 534,
  "review_by_class": {
   "extra_name": 44,
   "unpaired": 97,
   "missing_match": 72,
   "cawthon_only_name": 125,
-  "different_opponent": 176,
+  "different_opponent": 173,
   "cawthon_says_dark": 3,
-  "result": 17,
+  "result": 10,
   "dark_but_televised": 7,
   "possible_second_bout": 2,
   "date_unconfirmed": 1
