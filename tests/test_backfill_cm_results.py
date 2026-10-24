@@ -64,12 +64,13 @@ def test_title_line_with_champion_mark_manager_and_dq():
     assert "Jimmy Hart" in m["workers"]
 
 
-def test_title_change_marker_is_dropped_and_duration_kept():
+def test_title_change_marker_and_duration_are_kept():
     line = (f"[WWF Women's Title](https://www.cagematch.net/?id=5&nr=18):{_w('Sensational Sherri', 1050)} "
             f"defeats {_w('The Fabulous Moolah', 55)} (c) (12:32) - TITLE CHANGE !!!")
     m = parse_line(line, 1)
     assert m["duration_seconds"] == 752 and m["teams"][1]["was_champion_entering"] is True
-    assert "TITLE CHANGE" not in m["raw_description"]
+    # The marker stays in the text: the corpus's reign walk crowns on it.
+    assert "TITLE CHANGE" in m["raw_description"]
 
 
 def test_match_type_prefix_tag_team_with_group_members():

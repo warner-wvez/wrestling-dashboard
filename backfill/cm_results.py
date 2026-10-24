@@ -128,7 +128,9 @@ _DUR_RE = re.compile(r"\((\d{1,2}):(\d{1,2})(?::(\d{2}))?\)\s*$")
 _NO_DECISION_RE = re.compile(
     r"\s*\\?-\s*(Time Limit Draw|Double DQ|Double Count Out|Double Countout|Double Count|"
     r"Double Pinfall|Double Pin|No Contest|No Result|Draw)\s*$", re.I)
-_BY_RE = re.compile(r"\s+by\s+([A-Z][A-Za-z ]*?)\s*$")
+# "by DQ", "by Count Out", and Cagematch's lower-case "by referee's decision"
+# and "by forfeit", which otherwise stay glued to the loser's name.
+_BY_RE = re.compile(r"\s+by\s+((?:[A-Z]|referee|forfeit)[A-Za-z' ]*?)\s*$")
 _CHAMP_RE = re.compile(r"\s*\(c\)")
 _TITLE_CHANGE_RE = re.compile(r"\s*\\?-\s*TITLE CHANGE\s*!*\s*$", re.I)
 _WINNER_ONLY_RE = re.compile(r"^Winner:\s*(.+)$", re.I)
@@ -303,12 +305,83 @@ def parse_line(text: str, order: int) -> dict | None:
         teams.append(side)
     if not any(t["participants"] for t in teams):
         return None
+    # The corpus keeps Cagematch's "- TITLE CHANGE !!!" marker in the text: the
+    # reign walk reads it to crown a new champion and to fill a vacant belt.
     m = fresh_match(order, teams, match_type=mtype, title_at_stake=title,
                     duration_seconds=duration, result_method=method,
-                    raw_description=_plain(_NOTE_RE.sub("", _TITLE_CHANGE_RE.sub("", original))))
+                    raw_description=_plain(_NOTE_RE.sub("", original)))
     m["workers"] = workers
     m["aired"] = aired
     return m
+
+
+def rule_unmarked_wins(matches: list[dict], url: str) -> int:
+    """Cagematch writes "TITLE CHANGE !!!" on every change it records, so a
+    challenger's clean win over the "(c)" side without it is a belt that
+    stayed put: a reversed decision, a non-title finish Cagematch left out, or
+    a dark match listed with no finish ("Mr. Perfect defeats Shawn Michaels
+    (c) (6:05)", Superstars taping 1993-04-06). The reign walk crowns any clean
+    win over the champion, so each such match gets a ruling naming the
+    champion. A match with two belts on the line is left to the walk. Returns
+    how many were ruled."""
+    ruled = 0
+    for m in matches:
+        title = m.get("title_at_stake") or ""
+        if not title or " & " in title or "TITLE CHANGE" in (m.get("raw_description") or "").upper():
+            continue
+        champ = [t for t in m["teams"] if t["was_champion_entering"]]
+        winner = [t for t in m["teams"] if t["was_winner"]]
+        if len(champ) != 1 or len(winner) != 1 or winner[0] is champ[0] \
+                or winner[0]["match_outcome"] != "win" or not champ[0]["participants"]:
+            continue
+        m["title_result"] = {"title": title, "champions": list(champ[0]["participants"]),
+                             "why": "Cagematch marks every title change it records and marks none on this match",
+                             "source": url}
+        ruled += 1
+    return ruled
+
+
+def _change_key(text: str) -> str:
+    return re.sub(r"\W+", " ", _plain(text)).strip().lower()
+
+
+def mark_replays(events: list[dict], seen: dict) -> int:
+    """A TV show that aired a clip of a title change somewhere else carries the
+    same Cagematch line as the night it happened: Action Zone #6, dated
+    1994-11-09, lists Diesel's eight-second win over Bob Backlund from Madison
+    Square Garden on 1994-11-26. The walk would crown Diesel at the clip. A
+    TITLE CHANGE line on one of our TV shows is a replay when Cagematch also
+    lists it on another night: at a house show or pay-per-view within 60
+    days, or on an earlier TV show of ours within 120. The match gets
+    `replay_of`, which the walk skips (the card still shows it). Returns how
+    many were marked."""
+    marked = 0
+    for ev in events:
+        if ev["show_type"] in ("PPV", "SNME"):
+            continue
+        day = date.fromisoformat(ev["tape_date"] or ev["air_date"])
+        for m in ev["matches"]:
+            if "TITLE CHANGE" not in (m.get("raw_description") or "").upper():
+                continue
+            orig = None
+            for when, nr, kind in seen.get(_change_key(m["raw_description"]), []):
+                if nr == ev["cagematch_nr"]:
+                    continue
+                gap = (when - day).days
+                live = kind in (None, "SKIP", "PPV", "SNME")
+                # A night apart or less is one taping listed twice (Halftime
+                # Heat, 1999-01-26), not a clip of it; on two of our TV shows
+                # the later listing is the copy (Money Inc.'s win of 1992 on
+                # Superstars taped 10-12 and Wrestling Challenge taped 10-13).
+                if abs(gap) < 2 and not (gap == -1 and not live):
+                    continue
+                if (live and abs(gap) <= 60) or (not live and -120 <= gap < 0):
+                    orig = (when, nr)
+                    break
+            if orig:
+                m["replay_of"] = f"https://www.cagematch.net/?id=1&nr={orig[1]}"
+                marked += 1
+    return marked
 
 
 # ---- rows ------------------------------------------------------------------
@@ -328,11 +401,27 @@ def parse_rows(lines, years=YEARS, skipped=None):
     """-> (events, unparsed). `skipped`, when given, is a Counter that
     receives (title stem, type) for every in-range row left out."""
     events, unparsed, halts = [], [], []
+    seen = {}       # a TITLE CHANGE line -> [(date, nr, show type or None)], every row on file
     for line in lines:
         if "?id=1&nr=" not in line:
             continue
         for h, cell in _cells(line):
             y = int(h.group("y"))
+            kind = None
+            if y in years:
+                logo_m = None
+                for cand in _LOGO_RE.finditer(line, 0, h.start()):
+                    logo_m = cand
+                try:
+                    kind = classify(urllib.parse.unquote(logo_m.group(1)) if logo_m else None,
+                                    h.group("title").strip(), h.group("ctype").strip())[0]
+                except ValueError:
+                    kind = "SKIP"
+            for piece in cell.split("<br>- ")[1:]:
+                piece = piece.split("<br>")[0]
+                if "TITLE CHANGE" in piece.upper():
+                    seen.setdefault(_change_key(piece.split("<br>")[0].rstrip(" |").strip().lstrip("-").strip()), []).append(
+                        (date(y, int(h.group("m")), int(h.group("d"))), int(h.group("nr")), kind))
             if y not in years:
                 continue
             # The logo sits just ahead of this cell's date; a line can hold
@@ -370,6 +459,7 @@ def parse_rows(lines, years=YEARS, skipped=None):
                     continue
                 workers.update(m.pop("workers"))
                 matches.append(m)
+            rule_unmarked_wins(matches, f"https://www.cagematch.net/?id=1&nr={nr}")
             ep = _EPISODE_RE.search(title)
             keep_tape = (air != tape) or derivation == "cagematch-taping"
             ev = fresh_event(air_date=air.isoformat(), tape_date=tape.isoformat() if keep_tape else None,
@@ -384,6 +474,7 @@ def parse_rows(lines, years=YEARS, skipped=None):
             events.append(ev)
     if halts:
         raise SystemExit("classify-or-halt: " + "; ".join(sorted(set(halts))[:20]))
+    mark_replays(events, seen)
     return events, unparsed
 
 
@@ -412,6 +503,13 @@ def main():
     total_lines = sum(len(e["matches"]) for e in events) + len(unparsed)
     print(f"{len(events)} events, {sum(len(e['matches']) for e in events)} matches, "
           f"{len(unparsed)} unparsed lines of {total_lines} -> {OUT / 'cm_unparsed.tsv'}")
+    print(f"{sum(1 for e in events for m in e['matches'] if m.get('title_result'))} unmarked wins over a "
+          f"champion ruled as retained")
+    for e in events:
+        for m in e["matches"]:
+            if m.get("replay_of"):
+                print(f"  replay: {e['show_type']} {e['air_date']} #{m['match_order']} {m['raw_description'][:90]} "
+                      f"(original {m['replay_of']})")
     record_status("cm_results", True, f"{len(events)} events, {len(unparsed)} unparsed")
     return 0
 
