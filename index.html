@@ -50,7 +50,7 @@
     --ink: #0A0A0A;
     --ink-soft: #2A2A2A;
     --ink-dim: #5F5F5F;
-    --ink-faint: #9A9A9A;
+    --ink-faint: #6B6B6B;   /* 5.33:1 on white, 4.89:1 on the #F5F5F5 panels */
     --border: #E5E5E5;
     --border-strong: #CCCCCC;
 
@@ -1027,6 +1027,16 @@
   }
   .browse-count strong { color: var(--ink); font-weight: 700; }
 
+  /* One height for the whole calendar control row (it measured 32, 38, 32 and
+     29px). Vertical padding goes so the text centers in the fixed height. */
+  .browse-toolbar .calview-toggle,
+  .browse-toolbar .controls,
+  .browse-toolbar .jump-date-input,
+  .browse-toolbar .mark-month { height: 36px; box-sizing: border-box; }
+  .browse-toolbar .cv-btn,
+  .browse-toolbar .controls select,
+  .browse-toolbar .month-nav { padding-top: 0; padding-bottom: 0; }
+
   /* Week / Month segmented toggle. Default is Week (less on screen at once). */
   .calview-toggle { display: inline-flex; border: 1px solid var(--ink); flex: 0 0 auto; }
   .cv-btn {
@@ -1081,7 +1091,7 @@
 
   .weekdays {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     padding: 0 0 8px;
     font-family: var(--font-mono);
     font-size: 10px;
@@ -1098,7 +1108,7 @@
 
   .calendar {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));   /* minmax: a busy week can no longer push the grid wider than a phone */
     gap: 6px;
     padding-top: 8px;
   }
@@ -1107,6 +1117,7 @@
     border: 1px solid var(--border);
     border-radius: var(--card-radius);
     min-height: 96px;
+    min-width: 0;
     position: relative;
     padding: 10px 10px 8px;
     display: flex;
@@ -1196,6 +1207,14 @@
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.01em;
+    /* a button, so Tab reaches every show on the calendar */
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    margin: 0;
+    text-align: left;
+    line-height: inherit;
+    cursor: pointer;
   }
   .mini-chip .label {
     overflow: hidden;
@@ -1213,6 +1232,7 @@
   .mini-chip.smackdown { background: var(--blue-soft); color: var(--blue); }
   .mini-chip.ppv { background: var(--red); color: #FFF; }
   .mini-chip.ppv .ct { opacity: 0.9; }
+  .mini-chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
 
   .status {
     grid-column: 1 / -1;
@@ -2544,7 +2564,22 @@
   button.wrestler-link:focus-visible {
     text-decoration-color: var(--red);
     color: var(--red);
-    outline: none;
+  }
+  /* the color change alone is easy to lose in a card of 30 names */
+  button.wrestler-link:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+  /* Hit areas past the visible edge: small controls reach the 24px floor on a
+     mouse and 44px on touch without changing how they look. */
+  button.wrestler-link, .details-toggle, .save-btn, .modal-close, .menu-btn { position: relative; }
+  button.wrestler-link::after, .details-toggle::after, .save-btn::after,
+  .modal-close::after, .menu-btn::after { content: ''; position: absolute; }
+  button.wrestler-link::after { inset: -2px -1px; }
+  .details-toggle::after, .save-btn::after { inset: -6px -3px; }
+  .modal-close::after { inset: -7px; }
+  .menu-btn::after { inset: -2px; }
+  @media (pointer: coarse) {
+    .details-toggle::after, .save-btn::after { inset: -12px -4px; }
+    .menu-btn::after { inset: -11px -2px; }
   }
   button.wrestler-link.source {
     color: var(--red);
@@ -3371,6 +3406,169 @@
     .moments-block { padding: 4px 14px 20px; }
     .moment-row { flex-direction: column; gap: 3px; }
   }
+  /* ===========================================================
+     MOTION
+     Values copied from Reflex's own components (Radix Themes 3.3, Vaul 1.1,
+     Sonner 2.0) so clicks and state changes share one feel without a
+     restyle. Spring pops with no Reflex equivalent use TypeUI's springs.
+     The reduced-motion block below cuts all of it.
+     =========================================================== */
+  /* Show page: Radix dialog, in over 200ms (up 5px, from 97%), out over 100ms */
+  .modal-backdrop.open { animation: dlg-fade-in 200ms cubic-bezier(0.16,1,0.3,1); }
+  .modal-backdrop.open .modal { animation: dlg-in 200ms cubic-bezier(0.16,1,0.3,1); }
+  .modal-backdrop.closing { display: flex; pointer-events: none; animation: dlg-fade-out 100ms cubic-bezier(0.16,1,0.3,1) forwards; }
+  .modal-backdrop.closing .modal { animation: dlg-out 100ms cubic-bezier(0.16,1,0.3,1) forwards; }
+  @keyframes dlg-fade-in { from { opacity: 0; } }
+  @keyframes dlg-fade-out { to { opacity: 0; } }
+  @keyframes dlg-in { from { opacity: 0; transform: translateY(5px) scale(0.97); } }
+  @keyframes dlg-out { to { opacity: 0; transform: translateY(5px) scale(0.97); } }
+
+  /* Menu drawer: Vaul, 500ms on its own curve for the panel and the dim */
+  .nav-drawer { transition: transform 500ms cubic-bezier(0.32,0.72,0,1); }
+  .nav-backdrop { transition: opacity 500ms cubic-bezier(0.32,0.72,0,1), visibility 500ms; }
+
+  /* Details: Reflex accordion, 250ms. The gap above the panel opens with it
+     instead of jumping in first. */
+  .details-panel { transition: grid-template-rows 250ms cubic-bezier(0.87,0,0.13,1); }
+  .details-panel > .details-inner { transition: margin-top 250ms cubic-bezier(0.87,0,0.13,1), padding-top 250ms cubic-bezier(0.87,0,0.13,1); }
+  .details-toggle .chev { transition: transform 250ms cubic-bezier(0.87,0,0.13,1); }
+
+  /* Hover card: Radix popover, 160ms in (4px slide away from the name, from
+     97%), 100ms out. It stays in the layout while hidden so it can fade out. */
+  #wrestler-tooltip {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+    transform-origin: top left;
+    transition: opacity 100ms cubic-bezier(0.16,1,0.3,1), transform 100ms cubic-bezier(0.16,1,0.3,1), visibility 0s linear 100ms;
+  }
+  #wrestler-tooltip[data-side="top"] { transform: translateY(4px) scale(0.97); transform-origin: bottom left; }
+  #wrestler-tooltip.visible {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity 160ms cubic-bezier(0.16,1,0.3,1), transform 160ms cubic-bezier(0.16,1,0.3,1), visibility 0s;
+  }
+
+  /* Buttons: Radix hover (40ms in, 120ms out) and press. Pressing a light
+     button darkens it a step; pressing an ink-filled one lifts it a step. */
+  :is(.spoiler-btn, .watched-btn, .save-btn, .details-toggle, .cv-btn, .rmode, .mark-month,
+      .menu-btn, .modal-close, .search-btn, .wf-chip, .month-nav, .undo-toast button) {
+    transition-duration: 120ms;
+  }
+  :is(.spoiler-btn, .watched-btn, .save-btn, .details-toggle, .cv-btn, .rmode, .mark-month,
+      .menu-btn, .modal-close, .search-btn, .wf-chip, .month-nav, .undo-toast button):hover {
+    transition-duration: 40ms;
+  }
+  :is(.spoiler-btn, .watched-btn, .save-btn, .details-toggle, .cv-btn, .rmode, .mark-month,
+      .menu-btn, .modal-close, .search-btn, .wf-chip, .month-nav, .mini-chip):active {
+    filter: brightness(0.95) saturate(1.2);
+  }
+  :is(.watched-btn.active, .save-btn.active, .match-card.open .details-toggle, .mark-month.active,
+      .wf-chip.active, .modal-spoiler-btn:hover, .menu-btn:hover, .modal-close:hover,
+      .spoiler-btn[aria-pressed="true"], .mini-chip.ppv, .undo-toast button):active {
+    filter: contrast(0.82) saturate(1.2) brightness(1.16);
+  }
+
+  /* Segmented controls: Radix indicator, 100ms */
+  .has-seg { position: relative; isolation: isolate; }
+  .seg-ind {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    background: var(--ink);
+    z-index: -1;
+    pointer-events: none;
+  }
+  .has-seg.seg-ready .seg-ind { transition: transform 100ms cubic-bezier(0.45,0.05,0.55,0.95), width 100ms cubic-bezier(0.45,0.05,0.55,0.95); }
+  .has-seg .cv-btn[aria-pressed="true"], .has-seg .cv-btn[aria-pressed="true"]:hover,
+  .has-seg .rmode.active { background: transparent; }
+
+  /* Watched and Save: turning one on pops its icon in on a spring
+     (TypeUI toggle reaction, 600/24) */
+  @keyframes icon-pop { from { transform: scale(0.5); } to { transform: none; } }
+  .watched-btn.just-on .wb-check, .save-btn.just-on .sv-ribbon { animation: icon-pop 570ms cubic-bezier(0.2,0.8,0.2,1); }
+  @supports (animation-timing-function: linear(0, 1)) {
+    .watched-btn.just-on .wb-check, .save-btn.just-on .sv-ribbon {
+      animation-timing-function: linear(0, 0.095, 0.504, 0.721, 1.038, 1.122, 1.161, 1.145, 1.112, 1.039, 1.01, 0.977, 0.972, 0.973, 0.983, 0.989, 0.999, 1.002, 1.004, 1.004, 1.004, 1.002, 1.001, 1, 1);
+    }
+  }
+
+  /* Copy link: the check draws in where the link icon was */
+  .modal-copylink .cl-check { display: none; }
+  .modal-copylink.copied .cl-link { display: none; }
+  .modal-copylink.copied .cl-check { display: block; }
+  .modal-copylink.copied .cl-check path { stroke-dasharray: 24; stroke-dashoffset: 24; animation: cl-draw 200ms cubic-bezier(0.16,1,0.3,1) 40ms forwards; }
+  .modal-copylink.copied .cl-label { animation: cl-in 140ms cubic-bezier(0.16,1,0.3,1); }
+  @keyframes cl-draw { to { stroke-dashoffset: 0; } }
+  @keyframes cl-in { from { opacity: 0; transform: translateY(3px); } }
+
+  /* Calendar chips dim when watched; a bulk mark cascades them (see cascadeChips) */
+  .mini-chip { transition: opacity 250ms cubic-bezier(0.16,1,0.3,1); }
+  .calendar.cascade .mini-chip { transition-delay: var(--d, 0ms); }
+
+  /* Roster loading tiles: Radix skeleton pulse, 1000ms */
+  .r-skel { animation-duration: 1000ms; animation-direction: alternate-reverse; }
+
+  /* Undo toast: Sonner, 400ms in, 200ms out, bottom right (full width on phones) */
+  .undo-toast {
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: min(420px, calc(100vw - 32px));
+    padding: 10px 10px 10px 16px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    box-shadow: var(--shadow-lg);
+    color: #FFF;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100%);
+    transition: transform 200ms ease, opacity 200ms ease, visibility 0s linear 200ms;
+  }
+  .undo-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: transform 400ms ease, opacity 400ms ease, visibility 0s;
+  }
+  .undo-toast .ut-msg { flex: 1; min-width: 0; }
+  .undo-toast button {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 0 14px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.6);
+    color: #FFF;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition-property: background, color;
+  }
+  .undo-toast button:hover { background: #FFF; color: var(--ink); }
+  .undo-toast button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .undo-toast .drain { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--red); transform-origin: left; }
+  @media (max-width: 560px) {
+    .undo-toast { left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* the check is drawn by animating its stroke; with motion off, show it whole */
+    .modal-copylink.copied .cl-check path { stroke-dashoffset: 0; }
+    /* the countdown line is motion too; the 4s timer behind it still runs */
+    .undo-toast .drain { visibility: hidden; }
+  }
+
 </style>
 </head>
 <body>
@@ -3447,8 +3645,8 @@
   <div class="roster-view-header">
     <h2>Roster</h2>
     <div class="roster-modes" id="roster-modes" role="tablist" aria-label="Roster view">
-      <button class="rmode active" type="button" data-mode="time" role="tab">As of your date</button>
-      <button class="rmode" type="button" data-mode="all" role="tab">All-time</button>
+      <button class="rmode active" type="button" data-mode="time" role="tab" aria-selected="true">As of your date</button>
+      <button class="rmode" type="button" data-mode="all" role="tab" aria-selected="false">All-time</button>
     </div>
     <div class="roster-controls">
       <input class="roster-search" id="roster-search" type="search" placeholder="Filter by name..." autocomplete="off">
@@ -3527,7 +3725,7 @@
 <section id="view-titles" class="view" hidden>
   <div class="video-view-header">
     <h2>Titles</h2>
-    <p class="video-sub">Every championship the corpus carries: world titles first, retired lineages at the bottom. The current holder shows with spoilers on.</p>
+    <p class="video-sub">Every championship, world titles first and older belts at the bottom. The current holder shows with spoilers on.</p>
   </div>
   <div id="titles-content" class="titles-board"></div>
 </section>
@@ -3612,9 +3810,12 @@
         <span class="sp-label">Spoilers Off</span>
       </button>
       <button class="spoiler-btn modal-spoiler-btn modal-copylink" id="modal-copylink" type="button" aria-label="Copy a link to this show">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+        <svg class="cl-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
           <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L11.6 6"></path>
           <path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4L12.4 18"></path>
+        </svg>
+        <svg class="cl-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true">
+          <path d="M4 12.5l5 5L20 6.5" pathLength="24"></path>
         </svg>
         <span class="cl-label">Copy link</span>
       </button>
@@ -3647,6 +3848,9 @@
   const el = (id) => document.getElementById(id);
   const yearSel = el('year'), monthSel = el('month'), calEl = el('calendar');
   const mBackdrop = el('modal-backdrop'), mContent = el('modal-content');
+  // JS-driven motion (closing sheets, row collapses) checks this; CSS motion is
+  // already cut by the prefers-reduced-motion block in the stylesheet.
+  const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // .modal is the scroll container (see CSS comment on .modal). The backdrop
   // is just the dimmed overlay; it does not scroll.
   const mEl = mBackdrop.querySelector('.modal');
@@ -3951,9 +4155,19 @@
     if (/undisputed|world/i.test(n) || n === "WWE Women's Championship") return 'world';
     return 'midcard';
   }
+  // Some belt names carry their run in brackets to tell lineages apart ("WWE
+  // Women's Championship (2001-2010)"); with spoilers off the end year would
+  // give the belt's retirement away, so the bracket goes. "Undisputed" goes too:
+  // it names the December 2001 unification, a storyline the viewer may not have reached.
+  function beltDisplayName(title) {
+    if (spoilers) return title;
+    return String(title || '').replace(/\s*\(\d{4}\s*[-–]\s*\d{4}\)\s*$/, '').replace(/^Undisputed\s+/i, '');
+  }
   function titleRowHTML(t, sub) {
     const votes = t.votes ? ` from ${t.votes} vote${t.votes === 1 ? '' : 's'}` : '';
-    const rating = t.rating != null
+    const name = beltDisplayName(t.title);
+    // the rating is a lifetime average over every reign, ahead of the viewer too
+    const rating = (spoilers && t.rating != null)
       ? `<span class="m-rating" title="Cagematch title rating${esc(votes)}"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>`
       : '';
     const belt = t.belt
@@ -3964,7 +4178,7 @@
         <a class="title-row" href="#title/${esc(titleSlug(t))}">
           ${belt}
           <span class="title-main">
-            <span class="title-name">${esc(t.title)}</span>
+            <span class="title-name">${esc(name)}</span>
             <span class="title-holder">${sub}</span>
           </span>
           ${rating}
@@ -3984,10 +4198,25 @@
       container.innerHTML = '<div class="status">No title data available.</div>';
       return;
     }
-    // One spoiler note for the whole board, not one per row: with spoilers off
-    // every row instead shows spoiler-safe lineage facts.
+    // One spoiler note for the whole board, not one per row. With spoilers off a
+    // belt that does not exist yet at the viewer's date is left out, and the
+    // lifetime reign count goes too: both tell you what is coming.
+    // A belt already running when coverage starts has its first recorded reign
+    // in the first weeks of the record, so anything starting within 60 days of
+    // the first show counts as existing from the start; a belt that arrives
+    // later (the WCW belts in July 2001) shows once its first reign is reached.
+    // A belt with no dated reign cannot be placed, so it waits for spoilers on.
+    const pos = spoilers ? null : spoilerISO();
+    const firstShowISO = (BUNDLE.events[ORDERED_IDS[0]] || {}).air_date || '2001-01-01';
+    const runningFromStart = addDaysISO(firstShowISO, 60);
+    const firstReignOf = (t) => (t.reigns || []).map(r => r.start).filter(Boolean).sort()[0] || null;
+    const existsByPos = (t) => {
+      if (!pos) return true;
+      const first = firstReignOf(t);
+      return !!first && (first <= pos || first <= runningFromStart);
+    };
     const banner = spoilers ? '' : `
-      <div class="titles-note">Champions are hidden while spoilers are off. Rows show each belt's recorded lineage instead.</div>`;
+      <div class="titles-note">Champions and reign counts stay hidden while spoilers are off, and belts that don't exist yet at your date are left out.</div>`;
     const activeRow = (t) => {
       if (spoilers) {
         const since = t.since
@@ -3995,14 +4224,11 @@
           : '';
         return titleRowHTML(t, `held by ${titleChampHTML(t)}${since}`);
       }
-      const reigns = (t.reigns || []).length;
-      const first = reigns ? t.reigns[reigns - 1].start.slice(0, 4) : null;
-      return titleRowHTML(t, first
-        ? `${reigns} reign${reigns === 1 ? '' : 's'} recorded &middot; since ${esc(first)}`
-        : 'Lineage on the belt page');
+      const first = firstReignOf(t);
+      return titleRowHTML(t, first ? `on record since ${esc(first.slice(0, 4))}` : 'Lineage on the belt page');
     };
     const groups = TITLE_TIERS.map(tier => {
-      const rows = board.filter(t => titleTier(t) === tier.key);
+      const rows = board.filter(t => titleTier(t) === tier.key && existsByPos(t));
       if (!rows.length) return '';
       return `
         <section class="titles-group">
@@ -4010,13 +4236,21 @@
           <div class="titles-grid">${rows.map(activeRow).join('')}</div>
         </section>`;
     }).join('');
-    const retired = (TITLES_RETIRED || []).length ? `
+    // A belt retired after the viewer's date would give its retirement away under
+    // a "Retired" heading, so with spoilers off the section is just "More titles"
+    // and a span only shows once it has ended by then.
+    const retiredRows = (TITLES_RETIRED || []).filter(existsByPos);
+    const retired = retiredRows.length ? `
       <section class="titles-group">
-        <h2 class="titles-group-label">Retired &amp; Historic</h2>
-        <div class="titles-grid">${TITLES_RETIRED.map(t => {
+        <h2 class="titles-group-label">${spoilers ? 'Retired &amp; Historic' : 'More titles'}</h2>
+        <div class="titles-grid">${retiredRows.map(t => {
+          if (!spoilers) {
+            const ended = t.years && pos && String(t.years[1]) < pos.slice(0, 4);
+            return titleRowHTML(t, t.years ? (ended ? `${esc(t.years[0])}&ndash;${esc(t.years[1])}` : `on record since ${esc(t.years[0])}`) : 'Lineage on the belt page');
+          }
           const span = t.years ? `${esc(t.years[0])}&ndash;${esc(t.years[1])}` : '';
           const reigns = (t.reigns || []).length;
-          return titleRowHTML(t, `${span} &middot; ${reigns} reign${reigns === 1 ? '' : 's'} recorded`);
+          return titleRowHTML(t, `${span} &middot; ${reigns} reign${reigns === 1 ? '' : 's'}`);
         }).join('')}</div>
       </section>` : '';
     container.innerHTML = banner + groups + retired;
@@ -4099,56 +4333,76 @@
     const reigns = t.reigns || [];
     const watchISO = rosterAnchorISO();
     const retired = !!t.years;
-    const rating = t.rating != null
+    // With spoilers off, "As of your date" stops everything at that date, the
+    // same way the titles list does: no rating or lifetime reign count, no
+    // later belt designs, and a reign still running then shows as running,
+    // since its real end date says when the belt changes hands. All-time is
+    // the viewer asking for the whole record, so it stays complete.
+    const safe = spoilers || titleMode === 'all';
+    const clip = (r) => (r.end && r.end > watchISO) ? Object.assign({}, r, { end: null }) : r;
+    const known = safe ? reigns : reigns.filter(r => r.start <= watchISO).map(clip);
+    const retiredShown = retired && (safe || !!(reigns[0] && reigns[0].end && reigns[0].end < watchISO));
+    const rating = safe && t.rating != null
       ? `<span class="m-rating"><span class="star" aria-hidden="true">★</span><span class="num">${t.rating.toFixed(1)}</span></span>` : '';
-    const eras = beltEras(reigns);
+    const eras = beltEras(known);
     const chaptered = new Set(eras.map(e => e.belt)).size > 1;
-    const headBelt = t.belt ? `<img class="tp-belt" src="belts/${esc(t.belt)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
+    // the headline belt is the design of the latest reign you have reached;
+    // a belt that never changed design is safe to show from the start
+    const headKey = safe ? t.belt : ((known[0] && known[0].belt) || (beltEras(reigns).length <= 1 ? t.belt : null));
+    const headBelt = headKey ? `<img class="tp-belt" src="belts/${esc(headKey)}.webp" alt="" onerror="this.style.visibility='hidden'">` : '';
 
     let stateLine, timeline;
     if (titleMode === 'time') {
-      const cur = reigns.find(r => r.start <= watchISO && (!r.end || r.end >= watchISO));
-      const upTo = reigns.filter(r => r.start <= watchISO);   // never past where you have watched
+      const upTo = spoilers ? reigns.filter(r => r.start <= watchISO) : known;   // never past where you have watched
+      const cur = upTo.find(r => !r.end || r.end >= watchISO);
       // Between a vacated reign and the next one the belt existed but sat empty.
+      // Before the first reign on record nothing is claimed about the belt: the
+      // records start in 2001, and many belts are older than that.
       stateLine = cur
         ? `As of <strong>${esc(fmtTitleSince(watchISO))}</strong> &middot; held by ${reignWhoHTML(cur)}`
         : upTo.length
           ? `${retired && reigns[0].end && watchISO > reigns[0].end ? 'Retired' : 'Vacant'} as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`
-          : `Not yet established as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
+          : `No reigns on record yet as of <strong>${esc(fmtTitleSince(watchISO))}</strong>`;
       const earliest = reigns[reigns.length - 1];
+      const firstShowISO = (BUNDLE.events[ORDERED_IDS[0]] || {}).air_date || '2001-01-01';
+      const startsWithRecords = !!earliest && earliest.start <= addDaysISO(firstShowISO, 60);
+      const later = reigns.length - upTo.length;
       timeline = upTo.length
         ? timelineWithChapters(upTo, cur, chaptered) +
-          (reigns.length > upTo.length ? `<div class="tp-more">${reigns.length - upTo.length} later reign${reigns.length - upTo.length === 1 ? '' : 's'} hidden &mdash; keep watching, or switch to All-time.</div>` : '')
-        : `<div class="tp-more">${earliest ? `The corpus's first reign here begins ${reignDate(earliest.start)}. Keep watching, or switch to All-time.` : 'No reign recorded in the corpus.'}</div>`;
+          (later > 0 ? `<div class="tp-more">${spoilers ? `${later} later reign${later === 1 ? '' : 's'} hidden. ` : 'Later reigns stay hidden. '}Keep watching, or switch to All-time.</div>` : '')
+        : `<div class="tp-more">${!earliest ? 'No reigns on record.'
+            : (spoilers || startsWithRecords) ? `Our records for this belt start ${reignDate(earliest.start)}. Keep watching, or switch to All-time.`
+            : 'Its reigns show once you reach them. Keep watching, or switch to All-time.'}</div>`;
     } else {
       const cur = retired ? null : (reigns.find(r => !r.end) || reigns[0]);
       stateLine = retired
         ? `Retired &middot; last active ${esc(t.years[1])}`
-        : (cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reign recorded in the corpus.');
-      timeline = timelineWithChapters(reigns, cur, chaptered) || `<div class="tp-more">No reign in the corpus.</div>`;
+        : (cur ? `Currently held by ${reignWhoHTML(cur)}` : 'No reigns on record.');
+      timeline = timelineWithChapters(reigns, cur, chaptered) || `<div class="tp-more">No reigns on record.</div>`;
     }
 
     // Spoiler-safe design panel: belt art by era plus lineage facts. This is
     // what a fresh visitor sees instead of a blank page, and it fills the
     // right side on wide screens.
-    const span = reigns.length
-      ? `${reigns[reigns.length - 1].start.slice(0, 4)}&ndash;${retired ? esc(t.years[1]) : ((reigns[0].end || '').slice(0, 4) || 'present')}`
-      : '';
+    const firstYear = known.length ? known[known.length - 1].start.slice(0, 4) : '';
+    const span = !known.length ? ''
+      : safe ? `${firstYear}&ndash;${retired ? esc(t.years[1]) : ((reigns[0].end || '').slice(0, 4) || 'present')}`
+      : `since ${firstYear}`;
     const aside = `
       <aside class="tp-aside">
-        <h2 class="tp-aside-label">The belt${eras.length > 1 ? 's' : ''}</h2>
+        ${eras.length ? `<h2 class="tp-aside-label">The belt${eras.length > 1 ? 's' : ''}</h2>` : ''}
         ${eras.map(e => `
           <div class="tp-design">
             ${e.belt ? `<img class="tp-design-img" src="belts/${esc(e.belt)}.webp" alt="" loading="lazy" onerror="this.remove()">` : ''}
             <div class="tp-design-cap">
               ${BELT_DESIGN_LABELS[e.belt] ? `<span class="tp-design-name">${esc(BELT_DESIGN_LABELS[e.belt])}</span>` : ''}
-              <span class="tp-design-span">${esc(e.from)}&ndash;${esc(e.to)}</span>
+              <span class="tp-design-span">${!safe && e.to === 'present' ? `since ${esc(e.from)}` : `${esc(e.from)}&ndash;${esc(e.to)}`}</span>
             </div>
           </div>`).join('')}
         <div class="tp-facts">
-          <div class="tp-fact"><span class="tp-fact-label">Recorded reigns</span><span class="tp-fact-value">${reigns.length}</span></div>
-          ${span ? `<div class="tp-fact"><span class="tp-fact-label">In the corpus</span><span class="tp-fact-value">${span}</span></div>` : ''}
-          ${retired ? `<div class="tp-fact"><span class="tp-fact-label">Status</span><span class="tp-fact-value">Retired</span></div>` : ''}
+          ${safe ? `<div class="tp-fact"><span class="tp-fact-label">Reigns</span><span class="tp-fact-value">${reigns.length}</span></div>` : ''}
+          ${span ? `<div class="tp-fact"><span class="tp-fact-label">On record</span><span class="tp-fact-value">${span}</span></div>` : ''}
+          ${retiredShown ? `<div class="tp-fact"><span class="tp-fact-label">Status</span><span class="tp-fact-value">Retired</span></div>` : ''}
         </div>
         <a class="title-src" href="${esc(t.url)}" target="_blank" rel="noopener">Full lineage on Cagematch &#8599;</a>
       </aside>`;
@@ -4158,15 +4412,15 @@
         <div class="tp-head">
           ${headBelt}
           <div class="tp-headtext">
-            <h1 class="tp-name">${esc(t.title)}</h1>
-            <div class="tp-sub">${rating}<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} in the corpus</span>${retired ? `<span>Retired</span>` : ''}</div>
+            <h1 class="tp-name">${esc(beltDisplayName(t.title))}</h1>
+            <div class="tp-sub">${rating}${safe ? `<span>${reigns.length} reign${reigns.length === 1 ? '' : 's'} on record</span>` : ''}${retiredShown ? `<span>Retired</span>` : ''}</div>
           </div>
         </div>
         <div class="tp-body">
           <div class="tp-main">
             <div class="title-modes" role="tablist">
-              <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab">As of your date</button>
-              <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab">All-time</button>
+              <button class="tmode${titleMode === 'time' ? ' active' : ''}" data-tmode="time" type="button" role="tab" aria-selected="${titleMode === 'time'}">As of your date</button>
+              <button class="tmode${titleMode === 'all' ? ' active' : ''}" data-tmode="all" type="button" role="tab" aria-selected="${titleMode === 'all'}">All-time</button>
             </div>
             <div class="tp-state">${stateLine}</div>
             <div class="tp-timeline">${timeline}</div>
@@ -4180,7 +4434,7 @@
     if (!container) return;
     const paint = () => {
       const t = titleBySlug(slug);
-      if (t) setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: t.title }]);
+      if (t) setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: beltDisplayName(t.title) }]);
       container.innerHTML = t ? titlePageHTML(t) : '<div class="status">Title not found.</div>';
     };
     if (!TITLES_BOARD || !BELTS) {
@@ -4310,6 +4564,8 @@
     const h = window.location.hash;
     if (h.startsWith('#wrestler/')) renderWrestler(h.slice('#wrestler/'.length));
     if (h === '#titles') renderTitles();   // the current champion is spoiler-gated
+    if (h === '#video') renderVideo();     // the library stops at your date with spoilers off
+    if (h.startsWith('#title/')) renderTitlePage(h.slice('#title/'.length));   // the belt's name drops its end year
   }
   for (const btn of spoilerButtons) btn.addEventListener('click', toggleSpoilers);
   applySpoilerClass();
@@ -4633,6 +4889,81 @@
     refreshResumeUI();   // Watched is the only input to resume; keep them in lockstep.
   }
 
+  // ------------------ Undo toast ------------------------------------------
+  // Every bulk or destructive change (mark a week, catch up, remove a row) can
+  // be taken back. Sonner timing: in over 400ms, out over 200ms, on screen 4s,
+  // and the countdown pauses while the pointer or keyboard focus is on it. A
+  // newer change replaces the toast, and the older change stays final.
+  let undoState = null;
+  function hideUndo() {
+    const t = el('undo-toast');
+    if (t) t.classList.remove('show');
+    if (undoState) { undoState.drain.cancel(); undoState = null; }
+  }
+  function showUndo(msg, onUndo) {
+    let t = el('undo-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'undo-toast';
+      t.className = 'undo-toast';
+      t.setAttribute('role', 'status');
+      t.innerHTML = '<span class="ut-msg"></span><button type="button">Undo</button><span class="drain" aria-hidden="true"></span>';
+      document.body.appendChild(t);
+      const pause = () => { if (undoState) undoState.drain.pause(); };
+      const play = () => { if (undoState) undoState.drain.play(); };
+      t.addEventListener('mouseenter', pause);
+      t.addEventListener('mouseleave', play);
+      t.addEventListener('focusin', pause);
+      t.addEventListener('focusout', (e) => { if (!t.contains(e.relatedTarget)) play(); });
+      t.querySelector('button').addEventListener('click', () => { const st = undoState; hideUndo(); if (st) st.onUndo(); });
+    }
+    if (undoState) undoState.drain.cancel();
+    t.querySelector('.ut-msg').textContent = msg;
+    const drain = t.querySelector('.drain').animate(
+      [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }],
+      { duration: 4000, easing: 'linear', fill: 'forwards' });
+    undoState = { drain, onUndo };
+    drain.onfinish = () => { if (undoState && undoState.drain === drain) hideUndo(); };
+    requestAnimationFrame(() => t.classList.add('show'));
+  }
+
+  // A removed row closes its slot (TypeUI archive: 200ms) before the list
+  // re-renders, so the rows below slide up instead of jumping.
+  function closeSlot(row, done) {
+    if (!row || reduceMotion()) { done(); return; }
+    const h = row.getBoundingClientRect().height;
+    row.style.overflow = 'hidden';
+    row.style.pointerEvents = 'none';
+    row.animate(
+      [{ height: h + 'px', opacity: 1, transform: 'none' },
+       { height: '0px', opacity: 0, transform: 'translateX(20px)', paddingTop: '0px', paddingBottom: '0px', borderWidth: '0px' }],
+      { duration: 200, easing: 'cubic-bezier(0.16,1,0.3,1)', fill: 'forwards' }
+    ).onfinish = done;
+  }
+
+  function restoreWatched(snapshot) {
+    watched.clear();
+    for (const [k, v] of snapshot) watched.set(k, v);
+    saveWatched();
+    refreshWatchedUI();
+    const wv = document.getElementById('view-mylist');
+    if (wv && !wv.hidden) renderWatched();
+  }
+  const showsWord = (n) => `${n.toLocaleString('en-US')} show${n === 1 ? '' : 's'}`;
+
+  // Select-all cascade (TypeUI): when a whole week or month flips, the chips
+  // dim one after another instead of all at once, 90ms apart, capped at 600ms.
+  function cascadeChips(ids) {
+    if (!calEl || reduceMotion()) return;
+    const set = new Set(ids.map(String));
+    const chips = [...calEl.querySelectorAll('.mini-chip[data-event-id]')].filter(c => set.has(c.dataset.eventId));
+    const step = Math.min(90, chips.length > 1 ? 600 / (chips.length - 1) : 90);
+    chips.forEach((c, i) => c.style.setProperty('--d', Math.round(i * step) + 'ms'));
+    calEl.classList.add('cascade');
+    clearTimeout(cascadeChips.t);
+    cascadeChips.t = setTimeout(() => calEl.classList.remove('cascade'), 600 + 300);
+  }
+
   // ------------------ Bulk watched (catch-up + month) ---------------------
   let currentPeriodEvents = [];
 
@@ -4721,7 +5052,10 @@
       const ids = currentPeriodEvents.map(e => String(e.id));
       if (!ids.length) return;
       const allWatched = ids.every(id => watched.has(id));
-      markWatchedBulk(ids, !allWatched);
+      const before = new Map(watched);
+      cascadeChips(ids);
+      const n = markWatchedBulk(ids, !allWatched);
+      if (n) showUndo(allWatched ? `Unmarked ${showsWord(n)}` : `Marked ${showsWord(n)} watched`, () => restoreWatched(before));
     });
 
     const cuDate = el('cu-date'), cuApply = el('cu-apply');
@@ -4743,8 +5077,10 @@
       if (cuApply) cuApply.addEventListener('click', () => {
         const cutoff = catchUpCutoff();
         if (!cutoff) return;
-        markWatchedBulk(eventIdsThrough(cutoff), true);
+        const before = new Map(watched);
+        const n = markWatchedBulk(eventIdsThrough(cutoff), true);
         renderWatched();
+        if (n) showUndo(`Marked ${showsWord(n)} watched`, () => restoreWatched(before));
       });
       updateCatchUpPreview();
     }
@@ -4807,8 +5143,18 @@
     container.querySelectorAll('[data-unwatch]').forEach(rm => {
       const h = (e) => {
         e.stopPropagation(); e.preventDefault();
-        watched.delete(rm.getAttribute('data-unwatch'));
-        saveWatched(); refreshWatchedUI(); renderWatched();
+        const id = rm.getAttribute('data-unwatch');
+        if (!watched.has(id)) return;
+        const ts = watched.get(id);
+        const row = rm.closest('.watched-row');
+        const name = (row && row.querySelector('.wr-name') || {}).textContent || 'Show';
+        watched.delete(id);
+        saveWatched(); refreshWatchedUI();
+        closeSlot(row, renderWatched);
+        showUndo(`Removed ${name} from watched`, () => {
+          watched.set(id, ts);
+          saveWatched(); refreshWatchedUI(); renderWatched();
+        });
       };
       rm.addEventListener('click', h);
       rm.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') h(e); });
@@ -4917,8 +5263,16 @@
     container.querySelectorAll('[data-remove]').forEach(rm => {
       const handler = (e) => {
         e.stopPropagation(); e.preventDefault();
-        saved.delete(rm.getAttribute('data-remove'));
-        persistSaved(); refreshSavedUI(); renderSaved();
+        const key = rm.getAttribute('data-remove');
+        if (!saved.has(key)) return;
+        const row = rm.closest('.saved-row');
+        saved.delete(key);
+        persistSaved(); refreshSavedUI();
+        closeSlot(row, renderSaved);
+        showUndo('Removed a saved match', () => {
+          saved.add(key);
+          persistSaved(); refreshSavedUI(); renderSaved();
+        });
       };
       rm.addEventListener('click', handler);
       rm.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') handler(e); });
@@ -5015,7 +5369,11 @@
     if (!container) return;
     container.innerHTML = '<div class="status">Loading video links...</div>';
     await loadMedia();
-    const rows = buildVideoRows();
+    // With spoilers off the library stops at the viewer's date: a list of every
+    // year's clips names the matches and feuds still ahead of them.
+    const allRows = buildVideoRows();
+    const vpos = spoilers ? null : spoilerISO();
+    const rows = vpos ? allRows.filter(r => (r.ev.air_date || '') <= vpos) : allRows;
 
     // Chip counts describe the whole library, not the filtered slice, so they
     // stay a stable map of what exists rather than a mirror of the search box.
@@ -5037,8 +5395,12 @@
         : 'Shows and matches with a direct video link.';
     }
 
-    if (!rows.length) {
+    if (!allRows.length) {
       container.innerHTML = `<div class="saved-empty">No video links are loaded. The sidecar lives in <code>shards/media.json</code>, which the single-file build does not carry.</div>`;
+      return;
+    }
+    if (!rows.length) {
+      container.innerHTML = `<div class="saved-empty">No video links up to your date yet. Turn spoilers on to see every year.</div>`;
       return;
     }
 
@@ -5049,7 +5411,7 @@
     }
 
     // Group by year so a 440-event list reads as a timeline you can scan.
-    let html = `<div class="video-note">Links open on YouTube or Dailymotion. We don't host video; fan uploads vary in quality and can go offline.</div>`;
+    let html = `<div class="video-note">Links open on YouTube or Dailymotion. We don't host video; fan uploads vary in quality and can go offline.${vpos ? ' Showing up to your date; turn spoilers on to see every year.' : ''}</div>`;
     let year = null;
     for (const row of visible) {
       const y = (row.ev.air_date || '').slice(0, 4);
@@ -5298,7 +5660,10 @@
         const markers = document.createElement('div');
         markers.className = 'day-markers';
         for (const ev of c.events) {
-          const m = document.createElement('div');
+          // A button so the keyboard can open shows too; its click bubbles to
+          // the day cell, which opens the day just as a mouse click on the cell does.
+          const m = document.createElement('button');
+          m.type = 'button';
           const cls = SHOW_CLASS[ev.show_type] || '';
           m.className = `mini-chip ${cls}`;
           m.dataset.eventId = ev.id;
@@ -5306,6 +5671,7 @@
           if (ev.show_type === 'PPV') label = (ev.ppv_name || 'PPV').replace(/^WW[EF]\s+/, '');
           else if (ev.show_type === 'Raw') label = 'Raw';
           else label = 'SmackDown';
+          m.setAttribute('aria-label', `${label}, ${fmtDateLong(c.iso)}, ${ev.match_count} matches`);
           // The era logo rides the day marker, so scrolling the calendar through
           // the years shows the brand actually changing under you.
           const era = ev.logo
@@ -5367,8 +5733,20 @@
   // moves away from the open modal (Back button or in-app navigation), and
   // in-modal links use it before setting their own hash so the show stays in
   // history and Back can retrace into it.
+  let modalCloseTimer = null;
   function dismissModal() {
+    const wasOpen = mBackdrop.classList.contains('open');
     mBackdrop.classList.remove('open');
+    // Radix dialog hide: the sheet fades and drops 5px over 100ms instead of
+    // vanishing. 'closing' only keeps it painted; every check of 'open' already
+    // treats it as closed.
+    clearTimeout(modalCloseTimer);
+    if (wasOpen && !reduceMotion()) {
+      mBackdrop.classList.add('closing');
+      modalCloseTimer = setTimeout(() => mBackdrop.classList.remove('closing'), 110);
+    } else {
+      mBackdrop.classList.remove('closing');
+    }
     document.body.style.overflow = '';
     modalHash = null;
     modalPushed = false;
@@ -5414,6 +5792,8 @@
     lastModalCtx = { events, iso, sourceSlug };
     if (iso) rosterViewISO = clampISO(iso);   // time-aware roster mirrors the show you're viewing
     mContent.innerHTML = '<div class="status">Loading…</div>';
+    clearTimeout(modalCloseTimer);
+    mBackdrop.classList.remove('closing');
     mBackdrop.classList.add('open');
     document.body.style.overflow = 'hidden';
     if (mEl) mEl.scrollTop = 0;
@@ -5477,16 +5857,26 @@
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
     });
+    // Turning one on pops its icon in on a spring (TypeUI toggle reaction);
+    // turning it off just switches, so only the positive action gets the beat.
+    const popOn = (btn) => {
+      if (!btn.classList.contains('active')) return;
+      btn.classList.remove('just-on');
+      void btn.offsetWidth;
+      btn.classList.add('just-on');
+    };
     mContent.querySelectorAll('[data-watched-id]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleWatched(btn.getAttribute('data-watched-id'));
+        popOn(btn);
       });
     });
     mContent.querySelectorAll('[data-save-match]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleSaved(btn.getAttribute('data-save-event'), btn.getAttribute('data-save-match'));
+        popOn(btn);
       });
     });
   }
@@ -5574,11 +5964,47 @@
       }
       if (label) {
         label.textContent = ok ? 'Copied' : 'Copy failed';
+        // the check draws in where the link icon was; the aria-label carries
+        // the result too, since it overrides the visible text for screen readers
+        copyBtn.classList.remove('copied');
+        void copyBtn.offsetWidth;   // restart the draw on a second click
+        copyBtn.classList.toggle('copied', ok);
+        copyBtn.setAttribute('aria-label', ok ? 'Link copied' : 'Copy failed');
         clearTimeout(copyTimer);
-        copyTimer = setTimeout(() => { label.textContent = 'Copy link'; }, 1600);
+        copyTimer = setTimeout(() => {
+          label.textContent = 'Copy link';
+          copyBtn.classList.remove('copied');
+          copyBtn.setAttribute('aria-label', 'Copy a link to this show');
+        }, 1600);
       }
     });
   })();
+
+  // Segmented controls: one ink block slides to the chosen option (Radix
+  // segmented control, 100ms) instead of the fill jumping between buttons. It
+  // follows the existing active markers, so the click handlers stay as they are.
+  function wireSegmented(group, isActive) {
+    if (!group) return;
+    const ind = document.createElement('span');
+    ind.className = 'seg-ind';
+    ind.setAttribute('aria-hidden', 'true');
+    group.prepend(ind);
+    group.classList.add('has-seg');
+    const sync = () => {
+      const act = [...group.children].find(c => c !== ind && isActive(c));
+      if (!act || !act.offsetWidth) { ind.style.opacity = '0'; return; }
+      ind.style.opacity = '1';
+      ind.style.width = act.offsetWidth + 'px';
+      ind.style.transform = `translateX(${act.offsetLeft}px)`;
+    };
+    new MutationObserver(sync).observe(group, { subtree: true, attributes: true, attributeFilter: ['class', 'aria-pressed'] });
+    new ResizeObserver(sync).observe(group);
+    sync();
+    // first placement lands without sliding in from the left edge
+    requestAnimationFrame(() => requestAnimationFrame(() => group.classList.add('seg-ready')));
+  }
+  wireSegmented(el('calview-toggle'), b => b.getAttribute('aria-pressed') === 'true');
+  wireSegmented(el('roster-modes'), b => b.classList.contains('active'));
 
   // "San Jose, California" / "Sheffield, South Yorkshire, UK" / "Riyadh, Saudi Arabia".
   // city/state/country are stored split (see src/cagematch_scraper._parse_location),
@@ -5988,7 +6414,7 @@
         for (const tt of titlesHeldOn(n, airDate)) heldTitles.add(tt);
       }
       if (heldTitles.size > 0) {
-        champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
+        champ = `<span class="champ-badge" title="${esc([...heldTitles].map(beltDisplayName).join(', '))}">Champ</span>`;
       }
     }
     // When the belt itself is on the headshot, the red "Champ" pill is redundant
@@ -6160,7 +6586,7 @@
         for (const tt of titlesHeldOn(n, airDate)) heldTitles.add(tt);
       }
       if (heldTitles.size > 0) {
-        champ = `<span class="champ-badge" title="${esc([...heldTitles].join(', '))}">Champ</span>`;
+        champ = `<span class="champ-badge" title="${esc([...heldTitles].map(beltDisplayName).join(', '))}">Champ</span>`;
       }
     }
 
@@ -6275,6 +6701,8 @@
     if (top + th > window.innerHeight - 8) top = rect.top - th - 8;
     tooltipEl.style.left = left + 'px';
     tooltipEl.style.top = top + 'px';
+    // the card slides 4px away from its name, so it needs to know which side it sits on
+    tooltipEl.dataset.side = top < rect.top ? 'top' : 'bottom';
   }
 
   // ---- As-of-date records ------------------------------------------------
@@ -6374,6 +6802,11 @@
         rows += `<div class="tt-row"><span>Record</span><span class="tt-val tt-muted">working&hellip;</span></div>`;
         ensureAsOfRecords(asOf);
       }
+    } else if (!spoilers) {
+      // a show card with spoilers off: the career span and match total run to
+      // the present, so only the first year on record shows (not "debut": the
+      // records start in 2001 and The Rock debuted in 1996)
+      rows += `<div class="tt-row"><span>On record since</span><span class="tt-val">${esc(String(w.active_years[0]))}</span></div>`;
     } else {
       rows += `<div class="tt-row"><span>Active</span><span class="tt-val">${esc(yr)}</span></div>`;
       rows += `<div class="tt-row"><span>Matches</span><span class="tt-val">${w.total_matches}</span></div>`;
@@ -6385,24 +6818,30 @@
       }
     }
     if (heldTitles.length) {
-      rows += `<div class="tt-row"><span>${asOf ? 'Holding now' : 'Held at this time'}</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.join(', '))}</span></div>`;
+      rows += `<div class="tt-row"><span>${asOf ? 'Holding now' : 'Held at this time'}</span><span class="tt-val" style="max-width:160px;font-size:10px;">${esc(heldTitles.map(beltDisplayName).join(', '))}</span></div>`;
     }
-    tooltipEl.innerHTML = `<div class="tt-name">${esc(w.name)}</div>${rows}`;
+    // the name on the card being hovered, not the one they ended up with
+    tooltipEl.innerHTML = `<div class="tt-name">${esc(ctxDate ? eraNameAt(slug, ctxDate) : w.name)}</div>${rows}`;
     positionTooltip(anchor);
     tooltipEl.classList.add('visible');
     tooltipEl.setAttribute('aria-hidden', 'false');
   }
 
+  // Warm hover (Radix skipDelayDuration): once one card has shown, moving to the
+  // next name within 300ms opens its card at once instead of waiting again.
+  let tooltipHiddenAt = 0;
   function showTooltip(slug, anchor) {
     if (!hasHover || !tooltipEl) return;
     clearTimeout(tooltipTimer);
-    tooltipTimer = setTimeout(() => { currentTip = { slug, anchor }; renderTooltipInto(slug, anchor); }, 150);
+    const warm = tooltipEl.classList.contains('visible') || Date.now() - tooltipHiddenAt < 300;
+    tooltipTimer = setTimeout(() => { currentTip = { slug, anchor }; renderTooltipInto(slug, anchor); }, warm ? 0 : 150);
   }
 
   function hideTooltip() {
     clearTimeout(tooltipTimer);
     currentTip = null;
     if (tooltipEl) {
+      if (tooltipEl.classList.contains('visible')) tooltipHiddenAt = Date.now();
       tooltipEl.classList.remove('visible');
       tooltipEl.setAttribute('aria-hidden', 'true');
     }
@@ -6512,6 +6951,49 @@
   let rosterCache = { iso: null, map: null };   // memo of the derived as-of roster
   let rosterDeriveToken = 0;              // guards against stale async paints
 
+  // The viewer's position for everything spoiler-gated: the next show they have
+  // not watched, the first show before they start, or the end once they have
+  // watched it all. With spoilers off nothing dated after it is listed.
+  function spoilerISO() {
+    const rid = computeResumeId();
+    if (rid && BUNDLE.events[String(rid)]) return BUNDLE.events[String(rid)].air_date;
+    if (watched && watched.size) return '9999-12-31';
+    const first = ORDERED_IDS.length ? BUNDLE.events[ORDERED_IDS[0]] : null;
+    return (first && first.air_date) || '2001-01-01';
+  }
+
+  // The name a merged wrestler was using on a date: Bradshaw in 2001, not
+  // "John Bradshaw Layfield". Match listings keep the names of their time, so
+  // take the alias from the latest listed match on or before the date. One-name
+  // wrestlers (most of them) skip the scan.
+  const eraNameCache = new Map();
+  let aliasesBySlug = null;
+  function eraNameAt(slug, iso) {
+    const w = BUNDLE.wrestlers && BUNDLE.wrestlers[slug];
+    if (!w) return '';
+    if (!iso || !Array.isArray(BUNDLE.search_matches)) return w.name;
+    if (!aliasesBySlug) {
+      aliasesBySlug = {};
+      for (const [name, sl] of Object.entries(BUNDLE.wrestlers_by_name || {})) (aliasesBySlug[sl] || (aliasesBySlug[sl] = [])).push(name);
+    }
+    const names = aliasesBySlug[slug] || [w.name];
+    if (names.length < 2) return w.name;
+    const key = slug + '|' + iso;
+    if (eraNameCache.has(key)) return eraNameCache.get(key);
+    const tests = names.map(n => [n, new RegExp('(^|[^A-Za-z])' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^A-Za-z]|$)')]);
+    let best = null, bestDate = '';
+    for (const [eventId, , matchup] of BUNDLE.search_matches) {
+      const ev = BUNDLE.events[String(eventId)], d = ev && ev.air_date;
+      if (!d || d > iso || d < bestDate) continue;
+      for (const [n, re] of tests) {
+        if (re.test(matchup) && (d > bestDate || n.length > best.length)) { best = n; bestDate = d; }
+      }
+    }
+    const out = best || w.name;
+    eraNameCache.set(key, out);
+    return out;
+  }
+
   // The date the roster mirrors: the show you're looking at, else your resume
   // position, else the first show.
   function rosterAnchorISO() {
@@ -6552,16 +7034,19 @@
     for (const ev of evs) {
       const brand = ev.show_type;
       const matches = Array.isArray(ev.matches) ? ev.matches : [];
-      const slugs = new Set();
+      // slug -> the name printed on this show's card, so the roster can show
+      // the name of the time (Bradshaw in 2001) instead of the merged one
+      const slugs = new Map();
       for (const m of matches)
         for (const t of (m.teams || []))
           for (const name of (t.participants || [])) {
             const slug = byName[name];
-            if (slug && BUNDLE.wrestlers[slug]) slugs.add(slug);
+            if (slug && BUNDLE.wrestlers[slug]) slugs.set(slug, name);
           }
-      for (const slug of slugs) {
+      for (const [slug, cardName] of slugs) {
         let rec = out.get(slug);
-        if (!rec) { rec = { w: BUNDLE.wrestlers[slug], apps: 0, raw: 0, sd: 0, lastWeekly: '', lastWeeklyBrand: '' }; out.set(slug, rec); }
+        if (!rec) { rec = { w: BUNDLE.wrestlers[slug], apps: 0, raw: 0, sd: 0, lastWeekly: '', lastWeeklyBrand: '', name: cardName, nameDate: '' }; out.set(slug, rec); }
+        if (ev.air_date >= rec.nameDate) { rec.name = cardName; rec.nameDate = ev.air_date; }
         rec.apps += 1;
         if (brand === 'Raw' || brand === 'SmackDown') {
           if (brand === 'Raw') rec.raw += 1; else rec.sd += 1;
@@ -6599,7 +7084,10 @@
       const btn = e.target.closest('.rmode');
       if (!btn || btn.dataset.mode === rosterMode) return;
       rosterMode = btn.dataset.mode;
-      modes.querySelectorAll('.rmode').forEach(b => b.classList.toggle('active', b.dataset.mode === rosterMode));
+      modes.querySelectorAll('.rmode').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === rosterMode);
+        b.setAttribute('aria-selected', b.dataset.mode === rosterMode ? 'true' : 'false');
+      });
       renderRosterBody();
     });
     const searchEl = document.getElementById('roster-search');
@@ -6754,10 +7242,10 @@
     // match in the window (their only matches were PPVs), so badge it "PPV".
     recs.forEach(r => { r.brand = brandOf(r, iso); r.badge = (split && r.brand === 'WWE') ? 'PPV' : r.brand; });
     const total = recs.length;
-    if (q) recs = recs.filter(r => r.w.name.toLowerCase().includes(q));
+    if (q) recs = recs.filter(r => (r.name || r.w.name).toLowerCase().includes(q));
     const groups = split ? { Raw: [], SmackDown: [], WWE: [] } : { WWE: [] };
     for (const r of recs) (groups[r.brand] || groups.WWE).push(r);
-    for (const k in groups) groups[k].sort((a, b) => b.apps - a.apps || a.w.name.localeCompare(b.w.name));
+    for (const k in groups) groups[k].sort((a, b) => b.apps - a.apps || (a.name || a.w.name).localeCompare(b.name || b.w.name));
     const order = split ? ['Raw', 'SmackDown', 'WWE'] : ['WWE'];
     const body = order.filter(k => groups[k] && groups[k].length)
       .map(k => rosterSectionHtml(k, groups[k], split, iso)).join('');
@@ -6797,12 +7285,13 @@
     const era = eraImageFor(w.slug, iso);
     const dflt = `roster-img/${esc(w.slug)}.webp`;
     const src = era ? esc(era) : dflt;
-    return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(w.name)}">
+    const name = rec.name || w.name;   // the name on their latest card in the window
+    return `<button class="r-card" type="button" data-slug="${esc(w.slug)}" title="${esc(name)}">
       <span class="r-card-photo">
-        <span class="r-card-ph">${esc(cardInitials(w.name))}</span>
+        <span class="r-card-ph">${esc(cardInitials(name))}</span>
         <img class="r-card-img" alt="" loading="lazy" src="${src}" data-fallback="${dflt}" onload="this.previousElementSibling.style.display='none'" onerror="if(this.dataset.fallback&&this.src.indexOf(this.dataset.fallback)<0){this.src=this.dataset.fallback}else{this.remove()}">
       </span>
-      <span class="r-card-name">${esc(w.name)}</span>
+      <span class="r-card-name">${esc(name)}</span>
       <span class="brand-badge ${bc}">${esc(rec.badge || rec.brand)}</span>
     </button>`;
   }
@@ -6868,7 +7357,9 @@
       for (const c of chain) {
         crumbs.push(`<button type="button" class="crumb wrestler-link" data-slug="${esc(c.slug)}">${esc(c.name)}</button>`);
       }
-      crumbs.push(`<span class="crumb current">${esc(w.name)}</span>`);
+      // named as on the show you came from, like the match card you clicked
+      const fromEv = BUNDLE.events[String(wrestlerSource.event_id)];
+      crumbs.push(`<span class="crumb current">${esc(fromEv ? eraNameAt(w.slug, fromEv.air_date) : w.name)}</span>`);
 
       const breadcrumbHtml = `<nav class="breadcrumbs" aria-label="Breadcrumb">${crumbs.join('<span class="crumb-sep" aria-hidden="true">›</span>')}</nav>`;
       const backBtnHtml = `<button type="button" class="profile-back-btn" id="profile-back-btn" data-back-event="${esc(String(wrestlerSource.event_id))}"><span class="pb-arrow">&#8592;</span><span class="pb-label">Back to ${esc(eventName)}</span></button>`;
@@ -6966,7 +7457,9 @@
     const t = profTs(entry.from);
     return t == null || t <= cutoff;
   }
-  function bioSectionHtml(prof) {
+  // Nicknames carry no dates, and some arrive late in a career ("The Final Boss"
+  // is 2024), so with spoilers off they wait behind the toggle.
+  function bioSectionHtml(prof, hideNicks = false) {
     const cells = [];
     const add = (label, val) => { if (val) cells.push(`<div class="bio-cell"><div class="bio-label">${label}</div><div class="bio-value">${esc(val)}</div></div>`); };
     add('Real name', prof.real_name);
@@ -6975,8 +7468,9 @@
     add('Height', prof.height);
     add('Weight', prof.weight);
     add('Nationality', prof.nationality);
-    const nicks = (prof.nicknames || []).length
-      ? `<div class="nick-chips">${prof.nicknames.map((n) => `<span class="nick-chip">${esc(n)}</span>`).join('')}</div>` : '';
+    const nicks = !(prof.nicknames || []).length ? ''
+      : hideNicks ? `<div class="profile-hint">Nicknames show with spoilers on, since some come later in a career.</div>`
+      : `<div class="nick-chips">${prof.nicknames.map((n) => `<span class="nick-chip">${esc(n)}</span>`).join('')}</div>`;
     if (!cells.length && !nicks) return '';
     return profSection('Profile', `<div class="bio-grid">${cells.join('')}</div>${nicks}`);
   }
@@ -7068,6 +7562,9 @@
     const arrivalTs = arrivalDate ? Date.parse(arrivalDate + 'T12:00:00Z') : -Infinity;
     const cutoff = spoilers ? Infinity : Math.max(watchFrontierTs(), arrivalTs);
     const cutoffYr = Number.isFinite(cutoff) ? new Date(cutoff).getUTCFullYear() : null;
+    // the name they went by at that point, not the one they ended up with
+    const shownName = spoilers ? w.name
+      : eraNameAt(w.slug, Number.isFinite(cutoff) ? new Date(cutoff).toISOString().slice(0, 10) : (w.first_match_date || spoilerISO()));
 
     // Career span: the debut year is not a spoiler, but the year it ended is, so
     // with spoilers off the span runs only to where the viewer is.
@@ -7127,7 +7624,7 @@
     const titleHistoryHtml = titleEntries.length
       ? `<div class="title-list">${titleEntries.map(([t, cnt], i) =>
           `<div class="title-row${i === 0 ? ' sig' : ''}">
-            <span class="title-name">${esc(t)}</span>
+            <span class="title-name">${esc(beltDisplayName(t))}</span>
             <span class="title-count">x${cnt}</span>
           </div>`).join('')}</div>`
       : (spoilers
@@ -7209,7 +7706,7 @@
           <img class="pp-img" alt="" loading="lazy" src="${heroImg}" data-fallback="${heroDefault}" onload="this.previousElementSibling.style.display='none'" onerror="if(this.dataset.fallback&&this.src.indexOf(this.dataset.fallback)<0){this.src=this.dataset.fallback}else{this.remove()}">
         </div>
         <div class="profile-id">
-          <div class="profile-name">${esc(w.name)}</div>
+          <div class="profile-name">${esc(shownName)}</div>
           <div class="profile-years">${esc(yr)}</div>
         </div>
       </div>
@@ -7220,12 +7717,12 @@
             ? `Shown as of where you're watching, ${MONTHS[new Date(cutoff).getUTCMonth()]} ${new Date(cutoff).getUTCFullYear()}. Turn on spoilers for the full career.`
             : `Shown spoiler-free. Mark shows watched, or turn on spoilers, to see this wrestler's career fill in.`}</div>`}
 
-      ${prof ? bioSectionHtml(prof) : ''}
+      ${prof ? bioSectionHtml(prof, !spoilers) : ''}
       ${prof ? ringNamesSectionHtml(prof, cutoff) : ''}
 
       <div class="profile-section">
         <div class="profile-section-title">Career Record</div>
-        <div class="record-grid">
+        ${spoilers ? `<div class="record-grid">
           <div class="record-stat"><div class="rs-label">Matches</div><div class="rs-value">${w.total_matches}</div></div>
           <div class="record-stat"><div class="rs-label">Shows</div><div class="rs-value">${w.unique_event_count}</div></div>
           ${winLossTiles}
@@ -7233,7 +7730,8 @@
           <div class="record-stat"><div class="rs-label">Main Events</div><div class="rs-value">${w.main_events}</div></div>
           ${drawNcTiles}
         </div>
-        ${recordHint}
+        ${recordHint}`
+        : `<div class="profile-hint">Career totals count every year of a career, so they stay hidden while spoilers are off. Turn spoilers on to see them.</div>`}
       </div>
 
       ${prof ? movesSectionHtml(prof) : ''}
@@ -7383,7 +7881,7 @@
       if (v) v.hidden = false;
       markNav('titles');
       const t = titleBySlug(slug);
-      setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: (t && t.title) || 'Title' }]);
+      setCrumbs([CRUMB_HOME, { label: 'Titles', hash: '#titles' }, { label: (t && beltDisplayName(t.title)) || 'Title' }]);
       renderTitlePage(slug);
       window.scrollTo({ top: 0, behavior: 'auto' });
     } else if (hash === '#titles') {
@@ -7477,6 +7975,7 @@
           total: w.total_matches || 0,
           ppv: w.ppv_appearances || 0,
           years: w.active_years || null,
+          first: w.first_match_date || null,
           hay: names.join(' ').toLowerCase(),
         });
       }
@@ -7577,19 +8076,23 @@
     buildSearchIndexes();
     const toks = searchTokens(q);
     const joined = toks.join(' ');
+    // With spoilers off, search stops at the viewer's date: no one who has not
+    // debuted yet, and no show or match after it.
+    const spos = spoilers ? null : spoilerISO();
+    const upTo = (d) => !spos || !d || d <= spos;
 
-    let wr = searchWrestlers.filter(w => allTokensIn(w.hay, toks))
+    let wr = searchWrestlers.filter(w => upTo(w.first) && allTokensIn(w.hay, toks))
       .map(w => { w._s = scoreWrestler(w, toks, joined); return w; })
       .sort((a, b) => a._s - b._s || b.total - a.total || a.name.localeCompare(b.name));
     const wrTotal = wr.length; wr = wr.slice(0, WR_CAP);
 
-    let ev = searchEvents.filter(e => allTokensIn(e.hay, toks))
+    let ev = searchEvents.filter(e => upTo(e.date) && allTokensIn(e.hay, toks))
       .sort((a, b) =>
         ((a.show === 'PPV' ? 0 : 1) - (b.show === 'PPV' ? 0 : 1)) ||
         (a.date || '').localeCompare(b.date || ''));
     const evTotal = ev.length; ev = ev.slice(0, EV_CAP);
 
-    let ma = searchMatches.filter(m => allTokensIn(m.hay, toks))
+    let ma = searchMatches.filter(m => upTo(m.date) && allTokensIn(m.hay, toks))
       .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
     const maTotal = ma.length; ma = ma.slice(0, MA_CAP);
 
@@ -7640,17 +8143,23 @@
 
     if (wr.length) {
       html.push(`<div class="sgroup-head">Wrestlers <span class="sgroup-n">${wrTotal}</span></div>`);
+      // Career totals and the year a career ended are all-time facts, so with
+      // spoilers off a wrestler reads as their name at your date and a debut year.
+      const spos = spoilers ? null : spoilerISO();
       for (const w of wr) {
         const yr = w.years
           ? (w.years[0] === w.years[1] ? String(w.years[0]) : `${w.years[0]}–${w.years[1]}`)
           : '';
-        const sub = [`${fmtN(w.total)} match${w.total === 1 ? '' : 'es'}`,
-                     w.ppv ? `${fmtN(w.ppv)} PPV` : null, yr].filter(Boolean).join(' · ');
+        const sub = spos
+          ? (w.years ? `since ${w.years[0]}` : '')
+          : [`${fmtN(w.total)} match${w.total === 1 ? '' : 'es'}`,
+             w.ppv ? `${fmtN(w.ppv)} PPV` : null, yr].filter(Boolean).join(' · ');
+        const shownName = spos ? eraNameAt(w.slug, spos) : w.name;
         html.push(
           `<button class="sresult" role="option" type="button" data-kind="wrestler" data-slug="${esc(w.slug)}">
              <span class="ss-ico" aria-hidden="true"></span>
              <span class="ss-main">
-               <span class="ss-title">${hlSearch(w.name, toks)}</span>
+               <span class="ss-title">${hlSearch(shownName, toks)}</span>
                <span class="ss-sub">${esc(sub)}</span>
              </span>
              <span class="ss-go" aria-hidden="true">&#8594;</span>
