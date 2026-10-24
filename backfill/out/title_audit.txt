@@ -2,9 +2,7 @@
 ## WWE Women's Championship (1956-2010): ours 57 reigns, Wikipedia 57 in 1985-03-31..2010-09-19, 57 matched, 0 differences, 0 off by date
 ## World Tag Team Championship (1971-2010): ours 143 reigns, Wikipedia 143 in 1985-03-31..2010-07-18, 143 matched, 0 differences, 0 off by date
 ## Million Dollar Championship: ours 7 reigns, Wikipedia 7 in 1990-04-01..2021-08-22, 7 matched, 0 differences, 0 off by date
-## WWE Intercontinental Title: ours 186 reigns, Wikipedia 186 in 1985-03-31..2026-10-19, 185 matched, 1 differences, 0 off by date
-   replace ours [('2000-01-03', 'Chyna')]
-           wiki [('2000-01-03', 'Chris Jericho and Chyna', 'Raw')]
+## WWE Intercontinental Title: ours 185 reigns, Wikipedia 185 in 1985-03-31..2026-10-19, 185 matched, 0 differences, 0 off by date
 ## WWF Light Heavyweight Title: ours 12 reigns, Wikipedia 13 in 1997-12-07..2001-10-08, 12 matched, 1 differences, 0 off by date
    insert  ours []
            wiki [('2001-03-13', 'Crash Holly', 'Heat')]
